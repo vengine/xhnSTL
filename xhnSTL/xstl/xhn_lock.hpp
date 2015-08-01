@@ -1,0 +1,564 @@
+/**
+ * xuhaining's Standard Template Library - version 1.0
+ * --------------------------------------------------------
+ * Copyright (C) 2011-2013, by Xu Haining (xhnsworks@gmail.com)
+ * Download new versions at https://github.com/vengine/XGC
+ *
+ * This library is distributed under the MIT License. See notice at the end
+ * of this file.
+ */
+
+#ifndef XHN_LOCK_HPP
+#define XHN_LOCK_HPP
+#include "common.h"
+#include "etypes.h"
+#include "xhn_memory.hpp"
+#include "spin_lock.h"
+namespace xhn
+{
+///==========================================================================///
+///  MutexLock                                                               ///
+///==========================================================================///
+class MutexLock : public RefObject
+{
+public:
+    mutable pthread_mutex_t m_lock;
+public:
+	class Instance
+	{
+		friend class MutexLock;
+	private:
+		pthread_mutex_t* m_prototype;
+		inline Instance(pthread_mutex_t* lock)
+        : m_prototype(lock)
+		{}
+	public:
+		inline Instance(const Instance& inst)
+        : m_prototype(inst.m_prototype)
+		{}
+		inline ~Instance()
+		{
+			pthread_mutex_unlock(m_prototype);
+		}
+	};
+public:
+	inline MutexLock()
+	{
+		pthread_mutex_init(&m_lock, NULL);
+	}
+	inline ~MutexLock()
+	{
+		pthread_mutex_destroy(&m_lock);
+	}
+	inline Instance Lock() const
+	{
+		pthread_mutex_lock(&m_lock);
+		return Instance(&m_lock);
+	}
+};
+    
+///==========================================================================///
+///  RWLock                                                                  ///
+///==========================================================================///
+    
+class RWLock : public RefObject
+{
+private:
+	pthread_rwlock_t m_lock;
+	vptr m_userdata;
+public:
+	class Instance
+	{
+		friend class RWLock;
+	private:
+		pthread_rwlock_t* m_prototype;
+		inline Instance(pthread_rwlock_t* lock)
+			: m_prototype(lock)
+		{}
+	public:
+		inline Instance(const Instance& inst)
+			: m_prototype(inst.m_prototype)
+		{}
+		inline ~Instance()
+		{
+			pthread_rwlock_unlock(m_prototype);
+		}
+	};
+public:
+	inline RWLock()
+	{
+		pthread_rwlock_init(&m_lock, NULL);
+		m_userdata = NULL;
+	}
+	inline ~RWLock()
+	{
+		pthread_rwlock_destroy(&m_lock);
+	}
+	inline Instance GetWriteLock()
+	{
+		pthread_rwlock_wrlock(&m_lock);
+		return Instance(&m_lock);
+	}
+	inline Instance GetReadLock()
+	{
+		pthread_rwlock_rdlock(&m_lock);
+		return Instance(&m_lock);
+	}
+	inline vptr GetUserdata() const {
+		return m_userdata;
+	}
+	inline void SetUserdata(vptr userdata) {
+		m_userdata = userdata;
+	}
+};
+    
+///==========================================================================///
+///  RWLock2                                                                 ///
+///==========================================================================///
+
+class RWLock2 : public RefObject
+{
+private:
+    pthread_rwlock_t m_lock;
+public:
+	class Instance
+	{
+		friend class RWLock2;
+	private:
+		pthread_rwlock_t* m_prototype;
+		inline Instance(pthread_rwlock_t* lock)
+			: m_prototype(lock)
+		{}
+	public:
+        inline Instance(const Instance& inst)
+			: m_prototype(inst.m_prototype)
+		{}
+		inline ~Instance()
+		{
+			pthread_rwlock_unlock(m_prototype);
+		}
+	};
+public:
+    inline RWLock2()
+	{
+		pthread_rwlock_init(&m_lock, NULL);
+	}
+	inline ~RWLock2()
+	{
+		pthread_rwlock_destroy(&m_lock);
+	}
+	inline Instance GetWriteLock()
+	{
+		pthread_rwlock_wrlock(&m_lock);
+        return Instance(&m_lock);
+	}
+	inline Instance GetReadLock()
+	{
+		pthread_rwlock_rdlock(&m_lock);
+		return Instance(&m_lock);
+	}
+};
+    
+///==========================================================================///
+///  SpinLock                                                                ///
+///==========================================================================///
+
+class SpinLock : public RefObject
+{
+private:
+	ELock m_lock;
+	vptr m_userdata;
+public:
+	class Instance
+	{
+		friend class SpinLock;
+	private:
+		ELock* m_prototype;
+		inline Instance(ELock* lock)
+			: m_prototype(lock)
+		{}
+	public:
+		inline Instance(const Instance& inst)
+			: m_prototype(inst.m_prototype)
+		{}
+		inline ~Instance()
+		{
+			ELock_unlock(m_prototype);
+		}
+	};
+public:
+	inline SpinLock()
+		: m_lock(0)
+		, m_userdata(NULL)
+	{}
+	inline Instance Lock() 
+	{
+        ELock_lock(&m_lock);
+		return Instance(&m_lock);
+	}
+	inline vptr GetUserdata() const {
+		return m_userdata;
+	}
+	inline void SetUserdata(vptr userdata) {
+		m_userdata = userdata;
+	}
+    inline bool TryLock() {
+        return ELock_try(&m_lock);
+    }
+};
+    
+///==========================================================================///
+///  SpinObject                                                              ///
+///==========================================================================///
+template <typename T>
+class SpinObject : public RefObject
+{
+private:
+    ELock m_lock;
+    T m_data;
+public:
+    class Instance
+    {
+        friend class SpinObject;
+    private:
+        ELock* m_prototype;
+        T* m_data;
+        inline Instance(ELock* lock,
+                        T* data)
+        : m_prototype(lock)
+        , m_data(data)
+        {}
+    public:
+        inline Instance(const Instance& inst)
+        : m_prototype(inst.m_prototype)
+        , m_data(inst.m_data)
+        {}
+        inline ~Instance()
+        {
+            ELock_unlock(m_prototype);
+        }
+        inline T* operator->() {
+            return m_data;
+        }
+        inline const T* operator->() const {
+            return m_data;
+        }
+    };
+public:
+    inline SpinObject()
+    : m_lock(0)
+    {}
+    inline Instance Lock()
+    {
+        ELock_lock(&m_lock);
+        return Instance(&m_lock, &m_data);
+    }
+};
+    
+///==========================================================================///
+///  RecursiveSpinLock                                                       ///
+///==========================================================================///
+    
+class RecursiveSpinLock : public RefObject
+{
+    friend class Instance;
+private:
+    ELock m_interlock;
+    volatile pthread_t m_tid;
+	ELock m_lock;
+	vptr m_userdata;
+public:
+	class Instance
+	{
+		friend class RecursiveSpinLock;
+	private:
+		RecursiveSpinLock* m_prototype;
+		inline Instance(RecursiveSpinLock* prototype)
+        : m_prototype(prototype)
+		{}
+	public:
+		inline Instance(const Instance& inst)
+        : m_prototype(inst.m_prototype)
+		{}
+		~Instance();
+	};
+    RecursiveSpinLock()
+    : m_tid(NULL)
+    , m_userdata(NULL)
+    {
+        ELock_Init(&m_interlock);
+        ELock_Init(&m_lock);
+    }
+    Instance Lock();
+};
+    
+///==========================================================================///
+///  RecursiveSpinObject                                                     ///
+///==========================================================================///
+    
+template <typename T>
+class RecursiveSpinObject : public RefObject
+{
+    friend class Instance;
+private:
+    ELock m_interlock;
+    volatile pthread_t m_tid;
+    ELock m_lock;
+    T m_data;
+public:
+    class Instance
+    {
+        friend class RecursiveSpinObject;
+    private:
+        RecursiveSpinObject* m_prototype;
+        inline Instance(RecursiveSpinObject* prototype)
+        : m_prototype(prototype)
+        {}
+    public:
+        inline Instance(Instance& inst)
+        : m_prototype(inst.m_prototype)
+        {}
+        ~Instance() {
+            ELock_lock(&m_prototype->m_interlock);
+            if(!AtomicDecrement(&m_prototype->m_lock)) {
+                m_prototype->m_tid = NULL;
+            }
+            ELock_unlock(&m_prototype->m_interlock);
+        }
+        inline T* operator->() {
+            return &m_prototype->m_data;
+        }
+        inline const T* operator->() const {
+            return &m_prototype->m_data;
+        }
+    };
+    RecursiveSpinObject()
+    : m_tid(NULL)
+    {
+        ELock_Init(&m_interlock);
+        ELock_Init(&m_lock);
+    }
+    Instance Lock() {
+        ELock_lock(&m_interlock);
+        if (!m_tid) {
+            m_tid = pthread_self();
+        }
+        else {
+            if (m_tid != pthread_self()) {
+                /// 这里先解锁了
+                ELock_unlock(&m_interlock);
+                ///
+                while (1) {
+                    ELock_lock(&m_interlock);
+                    if (!m_tid) {
+                        /// break以后实际上是锁住的
+                        m_tid = pthread_self();
+                        break;
+                    }
+                    ELock_unlock(&m_interlock);
+                }
+            }
+        }
+        AtomicIncrement(&m_lock);
+        ELock_unlock(&m_interlock);
+        return Instance(this);
+    }
+};
+    
+///==========================================================================///
+///  MutexObject                                                             ///
+///==========================================================================///
+    
+template<typename T>
+class MutexObject : public RefObject
+{
+public:
+    mutable pthread_mutex_t m_lock;
+    T m_data;
+public:
+    class Instance
+    {
+        friend class MutexObject;
+    private:
+        pthread_mutex_t* m_prototype;
+        T* m_data;
+        inline Instance(pthread_mutex_t* lock, T* data)
+        : m_prototype(lock)
+        , m_data(data)
+        {}
+    public:
+        inline Instance(const Instance& inst)
+        : m_prototype(inst.m_prototype)
+        , m_data(inst.m_data)
+        {}
+        inline ~Instance()
+        {
+            pthread_mutex_unlock(m_prototype);
+        }
+        inline T* operator ->() {
+            return m_data;
+        }
+        inline const T* operator->() const {
+            return m_data;
+        }
+    };
+public:
+    inline MutexObject()
+    {
+        pthread_mutex_init(&m_lock, NULL);
+    }
+    inline ~MutexObject()
+    {
+        pthread_mutex_destroy(&m_lock);
+    }
+    inline Instance Lock()
+    {
+        pthread_mutex_lock(&m_lock);
+        return Instance(&m_lock, &m_data);
+    }
+};
+}
+
+class AutoMutexLock
+{
+public:
+    pthread_mutex_t m_lock;
+public:
+    AutoMutexLock() {
+        pthread_mutex_init(&m_lock, NULL);
+    }
+    ~AutoMutexLock() {
+        pthread_mutex_destroy(&m_lock);
+    }
+};
+#define MutexSingleton_Decl(T) \
+    private: \
+        static xhn::SmartPtr<T> s_singleton; \
+    private: \
+        AutoMutexLock m_singletonLock; \
+    public: \
+        class Instance \
+        { \
+            friend class T; \
+        private: \
+            pthread_mutex_t* m_lockPrototype; \
+            T* m_singleton; \
+            inline Instance(pthread_mutex_t* lock, \
+                            T* singleton) \
+            : m_lockPrototype(lock) \
+            , m_singleton(singleton) \
+            {} \
+        public: \
+            inline Instance(const Instance& inst) \
+            : m_lockPrototype(inst.m_lockPrototype) \
+            , m_singleton(inst.m_singleton) \
+            {} \
+            inline ~Instance() \
+            { \
+                pthread_mutex_unlock(m_lockPrototype); \
+            } \
+            inline T* operator ->() { \
+                return m_singleton; \
+            } \
+        }; \
+        static Instance Lock();
+
+#define MutexSingleton_Impl(T) \
+xhn::SmartPtr<T> T::s_singleton; \
+T::Instance T::Lock() \
+{ \
+    pthread_mutex_lock(&s_singleton->m_singletonLock.m_lock); \
+    return Instance(&s_singleton->m_singletonLock.m_lock, s_singleton.get()); \
+}
+
+///==========================================================================///
+///  LockedSingleton                                                         ///
+///==========================================================================///
+
+#define LockedSingletonDecl(classname, data) \
+class classname : public RefObject \
+{ \
+private: \
+static xhn::SmartPtr<classname> s_singleton; \
+private: \
+pthread_mutex_t m_lock; \
+data m_data; \
+public: \
+class Instance \
+{ \
+friend class classname; \
+private: \
+pthread_mutex_t* m_lockPrototype; \
+classname* m_##classname; \
+inline Instance(pthread_mutex_t* lock, \
+classname* _##classname) \
+: m_lockPrototype(lock) \
+, m_##classname(_##classname) \
+{} \
+public: \
+inline Instance(const Instance& inst) \
+: m_lockPrototype(inst.m_lockPrototype) \
+, m_##classname(inst.m_##classname) \
+{} \
+inline ~Instance() \
+{ \
+pthread_mutex_unlock(m_lockPrototype); \
+} \
+inline classname* operator ->() { \
+return m_##classname; \
+} \
+inline classname* Get() { \
+return m_##classname; \
+} \
+}; \
+public: \
+classname (data d) \
+: m_data(d) \
+{ \
+pthread_mutex_init(&m_lock, NULL); \
+s_singleton = this; \
+} \
+virtual ~classname () \
+{ \
+pthread_mutex_destroy(&m_lock); \
+s_singleton = NULL; \
+} \
+public: \
+static Instance Lock(); \
+inline data GetData() { return m_data; } \
+inline void SetData(data d) { m_data = d; } \
+};
+
+#define LockedSingletonImpl(classname) \
+xhn::SmartPtr<classname> classname::s_singleton; \
+classname::Instance classname::Lock() { \
+pthread_mutex_lock(&s_singleton->m_lock); \
+return Instance(&s_singleton->m_lock, s_singleton.get()); \
+}
+
+#endif
+
+/**
+ * Copyright (c) 2011-2013 Xu Haining
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>F931D890-53BE-41CD-962C-C72927F41097</string>
+	<key>IDESourceControlProjectName</key>
+	<string>xhnSTL</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D932164327F6035682EFE00497FB41F69AF0AAD3</key>
+		<string>https://github.com/vengine/osx-tools.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>xhnSTL/xhnSTL.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D932164327F6035682EFE00497FB41F69AF0AAD3</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/vengine/osx-tools.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D932164327F6035682EFE00497FB41F69AF0AAD3</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D932164327F6035682EFE00497FB41F69AF0AAD3</string>
+			<key>IDESourceControlWCCName</key>
+			<string>osx-tools</string>
+		</dict>
+	</array>
+</dict>
+</plist>
