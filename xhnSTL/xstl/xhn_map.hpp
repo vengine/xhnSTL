@@ -78,12 +78,12 @@ public:
 
 	pointer allocate(size_type count)
 	{
-		return (pointer)Malloc(count * sizeof(pair<K, V>));
+		return (pointer)NMalloc(count * sizeof(pair<K, V>));
 	}
 
 	pointer allocate(size_type count, const void*)
 	{
-		return (pointer)Malloc(count * sizeof(pair<K, V>));
+		return (pointer)NMalloc(count * sizeof(pair<K, V>));
 	}
 
 	void construct(pointer ptr, const K& v)

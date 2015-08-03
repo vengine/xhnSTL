@@ -300,7 +300,7 @@ xhn::memory_output_device::~memory_output_device()
 bool xhn::memory_output_device::open(const xhn::wstring& path)
 {
     if (!m_buffer) {
-        m_buffer = (euint8*)Malloc(128);
+        m_buffer = (euint8*)NMalloc(128);
         m_size = 0;
         m_capacity = 128;
     }
@@ -334,7 +334,7 @@ euint64 xhn::memory_output_device::write(const euint8* buf, euint64 size)
     }
     else {
         m_capacity = (m_capacity + size) * 2;
-        euint8* tmp = (euint8*)Malloc(m_capacity);
+        euint8* tmp = (euint8*)NMalloc(m_capacity);
         memcpy(tmp, m_buffer, m_size);
         memcpy(&tmp[m_size], buf, size);
         m_size += size;
@@ -347,7 +347,7 @@ euint64 xhn::memory_output_device::set_pos(euint64 pos)
 {
     if (pos >= m_capacity) {
         m_capacity = (pos + 1) * 2;
-        euint8* tmp = (euint8*)Malloc(m_capacity);
+        euint8* tmp = (euint8*)NMalloc(m_capacity);
         memcpy(tmp, m_buffer, m_size);
         Mfree(m_buffer);
         m_buffer = tmp;

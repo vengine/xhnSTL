@@ -57,7 +57,7 @@ namespace xhn
     public:
         FFileBlockAllocator() {}
         void deallocate(file_block* ptr, euint) { Mfree(ptr); }
-        file_block* allocate(euint count) { return (file_block*)Malloc(count * sizeof(file_block)); }
+        file_block* allocate(euint count) { return (file_block*)NMalloc(count * sizeof(file_block)); }
         void construct(file_block* ptr, vptr) { new ( ptr ) file_block (); }
         void pre_destroy(file_block* ptr) {}
         void destroy(file_block* ptr) { ptr->~file_block(); }

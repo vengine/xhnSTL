@@ -31,7 +31,7 @@ public:
     typedef C* iterator;
     typedef const C* const_iterator;
     string_base() {
-        m_str = ( C * ) Malloc ( sizeof(C) );
+        m_str = ( C * ) NMalloc ( sizeof(C) );
         m_str[0] = 0;
         m_size = 0;
     }
@@ -45,12 +45,12 @@ public:
             count++;
         }
 
-        m_str = ( C * ) Malloc ( (count + 1) * sizeof(C) );
+        m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
         memcpy ( m_str, str, (count + 1) * sizeof(C) );
         m_size = count;
     }
     string_base ( const C *str, euint size ) {
-        m_str = ( C * ) Malloc ( (size + 1) * sizeof(C) );
+        m_str = ( C * ) NMalloc ( (size + 1) * sizeof(C) );
         memcpy ( m_str, str, size * sizeof(C) );
         m_str[size] = 0;
         m_size = size;
@@ -58,14 +58,14 @@ public:
 	string_base ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
         euint count = str.size();
 
-        m_str = ( C * ) Malloc ( (count + 1) * sizeof(C) );
+        m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
 		C* s = str.get();
         memcpy ( m_str, s, count * sizeof(C) );
 		m_str[count] = 0;
         m_size = count;
     }
     string_base ( const string_base &str ) {
-        m_str = ( C * ) Malloc ( (str.m_size + 1) * sizeof(C) );
+        m_str = ( C * ) NMalloc ( (str.m_size + 1) * sizeof(C) );
         memcpy ( m_str, str.m_str, (str.m_size + 1) * sizeof(C) );
         m_size = str.m_size;
     }
@@ -109,7 +109,7 @@ public:
     }
     string_base &operator = ( const string_base &str ) {
         Mfree ( m_str );
-        m_str = ( C * ) Malloc ( (str.m_size + 1) * sizeof(C) );
+        m_str = ( C * ) NMalloc ( (str.m_size + 1) * sizeof(C) );
         memcpy ( m_str, str.m_str, (str.m_size + 1) * sizeof(C) );
         m_size = str.m_size;
         return *this;
@@ -122,7 +122,7 @@ public:
         }
 
         Mfree ( m_str );
-        m_str = ( C * ) Malloc ( (count + 1) * sizeof(C) );
+        m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
         memcpy ( m_str, str, (count + 1) * sizeof(C) );
         m_size = count;
         return *this;
@@ -131,7 +131,7 @@ public:
         euint count = str.size();
 
         Mfree ( m_str );
-        m_str = ( C * ) Malloc ( (count + 1) * sizeof(C) );
+        m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
 		C* s = str.get();
         memcpy ( m_str, s, count * sizeof(C) );
 		m_str[count] = 0;
@@ -142,7 +142,7 @@ public:
         string_base ret;
         ret.m_size = m_size + str.m_size;
         Mfree ( ret.m_str );
-        ret.m_str = ( C * ) Malloc ( (ret.m_size + 1) * sizeof(C) );
+        ret.m_str = ( C * ) NMalloc ( (ret.m_size + 1) * sizeof(C) );
         memcpy ( ret.m_str, m_str, m_size * sizeof(C) );
         memcpy ( &ret.m_str[m_size], str.m_str, (str.m_size + 1) * sizeof(C) );
         return ret;
@@ -157,7 +157,7 @@ public:
         string_base ret;
         ret.m_size = m_size + count;
         Mfree ( ret.m_str );
-        ret.m_str = ( C * ) Malloc ( (ret.m_size + 1) * sizeof(C) );
+        ret.m_str = ( C * ) NMalloc ( (ret.m_size + 1) * sizeof(C) );
         memcpy ( ret.m_str, m_str, m_size * sizeof(C) );
         memcpy ( &ret.m_str[m_size], str, (count + 1) * sizeof(C) );
         return ret;
@@ -166,14 +166,14 @@ public:
 		string_base ret;
 		ret.m_size = m_size + 1;
 		Mfree ( ret.m_str );
-		ret.m_str = ( C * ) Malloc ( (ret.m_size + 1) * sizeof(C) );
+		ret.m_str = ( C * ) NMalloc ( (ret.m_size + 1) * sizeof(C) );
 		memcpy ( ret.m_str, m_str, m_size * sizeof(C) );
 		memcpy ( &ret.m_str[m_size], &s, 2 * sizeof(C) );
 		ret.m_hash = _hash ( ret.m_str );
 		return ret;
 	}
     string_base &operator += ( const string_base &str ) {
-        C *tmp = ( C * ) Malloc ( (m_size + str.m_size + 1) * sizeof(C) );
+        C *tmp = ( C * ) NMalloc ( (m_size + str.m_size + 1) * sizeof(C) );
         memcpy ( tmp, m_str, m_size * sizeof(C) );
         memcpy ( &tmp[m_size], str.m_str, (str.m_size + 1) * sizeof(C) );
         m_size += str.m_size;
@@ -188,7 +188,7 @@ public:
             count++;
         }
 
-        C *tmp = ( C * ) Malloc ( (m_size + count + 1) * sizeof(C) );
+        C *tmp = ( C * ) NMalloc ( (m_size + count + 1) * sizeof(C) );
         memcpy ( tmp, m_str, m_size * sizeof(C) );
         memcpy ( &tmp[m_size], str, (count + 1) * sizeof(C) );
         m_size += count;
@@ -197,7 +197,7 @@ public:
         return *this;
     }
 	string_base &operator += ( C s ) {
-		C *tmp = ( C * ) Malloc ( (m_size + 2) * sizeof(C) );
+		C *tmp = ( C * ) NMalloc ( (m_size + 2) * sizeof(C) );
 		memcpy ( tmp, m_str, m_size * sizeof(C) );
 		memcpy ( &tmp[m_size], &s, sizeof(C) );
         tmp[m_size + 1] = 0;
@@ -330,7 +330,7 @@ public:
             len = m_size - pos;
         }
 
-        C *str = ( C * ) Malloc ( (len + 1) * sizeof(C) );
+        C *str = ( C * ) NMalloc ( (len + 1) * sizeof(C) );
         memcpy ( str, &m_str[pos], len * sizeof(C) );
         str[len] = 0;
         string_base ret;
@@ -382,7 +382,7 @@ public:
     }
 	void clear() {
 		Mfree(m_str);
-		m_str = ( C * ) Malloc ( sizeof(C) );
+		m_str = ( C * ) NMalloc ( sizeof(C) );
         m_str[0] = 0;
         m_size = 0;
 	}

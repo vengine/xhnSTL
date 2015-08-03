@@ -76,12 +76,12 @@ public:
 
 	pointer allocate(size_type count)
 	{
-		return (pointer)Malloc(count * sizeof(value_type));
+		return (pointer)NMalloc(count * sizeof(value_type));
 	}
 
 	pointer allocate(size_type count, const void*)
 	{
-		return (pointer)Malloc(count * sizeof(value_type));
+		return (pointer)NMalloc(count * sizeof(value_type));
 	}
 
 	void construct(pointer ptr, const K& v)

@@ -204,7 +204,7 @@ public:
         PushNode(ret);
         ret->isRoot = true;
         if (size) {
-            ret->memory = Malloc(size);
+            ret->memory = NMalloc(size);
         }
         ret->size = size + sizeof(GCRootNode);
         ret->birthTime = currentTime;
@@ -215,7 +215,7 @@ public:
         GCNode* ret = VNEW GCNode;
         PushNode(ret);
         ret->isRoot = false;
-        ret->memory = Malloc(size);
+        ret->memory = NMalloc(size);
         ret->size = size + sizeof(GCNode);
         ret->birthTime = currentTime;
         totalSize += ret->size;

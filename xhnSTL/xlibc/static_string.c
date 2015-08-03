@@ -47,7 +47,7 @@ const char* StringHashBucket_RefreshString(StringHashBucket self, const char* st
         iter = StringList_next(iter);
     }
     var v;
-    v.vptr_var = Malloc(len + 1);
+    v.vptr_var = NMalloc(len + 1);
     memcpy(v.vptr_var, str, len + 1);
     StringList_push_back(self->string_list, v);
     return (const char*)v.vptr_var;
@@ -94,7 +94,7 @@ static_string to_static_string(const char* str)
     if (!s_StringHashSet) {
         ELock_lock(&s_StringHashSetLock);
         if (!s_StringHashSet) {
-            s_StringHashSet = (StringHashSet)Malloc(sizeof(string_hash_set));
+            s_StringHashSet = (StringHashSet)NMalloc(sizeof(string_hash_set));
             StringHashSet_Init(s_StringHashSet);
         }
         ELock_unlock(&s_StringHashSetLock);

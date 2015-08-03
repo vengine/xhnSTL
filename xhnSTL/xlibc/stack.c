@@ -113,7 +113,7 @@ var* Stack_find(Stack _stk, euint _i)
 
 FixedStack FixedStack_Init(FixedStack _stk, euint _value_size)
 {
-    _stk->stack = Malloc(_value_size * STACK_INITIAL_LENGTH);
+    _stk->stack = NMalloc(_value_size * STACK_INITIAL_LENGTH);
     _stk->stack_length = STACK_INITIAL_LENGTH;
     _stk->stack_top_ptr = 0;
     _stk->value_size = _value_size;
@@ -134,7 +134,7 @@ void _fixed_stack_realloc(FixedStack _stk)
     euint _pre_stack_length = _stk->stack_length;
     _stk->stack_length *= 2;
     {
-        void* _buf = Malloc(_stk->value_size * _stk->stack_length);
+        void* _buf = NMalloc(_stk->value_size * _stk->stack_length);
         memcpy(_buf, _stk->stack, _pre_stack_length * _stk->value_size);
         Mfree(_stk->stack);
         _stk->stack = _buf;

@@ -20,7 +20,7 @@ API_EXPORT void _Mfree(vptr _ptr, const char* _file, euint32 _line);
 void* TestAlloc(uint _size);
 void TestFree(void* _ptr);
 
-#define Malloc(s) _Malloc(s, __FILE__, __LINE__)
+#define NMalloc(s) _Malloc(s, __FILE__, __LINE__)
 #define Mfree(p) _Mfree(p, __FILE__, __LINE__)
 
 API_EXPORT void Mlog();

@@ -390,7 +390,7 @@ public:
     inline void reserve(euint n) {
         if ( n > m_totel_ele_count ) {
             euint curt_count = _get_size();
-            char *tmp = ( char * ) Malloc ( m_ele_real_size * n );
+            char *tmp = ( char * ) NMalloc ( m_ele_real_size * n );
             char *dst_ptr = tmp;
             char *src_ptr = m_begin_addr;
 
@@ -514,7 +514,7 @@ public:
 		euint size = m_get_elem_real_size();
 		m_ele_real_size = size;
 		m_totel_ele_count = v.m_totel_ele_count;
-		m_begin_addr = ( char * ) Malloc ( size * m_totel_ele_count );
+		m_begin_addr = ( char * ) NMalloc ( size * m_totel_ele_count );
 		m_barrier = m_begin_addr + (v.m_barrier - v.m_begin_addr);
 		euint count = (m_barrier - m_begin_addr) / size;
 		for (euint i = 0; i < count; i++) {
@@ -567,7 +567,7 @@ public:
     }
     vector() {
         euint size = m_get_elem_real_size();
-        m_begin_addr = ( char * ) Malloc ( size * 32 );
+        m_begin_addr = ( char * ) NMalloc ( size * 32 );
         m_barrier = m_begin_addr;
         m_ele_real_size = size;
         m_totel_ele_count = 32;
@@ -578,7 +578,7 @@ public:
     template <class InputIterator>
     vector (InputIterator first, InputIterator last) {
         euint size = m_get_elem_real_size();
-        m_begin_addr = ( char * ) Malloc ( size * 32 );
+        m_begin_addr = ( char * ) NMalloc ( size * 32 );
         m_barrier = m_begin_addr;
         m_ele_real_size = size;
         m_totel_ele_count = 32;
@@ -604,7 +604,7 @@ public:
     void reset() {
         _dest();
         euint size = m_get_elem_real_size();
-        m_begin_addr = ( char * ) Malloc ( size * 32 );
+        m_begin_addr = ( char * ) NMalloc ( size * 32 );
         m_barrier = m_begin_addr;
         m_ele_real_size = size;
         m_totel_ele_count = 32;

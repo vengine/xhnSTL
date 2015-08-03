@@ -32,7 +32,7 @@ private:
     vptr m_buf;
 public:
     inline buffer(euint size) {
-        m_buf = Malloc(size);
+        m_buf = NMalloc(size);
     }
     inline ~buffer() {
         Mfree(m_buf);
@@ -197,12 +197,12 @@ public:
 
 	pointer allocate(size_type count)
 	{
-		return (pointer)Malloc(count * sizeof(value_type));
+		return (pointer)NMalloc(count * sizeof(value_type));
 	}
 
 	pointer allocate(size_type count, const void*)
 	{
-        return (pointer)Malloc(count * sizeof(value_type));
+        return (pointer)NMalloc(count * sizeof(value_type));
 	}
 
 	void construct(pointer ptr, const T& v)
@@ -312,7 +312,7 @@ inline void quick_sort(int* array, int begin, int end)
     }
 }
 template <typename RandomAccessIterator, typename Compare>
-void sort_impl ( RandomAccessIterator first, RandomAccessIterator last, Compare less )
+void sort_impl ( RandomAccessIterator first, RandomAccessIterator last, Compare& less )
 {
     typename RandomAccessIterator::value_type x = *first;
     RandomAccessIterator i = first;

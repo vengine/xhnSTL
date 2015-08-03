@@ -67,7 +67,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 	void* operator new( size_t nSize )
     {
-        return Malloc( nSize );
+        return NMalloc( nSize );
     }
 	void operator delete( void *p)
 	{
@@ -96,7 +96,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 	void* operator new[]( size_t nSize )
 	{
-		return Malloc( nSize );
+		return NMalloc( nSize );
 	}
 
 	void operator delete[]( void* ptr, size_t nSize )
@@ -227,7 +227,7 @@ public:
     //////////////////////////////////////////////////////////////////////////
 	void* operator new( size_t nSize )
     {
-        return Malloc( nSize );
+        return NMalloc( nSize );
     }
 	void operator delete( void *p)
 	{
@@ -256,7 +256,7 @@ public:
     //////////////////////////////////////////////////////////////////////////
 	void* operator new[]( size_t nSize )
 	{
-		return Malloc( nSize );
+		return NMalloc( nSize );
 	}
     
 	void operator delete[]( void* ptr, size_t nSize )
