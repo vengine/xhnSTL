@@ -306,6 +306,109 @@ public:
         }
     }
 };
+    
+template< typename T>
+class Handle
+{
+private:
+    T* m_ptr;
+public:
+    inline void _inc(T* ptr)
+    {
+        if (ptr)
+        {
+            AtomicIncrement(&ptr->ref_count);
+        }
+    }
+    inline void _dec(T* ptr)
+    {
+        if (ptr) {
+            if (!AtomicDecrement(&ptr->ref_count)) {
+                bool has_not_weak_to_strong = false;
+                bool ref_count_is_zero = false;
+                {
+                    RefSpinLock::Instance inst = ptr->ref_lock.Lock();
+                    if (!ptr->weak_to_strong_flag) {
+                        has_not_weak_to_strong = true;
+                    }
+                    if (!ptr->ref_count) {
+                        ref_count_is_zero = true;
+                    }
+                    AtomicIncrement(&ptr->strong_destory_flag);
+                }
+                if (ref_count_is_zero && has_not_weak_to_strong) {
+                    delete ptr;
+                    return;
+                }
+                AtomicDecrement(&ptr->strong_destory_flag);
+            }
+        }
+    }
+    Handle()
+    : m_ptr(NULL)
+    {}
+    Handle(const Handle& ptr)
+    {
+        m_ptr = ptr.m_ptr;
+    }
+    Handle(T* ptr)
+    {
+        m_ptr = ptr;
+    }
+    ~Handle()
+    {
+        m_ptr = NULL;
+    }
+    inline T* operator = (T* ptr)
+    {
+        m_ptr = ptr;
+        return m_ptr;
+    }
+    inline T* operator = (const Handle ptr)
+    {
+        m_ptr = ptr.m_ptr;
+        return m_ptr;
+    }
+    inline bool operator < (const Handle& ptr) const
+    {
+        return m_ptr < ptr.m_ptr;
+    }
+    inline bool operator == (const Handle& ptr) const
+    {
+        return m_ptr == ptr.m_ptr;
+    }
+    inline bool operator != (const Handle& ptr) const
+    {
+        return m_ptr != ptr.m_ptr;
+    }
+    inline T* get()
+    {
+        return m_ptr;
+    }
+    inline const T* get() const
+    {
+        return m_ptr;
+    }
+    inline T* operator ->() {
+        return m_ptr;
+    }
+    inline const T* operator ->() const {
+        return m_ptr;
+    }
+    inline bool operator!() const {
+        return !m_ptr;
+    }
+    inline operator bool () const {
+        return m_ptr != NULL;
+    }
+    inline void Retain() {
+        _inc(m_ptr);
+    }
+    inline void Release() {
+        _dec(m_ptr);
+        m_ptr = nullptr;
+    }
+};
 }
 
 #endif

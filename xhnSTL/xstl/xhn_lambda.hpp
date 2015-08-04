@@ -11,7 +11,8 @@
 #define LAMBDA_H
 #include "common.h"
 #include "etypes.h"
-
+#include "elog.h"
+#include "eassert.h"
 namespace xhn
 {
     // LambdaExecutor is an internal class that adds the ability to execute to
