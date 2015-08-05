@@ -345,7 +345,7 @@ public:
         }
     }
     Handle()
-    : m_ptr(NULL)
+    : m_ptr(nullptr)
     {}
     Handle(const Handle& ptr)
     {
@@ -409,6 +409,7 @@ public:
         m_ptr = nullptr;
     }
 };
+
 }
 
 #endif

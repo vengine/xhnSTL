@@ -13,6 +13,7 @@
 #include "etypes.h"
 #include "elog.h"
 #include "eassert.h"
+
 namespace xhn
 {
     // LambdaExecutor is an internal class that adds the ability to execute to
@@ -124,11 +125,12 @@ namespace xhn
         
         ~Lambda()
         {
-            if (deleteLambda != nullptr) deleteLambda(lambda);
+            if (lambda != nullptr && deleteLambda != nullptr) deleteLambda(lambda);
         }
         
         Lambda<Out(In...)> &operator =(Lambda<Out(In...)> const &other)
         {
+            if (this->lambda != nullptr && this->deleteLambda != nullptr) deleteLambda(this->lambda);
             this->lambda = other.copyLambda ? other.copyLambda(other.lambda) : nullptr;
             this->receiveExecutor(other);
             this->deleteLambda = other.deleteLambda;
