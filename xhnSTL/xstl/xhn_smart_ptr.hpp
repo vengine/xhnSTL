@@ -26,7 +26,7 @@ class SmartPtr;
 template <typename T>
 struct FDestCallbackProc
 {
-	inline void operator() (T* ptr) {}
+	inline void operator() (volatile T* ptr) {}
 };
 
 template <typename T>
@@ -45,7 +45,7 @@ struct FGarbageCollectProc
 template <typename T>
 struct FIncCallbackProc
 {
-    void operator() (T* ptr) {
+    void operator() (volatile T* ptr) {
 	}
 };
     
@@ -155,11 +155,11 @@ public:
 		}
 	};
 private:
-	T* m_ptr;
+	volatile T* m_ptr;
 	DEST_CALLBACK m_dest_callback;
     INC_CALLBACK m_inc_callback;
 public:
-	inline void _inc(T* ptr)
+	inline void _inc(volatile T* ptr)
 	{
 		if (ptr)
 		{
@@ -167,14 +167,14 @@ public:
             m_inc_callback(ptr);
 		}
 	}
-	inline void _dec(T* ptr)
+	inline void _dec(volatile T* ptr)
 	{
 		if (ptr) {
 			if (!AtomicDecrement(&ptr->ref_count)) {
                 bool has_not_weak_to_strong = false;
                 bool ref_count_is_zero = false;
                 {
-                    RefSpinLock::Instance inst = ptr->ref_lock.Lock();
+                    RefSpinLock::Instance inst = ((T*)ptr)->ref_lock.Lock();
                     if (!ptr->weak_to_strong_flag) {
                         has_not_weak_to_strong = true;
                     }
@@ -215,14 +215,14 @@ public:
 		_inc(ptr);
 		_dec(m_ptr);
 		m_ptr = ptr;
-		return m_ptr;
+		return (T*)m_ptr;
 	}
 	inline T* operator = (const SmartPtr ptr)
 	{
 		_inc(ptr.m_ptr);
 		_dec(m_ptr);
 		m_ptr = ptr.m_ptr;
-		return m_ptr;
+		return (T*)m_ptr;
 	}
 	inline bool operator < (const SmartPtr& ptr) const
 	{
@@ -238,17 +238,17 @@ public:
 	}
 	inline T* get()
 	{
-		return m_ptr;
+		return (T*)m_ptr;
 	}
 	inline const T* get() const
 	{
-		return m_ptr;
+		return (T*)m_ptr;
 	}
 	inline T* operator ->() {
-		return m_ptr;
+		return (T*)m_ptr;
 	}
 	inline const T* operator ->() const {
-		return m_ptr;
+		return (const T*)m_ptr;
 	}
 	inline bool operator!() const {
 		return !m_ptr;
@@ -259,7 +259,7 @@ public:
 
 	CheckoutHandle Checkout()
 	{
-		CheckoutHandle ret(m_ptr->clone(), m_ptr);
+		CheckoutHandle ret( ((T*)m_ptr)->clone(), (T*)m_ptr );
 		return ret;
 	}
 
@@ -297,11 +297,11 @@ public:
             if (result.m_node && result.m_nodeList) {
                 result.m_nodeList->DeleteNode_HalfLocked(result.m_node);
             }
-            RefSpinLock::Instance inst1 = m_ptr->weak_node_list.m_lock.Lock();
+            RefSpinLock::Instance inst1 = ((T*)m_ptr)->weak_node_list.m_lock.Lock();
             WeakNode* node =
-            m_ptr->weak_node_list.NewNode_NotLocked(m_ptr);
+            ((T*)m_ptr)->weak_node_list.NewNode_NotLocked((T*)m_ptr);
             result.m_node = node;
-            result.m_nodeList = &m_ptr->weak_node_list;
+            result.m_nodeList = &((T*)m_ptr)->weak_node_list;
             node->m_weakPtr = &result;
         }
     }
@@ -311,23 +311,23 @@ template< typename T>
 class Handle
 {
 private:
-    T* m_ptr;
+    volatile T* m_ptr;
 public:
-    inline void _inc(T* ptr)
+    inline void _inc(volatile T* ptr)
     {
         if (ptr)
         {
             AtomicIncrement(&ptr->ref_count);
         }
     }
-    inline void _dec(T* ptr)
+    inline void _dec(volatile T* ptr)
     {
         if (ptr) {
             if (!AtomicDecrement(&ptr->ref_count)) {
                 bool has_not_weak_to_strong = false;
                 bool ref_count_is_zero = false;
                 {
-                    RefSpinLock::Instance inst = ptr->ref_lock.Lock();
+                    RefSpinLock::Instance inst = ((T*)ptr)->ref_lock.Lock();
                     if (!ptr->weak_to_strong_flag) {
                         has_not_weak_to_strong = true;
                     }
@@ -362,7 +362,7 @@ public:
     inline T* operator = (T* ptr)
     {
         m_ptr = ptr;
-        return m_ptr;
+        return (T*)m_ptr;
     }
     inline T* operator = (const Handle ptr)
     {
@@ -383,17 +383,17 @@ public:
     }
     inline T* get()
     {
-        return m_ptr;
+        return (T*)m_ptr;
     }
     inline const T* get() const
     {
-        return m_ptr;
+        return (T*)m_ptr;
     }
     inline T* operator ->() {
-        return m_ptr;
+        return (T*)m_ptr;
     }
     inline const T* operator ->() const {
-        return m_ptr;
+        return (const T*)m_ptr;
     }
     inline bool operator!() const {
         return !m_ptr;
