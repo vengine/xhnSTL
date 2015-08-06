@@ -41,7 +41,11 @@ inline esint64 AtomicDecrement(volatile esint64* i)
 }
 inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
 {
-    return OSAtomicCompareAndSwap32(oldValue, newValue, theValue);
+    return OSAtomicCompareAndSwap32Barrier(oldValue, newValue, theValue);
+}
+inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * volatile * theValue)
+{
+    return OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, theValue);
 }
 #define MemBarrier OSMemoryBarrier()
 #endif
