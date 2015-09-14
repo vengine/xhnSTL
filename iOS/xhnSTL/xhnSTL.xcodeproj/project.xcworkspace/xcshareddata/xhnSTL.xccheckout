@@ -5,20 +5,20 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>F931D890-53BE-41CD-962C-C72927F41097</string>
+	<string>08C4F708-4CE7-40CC-B7A8-70AD91F60107</string>
 	<key>IDESourceControlProjectName</key>
-	<string>xhnSTL</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>2A52C6D498635CD6C5C4C1228274DBD08A154B36</key>
 		<string>https://github.com/vengine/xhnSTL.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>xhnSTL.xcodeproj</string>
+	<string>iOS/xhnSTL/xhnSTL.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2A52C6D498635CD6C5C4C1228274DBD08A154B36</key>
-		<string>../..</string>
+		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/vengine/xhnSTL.git</string>

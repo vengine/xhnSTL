@@ -48,6 +48,20 @@ inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * vola
     return OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, theValue);
 }
 #define MemBarrier OSMemoryBarrier()
+#elif defined(ANDROID) || defined(__ANDROID__)
+///#include <sys/atomics.h>
+inline esint32 AtomicIncrement(volatile esint32* i)
+{
+    return __sync_fetch_and_add(i, 1) + 1;
+}
+inline esint32 AtomicDecrement(volatile esint32* i)
+{
+    return __sync_fetch_and_sub(i, 1) - 1;
+}
+inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
+{
+    return __sync_val_compare_and_swap(theValue, oldValue, newValue);
+}
 #endif
 
 #ifdef _WIN32

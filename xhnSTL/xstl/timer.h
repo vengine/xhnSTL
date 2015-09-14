@@ -114,13 +114,64 @@ struct TimeCheckpoint
     }
 };
 #elif defined (__APPLE__)
-#include <CoreServices/CoreServices.h>
+#include "TargetConditionals.h"
+#    if TARGET_OS_IPHONE
+#    include <MobileCoreServices/MobileCoreServices.h>
+#    elif TARGET_OS_MAC
+#    include <CoreServices/CoreServices.h>
+#    endif
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 #include <unistd.h>
 ///#include <kern/kern_types.h>
 ///#include <kern/clock.h>
 
+#    if TARGET_OS_IPHONE
+struct TimeCheckpoint
+{
+    uint64_t timeStamp;
+    TimeCheckpoint(euint64 time)
+    : timeStamp(time)
+    {}
+    TimeCheckpoint()
+    : timeStamp(0)
+    {}
+    static inline TimeCheckpoint Tick() {
+        TimeCheckpoint ret;
+        ret.timeStamp = mach_absolute_time();
+        return ret;
+    }
+    static inline double CaleElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+        uint64_t        elapsed;
+        uint64_t        elapsedNano;
+        static mach_timebase_info_data_t    sTimebaseInfo;
+        elapsed = curtCheckpoint.timeStamp - prevCheckpoint.timeStamp;
+        
+        if ( sTimebaseInfo.denom == 0 ) {
+            (void) mach_timebase_info(&sTimebaseInfo);
+        }
+        
+        elapsedNano = elapsed * sTimebaseInfo.numer / sTimebaseInfo.denom;
+        
+        uint64_t ret = elapsedNano;
+        return (double)ret;
+    }
+    static inline double CaleElapsedTime(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+        return CaleElapsedTimeInNano(prevCheckpoint, curtCheckpoint) / 1000.0;
+    }
+    
+    static inline double Tock(const TimeCheckpoint& prevCheckpoint)
+    {
+        TimeCheckpoint curtCheckpoint = Tick();
+        return CaleElapsedTime(prevCheckpoint, curtCheckpoint);
+    }
+    static inline void Tock(const TimeCheckpoint& prevCheckpoint, VTime& result)
+    {
+        TimeCheckpoint curtCheckpoint = Tick();
+        result.m_nanoTime = CaleElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
+    }
+};
+#    elif TARGET_OS_MAC
 struct TimeCheckpoint
 {
 	uint64 timeStamp;
@@ -165,6 +216,7 @@ struct TimeCheckpoint
         result.m_nanoTime = CaleElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
     }
 };
+#    endif
 #endif
 #endif
 

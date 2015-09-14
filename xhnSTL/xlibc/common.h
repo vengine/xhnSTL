@@ -103,24 +103,6 @@ or
 #        define FORCE_ALIGN_ARG_POINTER
 #    endif
 
-#    if USAGE_OPENGL
-#        define GLSL_MAIN_VERSION 1
-#        define GLSL_SUB_VERSION  5
-
-#        if defined(_WIN32) || defined(_WIN64)
-#            include <windows.h>
-#            include <GL/glew.h>
-#        elif defined(__APPLE__)
-#            if GLSL_MAIN_VERSION > 1 || GLSL_SUB_VERSION >= 5
-#                include <OpenGL/gl3.h>
-#                include <OpenGL/gl3ext.h>
-#            else
-#                include <OpenGL/gl.h>
-#                include <OpenGL/glext.h>
-#            endif
-#        endif
-#    endif
-
 ///#    define USAGE_SSE
 #    define USAGE_UCS2
 #    undef  USAGE_UCS4
