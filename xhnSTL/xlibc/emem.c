@@ -47,7 +47,7 @@ typedef struct _totel_refer_info
     euint unused_mem_size;
 } totel_refer_info;
 
-#ifdef USAGE_SSE
+#ifdef USING_SSE
 #include <xmmintrin.h>
 #include <emmintrin.h>
 #include <pmmintrin.h>
@@ -57,7 +57,7 @@ static __m128* zero_ptr = NULL;
 #endif
 _INLINE_ void meminit(void* _mem, euint _size)
 {
-#ifdef USAGE_SSE
+#ifdef USING_SSE
 	euint i = 0;
 
 	euint cnt = _size / 16;

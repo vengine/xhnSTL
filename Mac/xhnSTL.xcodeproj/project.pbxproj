@@ -126,8 +126,8 @@
 		68245D381BC9D8F90006E99D /* xhn_utility.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 68245CB11BC9D8F90006E99D /* xhn_utility.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245D391BC9D8F90006E99D /* xhn_vector.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 68245CB21BC9D8F90006E99D /* xhn_vector.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245D3A1BC9D8F90006E99D /* xhn_void_vector.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 68245CB31BC9D8F90006E99D /* xhn_void_vector.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
-		68245D411BC9E8F60006E99D /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245D3F1BC9E8F60006E99D /* common.h */; settings = {ASSET_TAGS = (); }; };
-		68245D421BC9E8F60006E99D /* etypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245D401BC9E8F60006E99D /* etypes.h */; settings = {ASSET_TAGS = (); }; };
+		68245D411BC9E8F60006E99D /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245D3F1BC9E8F60006E99D /* common.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		68245D421BC9E8F60006E99D /* etypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245D401BC9E8F60006E99D /* etypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68FC12CF1BC9D31A00C8A0BE /* xhnSTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 68FC12CE1BC9D31A00C8A0BE /* xhnSTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68FC12D61BC9D31A00C8A0BE /* xhnSTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68FC12CB1BC9D31A00C8A0BE /* xhnSTL.framework */; settings = {ASSET_TAGS = (); }; };
 		68FC12DB1BC9D31A00C8A0BE /* xhnSTLTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.m */; };
