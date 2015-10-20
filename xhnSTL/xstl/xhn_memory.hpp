@@ -10,6 +10,8 @@
 
 #ifndef EMEM_HPP
 #define EMEM_HPP
+#include "common.h"
+#include "etypes.h"
 #include "emem.h"
 #include "eassert.h"
 #include "elog.h"

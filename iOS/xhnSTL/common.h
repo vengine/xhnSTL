@@ -159,33 +159,13 @@ or
 #        define EDELETE_ARRAY delete
 #    endif
 
-#    ifndef __APPLE__
-#        include <omp.h>
-#    else
-#        include <libkern/OSAtomic.h>
-///#        include <wchar.h>
-#    endif
+#    include <libkern/OSAtomic.h>
 
 ///#    define USE_LOG_SYSTEM
 
-#    ifdef _WIN32
-#        include <pthread.h>
-#        include <windows.h>
-#        define BIT_WIDTH 32
+#    include <pthread.h>
 
-#    elif defined (_WIN64)
-#        include <pthread.h>
-#        include <windows.h>
-#        define BIT_WIDTH 64
-
-#    elif defined(__APPLE__)
-#        include <pthread.h>
-#        ifdef __i386__
-#            define BIT_WIDTH 32
-#        else
-#            define BIT_WIDTH 64
-#        endif
-#    endif
+#    define BIT_WIDTH 64
 
 #endif
 

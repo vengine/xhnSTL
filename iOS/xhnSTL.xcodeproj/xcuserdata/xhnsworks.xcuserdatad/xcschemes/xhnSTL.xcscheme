@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0610"
+   LastUpgradeVersion = "0700"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,39 +14,25 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "68173C361A580CFB00B586C5"
+               BlueprintIdentifier = "68ADE0F71BA71B0D0013C025"
                BuildableName = "xhnSTL.framework"
                BlueprintName = "xhnSTL"
-               ReferencedContainer = "container:xhnSTL.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "68173C411A580CFB00B586C5"
-               BuildableName = "xhnSTLTests.xctest"
-               BlueprintName = "xhnSTLTests"
                ReferencedContainer = "container:xhnSTL.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      buildConfiguration = "Debug">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "68173C411A580CFB00B586C5"
+               BlueprintIdentifier = "68ADE1021BA71B0D0013C025"
                BuildableName = "xhnSTLTests.xctest"
                BlueprintName = "xhnSTLTests"
                ReferencedContainer = "container:xhnSTL.xcodeproj">
@@ -56,26 +42,29 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "68173C361A580CFB00B586C5"
+            BlueprintIdentifier = "68ADE0F71BA71B0D0013C025"
             BuildableName = "xhnSTL.framework"
             BlueprintName = "xhnSTL"
             ReferencedContainer = "container:xhnSTL.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <AdditionalOptions>
+      </AdditionalOptions>
    </TestAction>
    <LaunchAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "68173C361A580CFB00B586C5"
+            BlueprintIdentifier = "68ADE0F71BA71B0D0013C025"
             BuildableName = "xhnSTL.framework"
             BlueprintName = "xhnSTL"
             ReferencedContainer = "container:xhnSTL.xcodeproj">
@@ -85,15 +74,15 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "68173C361A580CFB00B586C5"
+            BlueprintIdentifier = "68ADE0F71BA71B0D0013C025"
             BuildableName = "xhnSTL.framework"
             BlueprintName = "xhnSTL"
             ReferencedContainer = "container:xhnSTL.xcodeproj">
