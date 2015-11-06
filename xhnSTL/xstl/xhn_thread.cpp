@@ -29,7 +29,7 @@ void xhn::thread::milli_sleep(euint32 millisecond)
 #elif defined(__APPLE__)
     euint32 second = millisecond / 1000;
     millisecond = millisecond % 1000;
-    timespec t = {second, millisecond * 1000 * 1000};
+    timespec t = {(__darwin_time_t)second, (long)(millisecond * 1000 * 1000)};
     struct timespec remainder;
     if (nanosleep(&t, &remainder) == -1) {
         if (errno == EINTR) {
@@ -51,7 +51,7 @@ void xhn::thread::micro_sleep(euint32 microsecond)
 #elif defined(__APPLE__)
     euint32 second = microsecond / (1000 * 1000);
     microsecond = microsecond % (1000 * 1000);
-    timespec t = {second, microsecond * 1000};
+    timespec t = {(__darwin_time_t)second, (long)(microsecond * 1000)};
     struct timespec remainder;
     if (nanosleep(&t, &remainder) == -1) {
         if (errno == EINTR) {
@@ -71,7 +71,7 @@ void xhn::thread::nano_sleep(euint32 nanosecond)
 #if defined(_WIN32) || defined(_WIN64)
     SleepEx(1, FALSE);
 #elif defined(__APPLE__)
-    timespec t = {0, nanosecond};
+    timespec t = {(__darwin_time_t)0, (long)nanosecond};
     struct timespec remainder;
     if (nanosleep(&t, &remainder) == -1) {
         if (errno == EINTR) {
