@@ -26,6 +26,7 @@ private:
     C *m_str;
     STR_CMP_PROC m_str_cmp_proc;
     DEFAULT_STR_PROC m_default_str_proc;
+    bool m_own_str;
 public:
     const static euint npos = ( euint )-1;
     typedef C* iterator;
@@ -34,25 +35,40 @@ public:
         m_str = ( C * ) NMalloc ( sizeof(C) );
         m_str[0] = 0;
         m_size = 0;
+        m_own_str = true;
     }
-    string_base ( const C *str ) {
-        if (!str)
+    string_base ( const C *str, bool own_str = true ) {
+        if (!str) {
             str = m_default_str_proc();
+            own_str = true;
+        }
 
         int count = 0;
 
         while ( str[count] ) {
             count++;
         }
-
-        m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
-        memcpy ( m_str, str, (count + 1) * sizeof(C) );
+        
+        if (own_str) {
+            m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
+            memcpy ( m_str, str, (count + 1) * sizeof(C) );
+        }
+        else {
+            m_str = ( C * )str;
+        }
+        m_own_str = own_str;
         m_size = count;
     }
-    string_base ( const C *str, euint size ) {
-        m_str = ( C * ) NMalloc ( (size + 1) * sizeof(C) );
-        memcpy ( m_str, str, size * sizeof(C) );
-        m_str[size] = 0;
+    string_base ( const C *str, euint size, bool own_str ) {
+        if (own_str) {
+            m_str = ( C * ) NMalloc ( (size + 1) * sizeof(C) );
+            memcpy ( m_str, str, size * sizeof(C) );
+            m_str[size] = 0;
+        }
+        else {
+            m_str = ( C * )str;
+        }
+        m_own_str = str;
         m_size = size;
     }
 	string_base ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
@@ -62,20 +78,35 @@ public:
 		C* s = str.get();
         memcpy ( m_str, s, count * sizeof(C) );
 		m_str[count] = 0;
+        m_own_str = true;
         m_size = count;
     }
     string_base ( const string_base &str ) {
-        m_str = ( C * ) NMalloc ( (str.m_size + 1) * sizeof(C) );
-        memcpy ( m_str, str.m_str, (str.m_size + 1) * sizeof(C) );
+        if (str.m_own_str) {
+            m_str = ( C * ) NMalloc ( (str.m_size + 1) * sizeof(C) );
+            memcpy ( m_str, str.m_str, (str.m_size + 1) * sizeof(C) );
+        }
+        else {
+            m_str = str.m_str;
+        }
+        m_own_str = str.m_own_str;
         m_size = str.m_size;
     }
     string_base( const string_base &str, const char* filename, int line ) {
-        m_str = ( C * ) _Malloc ( (str.m_size + 1) * sizeof(C), filename, line );
-        memcpy ( m_str, str.m_str, (str.m_size + 1) * sizeof(C) );
+        if (str.m_own_str) {
+            m_str = ( C * ) _Malloc ( (str.m_size + 1) * sizeof(C), filename, line );
+            memcpy ( m_str, str.m_str, (str.m_size + 1) * sizeof(C) );
+        }
+        else {
+            m_str = ( C * )str.m_str;
+        }
+        m_own_str = str.m_own_str;
         m_size = str.m_size;
     }
     ~string_base() {
-        Mfree ( m_str );
+        if (m_own_str) {
+            Mfree ( m_str );
+        }
     }
     iterator begin() {
         return m_str;
@@ -108,9 +139,17 @@ public:
         return m_str_cmp_proc ( m_str, str.m_str ) != 0;
     }
     string_base &operator = ( const string_base &str ) {
-        Mfree ( m_str );
-        m_str = ( C * ) NMalloc ( (str.m_size + 1) * sizeof(C) );
-        memcpy ( m_str, str.m_str, (str.m_size + 1) * sizeof(C) );
+        if (m_own_str) {
+            Mfree ( m_str );
+        }
+        if (str.m_own_str) {
+            m_str = ( C * ) NMalloc ( (str.m_size + 1) * sizeof(C) );
+            memcpy ( m_str, str.m_str, (str.m_size + 1) * sizeof(C) );
+        }
+        else {
+            m_str = str.m_str;
+        }
+        m_own_str = str.m_own_str;
         m_size = str.m_size;
         return *this;
     }
@@ -120,21 +159,25 @@ public:
         while ( str[count] ) {
             count++;
         }
-
-        Mfree ( m_str );
+        if (m_own_str) {
+            Mfree ( m_str );
+        }
         m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
         memcpy ( m_str, str, (count + 1) * sizeof(C) );
+        m_own_str = true;
         m_size = count;
         return *this;
     }
 	string_base &operator = ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
         euint count = str.size();
-
-        Mfree ( m_str );
+        if (m_own_str) {
+            Mfree ( m_str );
+        }
         m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
 		C* s = str.get();
         memcpy ( m_str, s, count * sizeof(C) );
 		m_str[count] = 0;
+        m_own_str = true;
         m_size = count;
         return *this;
     }
@@ -177,7 +220,10 @@ public:
         memcpy ( tmp, m_str, m_size * sizeof(C) );
         memcpy ( &tmp[m_size], str.m_str, (str.m_size + 1) * sizeof(C) );
         m_size += str.m_size;
-        Mfree ( m_str );
+        if (m_own_str) {
+            Mfree ( m_str );
+        }
+        m_own_str = true;
         m_str = tmp;
         return *this;
     }
@@ -192,7 +238,10 @@ public:
         memcpy ( tmp, m_str, m_size * sizeof(C) );
         memcpy ( &tmp[m_size], str, (count + 1) * sizeof(C) );
         m_size += count;
-        Mfree ( m_str );
+        if (m_own_str) {
+            Mfree ( m_str );
+        }
+        m_own_str = true;
         m_str = tmp;
         return *this;
     }
@@ -202,7 +251,10 @@ public:
 		memcpy ( &tmp[m_size], &s, sizeof(C) );
         tmp[m_size + 1] = 0;
 		m_size += 1;
-		Mfree ( m_str );
+        if (m_own_str) {
+		    Mfree ( m_str );
+        }
+        m_own_str = true;
 		m_str = tmp;
 		return *this;
 	}
@@ -381,7 +433,10 @@ public:
         return m_str[pos];
     }
 	void clear() {
-		Mfree(m_str);
+        if (m_own_str) {
+		    Mfree(m_str);
+        }
+        m_own_str = true;
 		m_str = ( C * ) NMalloc ( sizeof(C) );
         m_str[0] = 0;
         m_size = 0;
@@ -392,7 +447,10 @@ public:
 			if (m_size) {
                 memcpy(tmp, m_str, m_size * sizeof(C));
 			}
-			Mfree(m_str);
+            if (m_own_str) {
+			    Mfree(m_str);
+            }
+            m_own_str = true;
 			m_str = tmp;
 		}
         m_size = newSize;

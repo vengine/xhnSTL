@@ -59,7 +59,7 @@ const T* DynamicCast() const\
 #define DeclareRTTI \
 public: \
 static const RTTI s_RTTI; \
-virtual const RTTI* GetRTTI() const {return &s_RTTI;}
+virtual const RTTI* GetRTTI() const override {return &s_RTTI;} 
 
 #define ImplementRootRTTI(rootclassname) \
 const RTTI rootclassname::s_RTTI(#rootclassname, 0)
