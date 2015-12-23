@@ -1,11 +1,3 @@
-//
-//  ObjCString.m
-//  memtest
-//
-//  Created by 徐 海宁 on 13-12-7.
-//  Copyright (c) 2013年 徐 海宁. All rights reserved.
-//
-
 #import "ObjCString.h"
 #include "xhn_memory.hpp"
 #include "xhn_string.hpp"

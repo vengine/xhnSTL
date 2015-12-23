@@ -8,14 +8,6 @@
  * of this file.
  */
 
-//
-//  apple_file_manager.h
-//  ecg
-//
-//  Created by 徐 海宁 on 13-4-25.
-//  Copyright (c) 2013年 徐 海宁. All rights reserved.
-//
-
 #ifndef __ecg__apple_file_manager__
 #define __ecg__apple_file_manager__
 #include "xhn_vector.hpp"

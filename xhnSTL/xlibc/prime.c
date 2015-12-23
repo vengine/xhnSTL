@@ -8,14 +8,6 @@
  * of this file.
  */
 
-//
-//  prime.cpp
-//  ecg
-//
-//  Created by 徐 海宁 on 13-5-22.
-//  Copyright (c) 2013年 徐 海宁. All rights reserved.
-//
-
 #include "prime.h"
 
 euint64 s_primes[500] =

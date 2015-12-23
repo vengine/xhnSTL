@@ -1,11 +1,3 @@
-//
-//  X7zPropertys.m
-//  7zGUI
-//
-//  Created by 徐 海宁 on 13-11-14.
-//  Copyright (c) 2013年 徐 海宁. All rights reserved.
-//
-
 #import "ObjCPropertys.h"
 
 @implementation ObjCPropertys

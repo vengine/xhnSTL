@@ -1,11 +1,3 @@
-//
-//  xhn_file_stream.cpp
-//  7z
-//
-//  Created by 徐 海宁 on 13-11-5.
-//  Copyright (c) 2013年 徐 海宁. All rights reserved.
-//
-
 #include "xhn_file_stream.hpp"
 #include "xhn_set.hpp"
 #include "xhn_list.hpp"

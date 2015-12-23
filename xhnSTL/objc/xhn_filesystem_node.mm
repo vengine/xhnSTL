@@ -1,11 +1,3 @@
-//
-//  xhn_filesystem_node.m
-//  Xgc
-//
-//  Created by 徐海宁 on 15/1/4.
-//  Copyright (c) 2015年 徐 海宁. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #include "xhn_filesystem_node.h"
 

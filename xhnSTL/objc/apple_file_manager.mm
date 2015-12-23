@@ -8,14 +8,6 @@
  * of this file.
  */
 
-//
-//  apple_file_manager.mm
-//  ecg
-//
-//  Created by 徐 海宁 on 13-4-25.
-//  Copyright (c) 2013年 徐 海宁. All rights reserved.
-//
-
 #include "apple_file_manager.h"
 #include "xhn_set.hpp"
 #import <Foundation/Foundation.h>

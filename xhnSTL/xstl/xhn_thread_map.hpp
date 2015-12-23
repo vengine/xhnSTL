@@ -1,11 +1,3 @@
-//
-//  xhn_thread_map.h
-//  VEngine
-//
-//  Created by 徐海宁 on 14-10-13.
-//  Copyright (c) 2014年 徐 海宁. All rights reserved.
-//
-
 #ifndef __VEngine__xhn_thread_map__
 #define __VEngine__xhn_thread_map__
 

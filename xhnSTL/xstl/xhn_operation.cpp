@@ -1,11 +1,3 @@
-//
-//  xhn_operation.cpp
-//  x_duplicate_cleaner
-//
-//  Created by 徐海宁 on 14-1-26.
-//  Copyright (c) 2014年 徐 海宁. All rights reserved.
-//
-
 #include "xhn_operation.hpp"
 #include "xhn_path_tree.hpp"
 #include "xhn_duplicate_finder.h"

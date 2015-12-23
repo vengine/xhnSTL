@@ -1,11 +1,3 @@
-//
-//  xhn_duplicate_finder.cpp
-//  x_duplicate_cleaner
-//
-//  Created by 徐海宁 on 14-1-24.
-//  Copyright (c) 2014年 徐 海宁. All rights reserved.
-//
-
 #include "xhn_duplicate_finder.h"
 #include "timer.h"
 
