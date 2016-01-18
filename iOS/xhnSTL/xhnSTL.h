@@ -5,7 +5,7 @@
 //  Created by 徐海宁 on 15/9/14.
 //  Copyright (c) 2015年 徐 海宁. All rights reserved.
 //
-
+#ifdef __OBJC__
 #import <UIKit/UIKit.h>
 
 //! Project version number for xhnSTL.
@@ -22,14 +22,11 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTL/eassert.h>
 #import <xhnSTL/elog.h>
 #import <xhnSTL/emem.h>
-#import <xhnSTL/emem_allocator.h>
 #import <xhnSTL/esignal.h>
 #import <xhnSTL/estring.h>
 #import <xhnSTL/exception.h>
 #import <xhnSTL/hash.h>
 #import <xhnSTL/list.h>
-#import <xhnSTL/list_base.h>
-#import <xhnSTL/mem.h>
 #import <xhnSTL/prime.h>
 #import <xhnSTL/rwbuffer.h>
 #import <xhnSTL/sha256.h>
@@ -39,6 +36,7 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTL/tree.h>
 #import <xhnSTL/utility.h>
 
+#ifdef __cplusplus
 #import <xhnSTL/rtti.hpp>
 #import <xhnSTL/xhn_atomic_operation.hpp>
 #import <xhnSTL/xhn_btree.hpp>
@@ -81,5 +79,7 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTL/xhn_utility.hpp>
 #import <xhnSTL/xhn_vector.hpp>
 #import <xhnSTL/xhn_void_vector.hpp>
+#endif
 
-
+#import <xhnSTL/Singleton.h>
+#endif
