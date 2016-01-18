@@ -10,6 +10,9 @@
 
 #ifndef __x_duplicate_cleaner__xhn_duplicate_finder__
 #define __x_duplicate_cleaner__xhn_duplicate_finder__
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_memory.hpp"
@@ -148,6 +151,8 @@ namespace xhn
         static void test();
     };
 }
+
+#endif
 
 #endif /* defined(__x_duplicate_cleaner__xhn_duplicate_finder__) */
 

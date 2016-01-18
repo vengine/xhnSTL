@@ -10,6 +10,9 @@
 
 #ifndef XHN_HASH_SET_H
 #define XHN_HASH_SET_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_utility.hpp"
@@ -97,6 +100,9 @@ public:
 	}
 };
 }
+
+#endif
+
 #endif
 
 /**

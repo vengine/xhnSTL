@@ -24,7 +24,7 @@
 		68245CC31BC9D8F90006E99D /* elog.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C3B1BC9D8F80006E99D /* elog.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245CC41BC9D8F90006E99D /* emem.c in Sources */ = {isa = PBXBuildFile; fileRef = 68245C3C1BC9D8F80006E99D /* emem.c */; };
 		68245CC51BC9D8F90006E99D /* emem.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C3D1BC9D8F80006E99D /* emem.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		68245CC61BC9D8F90006E99D /* emem_allocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C3E1BC9D8F80006E99D /* emem_allocator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		68245CC61BC9D8F90006E99D /* emem_allocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C3E1BC9D8F80006E99D /* emem_allocator.h */; };
 		68245CC71BC9D8F90006E99D /* esignal.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C3F1BC9D8F80006E99D /* esignal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245CC81BC9D8F90006E99D /* estring.c in Sources */ = {isa = PBXBuildFile; fileRef = 68245C401BC9D8F80006E99D /* estring.c */; };
 		68245CC91BC9D8F90006E99D /* estring.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C411BC9D8F80006E99D /* estring.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -33,8 +33,8 @@
 		68245CCD1BC9D8F90006E99D /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C451BC9D8F80006E99D /* hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245CCE1BC9D8F90006E99D /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 68245C461BC9D8F80006E99D /* list.c */; };
 		68245CCF1BC9D8F90006E99D /* list.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C471BC9D8F80006E99D /* list.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		68245CD01BC9D8F90006E99D /* list_base.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C481BC9D8F80006E99D /* list_base.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		68245CD11BC9D8F90006E99D /* mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C491BC9D8F80006E99D /* mem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		68245CD01BC9D8F90006E99D /* list_base.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C481BC9D8F80006E99D /* list_base.h */; };
+		68245CD11BC9D8F90006E99D /* mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C491BC9D8F80006E99D /* mem.h */; };
 		68245CD21BC9D8F90006E99D /* prime.c in Sources */ = {isa = PBXBuildFile; fileRef = 68245C4A1BC9D8F80006E99D /* prime.c */; };
 		68245CD31BC9D8F90006E99D /* prime.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C4B1BC9D8F80006E99D /* prime.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245CD41BC9D8F90006E99D /* rwbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 68245C4C1BC9D8F80006E99D /* rwbuffer.c */; };

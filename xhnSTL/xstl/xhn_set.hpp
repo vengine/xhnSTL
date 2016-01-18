@@ -9,6 +9,9 @@
  */
 #ifndef XHN_SET_HPP
 #define XHN_SET_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -266,6 +269,9 @@ public:
     }
 };
 }
+
+#endif
+
 #endif
 
 /**

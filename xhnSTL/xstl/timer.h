@@ -10,6 +10,9 @@
 
 #ifndef TIMER_H
 #define TIMER_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 inline double ms_to_s(double ms)
@@ -218,6 +221,9 @@ struct TimeCheckpoint
 };
 #    endif
 #endif
+
+#endif
+
 #endif
 
 /**

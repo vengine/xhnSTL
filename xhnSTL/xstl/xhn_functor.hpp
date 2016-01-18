@@ -9,6 +9,9 @@
  */
 #ifndef FUNCTOR_H
 #define FUNCTOR_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 
@@ -471,6 +474,8 @@ namespace xhn
         return ret;
     }
 }
+
+#endif
 
 #endif
 /**

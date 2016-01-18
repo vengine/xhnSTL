@@ -1,5 +1,8 @@
 #ifndef XHN_ROUTINE_POOL_HPP
 #define XHN_ROUTINE_POOL_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_thread_pool.hpp"
@@ -90,4 +93,7 @@ public:
     void clear_routines();
 };
 }
+
+#endif
+
 #endif

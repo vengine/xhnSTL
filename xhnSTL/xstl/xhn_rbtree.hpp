@@ -10,6 +10,9 @@
 
 #ifndef XHN_RBTREE_H
 #define XHN_RBTREE_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_utility.hpp"
@@ -510,6 +513,9 @@ public:
     }
 };
 }
+
+#endif
+
 #endif
 
 /**

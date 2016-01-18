@@ -10,6 +10,7 @@
 
 #ifndef RTTI_HPP
 #define RTTI_HPP
+#ifdef __cplusplus
 class RTTI
 {
 public:
@@ -23,7 +24,7 @@ protected:
 	const char* m_typeName;
 	const RTTI* m_parentRTTI;
 };
-
+#endif
 #define DeclareRootRTTI \
 public: \
 static const RTTI s_RTTI; \

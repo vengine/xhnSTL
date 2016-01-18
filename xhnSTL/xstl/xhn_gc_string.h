@@ -11,6 +11,8 @@
 #ifndef __xhnSTL__xhn_gc_string__
 #define __xhnSTL__xhn_gc_string__
 
+#ifdef __cplusplus
+
 #include "xhn_gc_container_base.h"
 #include "xhn_string.hpp"
 
@@ -30,6 +32,8 @@ namespace xhn
         }
     };
 }
+
+#endif
 
 #endif /* defined(__xhnSTL__xhn_gc_string__) */
 

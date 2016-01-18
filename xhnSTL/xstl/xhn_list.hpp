@@ -10,6 +10,9 @@
 
 #ifndef XHN_LIST_H
 #define XHN_LIST_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_iterator.hpp"
@@ -693,6 +696,9 @@ public:
 };
 
 }
+
+#endif
+
 #endif
 
 /**

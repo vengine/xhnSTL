@@ -1,5 +1,8 @@
 #ifndef XHN_STATE_MACHINE_HPP
 #define XHN_STATE_MACHINE_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_map.hpp"
@@ -115,4 +118,7 @@ public:
     }
 };
 }
+
+#endif
+
 #endif

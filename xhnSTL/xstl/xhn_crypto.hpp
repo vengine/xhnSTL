@@ -11,6 +11,8 @@
 #ifndef __VEngine__xhn_crypto__
 #define __VEngine__xhn_crypto__
 
+#ifdef __cplusplus
+
 #include "sha256.h"
 #include "xhn_string.hpp"
 #include "xhn_void_vector.hpp"
@@ -30,6 +32,8 @@ public:
     string sha_string() const;
 };
 }
+
+#endif
 
 #endif /* defined(__VEngine__xhn_crypto__) */
 

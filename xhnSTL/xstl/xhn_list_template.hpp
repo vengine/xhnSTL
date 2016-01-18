@@ -10,6 +10,9 @@
 
 #ifndef XHN_LIST_TEMPLATE_H
 #define XHN_LIST_TEMPLATE_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.hpp"
@@ -67,6 +70,9 @@ namespace xhn
         }
     };
 }
+
+#endif
+
 #endif
 
 /**

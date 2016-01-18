@@ -10,6 +10,7 @@
 
 #ifndef XHN_ATOMIC_OPERATION_HPP
 #define XHN_ATOMIC_OPERATION_HPP
+#ifdef __cplusplus
 #include "common.h"
 #include "etypes.h"
 #if defined (_WIN32) || defined (_WIN64)
@@ -64,27 +65,6 @@ inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile e
 }
 #endif
 
-#ifdef _WIN32
-/**
-struct SpinLock
-{
-    volatile euint32 lock;
-    SpinLock()
-		: lock(0)
-	{}
-	inline void Init() {
-		lock = 0;
-	}
-	inline void Lock() {
-		while (InterlockedCompareExchange((LONG volatile *)&lock, (LONG)1, (LONG)0) == (LONG)1) 
-		{}
-	}
-	inline void Unlock() {
-		while (InterlockedCompareExchange((LONG volatile *)&lock, (LONG)0, (LONG)1) == (LONG)0) 
-		{}
-	}
-};
-**/
 #endif
 #endif
 

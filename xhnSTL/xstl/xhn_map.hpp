@@ -10,6 +10,9 @@
 
 #ifndef XHN_MAP_H
 #define XHN_MAP_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -355,6 +358,9 @@ public:
 	}
 };
 }
+
+#endif
+
 #endif
 
 /**

@@ -11,6 +11,8 @@
 #ifndef VEngine_xhn_recursive_hpp
 #define VEngine_xhn_recursive_hpp
 
+#ifdef __cplusplus
+
 #include "xhn_vector.hpp"
 #include "xhn_lambda.hpp"
 namespace xhn
@@ -59,6 +61,8 @@ namespace xhn
         }
     };
 }
+
+#endif
 
 #endif
 

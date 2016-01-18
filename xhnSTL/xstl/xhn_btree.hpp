@@ -11,6 +11,7 @@
 #ifndef ___z__xhn_btree__
 #define ___z__xhn_btree__
 
+#ifdef __cplusplus
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -500,6 +501,8 @@ namespace xhn
         }
     };
 }
+
+#endif
 #endif /* defined(___z__xhn_btree__) */
 
 /**

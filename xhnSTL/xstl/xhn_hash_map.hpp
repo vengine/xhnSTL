@@ -10,6 +10,9 @@
 
 #ifndef XHN_HASH_MAP_H
 #define XHN_HASH_MAP_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_utility.hpp"
@@ -153,6 +156,9 @@ namespace xhn
 		}
 	};
 }
+
+#endif
+
 #endif
 
 /**

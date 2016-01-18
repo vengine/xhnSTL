@@ -2,7 +2,7 @@
 #define ETYPES_H
 #include <stdio.h>
 #include <stdlib.h>
-#include <memory.h>
+#include <string.h>
 
 #ifndef __cplusplus
 #ifndef bool

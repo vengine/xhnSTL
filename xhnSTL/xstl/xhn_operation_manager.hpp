@@ -11,6 +11,8 @@
 #ifndef __xhn_operation_manager__
 #define __xhn_operation_manager__
 
+#ifdef __cplusplus
+
 #include "xhn_thread.hpp"
 #include "xhn_vector.hpp"
 #include "rtti.hpp"
@@ -111,6 +113,8 @@ public:
     }
 };
 }
+
+#endif
 
 #endif /* defined(__xhn_operation_manager__) */
 

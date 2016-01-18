@@ -1,6 +1,8 @@
 #ifndef __VEngine__xhn_thread_map__
 #define __VEngine__xhn_thread_map__
 
+#ifdef __cplusplus
+
 #include "xhn_thread.hpp"
 #include "xhn_lock.hpp"
 #include "xhn_hash_map.hpp"
@@ -38,5 +40,7 @@ namespace xhn {
         }
     };
 }
+
+#endif
 
 #endif /* defined(__VEngine__xhn_thread_map__) */

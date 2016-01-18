@@ -10,6 +10,9 @@
 
 #ifndef XHN_LOCK_HPP
 #define XHN_LOCK_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_memory.hpp"
@@ -535,6 +538,8 @@ classname::Instance classname::Lock() { \
 pthread_mutex_lock(&s_singleton->m_lock); \
 return Instance(&s_singleton->m_lock, s_singleton.get()); \
 }
+
+#endif
 
 #endif
 

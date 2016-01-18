@@ -10,6 +10,9 @@
 
 #ifndef EMEM_HPP
 #define EMEM_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -291,6 +294,7 @@ namespace xhn {
 }
 **/
 
+#endif
 
 #endif
 

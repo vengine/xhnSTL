@@ -11,6 +11,8 @@
 #ifndef __xhnSTL__xhn_gc_array__
 #define __xhnSTL__xhn_gc_array__
 
+#ifdef __cplusplus
+
 #include "xhn_gc_container_base.h"
 
 namespace xhn
@@ -33,6 +35,8 @@ namespace xhn
         void InsertObject(euint index, GCObject* object);
     };
 }
+
+#endif
 
 #endif /* defined(__xhnSTL__xhn_gc_array__) */
 

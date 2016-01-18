@@ -11,6 +11,8 @@
 #ifndef __xhn_operation__
 #define __xhn_operation__
 
+#ifdef __cplusplus
+
 #include "xhn_operation_manager.hpp"
 #include "xhn_map.hpp"
 #include "xhn_vector.hpp"
@@ -173,6 +175,8 @@ new_search_duplicate_files_operation(path_enumerator_ptr paths, P p)
 ///  search_duplicate_files                                                  ///
 ///==========================================================================///
 }
+
+#endif
 
 #endif /* defined(__cleaner__xhn_operation__) */
 

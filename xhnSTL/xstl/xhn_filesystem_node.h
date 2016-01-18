@@ -11,6 +11,8 @@
 #ifndef __Xgc__xhn_filesystem_node__
 #define __Xgc__xhn_filesystem_node__
 
+#ifdef __cplusplus
+
 #include "xhn_garbage_collector.hpp"
 #include "xhn_gc_container_base.h"
 #include "xhn_gc_array.h"
@@ -37,6 +39,8 @@ namespace xhn
         static filesystem_node* collect_filesystem_tree(GCRootHandle& root, Utf8& path);
     };
 }
+
+#endif
 
 #endif /* defined(__Xgc__xhn_filesystem_node__) */
 

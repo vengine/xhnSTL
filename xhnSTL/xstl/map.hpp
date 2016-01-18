@@ -10,6 +10,9 @@
 
 #ifndef MAP_H
 #define MAP_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "tree.h"
@@ -97,6 +100,9 @@ public:
 		Tree_remove(m_tree, key);
 	}
 };
+
+#endif
+
 #endif
 
 /**

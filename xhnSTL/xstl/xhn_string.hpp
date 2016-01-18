@@ -10,6 +10,9 @@
 
 #ifndef XHN_STRING_HPP
 #define XHN_STRING_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -94,6 +97,9 @@ public:
 	inline operator const wstring&() const { return m_unicode; }
 };
 }
+
+#endif
+
 #endif
 
 /**

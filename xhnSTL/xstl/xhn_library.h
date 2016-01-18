@@ -9,6 +9,8 @@
 #ifndef ___zOpenCL__xhn_library__
 #define ___zOpenCL__xhn_library__
 
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_memory.hpp"
@@ -39,5 +41,7 @@ namespace xhn
     };
     typedef SmartPtr<library> library_ptr;
 }
+
+#endif
 
 #endif /* defined(___zOpenCL__xhn_library__) */

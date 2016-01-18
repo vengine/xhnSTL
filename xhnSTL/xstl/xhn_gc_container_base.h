@@ -11,6 +11,8 @@
 #ifndef __xhnSTL__xhn_gc_container_base__
 #define __xhnSTL__xhn_gc_container_base__
 
+#ifdef __cplusplus
+
 #include "xhn_garbage_collector.hpp"
 
 namespace xhn
@@ -21,6 +23,8 @@ namespace xhn
         GCMemory* Alloc(euint64 size);
     };
 }
+
+#endif
 
 #endif /* defined(__xhnSTL__xhn_gc_container_base__) */
 

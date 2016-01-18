@@ -9,6 +9,9 @@
  */
 #ifndef SMART_PTR_H
 #define SMART_PTR_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_vector.hpp"
@@ -411,6 +414,8 @@ public:
 };
 
 }
+    
+#endif
 
 #endif
 /**

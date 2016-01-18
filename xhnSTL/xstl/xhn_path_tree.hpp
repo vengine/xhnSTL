@@ -1,5 +1,8 @@
 #ifndef XHN_PATH_TREE_HPP
 #define XHN_PATH_TREE_HPP
+
+#ifdef __cplusplus
+
 #include "xhn_string.hpp"
 #include "xhn_smart_ptr.hpp"
 ///#include "xhn_garbage_collector.hpp"
@@ -79,4 +82,7 @@ public:
     void traverse(walker* walker);
 };
 }
+
+#endif
+
 #endif

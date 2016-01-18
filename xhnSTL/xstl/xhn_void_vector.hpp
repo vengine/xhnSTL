@@ -10,6 +10,9 @@
 
 #ifndef XHN_VOID_VECTOR_HPP
 #define XHN_VOID_VECTOR_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -169,6 +172,9 @@ namespace xhn
         }
 	};
 }
+
+#endif
+
 #endif
 
 /**

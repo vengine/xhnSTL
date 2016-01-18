@@ -11,6 +11,8 @@
 #ifndef __xhnSTL__xhn_gc_values__
 #define __xhnSTL__xhn_gc_values__
 
+#ifdef __cplusplus
+
 #include "xhn_gc_container_base.h"
 
 namespace xhn
@@ -91,6 +93,8 @@ namespace xhn
         }
     };
 }
+
+#endif
 
 #endif /* defined(__xhnSTL__xhn_gc_values__) */
 

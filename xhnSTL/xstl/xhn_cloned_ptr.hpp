@@ -9,6 +9,8 @@
  */
 #ifndef CLONED_PTR_H
 #define CLONED_PTR_H
+
+#ifdef __cplusplus
 #include "common.h"
 #include "etypes.h"
 #include "xhn_smart_ptr.hpp"
@@ -29,6 +31,8 @@ public:
     }
 };
 }
+
+#endif
 #endif
 /**
  * Copyright (c) 2011-2013 Xu Haining

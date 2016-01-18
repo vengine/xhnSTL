@@ -11,6 +11,8 @@
 #ifndef ___z__xhn_file_stream__
 #define ___z__xhn_file_stream__
 
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 
@@ -330,6 +332,8 @@ namespace xhn
         static string get_file_name(const string& path);
     };
 }
+
+#endif
 
 #endif /* defined(___z__xhn_file_stream__) */
 

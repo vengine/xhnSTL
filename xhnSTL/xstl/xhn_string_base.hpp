@@ -10,6 +10,9 @@
 
 #ifndef XHN_STRING_BASE_HPP
 #define XHN_STRING_BASE_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -464,6 +467,9 @@ inline euint32 _hash ( const string_base<C, STR_CMP_PROC, DEFAULT_STR_PROC> &key
 }
 
 }
+
+#endif
+
 #endif
 
 /**

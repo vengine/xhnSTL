@@ -10,6 +10,9 @@
 
 #ifndef XHN_PAIR_HPP
 #define XHN_PAIR_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -119,6 +122,9 @@ pair<F, S> make_pair ( const F &f, const S &s )
     return pair<F, S> ( f, s );
 }
 }
+
+#endif
+
 #endif
 
 /**

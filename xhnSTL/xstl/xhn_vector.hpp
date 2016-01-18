@@ -10,6 +10,9 @@
 
 #ifndef XHN_VECTOR_HPP
 #define XHN_VECTOR_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -611,6 +614,9 @@ public:
     }
 };
 };
+
+#endif
+
 #endif
 
 /**

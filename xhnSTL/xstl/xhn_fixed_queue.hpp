@@ -1,5 +1,8 @@
 #ifndef XHN_FIXED_QUEUE_HPP
 #define XHN_FIXED_QUEUE_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 namespace xhn
@@ -111,4 +114,7 @@ public:
 	}
 };
 }
+
+#endif
+
 #endif

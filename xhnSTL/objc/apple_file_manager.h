@@ -10,6 +10,9 @@
 
 #ifndef __ecg__apple_file_manager__
 #define __ecg__apple_file_manager__
+
+#ifdef __cplusplus
+
 #include "xhn_vector.hpp"
 #include "xhn_string.hpp"
 #include "xhn_smart_ptr.hpp"
@@ -83,6 +86,9 @@ public:
     virtual void set_access_permission(const xhn::wstring& path, euint32 accessPermisson);
     virtual bool is_non_sandbox_dir(const xhn::wstring& path);
 };
+
+#endif
+
 #endif /* defined(__ecg__apple_file_manager__) */
 
 /**

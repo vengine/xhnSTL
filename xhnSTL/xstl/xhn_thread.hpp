@@ -1,5 +1,8 @@
 #ifndef XHN_THREAD_HPP
 #define XHN_THREAD_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_smart_ptr.hpp"
@@ -171,4 +174,7 @@ public:
 };
 
 }
+
+#endif
+
 #endif

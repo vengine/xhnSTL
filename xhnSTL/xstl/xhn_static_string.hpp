@@ -9,6 +9,9 @@
  */
 #ifndef XHN_STATIC_STRING_H
 #define XHN_STATIC_STRING_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_hash_set.hpp"
@@ -80,6 +83,9 @@ public:
     }
 };
 }
+
+#endif
+
 #endif
 
 /**

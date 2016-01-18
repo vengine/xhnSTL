@@ -11,6 +11,8 @@
 #ifndef ecg_xhn_exception_hpp
 #define ecg_xhn_exception_hpp
 
+#ifdef __cplusplus
+
 #include <exception>
 #include "rtti.hpp"
 #include "elog.h"
@@ -356,6 +358,9 @@ public:
 	{}
 };
 #define VEngineExce(e, m) throw e(__FILE__, __LINE__, (m))
+
+#endif
+
 #endif
 
 /**

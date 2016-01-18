@@ -1,5 +1,8 @@
 #ifndef XHN_THREAD_POOL_HPP
 #define XHN_THREAD_POOL_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_thread.hpp"
@@ -66,4 +69,7 @@ public:
 };
 **/
 }
+
+#endif
+
 #endif

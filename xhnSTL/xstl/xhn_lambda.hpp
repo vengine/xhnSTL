@@ -9,6 +9,9 @@
  */
 #ifndef LAMBDA_H
 #define LAMBDA_H
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "elog.h"
@@ -174,6 +177,8 @@ namespace xhn
         void *(*copyLambda)(void *);
     };
 }
+
+#endif
 
 #endif
 /**

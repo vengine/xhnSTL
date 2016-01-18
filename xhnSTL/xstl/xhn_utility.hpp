@@ -10,6 +10,9 @@
 
 #ifndef XHN_UTILITY_HPP
 #define XHN_UTILITY_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "hash.h"
@@ -363,6 +366,9 @@ void sort ( RandomAccessIterator first, RandomAccessIterator last, Compare comp 
     sort_impl(first, last, comp);
 }
 }
+
+#endif
+
 #endif
 
 /**

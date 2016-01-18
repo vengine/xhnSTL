@@ -11,6 +11,8 @@
 #ifndef __xhnSTL__xhn_list2__
 #define __xhnSTL__xhn_list2__
 
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 
@@ -134,6 +136,9 @@ public:
     }
 };
 }
+
+#endif
+
 #endif /* defined(__xhnSTL__xhn_list2__) */
 
 /**

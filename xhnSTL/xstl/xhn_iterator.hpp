@@ -10,6 +10,9 @@
 
 #ifndef XHN_ITERATOR_HPP
 #define XHN_ITERATOR_HPP
+
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "emem.h"
@@ -256,6 +259,9 @@ public:
     }
 };
 }
+
+#endif
+
 #endif
 
 /**

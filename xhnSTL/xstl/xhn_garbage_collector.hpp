@@ -11,6 +11,8 @@
 #ifndef __Xgc__xhn_garbage_collector__
 #define __Xgc__xhn_garbage_collector__
 
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 
@@ -677,6 +679,7 @@ public:
     }
 };
 
+#endif
 
 #endif /* defined(__Xgc__xhn_garbage_collector__) */
 
