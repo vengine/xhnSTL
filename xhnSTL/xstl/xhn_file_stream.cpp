@@ -140,7 +140,7 @@ xhn::file_block* xhn::file_stream::access(file_stream* file, euint64 pos)
                     file->file_block_count--;
                 }
                 else {
-                    VEngineExce(UndesiredBranch, "");
+                    xhnSTLExce(xhn::UndesiredBranch, "");
                 }
             }
             block = file->file_block_tree.insert(beginAddr, BLOCK_SIZE, NULL);
@@ -160,7 +160,7 @@ xhn::file_block* xhn::file_stream::access(file_stream* file, euint64 pos)
         file->cache1 = tmp;
     }
     else {
-        VEngineExce(UndesiredBranch, "");
+        xhnSTLExce(xhn::UndesiredBranch, "");
     }
     return block;
 }

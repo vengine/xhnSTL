@@ -11,6 +11,8 @@
 #include "xhn_exception.hpp"
 #include "xhn_string.hpp"
 
+namespace xhn {
+
 class ExceptionBody : public MemObject
 {
 public:
@@ -49,33 +51,10 @@ const char* Exception::what() {
 }
 
 ImplementRootRTTI(Exception);
-ImplementRTTI(ResourceException, Exception);
 ImplementRTTI(ThreadException, Exception);
 ImplementRTTI(FunctionException, Exception);
-ImplementRTTI(OpenGLException, Exception);
 ImplementRTTI(ObjectException, Exception);
 ImplementRTTI(MemoryException, Exception);
-
-ImplementRTTI(LoadResourceException, ResourceException);
-ImplementRTTI(NewResourceException, ResourceException);
-
-ImplementRTTI(TextureException, OpenGLException);
-ImplementRTTI(VertexDeclarationLackPositionStreamException, OpenGLException);
-ImplementRTTI(MaterialException, OpenGLException);
-
-ImplementRTTI(TextureCanNotLockWithNoninternalPixelBuffer, TextureException);
-
-ImplementRTTI(MaterialParserException, MaterialException);
-ImplementRTTI(MaterialArgumentDoesNotExistException, MaterialException);
-ImplementRTTI(MaterialArgumentInvalidFormatException, MaterialException);
-ImplementRTTI(SymbolValueInvalidTypeException, MaterialException);
-ImplementRTTI(ShaderObjectInvalidTypeException, MaterialException);
-ImplementRTTI(QuantityInvalidTypeException, MaterialException);
-ImplementRTTI(ShaderInvalidOperationException, MaterialException);
-ImplementRTTI(ShaderVectorInvalidAssignmentException, MaterialException);
-ImplementRTTI(ShaderNodeException, MaterialException);
-
-ImplementRTTI(ShaderNodeInvalidName, ShaderNodeException);
 
 ImplementRTTI(FunctionArgumentException, FunctionException);
 ImplementRTTI(FunctionExecutionException, FunctionException);
@@ -88,13 +67,13 @@ ImplementRTTI(InvalidEnumerationException, FunctionExecutionException);
 
 ImplementRTTI(ObjectNameAlreadyExistedException, ObjectException);
 ImplementRTTI(ObjectAlreadyExistedException, ObjectException);
-ImplementRTTI(ResourceGroupNotExistedException, ObjectException);
 ImplementRTTI(ObjectUninitializedException, ObjectException);
 ImplementRTTI(ObjectSubscriptOutOfRange, ObjectException);
 ImplementRTTI(ObjectNotExistedException, ObjectException);
 
 ImplementRTTI(InvalidMemoryAllocException, MemoryException);
 ImplementRTTI(InvalidMemoryFreeException, MemoryException);
+}
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

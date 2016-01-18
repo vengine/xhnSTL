@@ -24,6 +24,7 @@
 #endif
 #endif
 **/
+namespace xhn {
 class ExceptionBody;
 class Exception : public std::exception
 {
@@ -89,136 +90,7 @@ public:
 	{}
 };
 
-class LoadResourceException : public ResourceException
-{
-    DeclareRTTI;
-public:
-    LoadResourceException(const char* file, euint32 line, const char* msg)
-    : ResourceException(file, line, msg)
-    {}
-};
 
-class NewResourceException : public ResourceException
-{
-    DeclareRTTI;
-public:
-    NewResourceException(const char* file, euint32 line, const char* msg)
-    : ResourceException(file, line, msg)
-    {}
-};
-
-class TextureException : public OpenGLException
-{
-    DeclareRTTI;
-public:
-    TextureException(const char* file, euint32 line, const char* msg)
-        : OpenGLException(file, line, msg)
-    {}
-};
-class TextureCanNotLockWithNoninternalPixelBuffer : public TextureException
-{
-    DeclareRTTI;
-public:
-    TextureCanNotLockWithNoninternalPixelBuffer(const char* file, euint32 line, const char* msg)
-        : TextureException(file, line, msg)
-    {}
-};
-class VertexDeclarationLackPositionStreamException : public OpenGLException
-{
-    DeclareRTTI;
-public:
-    VertexDeclarationLackPositionStreamException(const char* file, euint32 line, const char* msg)
-        : OpenGLException(file, line, msg)
-	{}
-};
-class MaterialException : public OpenGLException
-{
-    DeclareRTTI;
-public:
-    MaterialException(const char* file, euint32 line, const char* msg)
-        : OpenGLException(file, line, msg)
-    {}
-};
-class MaterialParserException : public MaterialException
-{
-    DeclareRTTI;
-public:
-    MaterialParserException(const char* file, euint32 line, const char* msg)
-        : MaterialException(file, line, msg)
-    {}
-};
-class MaterialArgumentDoesNotExistException : public MaterialException
-{
-    DeclareRTTI;
-public:
-    MaterialArgumentDoesNotExistException(const char* file, euint32 line, const char* msg)
-        : MaterialException(file, line, msg)
-    {}
-};
-class MaterialArgumentInvalidFormatException : public MaterialException
-{
-    DeclareRTTI;
-public:
-    MaterialArgumentInvalidFormatException(const char* file, euint32 line, const char* msg)
-        : MaterialException(file, line, msg)
-    {}
-};
-class SymbolValueInvalidTypeException : public MaterialException
-{
-    DeclareRTTI;
-public:
-    SymbolValueInvalidTypeException(const char* file, euint32 line, const char* msg)
-    : MaterialException(file, line, msg)
-	{}
-};
-class ShaderObjectInvalidTypeException : public MaterialException
-{
-    DeclareRTTI;
-public:
-    ShaderObjectInvalidTypeException(const char* file, euint32 line, const char* msg)
-    : MaterialException(file, line, msg)
-    {}
-};
-class QuantityInvalidTypeException : public MaterialException
-{
-    DeclareRTTI;
-public:
-    QuantityInvalidTypeException(const char* file, euint32 line, const char* msg)
-    : MaterialException(file, line, msg)
-	{}
-};
-class ShaderVectorInvalidAssignmentException : public MaterialException
-{
-    DeclareRTTI;
-public:
-    ShaderVectorInvalidAssignmentException(const char* file, euint32 line, const char* msg)
-    : MaterialException(file, line, msg)
-    {}
-};
-class ShaderInvalidOperationException : public MaterialException
-{
-    DeclareRTTI;
-public:
-    ShaderInvalidOperationException(const char* file, euint32 line, const char* msg)
-    : MaterialException(file, line, msg)
-	{}
-};
-class ShaderNodeException : public MaterialException
-{
-    DeclareRTTI;
-public:
-    ShaderNodeException(const char* file, euint32 line, const char* msg)
-    : MaterialException(file, line, msg)
-    {}
-};
-class ShaderNodeInvalidName : public ShaderNodeException
-{
-    DeclareRTTI;
-public:
-    ShaderNodeInvalidName(const char* file, euint32 line, const char* msg)
-    : ShaderNodeException(file, line, msg)
-    {}
-};
 /// 函数的输入参数为非法
 class FunctionArgumentException : public FunctionException
 {
@@ -307,14 +179,7 @@ public:
     : ObjectException(file, line, msg)
 	{}
 };
-class ResourceGroupNotExistedException : public ObjectException
-{
-    DeclareRTTI;
-public:
-    ResourceGroupNotExistedException(const char* file, euint32 line, const char* msg)
-    : ObjectException(file, line, msg)
-	{}
-};
+
 class ObjectUninitializedException : public ObjectException
 {
 	DeclareRTTI;
@@ -357,8 +222,8 @@ public:
 		: MemoryException(file, line, msg)
 	{}
 };
-#define VEngineExce(e, m) throw e(__FILE__, __LINE__, (m))
-
+#define xhnSTLExce(e, m) throw e(__FILE__, __LINE__, (m))
+}
 #endif
 
 #endif

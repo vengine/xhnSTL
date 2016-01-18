@@ -516,21 +516,21 @@ public:
     //////////////////////////////////////////////////////////////////////////
     void* operator new( size_t nSize )
     {
-        VEngineExce(InvalidMemoryAllocException, "this object cant new operator");
+        xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant new operator");
     }
     void operator delete( void *p)
     {
-        VEngineExce(InvalidMemoryFreeException, "this object cant delete operator");
+        xhnSTLExce(xhn::InvalidMemoryFreeException, "this object cant delete operator");
     }
     //////////////////////////////////////////////////////////////////////////
     void* operator new( size_t nSize, const char* file,int line )
     {
-        VEngineExce(InvalidMemoryAllocException, "this object cant new operator");
+        xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant new operator");
     }
     
     void operator delete( void *p, const char* file,int line )
     {
-        VEngineExce(InvalidMemoryFreeException, "this object cant delete operator");
+        xhnSTLExce(xhn::InvalidMemoryFreeException, "this object cant delete operator");
     }
     //////////////////////////////////////////////////////////////////////////
     void* operator new( size_t nSize, void* ptr )
@@ -545,17 +545,17 @@ public:
     
     void operator delete( void *p, void* ptr )
     {
-        VEngineExce(InvalidMemoryFreeException, "this object cant delete operator");
+        xhnSTLExce(xhn::InvalidMemoryFreeException, "this object cant delete operator");
     }
     //////////////////////////////////////////////////////////////////////////
     void* operator new[]( size_t nSize )
     {
-        VEngineExce(InvalidMemoryAllocException, "this object cant new operator");
+        xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant new operator");
     }
     
     void operator delete[]( void* ptr, size_t nSize )
     {
-        VEngineExce(InvalidMemoryFreeException, "this object cant delete operator");
+        xhnSTLExce(xhn::InvalidMemoryFreeException, "this object cant delete operator");
     }
 
 };
