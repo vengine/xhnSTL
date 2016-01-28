@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "2A52C6D498635CD6C5C4C1228274DBD08A154B36",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "1B19454DF55D0ACEB5B19EC5D4153527EA126384" : 0,
+    "2A52C6D498635CD6C5C4C1228274DBD08A154B36" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "48D0D0CA-AA13-4438-B3B6-FD7E50D219E2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "1B19454DF55D0ACEB5B19EC5D4153527EA126384" : "..",
+    "2A52C6D498635CD6C5C4C1228274DBD08A154B36" : "xhnSTL\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "xhnSTL",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Mac\/xhnSTL.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/vengine\/vengine.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1B19454DF55D0ACEB5B19EC5D4153527EA126384"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/vengine\/xhnSTL.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "2A52C6D498635CD6C5C4C1228274DBD08A154B36"
+    }
+  ]
+}

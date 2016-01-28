@@ -7,6 +7,9 @@
 //
 
 #import <XCTest/XCTest.h>
+#include <xhnSTL/xhn_thread.hpp>
+#include <xhnSTL/xhn_lambda.hpp>
+#include <xhnSTL/timer.h>
 
 @interface xhnSTLTests : XCTestCase
 
@@ -33,6 +36,20 @@
     // This is an example of a performance test case.
     [self measureBlock:^{
         // Put the code you want to measure the time of here.
+        xhn::thread_ptr thread = VNEW xhn::thread;
+        while(!thread->is_running()) {}
+        volatile bool completed = false;
+        TimeCheckpoint tp;
+        xhn::Lambda<xhn::thread::TaskStatus()> proc([&completed, &tp](){
+            completed = true;
+            VTime t;
+            TimeCheckpoint::Tock(tp, t);
+            printf("%f\n", t.GetNanosecond());
+            return xhn::thread::Completed;
+        });
+        tp = TimeCheckpoint::Tick();
+        thread->add_lambda_task(proc);
+        while (!completed) {}
     }];
 }
 
