@@ -10,6 +10,8 @@
 #include <xhnSTL/xhn_thread.hpp>
 #include <xhnSTL/xhn_lambda.hpp>
 #include <xhnSTL/timer.h>
+#include <xhnSTL/xhn_smart_ptr.hpp>
+#include <xhnSTL/xhn_vector.hpp>
 
 @interface xhnSTLTests : XCTestCase
 
@@ -27,10 +29,52 @@
     [super tearDown];
 }
 
+class Test : public RefObject
+{
+public:
+    int a;
+};
+typedef xhn::SmartPtr<Test> TestPtr;
+typedef xhn::WeakPtr<Test> TestWeakPtr;
+
+- (void) testWeakPtr {
+    TestWeakPtr wtest;
+    {
+        TestPtr test = VNEW Test;
+        test->a = 100;
+        {
+            test.ToWeakPtr(wtest);
+            TestPtr t = wtest.ToStrongPtr();
+            printf("t->a == %d\n", t->a);
+        }
+        TestPtr t = wtest.ToStrongPtr();
+        printf("t.get() == %p\n", t.get());
+        XCTAssert(t.get() != nullptr, "t.get() == nullptr");
+    }
+    {
+        TestPtr t = wtest.ToStrongPtr();
+        XCTAssert(t.get() == nullptr, "t.get() != nullptr");
+    }
+}
+
+#include <xhnSTL/xhn_vector.hpp>
+- (void) testVector {
+    xhn::vector<int> intArray;
+    intArray.push_back(0);
+    intArray.push_back(1);
+    intArray.push_back(2);
+    xhn::Lambda<void(int&, bool*)> proc([](int& i, bool* stop){
+        printf("%d\n", i);
+        *stop = true;
+    });
+    intArray.for_each(proc);
+}
+/**
 - (void)testExample {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
 }
+ **/
 
 - (void)testPerformanceExample {
     // This is an example of a performance test case.

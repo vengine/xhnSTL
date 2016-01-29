@@ -226,6 +226,23 @@ public:
                     WeakPtrBase* ptr);
 };
 
+///==========================================================================///
+///  WeakCounter                                                             ///
+///==========================================================================///
+
+class RefObject;
+class WeakCounter : public MemObject
+{
+public:
+    RefObject* ref_object;
+    mutable volatile esint32 weak_count;
+    RefSpinLock ref_lock;
+    WeakCounter()
+    : ref_object(nullptr)
+    , weak_count(0)
+    {}
+};
+
 class RefObject
 {
 public:
