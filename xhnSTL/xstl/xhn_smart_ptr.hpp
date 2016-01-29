@@ -62,7 +62,6 @@ class WeakPtr
     friend class xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR>;
     friend class WeakNodeList;
 private:
-    RefSpinLock m_weak_lock;
     WeakCounter* m_weak_count;
 private:
     WeakPtr(const WeakPtr& ptr) {
@@ -78,17 +77,26 @@ public:
     }
     ~WeakPtr()
     {
-        RefSpinLock::Instance inst = m_weak_count->lock.Lock();
-        m_weak_count->weak_count--;
-        if (!m_weak_count->weak_count &&
-            !m_weak_count->ref_object) {
-            delete m_weak_count;
+        if (m_weak_count) {
+            if (!AtomicDecrement(&m_weak_count->weak_count)) {
+                volatile bool must_delete_count = false;
+                {
+                    RefSpinLock::Instance inst = m_weak_count->lock.Lock();
+                    if (!m_weak_count->ref_object) {
+                        must_delete_count = true;
+                    }
+                }
+                if (must_delete_count) {
+                    delete m_weak_count;
+                    m_weak_count = nullptr;
+                }
+            }
         }
     }
     inline xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ToStrongPtr() {
-        RefSpinLock::Instance inst = m_weak_lock.Lock();
         xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ret;
         if (m_weak_count) {
+            RefSpinLock::Instance inst = m_weak_count->lock.Lock();
             ret = (T*)m_weak_count->ref_object;
         }
         return ret;
@@ -264,9 +272,8 @@ public:
 
     void ToWeakPtr(WeakPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR>& result) {
         if (m_ptr) {
-            RefSpinLock::Instance inst = result.m_weak_lock.Lock();
+            AtomicIncrement(&m_ptr->weak_count->weak_count);
             result.m_weak_count = m_ptr->weak_count;
-            result.m_weak_count->weak_count++;
         }
     }
 };
@@ -288,23 +295,7 @@ public:
     {
         if (ptr) {
             if (!AtomicDecrement(&ptr->ref_count)) {
-                bool has_not_weak_to_strong = false;
-                bool ref_count_is_zero = false;
-                {
-                    RefSpinLock::Instance inst = ((T*)ptr)->ref_lock.Lock();
-                    if (!ptr->weak_to_strong_flag) {
-                        has_not_weak_to_strong = true;
-                    }
-                    if (!ptr->ref_count) {
-                        ref_count_is_zero = true;
-                    }
-                    AtomicIncrement(&ptr->strong_destory_flag);
-                }
-                if (ref_count_is_zero && has_not_weak_to_strong) {
-                    delete ptr;
-                    return;
-                }
-                AtomicDecrement(&ptr->strong_destory_flag);
+                delete ptr;
             }
         }
     }

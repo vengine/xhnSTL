@@ -19,6 +19,7 @@
 #include "eassert.h"
 #include "elog.h"
 #include "xhn_exception.hpp"
+#include "xhn_atomic_operation.hpp"
 
 class BannedAllocObject
 {
@@ -234,13 +235,21 @@ class RefObject;
 class WeakCounter : public MemObject
 {
 public:
-    RefObject* ref_object;
+    volatile RefObject* ref_object;
     volatile esint32 weak_count;
     RefSpinLock lock;
+    ///while (!OSAtomicCompareAndSwap32((int32_t)0, (int32_t)1, (volatile int32_t*)lock))
+    ///{}
+    ///while (!OSAtomicCompareAndSwap32((int32_t)1, (int32_t)0, (volatile int32_t*)lock))
+    ///{}
+    ///esint32 lock;
     WeakCounter(RefObject* object)
     : ref_object(object)
     , weak_count(0)
     {}
+    ~WeakCounter()
+    {
+    }
 };
 
 class RefObject
@@ -293,14 +302,31 @@ public:
 		ref_count = 0;
         weak_count = VNEW WeakCounter(this);
 	}
+    RefObject(const RefObject& obj)
+    {
+        ref_count = 0;
+        weak_count = VNEW WeakCounter(this);;
+    }
 	virtual ~RefObject()
 	{
-        RefSpinLock::Instance inst = weak_count->lock.Lock();
-        weak_count->ref_object = nullptr;
-        if (!weak_count->weak_count) {
+        volatile bool must_delete_count = false;
+        {
+            RefSpinLock::Instance inst = weak_count->lock.Lock();
+            weak_count->ref_object = nullptr;
+            if (!weak_count->weak_count) {
+                weak_count->ref_object = nullptr;
+                must_delete_count = true;
+            }
+        }
+        if (must_delete_count) {
             delete weak_count;
+            weak_count = nullptr;
         }
 	}
+    inline const RefObject& operator = (RefObject& obj) {
+        EAssert(0, "RefObject can not perform assign operation");
+        return *this;
+    }
 };
 /**
 namespace xhn {
