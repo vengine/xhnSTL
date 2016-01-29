@@ -111,29 +111,23 @@ begin:
             if (m_is_finished)
                 break;
             {
-                ///struct timespec outtime;
                 volatile bool isTaskEmpty = false;
                 {
                     SpinLock::Instance taskInst = m_taskLock.Lock();
                     isTaskEmpty = m_tasks.empty();
                 }
-                ///while (isTaskEmpty && !m_is_finished) {
                 if (isTaskEmpty && !m_is_finished) {
-                    /// 必须是空的才会进这个循环，因此一开始就将m_is_completed置为true
                     m_is_completed = true;
                     
                     pthread_mutex_lock(&m_mutex);
-                    ///outtime.tv_sec = 0;
-                    ///outtime.tv_nsec = 1000 * 1000 * 100;
-                    ///pthread_cond_timedwait_relative_np(&m_cond, &m_mutex, &outtime);
-                    pthread_cond_wait(&m_cond, &m_mutex);
-                    pthread_mutex_unlock(&m_mutex);
-                    /**
                     {
                         SpinLock::Instance taskInst = m_taskLock.Lock();
                         isTaskEmpty = m_tasks.empty();
                     }
-                     **/
+                    if (isTaskEmpty && !m_is_finished) {
+                        pthread_cond_wait(&m_cond, &m_mutex);
+                    }
+                    pthread_mutex_unlock(&m_mutex);
                 }
             }
             if (m_is_finished)
@@ -149,7 +143,6 @@ begin:
                     m_is_completed = true;
                 }
             }
-            ///if (t.get()) {
             if (t) {
 #if THREAD_DEBUG
                 const static_string task_type = t->type();
@@ -344,6 +337,9 @@ xhn::thread::~thread()
     }
 	while (!m_is_stopped) {
         m_is_finished = true;
+        pthread_mutex_lock(&m_mutex);
+        pthread_cond_signal(&m_cond);
+        pthread_mutex_unlock(&m_mutex);
     }
     pthread_join(m_pt, NULL);
     SpinLock::Instance inst = s_thread_stack_range_map_lock.Lock();

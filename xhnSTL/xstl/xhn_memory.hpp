@@ -235,10 +235,10 @@ class WeakCounter : public MemObject
 {
 public:
     RefObject* ref_object;
-    mutable volatile esint32 weak_count;
-    RefSpinLock ref_lock;
-    WeakCounter()
-    : ref_object(nullptr)
+    volatile esint32 weak_count;
+    RefSpinLock lock;
+    WeakCounter(RefObject* object)
+    : ref_object(object)
     , weak_count(0)
     {}
 };
@@ -286,19 +286,20 @@ public:
 		Mfree(ptr);
 	}
 public:
-    WeakNodeList weak_node_list;
 	mutable volatile esint32 ref_count;
-    RefSpinLock ref_lock;
-    volatile esint32 weak_to_strong_flag;
-    volatile esint32 strong_destory_flag;
+    mutable WeakCounter* weak_count;
 	RefObject()
 	{
 		ref_count = 0;
-        weak_to_strong_flag = 0;
-        strong_destory_flag = 0;
+        weak_count = VNEW WeakCounter(this);
 	}
 	virtual ~RefObject()
 	{
+        RefSpinLock::Instance inst = weak_count->lock.Lock();
+        weak_count->ref_object = nullptr;
+        if (!weak_count->weak_count) {
+            delete weak_count;
+        }
 	}
 };
 /**

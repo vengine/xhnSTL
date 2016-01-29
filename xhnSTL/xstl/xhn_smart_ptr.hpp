@@ -57,10 +57,13 @@ template< typename T,
           typename INC_CALLBACK = FIncCallbackProc<T>,
           typename DEST_CALLBACK = FDestCallbackProc<T>,
           typename GARBAGE_COLLECTOR = FGarbageCollectProc<T> >
-class WeakPtr : public WeakPtrBase
+class WeakPtr
 {
     friend class xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR>;
     friend class WeakNodeList;
+private:
+    RefSpinLock m_weak_lock;
+    WeakCounter* m_weak_count;
 private:
     WeakPtr(const WeakPtr& ptr) {
         /// do nothing
@@ -69,45 +72,26 @@ private:
         /// do nothing
     }
 public:
-#ifdef DEBUG
-    inline void PrintDebugInfo() const {
-        m_weakLock.PrintDebugInfo();
+    WeakPtr()
+    : m_weak_count(nullptr)
+    {
     }
-    inline bool TestDebug() const {
-        return m_weakLock.TestDebug();
-    }
-#endif
-    WeakPtr() {}
     ~WeakPtr()
     {
-        RefSpinLock::Instance inst = m_weakLock.Lock();
-        if (m_nodeList && m_node) {
-            /// 自己节点已经锁住了，所以用半锁
-            m_nodeList->DeleteNode_HalfLocked(m_node);
+        RefSpinLock::Instance inst = m_weak_count->lock.Lock();
+        m_weak_count->weak_count--;
+        if (!m_weak_count->weak_count &&
+            !m_weak_count->ref_object) {
+            delete m_weak_count;
         }
     }
     inline xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ToStrongPtr() {
+        RefSpinLock::Instance inst = m_weak_lock.Lock();
         xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ret;
-        RefSpinLock::Instance inst0 = m_weakLock.Lock();
-        /// 有一种情况，此时的引用计数已经是0了，这时等待销毁资源中，但是另一个线程则尝试将弱指针转强
-        if (m_node && m_node->m_ptr && m_node->m_ptr->ref_count) {
-            bool has_not_strong_destory = false;
-            {
-                RefSpinLock::Instance inst = m_node->m_ptr->ref_lock.Lock();
-                if (!m_node->m_ptr->strong_destory_flag) {
-                    has_not_strong_destory = true;
-                }
-                AtomicIncrement(&m_node->m_ptr->weak_to_strong_flag);
-            }
-            if (has_not_strong_destory) {
-                ret = (T*)m_node->m_ptr;
-            }
-            AtomicDecrement(&m_node->m_ptr->weak_to_strong_flag);
-            return ret;
+        if (m_weak_count) {
+            ret = (T*)m_weak_count->ref_object;
         }
-        else {
-            return ret;
-        }
+        return ret;
     }
 };
     
@@ -174,24 +158,8 @@ public:
 	{
 		if (ptr) {
 			if (!AtomicDecrement(&ptr->ref_count)) {
-                bool has_not_weak_to_strong = false;
-                bool ref_count_is_zero = false;
-                {
-                    RefSpinLock::Instance inst = ((T*)ptr)->ref_lock.Lock();
-                    if (!ptr->weak_to_strong_flag) {
-                        has_not_weak_to_strong = true;
-                    }
-                    if (!ptr->ref_count) {
-                        ref_count_is_zero = true;
-                    }
-                    AtomicIncrement(&ptr->strong_destory_flag);
-                }
-                if (ref_count_is_zero && has_not_weak_to_strong) {
-                    m_dest_callback(ptr);
-                    delete ptr;
-                    return;
-                }
-                AtomicDecrement(&ptr->strong_destory_flag);
+                m_dest_callback(ptr);
+                delete ptr;
             }
 		}
 	}
@@ -296,16 +264,9 @@ public:
 
     void ToWeakPtr(WeakPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR>& result) {
         if (m_ptr) {
-            RefSpinLock::Instance inst0 = result.m_weakLock.Lock();
-            if (result.m_node && result.m_nodeList) {
-                result.m_nodeList->DeleteNode_HalfLocked(result.m_node);
-            }
-            RefSpinLock::Instance inst1 = ((T*)m_ptr)->weak_node_list.m_lock.Lock();
-            WeakNode* node =
-            ((T*)m_ptr)->weak_node_list.NewNode_NotLocked((T*)m_ptr);
-            result.m_node = node;
-            result.m_nodeList = &((T*)m_ptr)->weak_node_list;
-            node->m_weakPtr = &result;
+            RefSpinLock::Instance inst = result.m_weak_lock.Lock();
+            result.m_weak_count = m_ptr->weak_count;
+            result.m_weak_count->weak_count++;
         }
     }
 };
