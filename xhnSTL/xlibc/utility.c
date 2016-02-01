@@ -114,7 +114,11 @@ bool to_double(const char* str, double* result)
         isnegatived = true;
         str++;
     }
-    while (str[count] && str[count] != 'f') {
+    bool findCharacterF = false;
+    while (str[count]) {
+        /// 如果在非末尾的位置发现'f'了，显然这不是一个浮点值
+        if (findCharacterF)
+            return false;
         if (str[count] == '.') {
             if (dot != -1)
                 return false;
@@ -123,6 +127,10 @@ bool to_double(const char* str, double* result)
         else if (str[count] < '0' ||
                  str[count] > '9') {
             return false;
+        }
+        else if (str[count] == 'f') {
+            /// 发现'f'时一定是字符串末尾了
+            findCharacterF = true;
         }
         count++;
     }
