@@ -24,10 +24,10 @@ xhn::concurrent_thread_pool::~concurrent_thread_pool()
         thread::stop_thread_and_join(t);
     }
 }
-void xhn::concurrent_thread_pool::add_task(thread::task_ptr t)
+xhn::thread_ptr xhn::concurrent_thread_pool::add_task(thread::task_ptr t)
 {
     euint least_tasks = 0;
-    thread* least_tasks_thread = NULL;
+    thread* least_tasks_thread = nullptr;
     vector<thread_ptr>::iterator iter = m_threads.begin();
     vector<thread_ptr>::iterator end = m_threads.end();
     for (; iter != end; iter++) {
@@ -43,8 +43,13 @@ void xhn::concurrent_thread_pool::add_task(thread::task_ptr t)
             }
         }
     }
-    if (least_tasks_thread)
+    if (least_tasks_thread) {
         least_tasks_thread->add_task(t);
+        return least_tasks_thread;
+    }
+    else {
+        return nullptr;
+    }
 }
 void xhn::concurrent_thread_pool::clear()
 {
@@ -54,6 +59,18 @@ void xhn::concurrent_thread_pool::clear()
         thread_ptr t = *iter;
         t->clear();
     }
+}
+
+xhn::thread_ptr xhn::concurrent_thread_pool::search_current_thread()
+{
+    vector<thread_ptr>::iterator iter = m_threads.begin();
+    vector<thread_ptr>::iterator end = m_threads.end();
+    for (; iter != end; iter++) {
+        thread_ptr t = *iter;
+        if (t->I_am_this_thread())
+            return t;
+    }
+    return nullptr;
 }
 /**
 ///==========================================================================///

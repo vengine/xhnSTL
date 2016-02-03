@@ -21,8 +21,9 @@ public:
 public:
     concurrent_thread_pool(euint num_threads);
     ~concurrent_thread_pool();
-    void add_task(thread::task_ptr t);
+    thread_ptr add_task(thread::task_ptr t);
     void clear();
+    thread_ptr search_current_thread();
 };
 typedef SmartPtr<concurrent_thread_pool> concurrent_thread_pool_ptr;
     /**
