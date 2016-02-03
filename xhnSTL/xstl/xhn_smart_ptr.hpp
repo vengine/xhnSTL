@@ -278,6 +278,7 @@ public:
     }
 };
     
+/// Handle 这个东西的存在是为了解决Command在channel里传递的问题，Handle可以直接拷贝，不像SmartPtr
 template< typename T>
 class Handle
 {
