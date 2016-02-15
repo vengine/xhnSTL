@@ -11,9 +11,9 @@
 #include "rtti.hpp"
 namespace xhn
 {
-///==========================================================================///
-///  state_data                                                              ///
-///==========================================================================///
+    /// \brief state_data
+    ///
+    ///
 class state_data : public RefObject
 {
     DeclareRootRTTI;
@@ -21,9 +21,9 @@ public:
     virtual ~state_data() {}
 };
 typedef SmartPtr<state_data> state_data_ptr;
-///==========================================================================///
-///  state_argument                                                          ///
-///==========================================================================///
+    /// \brief state_argument
+    ///
+    ///
 class state_argument : public RefObject
 {
     DeclareRootRTTI;
@@ -31,11 +31,13 @@ public:
     virtual ~state_argument() {}
 };
 typedef SmartPtr<state_argument> state_argument_ptr;
-///==========================================================================///
-///  state                                                                   ///
-///==========================================================================///
+    
 class state_machine;
 typedef SmartPtr<state_machine> state_machine_ptr;
+    
+    /// \brief state
+    ///
+    ///
 class state : public RefObject
 {
 protected:
@@ -55,9 +57,10 @@ public:
     virtual state_data_ptr get_data() = 0;
 };
 typedef SmartPtr<state> state_ptr;
-///==========================================================================///
-///  state_machine                                                           ///
-///==========================================================================///
+
+    /// \brief state_machine
+    ///
+    ///
 class state_machine : public RefObject
 {
 private:

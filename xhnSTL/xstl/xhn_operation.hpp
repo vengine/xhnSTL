@@ -21,9 +21,9 @@
 #include "xhn_lock.hpp"
 namespace xhn
 {
-///==========================================================================///
-///  collect_folder_information                                              ///
-///==========================================================================///
+    /// \brief collect_folder_information_operation
+    ///
+    ///
     
 class collect_folder_information_operation : public operation
 {
@@ -67,14 +67,14 @@ new_collect_folder_information_operation(const char* folder, folder_information*
     (folder, info);
     return handle;
 }
-///==========================================================================///
-///  collect_folder_information                                              ///
-///==========================================================================///
-///==========================================================================///
-///  search_duplicate_files                                                  ///
-///==========================================================================///
+
+    
 class duplicate_node;
 class duplicate_node_cache;
+    
+    /// \brief duplicate_files
+    ///
+    ///
 class duplicate_files : public operation_data
 {
     DeclareRTTI;
@@ -171,9 +171,7 @@ new_search_duplicate_files_operation(path_enumerator_ptr paths, P p)
     (paths, p);
     return handle;
 }
-///==========================================================================///
-///  search_duplicate_files                                                  ///
-///==========================================================================///
+    
 }
 
 #endif

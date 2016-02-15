@@ -13,10 +13,9 @@
 #include "rtti.hpp"
 namespace xhn
 {
-/// project 是数据，routine 是执行过程，receipt 是回执
-///==========================================================================///
-///  project                                                                 ///
-///==========================================================================///
+    /// \brief project
+    ///
+    /// project 是数据，routine 是执行过程，receipt 是回执
 class project : public RefObject
 {
     DeclareRootRTTI;
@@ -24,11 +23,12 @@ public:
     virtual ~project() {}
 };
 typedef SmartPtr<project> project_ptr;
-///==========================================================================///
-///  routine                                                                 ///
-///==========================================================================///
+
 class receipt;
 typedef SmartPtr<receipt> receipt_ptr;
+    /// \brief routine
+    ///
+    /// project 是数据，routine 是执行过程，receipt 是回执
 class routine : public thread::task
 {
 protected:
@@ -49,9 +49,9 @@ public:
     virtual float get_progress_rate() = 0;
     virtual bool run();
 };
-///==========================================================================///
-///  receipt                                                                 ///
-///==========================================================================///
+    /// \brief receipt
+    ///
+    /// project 是数据，routine 是执行过程，receipt 是回执
 class receipt : public RefObject
 {
     DeclareRootRTTI;
@@ -60,9 +60,9 @@ public:
     virtual void complete() = 0;
 };
 typedef SmartPtr<receipt> receipt_ptr;
-///==========================================================================///
-///  routine_agent                                                           ///
-///==========================================================================///
+    /// \brief routine_agent
+    ///
+    ///
 class routine_agent : public RefObject
 {
 public:
@@ -70,9 +70,9 @@ public:
     virtual routine* create_routine() = 0;
 };
 typedef SmartPtr<routine_agent> routine_agent_ptr;
-///==========================================================================///
-///  routine_pool                                                            ///
-///==========================================================================///
+    /// \brief routine_pool
+    ///
+    ///
 class routine_pool : public RefObject
 {
 public:

@@ -11,9 +11,9 @@
 #include "xhn_lambda.hpp"
 namespace xhn
 {
-///==========================================================================///
-///  concurrent_thread_pool                                                  ///
-///==========================================================================///
+    /// \brief concurrent_thread_pool
+    ///
+    ///
 class concurrent_thread_pool : public RefObject
 {
 public:
@@ -27,9 +27,6 @@ public:
 };
 typedef SmartPtr<concurrent_thread_pool> concurrent_thread_pool_ptr;
     /**
-///==========================================================================///
-///  transaction                                                             ///
-///==========================================================================///
     
 class transaction_pool;
 typedef WeakPtr<transaction_pool> transaction_pool_weak_ptr;
@@ -52,9 +49,6 @@ public:
 };
 typedef SmartPtr<transaction> transaction_ptr;
     
-///==========================================================================///
-///  transaction_pool                                                        ///
-///==========================================================================///
     
 class transaction_pool : public RefObject
 {

@@ -227,11 +227,11 @@ public:
                     WeakPtrBase* ptr);
 };
 
-///==========================================================================///
-///  WeakCounter                                                             ///
-///==========================================================================///
-
 class RefObject;
+
+/// \brief WeakCounter
+///
+///
 class WeakCounter : public MemObject
 {
 public:
