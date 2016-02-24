@@ -20,8 +20,8 @@ template <typename KEY, typename DATA>
 class TTMap
 {
 public:
-	typedef void (*TTDest)(Tree);
-	typedef int (*KeyCompareProc)(KEY*, KEY*);
+	[[deprecated]] typedef void (*TTDest)(Tree);
+	[[deprecated]] typedef int (*KeyCompareProc)(KEY*, KEY*);
 
 	class TTIterator
 	{
@@ -62,38 +62,38 @@ public:
 		}
 	};
 private:
-	TTDest      m_destProc;
-	Tree        m_tree;
+	[[deprecated]] TTDest      m_destProc;
+	[[deprecated]] Tree        m_tree;
 public:
-	TTMap(TTDest destProc, KeyCompareProc compareProc)
+	[[deprecated]] TTMap(TTDest destProc, KeyCompareProc compareProc)
 		: m_destProc(destProc)
 	{
 		m_tree = Tree_new(Vptr, Vptr, (MALLOC)Ealloc, (MFREE)Efree);
 		Tree_set_key_compare_proc(m_tree, (KEY_COMPARE)compareProc);
 	}
-	~TTMap()
+	[[deprecated]] ~TTMap()
 	{
 		m_destProc(m_tree);
 	}
-	TTIterator Find(KEY* _key)
+	[[deprecated]] TTIterator Find(KEY* _key)
 	{
 		var key, data;
 		key.vptr_var = (vptr)_key;
 		Iterator iter = Tree_find(m_tree, key, &data);
 		return TTIterator(iter);
 	}
-	TTIterator Begin()
+	[[deprecated]] TTIterator Begin()
 	{
 		return TTIterator(Tree_begin(m_tree));
 	}
-	TTIterator Insert(KEY* _key, DATA* _data)
+	[[deprecated]] TTIterator Insert(KEY* _key, DATA* _data)
 	{
 		var key, data;
 		key.vptr_var = (vptr)_key;
 		data.vptr_var = (vptr)_data;
 		return TTIterator(Tree_insert(m_tree, key, data));
 	}
-	void Remove(KEY* _key)
+	[[deprecated]] void Remove(KEY* _key)
 	{
 		var key;
 		key.vptr_var = (vptr)_key;

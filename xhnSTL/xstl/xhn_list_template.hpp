@@ -18,6 +18,7 @@
 #include "emem.hpp"
 namespace xhn
 {
+    [[deprecated]]
     template <typename LIST_NODE>
     class list_base : public RefObject
     {
