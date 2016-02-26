@@ -62,7 +62,7 @@ class WeakPtr
     friend class xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR>;
     friend class WeakNodeList;
 private:
-    WeakCounter* m_weak_count;
+    mutable WeakCounter* m_weak_count;
 private:
     WeakPtr(const WeakPtr& ptr) {
         /// do nothing
@@ -93,7 +93,7 @@ public:
             }
         }
     }
-    inline xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ToStrongPtr() {
+    inline xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ToStrongPtr() const {
         xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ret;
         if (m_weak_count) {
             RefSpinLock::Instance inst = m_weak_count->lock.Lock();
