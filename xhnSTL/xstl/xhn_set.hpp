@@ -108,14 +108,14 @@ public:
 };
 
 template< typename K, 
-          typename LessProc = FLessProc<K>, 
+          typename LessThanProc = FLessThanProc<K>,
           typename NodeAllocator = FSetNodeAllocator<K> >
 class set : public RefObject
 {
 private:
-    rbtree<K, K, LessProc, NodeAllocator> m_rbtree;
+    rbtree<K, K, LessThanProc, NodeAllocator> m_rbtree;
 public:
-    typedef rbtree<K, K, LessProc, NodeAllocator> rbtree_type;
+    typedef rbtree<K, K, LessThanProc, NodeAllocator> rbtree_type;
     typedef rbtree_node<K> rbnode_type;
     template<typename T>
     struct FReadProc {
@@ -229,7 +229,7 @@ public:
         return iterator ( k, 0 );
     }
     const_iterator find ( const K &key ) const {
-        rbnode_type *node = ( rbnode_type * ) rbtree_type::_find ( (rbtree<K, K, LessProc, NodeAllocator> *)&m_rbtree, key, false );
+        rbnode_type *node = ( rbnode_type * ) rbtree_type::_find ( (rbtree<K, K, LessThanProc, NodeAllocator> *)&m_rbtree, key, false );
         K *k = &node->first;
         return const_iterator ( k, 0 );
     }

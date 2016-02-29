@@ -19,8 +19,6 @@
 #ifdef __GNUC__
 #define apush(a, e) a = array_push(a, e)
 
-#define fexce ({float _e_; *((unsigned int*)&_e_) = 0xffffffff; _e_;})
-
 #define Array_Initialize_Size 5
 #define d_malloc(n, t) SMalloc( (n + 1) * sizeof(t) + sizeof(unsigned int) * 2 )
 #define d_free(a) Mfree( a )
@@ -207,14 +205,6 @@ euint& ArrayNum(T* a)
 #define array_safe_get_ptr(a, i) ArraySafeGetPtr(a, i)
 #define array_pop(a) ArrayPop(a)
 #define array_resize(a, n) ArrayResize(a, n)
-inline float _fexce()
-{
-    float ret;
-	*((euint32*)&ret) = 0xffffffff;
-	return ret;
-}
-#define fexce _fexce()
-
 #pragma warning(pop)
 #endif
 #endif

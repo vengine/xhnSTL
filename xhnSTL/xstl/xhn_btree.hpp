@@ -51,7 +51,7 @@ namespace xhn
         map<
         range< Addr >,
         vptr,
-        FLessProc< range<Addr> >,
+        FLessThanProc< range<Addr> >,
         MapNodeAllocator
         > btree_node_map;
     public:
@@ -446,7 +446,7 @@ namespace xhn
         typedef
         map< range<Addr>,
         T,
-        FLessProc< range<Addr> >,
+        FLessThanProc< range<Addr> >,
         UnlockedMapNodeAllocator< range<Addr>, T > >
         range_map_t;
     public:

@@ -111,15 +111,15 @@ public:
 
 template< typename K, 
           typename V, 
-		  typename LessProc = FLessProc<K>, 
+		  typename LessThanProc = FLessThanProc<K>,
 		  typename NodeAllocator = FMapNodeAllocator<K, V> >
 class map : public RefObject
 {
 private:
 
-    rbtree<K, V, LessProc, NodeAllocator> m_rbtree;
+    rbtree<K, V, LessThanProc, NodeAllocator> m_rbtree;
 public:
-    typedef rbtree<K, V, LessProc, NodeAllocator> rbtree_type;
+    typedef rbtree<K, V, LessThanProc, NodeAllocator> rbtree_type;
     typedef pair<K, V> rbnode_type;
     template<typename T>
     struct FReadProc {

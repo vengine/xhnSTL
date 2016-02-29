@@ -139,11 +139,19 @@ inline char to_lower(char c)
 }
 
 template<class T>
-struct FLessProc
+struct FLessThanProc
 {
 	bool operator()(const T& a, const T& b) const {
 		return a < b;
 	}
+};
+    
+template<class T>
+struct FGreaterThanProc
+{
+    bool operator()(const T& a, const T& b) const {
+        return a > b;
+    }
 };
 
 template <typename T>
@@ -354,7 +362,7 @@ void sort ( RandomAccessIterator first, RandomAccessIterator last )
     if (first == last)
         return;
     last--;
-    sort_impl(first, last, FLessProc<typename RandomAccessIterator::value_type>());
+    sort_impl(first, last, FLessThanProc<typename RandomAccessIterator::value_type>());
 }
     
 template <typename RandomAccessIterator, typename Compare>
