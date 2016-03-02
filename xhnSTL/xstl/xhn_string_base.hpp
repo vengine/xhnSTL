@@ -95,6 +95,12 @@ public:
         m_own_str = str.m_own_str;
         m_size = str.m_size;
     }
+    string_base ( string_base &&str ) {
+        m_str = str.m_str;
+        m_own_str = str.m_own_str;
+        m_size = str.m_size;
+        str.m_own_str = false;
+    }
     string_base( const string_base &str, const char* filename, int line ) {
         if (str.m_own_str) {
             m_str = ( C * ) _Malloc ( (str.m_size + 1) * sizeof(C), filename, line );
@@ -154,6 +160,16 @@ public:
         }
         m_own_str = str.m_own_str;
         m_size = str.m_size;
+        return *this;
+    }
+    string_base &operator = ( string_base &&str ) {
+        if (m_own_str) {
+            Mfree ( m_str );
+        }
+        m_str = str.m_str;
+        m_own_str = str.m_own_str;
+        m_size = str.m_size;
+        str.m_own_str = false;
         return *this;
     }
     string_base &operator = ( const C *str ) {
