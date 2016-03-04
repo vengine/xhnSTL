@@ -85,6 +85,7 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTL/xhn_utility.hpp>
 #import <xhnSTL/xhn_vector.hpp>
 #import <xhnSTL/xhn_void_vector.hpp>
+#import <xhnSTL/xhn_unique_identifier.hpp>
 
 #import <xhnSTL/Singleton.h>
 #import <xhnSTL/apple_file_manager.h>

@@ -37,7 +37,7 @@ euint32 calc_hashnr(const char *key, euint length)
         nr^= (((nr & 63)+nr2)*((euint32) (euint8) *key++))+ (nr << 8);
         nr2+=3;
     }
-    return((euint32) nr);
+    return (nr & 0xfffffff0) | ((nr >> 16) & 0x0000000f);
 }
 
 /**

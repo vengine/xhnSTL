@@ -131,6 +131,8 @@
 		68FC12CF1BC9D31A00C8A0BE /* xhnSTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 68FC12CE1BC9D31A00C8A0BE /* xhnSTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68FC12D61BC9D31A00C8A0BE /* xhnSTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68FC12CB1BC9D31A00C8A0BE /* xhnSTL.framework */; };
 		68FC12DB1BC9D31A00C8A0BE /* xhnSTLTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */; };
+		B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */; };
+		B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -271,6 +273,8 @@
 		68FC12D51BC9D31A00C8A0BE /* xhnSTLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = xhnSTLTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = xhnSTLTests.mm; sourceTree = "<group>"; };
 		68FC12DC1BC9D31A00C8A0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
+		B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -430,6 +434,8 @@
 				68245CB11BC9D8F90006E99D /* xhn_utility.hpp */,
 				68245CB21BC9D8F90006E99D /* xhn_vector.hpp */,
 				68245CB31BC9D8F90006E99D /* xhn_void_vector.hpp */,
+				B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */,
+				B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */,
 			);
 			name = xstl;
 			path = ../../xhnSTL/xstl;
@@ -490,6 +496,7 @@
 				68245CBC1BC9D8F90006E99D /* array.h in Headers */,
 				68245D061BC9D8F90006E99D /* xhn_hash_set.hpp in Headers */,
 				68245D261BC9D8F90006E99D /* xhn_routine_pool.hpp in Headers */,
+				B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */,
 				68245CFC1BC9D8F90006E99D /* xhn_garbage_collector.hpp in Headers */,
 				68245CF41BC9D8F90006E99D /* xhn_exception.hpp in Headers */,
 				68245CD51BC9D8F90006E99D /* rwbuffer.h in Headers */,
@@ -667,6 +674,7 @@
 				68245D311BC9D8F90006E99D /* xhn_thread.cpp in Sources */,
 				68245D281BC9D8F90006E99D /* xhn_smart_ptr.cpp in Sources */,
 				68245CD61BC9D8F90006E99D /* sha256.c in Sources */,
+				B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */,
 				68245CD91BC9D8F90006E99D /* stack.c in Sources */,
 				68245CBB1BC9D8F90006E99D /* xhn_filesystem_node.mm in Sources */,
 				68245CB51BC9D8F90006E99D /* apple_file_manager.mm in Sources */,
