@@ -27,8 +27,329 @@ inline euint _strlen(const char* s)
 }
 #define to_struct_addr(t, member, addr) \
 	(t*)( ((char*)addr) - (esint)(&((t*)0)->member) )
+
 namespace xhn
 {
+    
+typedef decltype(nullptr) nullptr_t;
+
+/// 内部常数
+template <typename T, T V>
+struct internal_constant
+{
+    static constexpr const T      value = V;
+    typedef T               value_type;
+    typedef internal_constant type;
+    constexpr operator value_type() const noexcept {return value;}
+};
+
+template <typename T, T V>
+constexpr const T internal_constant<T, V>::value;
+
+/// 内部常数的布尔实例
+typedef internal_constant<bool, true>  true_constant;
+typedef internal_constant<bool, false> false_constant;
+
+/// 将一个类型转为右值引用
+template <class T> struct add_rvalue_reference                      {typedef T&& type;};
+template <>          struct add_rvalue_reference<void>                {typedef void type;};
+template <>          struct add_rvalue_reference<const void>          {typedef const void type;};
+template <>          struct add_rvalue_reference<volatile void>       {typedef volatile void type;};
+template <>          struct add_rvalue_reference<const volatile void> {typedef const volatile void type;};
+
+template <class T>
+typename add_rvalue_reference<T>::type
+declval() noexcept;
+
+/// 将一个引用转为指针
+
+template <class T>
+inline
+T*
+addressof(T& value) noexcept
+{
+    return (T*)&reinterpret_cast<const volatile char&>(value);
+}
+
+// 如果是const，则返回原始类型
+
+template <class T> struct remove_const            {typedef T type;};
+template <class T> struct remove_const<const T>   {typedef T type;};
+
+
+// 如果是volatile，则返回原始类型
+
+template <class T> struct remove_volatile             {typedef T type;};
+template <class T> struct remove_volatile<volatile T> {typedef T type;};
+
+
+// remove_const + remove_volatile
+
+template <class T> struct remove_cv
+{typedef typename remove_volatile<typename remove_const<T>::type>::type type;};
+
+
+// 判断是否是void
+
+template <class T> struct is_void_impl       : public false_constant {};
+template <>          struct is_void_impl<void> : public true_constant {};
+
+template <class T> struct is_void
+: public is_void_impl<typename remove_cv<T>::type> {};
+
+// 判断是否是nullptr
+
+template <class T> struct is_nullptr_t_impl       : public false_constant {};
+template <>          struct is_nullptr_t_impl<nullptr_t> : public true_constant {};
+
+template <class T> struct is_nullptr_t
+: public is_nullptr_t_impl<typename remove_cv<T>::type> {};
+
+/// 判断是否是联合
+
+template <class T> struct is_union_impl : public false_constant {};
+template <class T> struct is_union
+: public is_union_impl<typename remove_cv<T>::type> {};
+
+/// 判断是否是class
+
+namespace detail {
+    template <class T> char test(int T::*);
+    struct two_chars { char c[2]; };
+    template <class T> two_chars test(...);
+}
+
+template <class T>
+struct is_class : internal_constant<bool, sizeof(detail::test<T>(0))==1
+&& !is_union<T>::value> {};
+
+/// 判断是否是数组
+
+template <class T> struct is_array                 : public false_constant {};
+template <class T> struct is_array<T[]>            : public true_constant {};
+template <class T, euint N> struct is_array<T[N]> : public true_constant {};
+
+/// 如果是数组，则返回类型
+template <class T> struct remove_extent                {typedef T type;};
+template <class T> struct remove_extent<T[]>           {typedef T type;};
+template <class T, euint N> struct remove_extent<T[N]> {typedef T type;};
+
+/// 判断是否是引用
+
+template <typename T> struct is_lvalue_reference       : public false_constant {};
+template <typename T> struct is_lvalue_reference<T&>   : public true_constant {};
+
+template <typename T> struct is_rvalue_reference       : public false_constant {};
+
+template <typename T> struct is_reference              : public false_constant {};
+template <typename T> struct is_reference<T&>          : public true_constant {};
+
+/// 如果类型是引用（左值或右值皆可），返回的是引用前的类型
+template <typename T> struct remove_reference      {typedef T type;};
+template <typename T> struct remove_reference<T&>  {typedef T type;};
+template <typename T> struct remove_reference<T&&> {typedef T type;};
+
+/// 判断两个类型是否相同
+
+template <class T, class U> struct is_same       : public false_constant {};
+template <class T>          struct is_same<T, T> : public true_constant {};
+
+template <class _Bp, class _Dp>
+struct is_base_of
+: public internal_constant<bool, __is_base_of(_Bp, _Dp)> {};
+
+/// 获取一个类型的指针类型
+
+template <class T> struct add_pointer
+{typedef typename remove_reference<T>::type* type;};
+
+
+/// 判断是否是函数
+
+// primary template
+template<class>
+struct is_function : false_constant { };
+
+// specialization for regular functions
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)> : true_constant {};
+
+// specialization for variadic functions such as std::printf
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)> : true_constant {};
+
+// specialization for function types that have cv-qualifiers
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)const> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)volatile> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)const volatile> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)const> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)volatile> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)const volatile> : true_constant {};
+
+// specialization for function types that have ref-qualifiers
+template<class Ret, class... Args>
+struct is_function<Ret(Args...) &> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)const &> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)volatile &> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)const volatile &> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...) &> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)const &> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)volatile &> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)const volatile &> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...) &&> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)const &&> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)volatile &&> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...)const volatile &&> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...) &&> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)const &&> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)volatile &&> : true_constant {};
+template<class Ret, class... Args>
+struct is_function<Ret(Args...,...)const volatile &&> : true_constant {};
+
+
+/// xhn::move(t) 负责将表达式 t 转换为右值，使用这一转换意味着你不再关心 t 的内容，它可以通过被移动（窃取）来解决移动语意问题
+template <typename T>
+inline typename remove_reference<T>::type&&
+move(T&& t) noexcept
+{
+    typedef typename remove_reference<T>::type UpType;
+    return static_cast<UpType&&>(t);
+}
+
+/// xhn::forward<T>(u) 有两个参数：T 与 u。当T为左值引用类型时，u将被转换为T类型的左值，否则u将被转换为T类型右值。
+/// 如此定义xhn::forward是为了在使用右值引用参数的函数模板中解决参数的完美转发问题。
+template<typename T>
+inline T&&
+forward(typename remove_reference<T>::type& t)
+{ return static_cast<T&&>(t); }
+
+template<typename T>
+inline T&&
+forward(typename remove_reference<T>::type&& t)
+{
+    static_assert(!is_lvalue_reference<T>::value,
+                  "template argument substituting T is an lvalue reference type");
+    return static_cast<T&&>(t);
+}
+
+//////////////////////////////////////////////////////////
+namespace detail {
+    template <class F, class... Args>
+    inline auto INVOKE(F&& f, Args&&... args) ->
+    decltype(forward<F>(f)(forward<Args>(args)...)) {
+        return forward<F>(f)(forward<Args>(args)...);
+    }
+    
+    template <class Base, class T, class Derived>
+    inline auto INVOKE(T Base::*pmd, Derived&& ref) ->
+    decltype(forward<Derived>(ref).*pmd) {
+        return forward<Derived>(ref).*pmd;
+    }
+    
+    template <class PMD, class Pointer>
+    inline auto INVOKE(PMD&& pmd, Pointer&& ptr) ->
+    decltype((*forward<Pointer>(ptr)).*forward<PMD>(pmd)) {
+        return (*forward<Pointer>(ptr)).*forward<PMD>(pmd);
+    }
+    
+    template <class Base, class T, class Derived, class... Args>
+    inline auto INVOKE(T Base::*pmf, Derived&& ref, Args&&... args) ->
+    decltype((forward<Derived>(ref).*pmf)(forward<Args>(args)...)) {
+        return (forward<Derived>(ref).*pmf)(forward<Args>(args)...);
+    }
+    
+    template <class PMF, class Pointer, class... Args>
+    inline auto INVOKE(PMF&& pmf, Pointer&& ptr, Args&&... args) ->
+    decltype(((*forward<Pointer>(ptr)).*forward<PMF>(pmf))(forward<Args>(args)...)) {
+        return ((*forward<Pointer>(ptr)).*forward<PMF>(pmf))(forward<Args>(args)...);
+    }
+} // namespace detail
+
+// Minimal C++11 implementation:
+template <class> struct result_of;
+template <class F, class... ArgTypes>
+struct result_of<F(ArgTypes...)> {
+    using type = decltype(detail::INVOKE(declval<F>(), declval<ArgTypes>()...));
+};
+
+template< class F, class... ArgTypes>
+result_of<F&&(ArgTypes&&...)> invoke(F&& f, ArgTypes&&... args) {
+    return detail::INVOKE(forward<F>(f), forward<ArgTypes>(args)...);
+}
+//////////////////////////////////////////////////////////
+
+/// 引用包裹，将一个引用包裹为一个可拷贝可赋值得物体
+
+template <class T>
+class reference_wrapper {
+public:
+    // types
+    typedef T type;
+    
+    // construct/copy/destroy
+    reference_wrapper(T& ref) noexcept : _ptr(addressof(ref)) {}
+    reference_wrapper(T&&) = delete;
+    reference_wrapper(const reference_wrapper&) noexcept = default;
+    
+    // assignment
+    reference_wrapper& operator=(const reference_wrapper& x) noexcept = default;
+    
+    // access
+    operator T& () const noexcept { return *_ptr; }
+    T& get() const noexcept { return *_ptr; }
+    
+    template< class... ArgTypes >
+    typename result_of<T&(ArgTypes&&...)>::type
+    operator() ( ArgTypes&&... args ) const {
+        return invoke(get(), forward<ArgTypes>(args)...);
+    }
+    
+private:
+    T* _ptr;
+};
+
+//////////////////////////////////////////////////////////
+template<bool B, typename T, typename F>
+struct conditional { typedef T type; };
+
+template<typename T, typename F>
+struct conditional<false, T, F> { typedef F type; };
+//////////////////////////////////////////////////////////
+template< typename T >
+struct decay {
+private:
+    typedef typename remove_reference<T>::type U;
+public:
+    typedef typename conditional<is_array<U>::value,
+    typename remove_extent<U>::type*,
+    typename conditional<
+    is_function<U>::value,
+    typename add_pointer<U>::type,
+    typename remove_cv<U>::type
+    >::type
+    >::type type;
+};
+    
 class buffer
 {
 private:
