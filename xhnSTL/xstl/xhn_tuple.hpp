@@ -64,6 +64,19 @@ public:
         m_value = other.m_value;
         return *this;
     }
+    
+    bool operator<(const this_type& other) const
+    {
+        return
+        base_type::operator<(move(static_cast<const base_type&>(other)))
+        && (m_value < other.m_value);
+    }
+    bool operator<(const this_type&& other) const
+    {
+        return
+        base_type::operator<(move(static_cast<const base_type&>(other)))
+        && (m_value < other.m_value);
+    }
 };
 /// 只有一个T参数的tuple继承自空参数的empty_tuple
 template<typename T>
@@ -94,6 +107,14 @@ public:
     {
         m_value = other.m_value;
         return *this;
+    }
+    bool operator<(const this_type& other) const
+    {
+        return m_value < other.m_value;
+    }
+    bool operator<(const this_type&& other) const
+    {
+        return m_value < other.m_value;
     }
 };
 
