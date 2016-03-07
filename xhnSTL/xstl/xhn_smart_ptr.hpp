@@ -70,13 +70,7 @@ private:
     const WeakPtr& operator = (const WeakPtr& ptr) {
         /// do nothing
     }
-public:
-    WeakPtr()
-    : m_weak_count(nullptr)
-    {
-    }
-    ~WeakPtr()
-    {
+    void Dest() {
         if (m_weak_count) {
             if (!AtomicDecrement(&m_weak_count->weak_count)) {
                 volatile bool must_delete_count = false;
@@ -88,10 +82,19 @@ public:
                 }
                 if (must_delete_count) {
                     delete m_weak_count;
-                    m_weak_count = nullptr;
                 }
             }
         }
+        m_weak_count = nullptr;
+    }
+public:
+    WeakPtr()
+    : m_weak_count(nullptr)
+    {
+    }
+    ~WeakPtr()
+    {
+        Dest();
     }
     inline xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ToStrongPtr() const {
         xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ret;
@@ -273,7 +276,11 @@ public:
     void ToWeakPtr(WeakPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR>& result) {
         if (m_ptr) {
             AtomicIncrement(&m_ptr->weak_count->weak_count);
+            result.Dest();
             result.m_weak_count = m_ptr->weak_count;
+        }
+        else {
+            result.Dest();
         }
     }
 };
