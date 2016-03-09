@@ -10,6 +10,7 @@ ImplementRootRTTI(xhn::state_argument);
 ///==========================================================================///
 ///  state                                                                   ///
 ///==========================================================================///
+ImplementRootRTTI(xhn::state);
 void xhn::state::goto_state(const static_string state_name)
 {
     m_owner->goto_state(state_name);

@@ -40,6 +40,7 @@ typedef SmartPtr<state_machine> state_machine_ptr;
     ///
 class state : public RefObject
 {
+    DeclareRootRTTI;
 protected:
     state_machine_ptr m_sub_state_machine;
     state_machine* m_owner;
@@ -76,6 +77,12 @@ protected:
     template <typename STATE_TYPE>
     void add_state(state_argument_ptr argument) {
         STATE_TYPE* st = VNEW STATE_TYPE(this, argument);
+        st->init();
+        m_states.insert(st->get_name(), st);
+    }
+    template <typename STATE_TYPE, typename ...ARGS>
+    void add_state(ARGS&&... args) {
+        STATE_TYPE* st = VNEW STATE_TYPE(this, args...);
         st->init();
         m_states.insert(st->get_name(), st);
     }
