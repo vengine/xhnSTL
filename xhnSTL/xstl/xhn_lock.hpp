@@ -336,14 +336,15 @@ public:
         }
     };
     RecursiveSpinObject()
-    : m_tid(NULL)
+    : m_tid(nullptr)
     {
         ELock_Init(&m_interlock);
         ELock_Init(&m_lock);
     }
     template <typename ...ARGS>
     RecursiveSpinObject(ARGS... args)
-    : m_data(args...)
+    : m_tid(nullptr)
+    , m_data(args...)
     {
         ELock_Init(&m_interlock);
         ELock_Init(&m_lock);
