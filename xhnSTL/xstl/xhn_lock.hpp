@@ -318,7 +318,7 @@ public:
         : m_prototype(prototype)
         {}
     public:
-        inline Instance(Instance& inst)
+        inline Instance(const Instance& inst)
         : m_prototype(inst.m_prototype)
         {}
         ~Instance() {
@@ -337,6 +337,13 @@ public:
     };
     RecursiveSpinObject()
     : m_tid(NULL)
+    {
+        ELock_Init(&m_interlock);
+        ELock_Init(&m_lock);
+    }
+    template <typename ...ARGS>
+    RecursiveSpinObject(ARGS... args)
+    : m_data(args...)
     {
         ELock_Init(&m_interlock);
         ELock_Init(&m_lock);
@@ -407,6 +414,12 @@ public:
     };
 public:
     inline MutexObject()
+    {
+        pthread_mutex_init(&m_lock, NULL);
+    }
+    template <typename ...ARGS>
+    MutexObject(ARGS... args)
+    : m_data(args...)
     {
         pthread_mutex_init(&m_lock, NULL);
     }
