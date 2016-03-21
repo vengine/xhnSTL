@@ -128,7 +128,6 @@ public:
                 m_head = node->m_iter_next;
                 return ret;
             } else {
-                T *tmp = m_head;
                 m_head = m_tail = nullptr;
                 return nullptr;
             }
