@@ -62,15 +62,11 @@ public:
         m_own_str = own_str;
         m_size = count;
     }
-    string_base ( const C *str, euint size, bool own_str ) {
-        if (own_str) {
-            m_str = ( C * ) NMalloc ( (size + 1) * sizeof(C) );
-            memcpy ( m_str, str, size * sizeof(C) );
-            m_str[size] = 0;
-        }
-        else {
-            m_str = ( C * )str;
-        }
+    string_base ( const C *str, euint size ) {
+        m_str = ( C * ) NMalloc ( (size + 1) * sizeof(C) );
+        memcpy ( m_str, str, size * sizeof(C) );
+        m_str[size] = 0;
+        
         m_own_str = str;
         m_size = size;
     }
@@ -427,8 +423,8 @@ public:
             count++;
         }
         if (count) {
-            count--;
             subStrSize = count - begin;
+            count--;
             if (subStrSize) {
                 string_base tmp(&m_str[begin], subStrSize);
                 ret.push_back(tmp);
