@@ -153,7 +153,7 @@ or
 #    if defined(_MSC_VER)
 #        define ALIGN_FLAG(n) __declspec(align(n))
 #    elif defined(__APPLE__)
-#        define ALIGN_FLAG(n) __attribute__((align(n)))
+#        define ALIGN_FLAG(n) __attribute__((aligned(n)))
 #    endif
 
 #    ifdef __cplusplus

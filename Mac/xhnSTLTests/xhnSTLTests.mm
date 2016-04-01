@@ -75,11 +75,15 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
 - (void)testHashMap {
     xhn::hash_map<xhn::static_string, int>* map0 = VNEW xhn::hash_map<xhn::static_string, int>();
     xhn::hash_map<xhn::string, int>* map1 = VNEW xhn::hash_map<xhn::string, int>();
-    xhn::hash_map<int, int>* map2 = VNEW xhn::hash_map<int, int>();
+    xhn::hash_map<unsigned int, int>* map2 = VNEW xhn::hash_map<unsigned int, int>();
     
     map0->insert("1", 1);
     map1->insert("1", 1);
     map2->insert(1, 1);
+    
+    printf("%d\n", *map0->find("1"));
+    printf("%d\n", *map1->find("1"));
+    printf("%d\n", *map2->find(1));
 }
 /**
 - (void)testExample {

@@ -43,7 +43,6 @@ namespace xhn
     struct FHashVoidPointer
     {
         euint32 operator ()(void* key) {
-            
             return calc_hashnr ( (const char*)&key, sizeof(void*) );
         }
     };
@@ -51,16 +50,14 @@ namespace xhn
     struct FHashSpec
     {
         euint32 operator ()(const T& key) {
-            
             return key.hash_value();
         }
     };
     template <typename T>
     struct FHashImme
     {
-        euint32 operator ()(const T& key) {
-            
-            return calc_hashnr ( (const char*)&key, sizeof(T) );;
+        euint32 operator ()(const T key) {
+            return (euint32)key;
         }
     };
     
