@@ -81,7 +81,21 @@ public:
     euint size() const {
         return strlen(m_str);
     }
+    euint32 hash_value() const
+    {
+        int count = 0;
+        while (m_str[count]) {
+            count++;
+        }
+        return calc_hashnr ( (const char*)m_str, count * sizeof(*m_str) );
+    }
 };
+    
+inline euint32 _hash ( const static_string& key )
+{
+    return key.hash_value();
+}
+    
 }
 
 #endif

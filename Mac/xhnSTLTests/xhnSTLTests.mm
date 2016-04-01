@@ -13,6 +13,7 @@
 #include <xhnSTL/xhn_smart_ptr.hpp>
 #include <xhnSTL/xhn_vector.hpp>
 
+
 @interface xhnSTLTests : XCTestCase
 
 @end
@@ -69,6 +70,17 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
     });
     intArray.for_each(proc);
 }
+
+#include <xhnSTL/xhn_hash_map.hpp>
+- (void)testHashMap {
+    xhn::hash_map<xhn::static_string, int>* map0 = VNEW xhn::hash_map<xhn::static_string, int>();
+    xhn::hash_map<xhn::string, int>* map1 = VNEW xhn::hash_map<xhn::string, int>();
+    xhn::hash_map<int, int>* map2 = VNEW xhn::hash_map<int, int>();
+    
+    map0->insert("1", 1);
+    map1->insert("1", 1);
+    map2->insert(1, 1);
+}
 /**
 - (void)testExample {
     // This is an example of a functional test case.
@@ -96,5 +108,7 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
         while (!completed) {}
     }];
 }
+
+
 
 @end

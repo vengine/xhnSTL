@@ -444,6 +444,10 @@ public:
         return calc_hashnr ( (const char*)m_str, count * sizeof(C) );
     }
     
+    inline euint32 hash_value() const {
+        return get_hash();
+    }
+    
     C& operator[] (euint pos) const {
         return m_str[pos];
     }

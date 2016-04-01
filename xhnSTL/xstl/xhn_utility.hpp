@@ -96,6 +96,13 @@ template <>          struct is_void_impl<void> : public true_constant {};
 
 template <typename T> struct is_void
 : public is_void_impl<typename remove_cv<T>::type> {};
+    
+
+template <typename T> struct is_pointer_impl    : public false_constant {};
+template <typename T> struct is_pointer_impl<T*> : public true_constant {};
+    
+template <typename T> struct is_pointer
+: public is_pointer_impl<typename remove_cv<T>::type> {};
 
 // 判断是否是nullptr
 
@@ -148,6 +155,13 @@ template <typename T> struct is_reference<T&>          : public true_constant {}
 template <typename T> struct remove_reference      {typedef T type;};
 template <typename T> struct remove_reference<T&>  {typedef T type;};
 template <typename T> struct remove_reference<T&&> {typedef T type;};
+    
+/// 如果类型是指针，返回指针的类型
+template<typename T> struct remove_pointer                    {typedef T type;};
+template<typename T> struct remove_pointer<T*>                {typedef T type;};
+template<typename T> struct remove_pointer<T* const>          {typedef T type;};
+template<typename T> struct remove_pointer<T* volatile>       {typedef T type;};
+template<typename T> struct remove_pointer<T* const volatile> {typedef T type;};
 
 /// 判断两个类型是否相同
 
