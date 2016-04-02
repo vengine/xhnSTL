@@ -662,6 +662,67 @@ struct FCharFormat
 #endif
 };
     
+    struct FHashCharPointer
+    {
+        euint32 operator ()(const char* key) {
+            return calc_hashnr ( key, _strlen ( key ) );
+        }
+    };
+    struct FHashWCharPointer
+    {
+        euint32 operator ()(const wchar_t* key) {
+            int count = 0;
+            while (key[count]) {
+                count++;
+            }
+            return calc_hashnr ( (const char*)key, count * sizeof(wchar_t) );
+        }
+    };
+    struct FHashVoidPointer
+    {
+        euint32 operator ()(void* key) {
+            return calc_hashnr ( (const char*)&key, sizeof(void*) );
+        }
+    };
+    template <typename T>
+    struct FHashSpec
+    {
+        euint32 operator ()(const T& key) {
+            return key.hash_value();
+        }
+    };
+    template <typename T>
+    struct FHashImme
+    {
+        euint32 operator ()(const T key) {
+            return (euint32)key;
+        }
+    };
+    
+    template<typename T>
+    struct HasHashValueMethod
+    {
+        template<typename U, euint32 (U::*)() const> struct SFINAE {};
+        template<typename U> static char Test(SFINAE<U, &U::hash_value>*);
+        template<typename U> static int Test(...);
+        static const bool Has = sizeof(Test<T>(0)) == sizeof(char);
+    };
+    template <typename T>
+    struct FHashProc
+    {
+        typedef
+        typename conditional<is_pointer<T>::value,
+        typename conditional<is_same<typename remove_pointer<remove_cv<T>>::type, char>::value, FHashCharPointer,
+        typename conditional<is_same<typename remove_pointer<remove_cv<T>>::type, wchar_t>::value, FHashWCharPointer, FHashVoidPointer>::type
+        >::type,
+        typename conditional<HasHashValueMethod<T>::Has, FHashSpec<T>, FHashImme<T>>::type
+        >::type hashProc;
+        hashProc proc;
+        euint32 operator() (const T& v) {
+            return proc ( v );
+        }
+    };
+    
 inline void quick_sort(int* array, int begin, int end)
 {
     int i = begin;

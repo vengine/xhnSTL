@@ -85,6 +85,140 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
     printf("%d\n", *map1->find("1"));
     printf("%d\n", *map2->find(1));
 }
+
+#include <xhnSTL/xhn_singly_linked_list.hpp>
+
+struct SinglyLinkedListNode
+{
+    xhn::string name;
+    SinglyLinkedListNode* m_iter_prev;
+    SinglyLinkedListNode* m_iter_next;
+};
+- (void)testSinglyLinkedList0 {
+    xhn::singly_linked_list<SinglyLinkedListNode> singlyLinkedList;
+    SinglyLinkedListNode* node0 = new SinglyLinkedListNode();
+    SinglyLinkedListNode* node1 = new SinglyLinkedListNode();
+    SinglyLinkedListNode* node2 = new SinglyLinkedListNode();
+    node0->name = "node0";
+    node1->name = "node1";
+    node2->name = "node2";
+    singlyLinkedList.add(node0);
+    singlyLinkedList.add(node1);
+    singlyLinkedList.add(node2);
+    SinglyLinkedListNode* iter = singlyLinkedList.begin();
+    while (iter) {
+        printf("%s\n", iter->name.c_str());
+        iter = iter->m_iter_next;
+    }
+    printf("\n");
+    singlyLinkedList.remove(node1);
+    iter = singlyLinkedList.begin();
+    while (iter) {
+        printf("%s\n", iter->name.c_str());
+        iter = iter->m_iter_next;
+    }
+    printf("\n");
+    singlyLinkedList.remove(singlyLinkedList.begin());
+    iter = singlyLinkedList.begin();
+    while (iter) {
+        printf("%s\n", iter->name.c_str());
+        iter = iter->m_iter_next;
+    }
+    
+    delete node0;
+    delete node1;
+    delete node2;
+}
+
+- (void)testSinglyLinkedList1 {
+    xhn::singly_linked_list<SinglyLinkedListNode> singlyLinkedList;
+    SinglyLinkedListNode* node0 = new SinglyLinkedListNode();
+    SinglyLinkedListNode* node1 = new SinglyLinkedListNode();
+    SinglyLinkedListNode* node2 = new SinglyLinkedListNode();
+    node0->name = "node0";
+    node1->name = "node1";
+    node2->name = "node2";
+    singlyLinkedList.add(node0);
+    singlyLinkedList.add(node1);
+    singlyLinkedList.add(node2);
+    SinglyLinkedListNode* iter = singlyLinkedList.begin();
+    while (iter) {
+        printf("%s\n", iter->name.c_str());
+        iter = iter->m_iter_next;
+    }
+    printf("\n");
+    singlyLinkedList.remove(node0);
+    iter = singlyLinkedList.begin();
+    while (iter) {
+        printf("%s\n", iter->name.c_str());
+        iter = iter->m_iter_next;
+    }
+    printf("\n");
+    singlyLinkedList.remove(singlyLinkedList.begin());
+    iter = singlyLinkedList.begin();
+    while (iter) {
+        printf("%s\n", iter->name.c_str());
+        iter = iter->m_iter_next;
+    }
+    
+    delete node0;
+    delete node1;
+    delete node2;
+}
+- (void)testSinglyLinkedList2 {
+    xhn::singly_linked_list<SinglyLinkedListNode> singlyLinkedList;
+    SinglyLinkedListNode* node0 = new SinglyLinkedListNode();
+    SinglyLinkedListNode* node1 = new SinglyLinkedListNode();
+    SinglyLinkedListNode* node2 = new SinglyLinkedListNode();
+    node0->name = "node0";
+    node1->name = "node1";
+    node2->name = "node2";
+    singlyLinkedList.add(node0);
+    singlyLinkedList.add(node1);
+    singlyLinkedList.add(node2);
+    SinglyLinkedListNode* iter = singlyLinkedList.begin();
+    while (iter) {
+        printf("%s\n", iter->name.c_str());
+        iter = iter->m_iter_next;
+    }
+    printf("\n");
+    singlyLinkedList.remove(node2);
+    iter = singlyLinkedList.begin();
+    while (iter) {
+        printf("%s\n", iter->name.c_str());
+        iter = iter->m_iter_next;
+    }
+    printf("\n");
+    singlyLinkedList.remove(singlyLinkedList.begin());
+    iter = singlyLinkedList.begin();
+    while (iter) {
+        printf("%s\n", iter->name.c_str());
+        iter = iter->m_iter_next;
+    }
+    
+    delete node0;
+    delete node1;
+    delete node2;
+}
+
+#include <xhnSTL/xhn_open_addressing_hash_table.hpp>
+
+- (void)testOpenAddressingHashTable
+{
+    xhn::open_addressing_hash_table<xhn::string, int> hash_table;
+    hash_table.insert("abc", 1);
+    hash_table.insert("123", 2);
+    hash_table.insert("xyz", 3);
+    
+    int* abc = hash_table.find("abc");
+    printf("%d\n", *abc);
+    
+    int* _123 = hash_table.find("123");
+    printf("%d\n", *_123);
+    
+    int* xyz = hash_table.find("xyz");
+    printf("%d\n", *xyz);
+}
 /**
 - (void)testExample {
     // This is an example of a functional test case.
