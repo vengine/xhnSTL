@@ -9,6 +9,8 @@
 #ifndef xhn_open_addressing_hash_table_hpp
 #define xhn_open_addressing_hash_table_hpp
 
+#ifdef __cplusplus
+
 #include "common.h"
 #include "etypes.h"
 #include "xhn_singly_linked_list.hpp"
@@ -208,4 +210,7 @@ namespace xhn
     };
     
 }
+
+#endif
+
 #endif /* xhn_open_addressing_hash_table_hpp */
