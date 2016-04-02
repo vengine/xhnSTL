@@ -128,7 +128,7 @@ namespace xhn
                 while (current_node) {
                     hash_node<V>* node = current_node;
                     current_node = current_node->m_iter_next;
-                    singly_linked_list<hash_node<V>>* new_bucket = &new_buckets[current_node->m_hash_value & m_hash_mask];
+                    singly_linked_list<hash_node<V>>* new_bucket = &new_buckets[node->m_hash_value & m_hash_mask];
                     euint32 count = 0;
                     if (new_bucket->begin()) {
                         count = new_bucket->begin()->m_count + 1;
@@ -199,7 +199,7 @@ namespace xhn
             bucket->add(node);
             
             node->m_hash_value = hash_value;
-            node->m_count = count;
+            node->m_count = count + 1;
             
             if (count > 4) {
                 rebuild();

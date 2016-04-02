@@ -203,7 +203,7 @@ struct SinglyLinkedListNode
 
 #include <xhnSTL/xhn_open_addressing_hash_table.hpp>
 
-- (void)testOpenAddressingHashTable
+- (void)testOpenAddressingHashTable0
 {
     xhn::open_addressing_hash_table<xhn::string, int> hash_table;
     hash_table.insert("abc", 1);
@@ -218,6 +218,23 @@ struct SinglyLinkedListNode
     
     int* xyz = hash_table.find("xyz");
     printf("%d\n", *xyz);
+}
+
+- (void)testOpenAddressingHashTable1
+{
+    xhn::open_addressing_hash_table<xhn::string, int> hash_table;
+    for (int i = 0; i < 100; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%cde%dfgh", i, i);
+        hash_table.insert(mbuf, i);
+    }
+    
+    for (int i = 0; i < 100; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%cde%dfgh", i, i);
+        int* v = hash_table.find(mbuf);
+        printf("%d\n", *v);
+    }
 }
 /**
 - (void)testExample {
