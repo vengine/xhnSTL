@@ -24,7 +24,7 @@ namespace xhn
     {
     public:
         ALIGN_FLAG ( 16 ) V m_value;
-        ALIGN_FLAG ( 16 ) typename TKeyValue<const char*>::type m_key;
+        ALIGN_FLAG ( 16 ) typename TKeyValue<K>::type m_key;
         hash_node* m_iter_next;
         hash_node* m_iter_prev;
         euint32 m_hash_value;
