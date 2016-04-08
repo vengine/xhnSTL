@@ -680,7 +680,7 @@ struct FCharFormat
     };
     struct FHashVoidPointer
     {
-        euint32 operator ()(void* key) {
+        euint32 operator ()(const void* key) {
             return calc_hashnr ( (const char*)&key, sizeof(void*) );
         }
     };
@@ -694,7 +694,7 @@ struct FCharFormat
     template <typename T>
     struct FHashImme
     {
-        euint32 operator ()(const T key) {
+        euint32 operator ()(const T& key) {
             return (euint32)key;
         }
     };
@@ -712,8 +712,8 @@ struct FCharFormat
     {
         typedef
         typename conditional<is_pointer<T>::value,
-        typename conditional<is_same<typename remove_pointer<remove_cv<T>>::type, char>::value, FHashCharPointer,
-        typename conditional<is_same<typename remove_pointer<remove_cv<T>>::type, wchar_t>::value, FHashWCharPointer, FHashVoidPointer>::type
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, FHashCharPointer,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, FHashWCharPointer, FHashVoidPointer>::type
         >::type,
         typename conditional<HasHashValueMethod<T>::Has, FHashSpec<T>, FHashImme<T>>::type
         >::type hashProc;
@@ -721,6 +721,120 @@ struct FCharFormat
         euint32 operator() (const T& v) {
             return proc ( v );
         }
+    };
+    
+    struct FEqualCharPointer
+    {
+        bool operator ()(const char* a, const char* b) {
+            return strcmp(a, b);
+        }
+    };
+    struct FEqualWCharPointer
+    {
+        bool operator ()(const wchar_t* a, const wchar_t* b) {
+            int count = 0;
+            while (a[count] && b[count]) {
+                if (a[count] != b[count])
+                    return false;
+                count++;
+            }
+            if (!a[count] && !b[count])
+                return true;
+            else
+                return false;
+        }
+    };
+    struct FEqualVoidPointer
+    {
+        bool operator ()(const void* a, const void* b) {
+            return a == b;
+        }
+    };
+    template <typename T>
+    struct FEqualSpec
+    {
+        bool operator ()(const T& a, const T& b) {
+            return a.equal(b);
+        }
+    };
+    template <typename T>
+    struct FEqualImme
+    {
+        bool operator ()(const T& a, const T& b) {
+            return a == b;
+        }
+    };
+    
+    template<typename T>
+    struct HasEqualValueMethod
+    {
+        template<typename U, bool (U::*)() const> struct SFINAE {};
+        template<typename U> static char Test(SFINAE<U, &U::equal>*);
+        template<typename U> static int Test(...);
+        static const bool Has = sizeof(Test<T>(0)) == sizeof(char);
+    };
+    template <typename T>
+    struct FEqualProc
+    {
+        typedef
+        typename conditional<is_pointer<T>::value,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, FEqualCharPointer,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, FEqualWCharPointer, FEqualVoidPointer>::type
+        >::type,
+        typename conditional<HasEqualValueMethod<T>::Has, FEqualSpec<T>, FEqualImme<T>>::type
+        >::type equalProc;
+        equalProc proc;
+        bool operator() (const T& a, const T& b) {
+            return proc ( a, b );
+        }
+    };
+    
+    struct FStrCmpProc {
+        int operator() (const char* str0, const char* str1) const {
+            return strcmp(str0, str1);
+        }
+    };
+    struct FDefaultStrProc {
+        const char* operator() () const {
+            return "";
+        }
+    };
+    
+    struct FWStrCmpProc {
+        int operator() (const wchar_t* str0, const wchar_t* str1) const {
+            int count = 0;
+            while (str0[count]) {
+                if (!str1[count])
+                    return 1;
+                if (str0[count] < str1[count])
+                    return -1;
+                else if (str0[count] > str1[count])
+                    return 1;
+                count++;
+            }
+            if (str1[count])
+                return -1;
+            return 0;
+        }
+    };
+    struct FDefaultWStrProc {
+        const wchar_t* operator() () const {
+            return L"";
+        }
+    };
+    
+    template <typename T, typename STR_CMP_PROC, typename DEFAULT_STR_PROC> class string_base;
+    
+    template <typename T>
+    struct TKeyValue
+    {
+        typedef
+        typename conditional<is_pointer<T>::value,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base<char, FStrCmpProc, FDefaultStrProc>,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base<wchar_t, FWStrCmpProc, FDefaultWStrProc>, void*>::type
+        >::type,
+        T
+        >::type type;
     };
     
 inline void quick_sort(int* array, int begin, int end)

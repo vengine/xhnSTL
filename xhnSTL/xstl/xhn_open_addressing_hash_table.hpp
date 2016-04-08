@@ -19,31 +19,33 @@
 
 namespace xhn
 {
-    template <typename T>
+    template <typename K, typename V>
     class hash_node
     {
     public:
-        ALIGN_FLAG ( 16 ) T m_value;
+        ALIGN_FLAG ( 16 ) V m_value;
+        ALIGN_FLAG ( 16 ) typename TKeyValue<const char*>::type m_key;
         hash_node* m_iter_next;
         hash_node* m_iter_prev;
         euint32 m_hash_value;
         euint32 m_count;
-        hash_node( const T &value )
+        hash_node( const K &key, const V &value )
         : m_value(value)
+        , m_key(key)
         {}
     };
     
-    template <typename T>
+    template <typename K, typename V>
     class FHashBucketAllocator
     {
     public:
         typedef euint size_type;
         typedef euint difference_type;
-        typedef singly_linked_list<hash_node<T>>* pointer;
-        typedef const singly_linked_list<hash_node<T>>* const_pointer;
-        typedef singly_linked_list<hash_node<T>> value_type;
-        typedef singly_linked_list<hash_node<T>>& reference;
-        typedef const singly_linked_list<hash_node<T>>& const_reference;
+        typedef singly_linked_list<hash_node<K, V>>* pointer;
+        typedef const singly_linked_list<hash_node<K, V>>* const_pointer;
+        typedef singly_linked_list<hash_node<K, V>> value_type;
+        typedef singly_linked_list<hash_node<K, V>>& reference;
+        typedef const singly_linked_list<hash_node<K, V>>& const_reference;
         
         pointer address(reference v) const                           { return &v; }
         const_pointer address(const_reference v) const               { return &v; }
@@ -52,24 +54,23 @@ namespace xhn
         void deallocate(pointer ptr, size_type)                      { Mfree(ptr); }
         pointer allocate(size_type count)                            { return (pointer)NMalloc(count * sizeof(value_type)); }
         pointer allocate(size_type count, const void*)               { return (pointer)NMalloc(count * sizeof(value_type)); }
-        void construct(pointer ptr, const hash_node<T>& v)           { new (ptr) value_type( v ); }
+        void construct(pointer ptr, const hash_node<K, V>& v)        { new ( ptr ) value_type( v ); }
         void construct(const pointer ptr)                            { new ( ptr ) value_type (); }
-        void construct(pointer ptr, const T& v)                      { new ( ptr ) value_type (v); }
         void destroy(pointer ptr)                                    { ptr->~value_type(); }
         
         size_type max_size() const                                   { return static_cast<size_type>(-1) / sizeof(value_type); }
     };
-    template <typename T>
+    template <typename K, typename V>
     class FHashListNodeAllocator
     {
     public:
         typedef euint size_type;
         typedef euint difference_type;
-        typedef hash_node<T>* pointer;
-        typedef const hash_node<T>* const_pointer;
-        typedef hash_node<T> value_type;
-        typedef hash_node<T>& reference;
-        typedef const hash_node<T>& const_reference;
+        typedef hash_node<K, V>* pointer;
+        typedef const hash_node<K, V>* const_pointer;
+        typedef hash_node<K, V> value_type;
+        typedef hash_node<K, V>& reference;
+        typedef const hash_node<K, V>& const_reference;
         
         pointer address(reference v) const                               { return &v; }
         const_pointer address(const_reference v) const                   { return &v; }
@@ -78,9 +79,9 @@ namespace xhn
         void deallocate(pointer ptr, size_type)                          { Mfree(ptr); }
         pointer allocate(size_type count)                                { return (pointer)NMalloc(count * sizeof(value_type)); }
         pointer allocate(size_type count, const void*)                   { return (pointer)NMalloc(count * sizeof(value_type)); }
-        void construct(pointer ptr, const hash_node<T>& v)               { new (ptr) value_type( v ); }
+        void construct(pointer ptr, const hash_node<K, V>& v)            { new ( ptr ) value_type( v ); }
         void construct(const pointer ptr)                                { new ( ptr ) value_type (); }
-        void construct(pointer ptr, const T& v)                          { new ( ptr ) value_type (v); }
+        void construct(pointer ptr, const K& k, const V& v)              { new ( ptr ) value_type (k, v); }
         void destroy(pointer ptr)                                        { ptr->~value_type(); }
         
         size_type max_size() const                                       { return static_cast<size_type>(-1) / sizeof(value_type); }
@@ -89,23 +90,25 @@ namespace xhn
     template< typename K,
               typename V,
               typename HASH_PROC = FHashProc<K>,
-              typename BUCKET_ALLOCATOR = FHashBucketAllocator<V>,
-              typename NODE_ALLOCATOR = FHashListNodeAllocator<V> >
+              typename EQUAL_PROC = FEqualProc<K>,
+              typename BUCKET_ALLOCATOR = FHashBucketAllocator<K, V>,
+              typename NODE_ALLOCATOR = FHashListNodeAllocator<K, V> >
     class open_addressing_hash_table : public RefObject
     {
     public:
-        singly_linked_list<hash_node<V>>* m_buckets;
+        singly_linked_list<hash_node<K, V>>* m_buckets;
         euint32 m_hash_mask;
         euint32 m_num_buckets;
         HASH_PROC m_hash_proc;
+        EQUAL_PROC m_equal_proc;
         BUCKET_ALLOCATOR m_bucket_allocator;
         NODE_ALLOCATOR m_node_allocator;
     private:
-        void destroy_hash_node_list(singly_linked_list<hash_node<V>>* hash_node_list)
+        void destroy_hash_node_list(singly_linked_list<hash_node<K, V>>* hash_node_list)
         {
-            hash_node<V>* current_node = hash_node_list->begin();
+            hash_node<K, V>* current_node = hash_node_list->begin();
             while (current_node) {
-                hash_node<V>* deleted_node = current_node;
+                hash_node<K, V>* deleted_node = current_node;
                 current_node = hash_node_list->remove(current_node);
                 m_node_allocator.destroy(deleted_node);
                 m_node_allocator.deallocate(deleted_node);
@@ -113,24 +116,24 @@ namespace xhn
         }
         void rebuild()
         {
-            singly_linked_list<hash_node<V>>* old_buckets = m_buckets;
+            singly_linked_list<hash_node<K, V>>* old_buckets = m_buckets;
             euint32 old_num_buckets = m_num_buckets;
             m_hash_mask <<= 1;
             m_hash_mask |= 0x1;
             euint32 new_num_buckets = m_num_buckets << 1;
             
-            singly_linked_list<hash_node<V>>* new_buckets = m_bucket_allocator.allocate(new_num_buckets);
+            singly_linked_list<hash_node<K, V>>* new_buckets = m_bucket_allocator.allocate(new_num_buckets);
             for (euint32 i = 0; i < new_num_buckets; i++) {
                 m_bucket_allocator.construct(&new_buckets[i]);
             }
             
             for (euint32 i = 0; i < old_num_buckets; i++) {
-                singly_linked_list<hash_node<V>>* old_bucket = &old_buckets[i];
-                hash_node<V>* current_node = old_bucket->begin();
+                singly_linked_list<hash_node<K, V>>* old_bucket = &old_buckets[i];
+                hash_node<K, V>* current_node = old_bucket->begin();
                 while (current_node) {
-                    hash_node<V>* node = current_node;
+                    hash_node<K, V>* node = current_node;
                     current_node = current_node->m_iter_next;
-                    singly_linked_list<hash_node<V>>* new_bucket = &new_buckets[node->m_hash_value & m_hash_mask];
+                    singly_linked_list<hash_node<K, V>>* new_bucket = &new_buckets[node->m_hash_value & m_hash_mask];
                     euint32 count = 0;
                     if (new_bucket->begin()) {
                         count = new_bucket->begin()->m_count + 1;
@@ -146,13 +149,13 @@ namespace xhn
             m_num_buckets = new_num_buckets;
         }
         
-        hash_node<V>* find_hash_node ( const K &key ) {
+        hash_node<K, V>* find_hash_node ( const K &key ) {
             euint32 hash_value = m_hash_proc(key);
             euint32 ukey = hash_value & m_hash_mask;
-            singly_linked_list<hash_node<V>>* bucket = &m_buckets[ukey];
-            hash_node<V>* current_node = bucket->begin();
+            singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey];
+            hash_node<K, V>* current_node = bucket->begin();
             while (current_node) {
-                if (current_node->m_hash_value == hash_value)
+                if (current_node->m_key == key)
                     return current_node;
                 current_node = current_node->m_iter_next;
             }
@@ -169,7 +172,7 @@ namespace xhn
             }
         }
         V* find ( const K &key ) {
-            hash_node<V>* node = find_hash_node( key );
+            hash_node<K, V>* node = find_hash_node( key );
             if (node) {
                 return &node->m_value;
             }
@@ -180,10 +183,10 @@ namespace xhn
         void insert ( const K &key, const V& value ) {
             euint32 hash_value = m_hash_proc(key);
             euint32 ukey = hash_value & m_hash_mask;
-            singly_linked_list<hash_node<V>>* bucket = &m_buckets[ukey];
-            hash_node<V>* current_node = bucket->begin();
+            singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey];
+            hash_node<K, V>* current_node = bucket->begin();
             while (current_node) {
-                if (current_node->m_hash_value == hash_value) {
+                if (current_node->m_key == key) {
                     current_node->m_value = value;
                     return;
                 }
@@ -191,12 +194,12 @@ namespace xhn
             }
             
             euint32 count = 0;
-            hash_node<V>* head = bucket->begin();
+            hash_node<K, V>* head = bucket->begin();
             if (head) {
                 count = head->m_count;
             }
-            hash_node<V>* node = m_node_allocator.allocate(1);
-            m_node_allocator.construct(node, value);
+            hash_node<K, V>* node = m_node_allocator.allocate(1);
+            m_node_allocator.construct(node, key, value);
             
             bucket->add(node);
             

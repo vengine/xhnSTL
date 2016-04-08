@@ -225,15 +225,32 @@ struct SinglyLinkedListNode
     xhn::open_addressing_hash_table<xhn::string, int> hash_table;
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%cde%dfgh", i, i);
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
         hash_table.insert(mbuf, i);
     }
     
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%cde%dfgh", i, i);
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
         int* v = hash_table.find(mbuf);
-        printf("%d\n", *v);
+        printf("#1:%d\n", *v);
+    }
+}
+
+- (void)testOpenAddressingHashTable2
+{
+    xhn::open_addressing_hash_table<const char*, int> hash_table;
+    for (int i = 0; i < 100; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        hash_table.insert(mbuf, i);
+    }
+    
+    for (int i = 0; i < 100; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        int* v = hash_table.find(mbuf);
+        printf("#2:%d\n", *v);
     }
 }
 /**
