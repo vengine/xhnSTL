@@ -131,6 +131,8 @@
 		68FC12CF1BC9D31A00C8A0BE /* xhnSTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 68FC12CE1BC9D31A00C8A0BE /* xhnSTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68FC12D61BC9D31A00C8A0BE /* xhnSTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68FC12CB1BC9D31A00C8A0BE /* xhnSTL.framework */; };
 		68FC12DB1BC9D31A00C8A0BE /* xhnSTLTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */; };
+		B10D55A61CBE6D47003733D9 /* swift_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B10D55A41CBE6D47003733D9 /* swift_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B10D55A71CBE6D47003733D9 /* swift_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10D55A51CBE6D47003733D9 /* swift_parser.mm */; };
 		B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */; };
 		B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; };
@@ -276,6 +278,8 @@
 		68FC12D51BC9D31A00C8A0BE /* xhnSTLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = xhnSTLTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = xhnSTLTests.mm; sourceTree = "<group>"; };
 		68FC12DC1BC9D31A00C8A0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10D55A41CBE6D47003733D9 /* swift_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = swift_parser.hpp; sourceTree = "<group>"; };
+		B10D55A51CBE6D47003733D9 /* swift_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = swift_parser.mm; sourceTree = "<group>"; };
 		B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
 		B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
@@ -305,6 +309,8 @@
 		68245C2A1BC9D8F80006E99D /* objc */ = {
 			isa = PBXGroup;
 			children = (
+				B10D55A41CBE6D47003733D9 /* swift_parser.hpp */,
+				B10D55A51CBE6D47003733D9 /* swift_parser.mm */,
 				68245C2B1BC9D8F80006E99D /* apple_file_manager.h */,
 				68245C2C1BC9D8F80006E99D /* apple_file_manager.mm */,
 				68245C2D1BC9D8F80006E99D /* ObjCPropertys.h */,
@@ -545,6 +551,7 @@
 				68245CCD1BC9D8F90006E99D /* hash.h in Headers */,
 				68245D231BC9D8F90006E99D /* xhn_rbtree.hpp in Headers */,
 				68245CF81BC9D8F90006E99D /* xhn_filesystem_node.h in Headers */,
+				B10D55A61CBE6D47003733D9 /* swift_parser.hpp in Headers */,
 				68245CFA1BC9D8F90006E99D /* xhn_functor.hpp in Headers */,
 				68245CBE1BC9D8F90006E99D /* comparison_algorithm.h in Headers */,
 				68245CEE1BC9D8F90006E99D /* xhn_crypto.hpp in Headers */,
@@ -699,6 +706,7 @@
 				68245CFD1BC9D8F90006E99D /* xhn_gc_array.cpp in Sources */,
 				68245D2E1BC9D8F90006E99D /* xhn_string.cpp in Sources */,
 				68245CDF1BC9D8F90006E99D /* utility.c in Sources */,
+				B10D55A71CBE6D47003733D9 /* swift_parser.mm in Sources */,
 				68245CED1BC9D8F90006E99D /* xhn_crypto.cpp in Sources */,
 				68245CFF1BC9D8F90006E99D /* xhn_gc_container_base.cpp in Sources */,
 				68245D351BC9D8F90006E99D /* xhn_thread_pool.cpp in Sources */,

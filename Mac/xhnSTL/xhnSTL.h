@@ -93,4 +93,6 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTL/ObjCPropertys.h>
 #import <xhnSTL/ObjCString.h>
 
+#import <xhnSTL/swift_parser.hpp>
+
 #endif
