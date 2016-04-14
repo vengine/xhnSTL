@@ -105,7 +105,9 @@ namespace xhn {
     string SwiftParser::CreateBridgeFile()
     {
         xhn::string bridgeFile;
-        bridgeFile = "static NSMutableDictionary* s_procDic = nil;\n";
+        bridgeFile = "static xhn::SpinLock s_lock;\n";
+        bridgeFile += "static NSMutableSet* s_agentSet = nil;\n";
+        bridgeFile += "static NSMutableDictionary* s_procDic = nil;\n";
         bridgeFile += "@interface CreateAgentProc : NSObject\n";
         bridgeFile += "@property (assign) SceneNodeAgent* (^createAgentProc)();\n";
         bridgeFile += "-(id)initWithProc:(SceneNodeAgent*(^)())proc;\n";
@@ -120,6 +122,7 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
         bridgeFile += "void InitProcDic() {\n";
+        bridgeFile += "    s_agentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_procDic = [NSMutableDictionary new];\n";
         auto rootIter = m_roots.begin();
         auto rootEnd = m_roots.end();
@@ -147,11 +150,26 @@ namespace xhn {
             }
         }
         bridgeFile += "}\n";
-        bridgeFile += "void AttachAgent(const char* type, void* sceneNode) {\n";
+        bridgeFile += "void* CreateAgent(const char* type) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
         bridgeFile += "    CreateAgentProc* proc = s_procDic[strType];\n";
         bridgeFile += "    SceneNodeAgent* agent = proc.createAgentProc();\n";
-        bridgeFile += "    [agent setSceneNode:sceneNode];\n";
+        bridgeFile += "    {\n";
+        bridgeFile += "        auto inst = s_lock.Lock();\n";
+        bridgeFile += "        [s_agentSet addObject:agent];\n";
+        bridgeFile += "        return  (__bridge void *)agent;\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "void RemoveAgent(void* agent) {\n";
+        bridgeFile += "    {\n";
+        bridgeFile += "        auto inst = s_lock.Lock();\n";
+        bridgeFile += "        SceneNodeAgent* agentID = (__bridge id)agent;\n";
+        bridgeFile += "        [s_agentSet removeObject:agentID];\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "void UpdateAgent(void* agent, double elapsedTime) {\n";
+        bridgeFile += "    SceneNodeAgent* agentID = (__bridge id)agent;\n";
+        bridgeFile += "    [agentID Update:elapsedTime];\n";
         bridgeFile += "}\n";
         ///printf("%s\n", bridgeFile.c_str());
         return bridgeFile;
