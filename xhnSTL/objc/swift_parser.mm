@@ -14,11 +14,11 @@
 static xhn::SpinLock s_SwiftCommandLineUtilsLock;
 static NSMutableSet* s_SwiftCommandLineUtils = nil;
 
-static FILE* s_ASTFile = nullptr;
+///static FILE* s_ASTFile = nullptr;
 
 @interface SwiftCommandLineUtil : NSObject
 @property (assign) xhn::SwiftParser* parser;
-- (void) runCommand:(NSString*)commandToRun;
+- (xhn::string) runCommand:(NSString*)commandToRun;
 @end
 
 namespace xhn {
@@ -85,10 +85,8 @@ namespace xhn {
     {
         ///
     }
-    void SwiftParser::EndParse()
+    string SwiftParser::EndParse()
     {
-        /**
-        printf("###num roots %lld\n", m_roots.size());
         auto rootIter = m_roots.begin();
         auto rootEnd = m_roots.end();
         for (; rootIter != rootEnd; rootIter++) {
@@ -97,22 +95,14 @@ namespace xhn {
             auto end = root->children.end();
             for (; iter != end; iter++) {
                 ASTNode* node = *iter;
-                printf("%s %s ", node->type.c_str(), node->name.c_str());
-                if (node->inherits) {
-                    printf("inherits: ");
-                    auto iter = node->inherits->begin();
-                    auto end = node->inherits->end();
-                    for (; iter != end; iter++) {
-                        printf("%s ", (*iter).c_str());
-                    }
+                if (StrClassDecl == node->type) {
+                    printf("CLASS:%s %s\n", node->type.c_str(), node->name.c_str());
                 }
-                printf("\n");
             }
         }
-         **/
-        CreateBridgeFile();
+        return CreateBridgeFile();
     }
-    void SwiftParser::CreateBridgeFile()
+    string SwiftParser::CreateBridgeFile()
     {
         xhn::string bridgeFile;
         bridgeFile = "static NSMutableDictionary* s_procDic = nil;\n";
@@ -163,7 +153,8 @@ namespace xhn {
         bridgeFile += "    SceneNodeAgent* agent = proc.createAgentProc();\n";
         bridgeFile += "    [agent setSceneNode:sceneNode];\n";
         bridgeFile += "}\n";
-        printf("%s\n", bridgeFile.c_str());
+        ///printf("%s\n", bridgeFile.c_str());
+        return bridgeFile;
     }
     void SwiftParser::Parse(const char* strBuffer, euint length)
     {
@@ -304,12 +295,13 @@ namespace xhn {
             count++;
         }
     }
-    void SwiftParser::Parse(const xhn::static_string path)
+    string SwiftParser::Parse(const string& paths)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
         NSString* command = [[NSString alloc] initWithFormat:@"swiftc -dump-ast %@",
-                             [[NSString alloc] initWithUTF8String:path.c_str()]];
-        [sclu runCommand:command];
+                             [[NSString alloc] initWithUTF8String:paths.c_str()]];
+        string ret = [sclu runCommand:command];
+        return ret;
     }
     SwiftParser::SwiftParser()
     : m_isApostropheBlock(false)
@@ -318,11 +310,11 @@ namespace xhn {
     , m_isName(false)
     , m_isInherits(false)
     {
-        s_ASTFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main2.txt", "wb");
+        ///s_ASTFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main2.txt", "wb");
     }
     SwiftParser::~SwiftParser()
     {
-        fclose(s_ASTFile);
+        ///fclose(s_ASTFile);
     }
 }
 
@@ -339,21 +331,11 @@ namespace xhn {
         [fh waitForDataInBackgroundAndNotify];
 
         self.parser->Parse((const char*)[data bytes], [data length]);
-        fwrite([data bytes], 1, [data length], s_ASTFile);
-    }
-    else {
-        self.parser->EndParse();
-        delete self.parser;
-        {
-            auto inst = s_SwiftCommandLineUtilsLock.Lock();
-            if (s_SwiftCommandLineUtils) {
-                [s_SwiftCommandLineUtils removeObject:self];
-            }
-        }
+        ///fwrite([data bytes], 1, [data length], s_ASTFile);
     }
 }
 
-- (void) runCommand:(NSString*)commandToRun
+- (xhn::string) runCommand:(NSString*)commandToRun
 {
     NSTask *task;
     task = [[NSTask alloc] init];
@@ -387,5 +369,16 @@ namespace xhn {
     self.parser = VNEW xhn::SwiftParser();
     self.parser->BeginParse();
     [task launch];
+    [task waitUntilExit];
+    xhn::string ret = self.parser->EndParse();
+    printf("%s\n", ret.c_str());
+    delete self.parser;
+    {
+        auto inst = s_SwiftCommandLineUtilsLock.Lock();
+        if (s_SwiftCommandLineUtils) {
+            [s_SwiftCommandLineUtils removeObject:self];
+        }
+    }
+    return ret;
 }
 @end

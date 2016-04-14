@@ -22,13 +22,13 @@ namespace xhn {
 class SwiftParser : public MemObject
 {
 public:
-    STATIC_CONST xhn::static_string StrSourceFile;
-    STATIC_CONST xhn::static_string StrClassDecl;
-    STATIC_CONST xhn::static_string StrImportDecl;
-    STATIC_CONST xhn::static_string StrFuncDecl;
-    STATIC_CONST xhn::static_string StrInherits;
+    static const xhn::static_string StrSourceFile;
+    static const xhn::static_string StrClassDecl;
+    static const xhn::static_string StrImportDecl;
+    static const xhn::static_string StrFuncDecl;
+    static const xhn::static_string StrInherits;
     
-    STATIC_CONST xhn::static_string StrSceneNodeAgent;
+    static const xhn::static_string StrSceneNodeAgent;
     enum ASTNodeType
     {
         SourceFileNode,
@@ -59,14 +59,14 @@ public:
         bool IsInteger();
         bool IsIdentifier();
         bool IsFunctionResult();
-        xhn::static_string GetSymbol();
+        static_string GetSymbol();
     };
 private:
-    xhn::vector<ASTNode*> m_roots;
-    xhn::vector<ASTNode*> m_nodes;
-    xhn::vector<ASTNode*> m_classDeclNodes;
+    vector<ASTNode*> m_roots;
+    vector<ASTNode*> m_nodes;
+    vector<ASTNode*> m_classDeclNodes;
 private:
-    xhn::vector<ASTNode*> m_nodeStack;
+    vector<ASTNode*> m_nodeStack;
     SymbolBuffer m_symbolBuffer;
     bool m_isApostropheBlock;
     bool m_isQuotationBlock;
@@ -75,10 +75,10 @@ private:
     bool m_isInherits;
 public:
     void BeginParse();
-    void EndParse();
-    void CreateBridgeFile();
+    string EndParse();
+    string CreateBridgeFile();
     void Parse(const char* strBuffer, euint length);
-    static void Parse(const xhn::static_string path);
+    static string Parse(const xhn::string& paths);
     SwiftParser();
     ~SwiftParser();
 };
