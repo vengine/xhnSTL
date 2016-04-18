@@ -78,7 +78,7 @@ public:
     string EndParse();
     string CreateBridgeFile();
     void Parse(const char* strBuffer, euint length);
-    static string Parse(const xhn::string& paths);
+    static void ParseSwifts(const xhn::string& paths, xhn::Lambda<void (const xhn::string&)>& callback);
     SwiftParser();
     ~SwiftParser();
 };

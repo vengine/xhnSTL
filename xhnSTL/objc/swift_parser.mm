@@ -14,11 +14,11 @@
 static xhn::SpinLock s_SwiftCommandLineUtilsLock;
 static NSMutableSet* s_SwiftCommandLineUtils = nil;
 
-///static FILE* s_ASTFile = nullptr;
+static FILE* s_ASTFile = nullptr;
 
 @interface SwiftCommandLineUtil : NSObject
 @property (assign) xhn::SwiftParser* parser;
-- (xhn::string) runCommand:(NSString*)commandToRun;
+- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&))proc;
 @end
 
 namespace xhn {
@@ -109,11 +109,11 @@ namespace xhn {
         bridgeFile += "static NSMutableSet* s_agentSet = nil;\n";
         bridgeFile += "static NSMutableDictionary* s_procDic = nil;\n";
         bridgeFile += "@interface CreateAgentProc : NSObject\n";
-        bridgeFile += "@property (assign) SceneNodeAgent* (^createAgentProc)();\n";
-        bridgeFile += "-(id)initWithProc:(SceneNodeAgent*(^)())proc;\n";
+        bridgeFile += "@property (assign) SceneNodeAgent* (^createAgentProc)(void*);\n";
+        bridgeFile += "-(id)initWithProc:(SceneNodeAgent*(^)(void*))proc;\n";
         bridgeFile += "@end;\n";
         bridgeFile += "@implementation CreateAgentProc \n";
-        bridgeFile += "-(id)initWithProc:(SceneNodeAgent*(^)())proc {\n";
+        bridgeFile += "-(id)initWithProc:(SceneNodeAgent*(^)(void*))proc {\n";
         bridgeFile += "   self = [super init];\n";
         bridgeFile += "   if (self) {\n";
         bridgeFile += "       self.createAgentProc = proc;\n";
@@ -140,7 +140,7 @@ namespace xhn {
                             if (StrSceneNodeAgent == *iter) {
                                 char mbuf[256];
                                 snprintf(mbuf, 255,
-                                         "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^{ return [%s new]; }];\n", '"', node->name.c_str(), '"', node->name.c_str());
+                                         "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^(void* sceneNode){ return [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]]; }];\n", '"', node->name.c_str(), '"', node->name.c_str());
                                 bridgeFile += mbuf;
                                 break;
                             }
@@ -150,10 +150,10 @@ namespace xhn {
             }
         }
         bridgeFile += "}\n";
-        bridgeFile += "void* CreateAgent(const char* type) {\n";
+        bridgeFile += "void* CreateAgent(const char* type, void* sceneNode) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
         bridgeFile += "    CreateAgentProc* proc = s_procDic[strType];\n";
-        bridgeFile += "    SceneNodeAgent* agent = proc.createAgentProc();\n";
+        bridgeFile += "    SceneNodeAgent* agent = proc.createAgentProc(sceneNode);\n";
         bridgeFile += "    {\n";
         bridgeFile += "        auto inst = s_lock.Lock();\n";
         bridgeFile += "        [s_agentSet addObject:agent];\n";
@@ -313,13 +313,16 @@ namespace xhn {
             count++;
         }
     }
-    string SwiftParser::Parse(const string& paths)
+    void SwiftParser::ParseSwifts(const string& paths, xhn::Lambda<void (const xhn::string&)>& callback)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
         NSString* command = [[NSString alloc] initWithFormat:@"swiftc -dump-ast %@",
                              [[NSString alloc] initWithUTF8String:paths.c_str()]];
-        string ret = [sclu runCommand:command];
-        return ret;
+        __block xhn::Lambda<void (const xhn::string&)> tmpCallback = callback;
+        void (^objcCallback)(const xhn::string&)  = ^(const xhn::string& result) {
+            tmpCallback(result);
+        };
+        [sclu runCommand:command callback:objcCallback];
     }
     SwiftParser::SwiftParser()
     : m_isApostropheBlock(false)
@@ -328,15 +331,18 @@ namespace xhn {
     , m_isName(false)
     , m_isInherits(false)
     {
-        ///s_ASTFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main2.txt", "wb");
+        s_ASTFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main2.txt", "wb");
     }
     SwiftParser::~SwiftParser()
     {
-        ///fclose(s_ASTFile);
+        fclose(s_ASTFile);
     }
 }
 
 @implementation SwiftCommandLineUtil
+{
+    void(^mCallback)(const xhn::string&);
+}
 - (void) dealloc
 {
     printf("here\n");
@@ -349,12 +355,25 @@ namespace xhn {
         [fh waitForDataInBackgroundAndNotify];
 
         self.parser->Parse((const char*)[data bytes], [data length]);
-        ///fwrite([data bytes], 1, [data length], s_ASTFile);
+        fwrite([data bytes], 1, [data length], s_ASTFile);
+    }
+    else {
+        xhn::string ret = self.parser->EndParse();
+        printf("%s\n", ret.c_str());
+        delete self.parser;
+        {
+            auto inst = s_SwiftCommandLineUtilsLock.Lock();
+            if (s_SwiftCommandLineUtils) {
+                [s_SwiftCommandLineUtils removeObject:self];
+            }
+        }
+        mCallback(ret);
     }
 }
 
-- (xhn::string) runCommand:(NSString*)commandToRun
+- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&))proc
 {
+    mCallback = proc;
     NSTask *task;
     task = [[NSTask alloc] init];
     [task setLaunchPath: @"/bin/sh"];
@@ -370,6 +389,9 @@ namespace xhn {
     pipe = [NSPipe pipe];
     [task setStandardOutput: pipe];
     [task setStandardError: [task standardOutput]];
+    
+    NSPipe* inPipe = [NSPipe pipe];
+    [task setStandardInput:inPipe];
     
     NSFileHandle *file;
     file = [pipe fileHandleForReading];
@@ -387,16 +409,5 @@ namespace xhn {
     self.parser = VNEW xhn::SwiftParser();
     self.parser->BeginParse();
     [task launch];
-    [task waitUntilExit];
-    xhn::string ret = self.parser->EndParse();
-    printf("%s\n", ret.c_str());
-    delete self.parser;
-    {
-        auto inst = s_SwiftCommandLineUtilsLock.Lock();
-        if (s_SwiftCommandLineUtils) {
-            [s_SwiftCommandLineUtils removeObject:self];
-        }
-    }
-    return ret;
 }
 @end
