@@ -11,7 +11,7 @@
 #include "xhn_lock.hpp"
 #import <Foundation/Foundation.h>
 
-#define USING_AST_LOG 0
+#define USING_AST_LOG 1
 
 #if USING_AST_LOG
 
@@ -20,7 +20,7 @@
 #define ASTLog(fmt,...) { \
 int size = \
 snprintf(s_ASTBuffer,AST_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
-fwrite(s_ASTBuffer, 1, size, s_ASTFile); }
+fwrite(s_ASTBuffer, 1, size, s_ASTLogFile); }
 
 #define COMMANDLog(fmt,...) { \
 int size = \
@@ -28,10 +28,12 @@ snprintf(s_COMMANDBuffer,COMMAND_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
 fwrite(s_COMMANDBuffer, 1, size, s_COMMANDFile); }
 
 static char s_ASTBuffer[AST_BUFFER_SIZE];
-static FILE* s_ASTFile = nullptr;
+static FILE* s_ASTLogFile = nullptr;
 
 static char s_COMMANDBuffer[AST_BUFFER_SIZE];
 static FILE* s_COMMANDFile = nullptr;
+
+static FILE* s_ASTFile = nullptr;
 
 #else
 #define ASTLog(fmt,...)
@@ -53,6 +55,10 @@ namespace xhn {
     const xhn::static_string SwiftParser::StrImportDecl("import_decl");
     const xhn::static_string SwiftParser::StrFuncDecl("func_decl");
     const xhn::static_string SwiftParser::StrInherits("inherits:");
+    const xhn::static_string SwiftParser::StrAccess("access");
+    const xhn::static_string SwiftParser::StrPrivate("private");
+    const xhn::static_string SwiftParser::StrInternal("internal");
+    const xhn::static_string SwiftParser::StrPublic("public");
     
     const xhn::static_string SwiftParser::StrSceneNodeAgent("SceneNodeAgent");
 
@@ -116,12 +122,41 @@ namespace xhn {
         auto rootEnd = m_roots.end();
         for (; rootIter != rootEnd; rootIter++) {
             ASTNode* root = *rootIter;
-            auto iter = root->children.begin();
-            auto end = root->children.end();
+            if (!root->children)
+                continue;
+            auto iter = root->children->begin();
+            auto end = root->children->end();
             for (; iter != end; iter++) {
                 ASTNode* node = *iter;
                 if (StrClassDecl == node->type) {
-                    ASTLog("CLASS:%s %s\n", node->type.c_str(), node->name.c_str());
+                    ASTLog("CLASS:%s %s ACCESS: %s inherits:", node->type.c_str(), node->name.c_str(), node->access.c_str());
+                    if (node->inherits) {
+                        auto inhIter = node->inherits->begin();
+                        auto inhEnd = node->inherits->end();
+                        for (; inhIter != inhEnd; inhIter++) {
+                            ASTLog("%s ", (*inhIter).c_str());
+                        }
+                    }
+                    {
+                        if (node->children) {
+                            auto childIter = node->children->begin();
+                            auto childEnd = node->children->end();
+                            for (; childIter != childEnd; childIter++) {
+                                ASTNode* child = *childIter;
+                                if (StrClassDecl == child->type) {
+                                    ASTLog("\n    CHILD_CLASS:%s %s ACCESS: %s inherits:", child->type.c_str(), child->name.c_str(), child->access.c_str());
+                                    if (child->inherits) {
+                                        auto inhIter = child->inherits->begin();
+                                        auto inhEnd = child->inherits->end();
+                                        for (; inhIter != inhEnd; inhIter++) {
+                                            ASTLog("%s ", (*inhIter).c_str());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    ASTLog("\n");
                 }
             }
         }
@@ -146,6 +181,20 @@ namespace xhn {
         bridgeFile += "   return self;\n";
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
+        
+        char mbuf[1024];
+        snprintf(mbuf, 1023,
+        "Class swiftClassFromString(NSString *nameSpace, NSString *className) {\n"
+        ///"   NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@%cCFBundleName%c];\n"
+        "   NSString *appName = @%cVEngineLogic%c;\n"
+        "   NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%cld%c@%cld%c@%c, \n"
+        "   appName.length, appName, nameSpace.length, nameSpace, className.length, className];\n"
+        "   return NSClassFromString(classStringName);\n"
+        "}\n",
+        '"', '"',
+        '"', '%', '%', '%', '%', '%', '%', '"');
+        bridgeFile += mbuf;
+
         bridgeFile += "void InitProcDic() {\n";
         bridgeFile += "    s_agentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_procDic = [NSMutableDictionary new];\n";
@@ -153,11 +202,13 @@ namespace xhn {
         auto rootEnd = m_roots.end();
         for (; rootIter != rootEnd; rootIter++) {
             ASTNode* root = *rootIter;
-            auto iter = root->children.begin();
-            auto end = root->children.end();
+            if (!root->children)
+                continue;
+            auto iter = root->children->begin();
+            auto end = root->children->end();
             for (; iter != end; iter++) {
                 ASTNode* node = *iter;
-                if (StrClassDecl == node->type) {
+                if (StrClassDecl == node->type && StrPublic == node->access) {
                     if (node->inherits) {
                         auto iter = node->inherits->begin();
                         auto end = node->inherits->end();
@@ -166,12 +217,49 @@ namespace xhn {
                                 char mbuf[512];
                                 snprintf(mbuf, 511,
                                          "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^(void* sceneNode)\n"
-                                         "    { %s* ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n"
-                                         "        [ret Start];\n"
-                                         "        return ret;\n"
-                                         "    }];\n",
+                                         "    {\n"
+                                         "        %s* ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n",
                                          '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
+                                
                                 bridgeFile += mbuf;
+                                {
+                                    if (node->children) {
+                                        char mbuf[512];
+                                        xhn::string firstState;
+                                        auto childIter = node->children->begin();
+                                        auto childEnd = node->children->end();
+                                        for (int i = 0; childIter != childEnd; childIter++, i++) {
+                                            ASTNode* child = *childIter;
+                                            if (StrClassDecl == child->type && StrPublic == child->access) {
+                                                ///xhn::string fullClassName = node->name.c_str();
+                                                ///fullClassName += ".";
+                                                ///fullClassName += child->name.c_str();
+                                                
+                                                snprintf(mbuf, 511,
+                                                         "        id state%d = [[swiftClassFromString(@%c%s%c, @%c%s%c) alloc] init];\n"
+                                                         "        [ret SetState:@%c%s%c state:state%d];\n",
+                                                         i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
+                                                         '"', child->name.c_str(), '"', i);
+                                                bridgeFile += mbuf;
+                                                
+                                                if (!firstState.size()) {
+                                                    snprintf(mbuf, 511, "state%d", i);
+                                                    firstState = mbuf;
+                                                }
+                                            }
+                                        }
+                                        if (firstState.size()) {
+                                            snprintf(mbuf, 511,
+                                                     "        [ret SetCurrentState:%s];\n",
+                                                     firstState.c_str());
+                                            bridgeFile += mbuf;
+                                        }
+                                    }
+                                }
+                                bridgeFile +=
+                                "        [ret Start];\n"
+                                "        return ret;\n"
+                                "    }];\n";
                                 break;
                             }
                         }
@@ -208,7 +296,7 @@ namespace xhn {
     {
         euint count = 0;
         
-        auto reduceNodeType = [this]()
+        auto reduce = [this]()
         {
             if (m_isNodeType) {
                 xhn::static_string symbol = m_symbolBuffer.GetSymbol();
@@ -222,10 +310,21 @@ namespace xhn {
                 m_isNodeType = false;
                 m_isName = true;
             }
+            else if (m_isAccess) {
+                xhn::static_string symbol = m_symbolBuffer.GetSymbol();
+                m_symbolBuffer.bufferTop = 0;
+                if (m_nodeStack.size()) {
+                    m_nodeStack.back()->access = symbol;
+                }
+                m_isAccess = false;
+            }
             else {
                 xhn::static_string symbol = m_symbolBuffer.GetSymbol();
                 if (StrInherits == symbol) {
                     m_isInherits = true;
+                }
+                else if (StrAccess == symbol) {
+                    m_isAccess = true;
                 }
             }
         };
@@ -265,14 +364,17 @@ namespace xhn {
                     m_isName = false;
                     if (!m_isApostropheBlock &&
                         !m_isQuotationBlock) {
-                        reduceNodeType();
+                        reduce();
                         m_symbolBuffer.bufferTop = 0;
                         ASTNode* currentNode = m_nodeStack.back();
                         m_nodeStack.pop_back();
                         if (m_nodeStack.size()) {
                             ASTNode* parentNode = m_nodeStack.back();
                             ASTLog("%s <- %s\n", parentNode->type.c_str(), currentNode->type.c_str());
-                            parentNode->children.push_back(currentNode);
+                            if (!parentNode->children) {
+                                parentNode->children = VNEW xhn::vector<ASTNode*>();
+                            }
+                            parentNode->children->push_back(currentNode);
                         }
                         ASTLog("PUSH TO PARENT NODE\n");
                     }
@@ -316,7 +418,7 @@ namespace xhn {
                         m_symbolBuffer.AddCharacter(c);
                     }
                     else {
-                        reduceNodeType();
+                        reduce();
                         m_symbolBuffer.bufferTop = 0;
                     }
                     break;
@@ -329,7 +431,7 @@ namespace xhn {
                         m_symbolBuffer.AddCharacter(c);
                     }
                     else {
-                        reduceNodeType();
+                        reduce();
                         m_symbolBuffer.bufferTop = 0;
                     }
                     if (m_isInherits) {
@@ -375,14 +477,17 @@ namespace xhn {
     , m_isNodeType(false)
     , m_isName(false)
     , m_isInherits(false)
+    , m_isAccess(false)
     {
 #if USING_AST_LOG
-        s_ASTFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main2.txt", "wb");
+        s_ASTLogFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main2.txt", "wb");
+        s_ASTFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main3.txt", "wb");
 #endif
     }
     SwiftParser::~SwiftParser()
     {
 #if USING_AST_LOG
+        fclose(s_ASTLogFile);
         fclose(s_ASTFile);
 #endif
     }
@@ -407,7 +512,9 @@ namespace xhn {
         [fh waitForDataInBackgroundAndNotify];
 
         self.parser->Parse((const char*)[data bytes], [data length]);
-        ///fwrite([data bytes], 1, [data length], s_ASTFile);
+#if USING_AST_LOG
+        fwrite([data bytes], 1, [data length], s_ASTFile);
+#endif
     }
     else {
         xhn::string ret = self.parser->EndParse();

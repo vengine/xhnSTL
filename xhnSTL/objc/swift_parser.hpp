@@ -27,6 +27,10 @@ public:
     static const xhn::static_string StrImportDecl;
     static const xhn::static_string StrFuncDecl;
     static const xhn::static_string StrInherits;
+    static const xhn::static_string StrAccess;
+    static const xhn::static_string StrPrivate;
+    static const xhn::static_string StrInternal;
+    static const xhn::static_string StrPublic;
     
     static const xhn::static_string StrSceneNodeAgent;
     enum ASTNodeType
@@ -41,8 +45,9 @@ public:
     {
         xhn::static_string type;
         xhn::static_string name;
+        xhn::static_string access;
         xhn::SmartPtr<xhn::vector<xhn::static_string>> inherits;
-        xhn::vector<ASTNode*> children;
+        xhn::SmartPtr<xhn::vector<ASTNode*>> children;
         ASTNode()
         {}
         ASTNode(const xhn::static_string nodeName)
@@ -73,6 +78,7 @@ private:
     bool m_isNodeType;
     bool m_isName;
     bool m_isInherits;
+    bool m_isAccess;
 public:
     void BeginParse();
     string EndParse();
