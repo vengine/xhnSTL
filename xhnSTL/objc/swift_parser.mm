@@ -11,10 +11,23 @@
 #include "xhn_lock.hpp"
 #import <Foundation/Foundation.h>
 
+#define USING_AST_LOG 0
+#if USING_AST_LOG
+#define AST_BUFFER_SIZE (1024 * 512)
+#define ASTLog(fmt,...) { \
+int size = \
+snprintf(s_ASTBuffer,AST_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
+fwrite(s_ASTBuffer, 1, size, s_ASTFile); }
+
+static char s_ASTBuffer[AST_BUFFER_SIZE];
+static FILE* s_ASTFile = nullptr;
+
+#else
+#define ASTLog(fmt,...)
+#endif
+
 static xhn::SpinLock s_SwiftCommandLineUtilsLock;
 static NSMutableSet* s_SwiftCommandLineUtils = nil;
-
-static FILE* s_ASTFile = nullptr;
 
 @interface SwiftCommandLineUtil : NSObject
 @property (assign) xhn::SwiftParser* parser;
@@ -96,7 +109,7 @@ namespace xhn {
             for (; iter != end; iter++) {
                 ASTNode* node = *iter;
                 if (StrClassDecl == node->type) {
-                    printf("CLASS:%s %s\n", node->type.c_str(), node->name.c_str());
+                    ASTLog("CLASS:%s %s\n", node->type.c_str(), node->name.c_str());
                 }
             }
         }
@@ -138,9 +151,14 @@ namespace xhn {
                         auto end = node->inherits->end();
                         for (; iter != end; iter++) {
                             if (StrSceneNodeAgent == *iter) {
-                                char mbuf[256];
-                                snprintf(mbuf, 255,
-                                         "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^(void* sceneNode){ return [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]]; }];\n", '"', node->name.c_str(), '"', node->name.c_str());
+                                char mbuf[512];
+                                snprintf(mbuf, 511,
+                                         "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^(void* sceneNode)\n"
+                                         "    { %s* ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n"
+                                         "        [ret Start];\n"
+                                         "        return ret;\n"
+                                         "    }];\n",
+                                         '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
                                 bridgeFile += mbuf;
                                 break;
                             }
@@ -212,7 +230,7 @@ namespace xhn {
         };
         while (count <= length) {
             char c = strBuffer[count];
-            printf("%c\n", c);
+            ASTLog("%c\n", c);
             switch (c)
             {
                 case '(':
@@ -222,7 +240,7 @@ namespace xhn {
                         !m_isQuotationBlock) {
                         m_nodeStack.push_back(VNEW ASTNode());
                         m_isNodeType = true;
-                        printf("NEW NODE\n");
+                        ASTLog("NEW NODE\n");
                     }
                     else {
                         m_symbolBuffer.AddCharacter(c);
@@ -238,10 +256,10 @@ namespace xhn {
                         m_nodeStack.pop_back();
                         if (m_nodeStack.size()) {
                             ASTNode* parentNode = m_nodeStack.back();
-                            printf("%s <- %s\n", parentNode->type.c_str(), currentNode->type.c_str());
+                            ASTLog("%s <- %s\n", parentNode->type.c_str(), currentNode->type.c_str());
                             parentNode->children.push_back(currentNode);
                         }
-                        printf("PUSH TO PARENT NODE\n");
+                        ASTLog("PUSH TO PARENT NODE\n");
                     }
                     else {
                         m_symbolBuffer.AddCharacter(c);
@@ -331,11 +349,15 @@ namespace xhn {
     , m_isName(false)
     , m_isInherits(false)
     {
+#if USING_AST_LOG
         s_ASTFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main2.txt", "wb");
+#endif
     }
     SwiftParser::~SwiftParser()
     {
+#if USING_AST_LOG
         fclose(s_ASTFile);
+#endif
     }
 }
 
@@ -345,7 +367,7 @@ namespace xhn {
 }
 - (void) dealloc
 {
-    printf("here\n");
+    ASTLog("here\n");
 }
 
 - (void)receivedData:(NSNotification *)notif {
@@ -355,11 +377,11 @@ namespace xhn {
         [fh waitForDataInBackgroundAndNotify];
 
         self.parser->Parse((const char*)[data bytes], [data length]);
-        fwrite([data bytes], 1, [data length], s_ASTFile);
+        ///fwrite([data bytes], 1, [data length], s_ASTFile);
     }
     else {
         xhn::string ret = self.parser->EndParse();
-        printf("%s\n", ret.c_str());
+        ASTLog("%s\n", ret.c_str());
         delete self.parser;
         {
             auto inst = s_SwiftCommandLineUtilsLock.Lock();
