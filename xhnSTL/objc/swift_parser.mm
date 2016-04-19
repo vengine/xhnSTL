@@ -61,6 +61,8 @@ namespace xhn {
     const xhn::static_string SwiftParser::StrPublic("public");
     
     const xhn::static_string SwiftParser::StrSceneNodeAgent("SceneNodeAgent");
+    const xhn::static_string SwiftParser::StrState("State");
+    const xhn::static_string SwiftParser::StrStateInterface("StateInterface");
 
     SwiftParser::SymbolBuffer::SymbolBuffer()
     {
@@ -204,16 +206,16 @@ namespace xhn {
             ASTNode* root = *rootIter;
             if (!root->children)
                 continue;
-            auto iter = root->children->begin();
-            auto end = root->children->end();
-            for (; iter != end; iter++) {
-                ASTNode* node = *iter;
+            auto rootChildIter = root->children->begin();
+            auto rootChildEnd = root->children->end();
+            for (; rootChildIter != rootChildEnd; rootChildIter++) {
+                ASTNode* node = *rootChildIter;
                 if (StrClassDecl == node->type && StrPublic == node->access) {
                     if (node->inherits) {
-                        auto iter = node->inherits->begin();
-                        auto end = node->inherits->end();
-                        for (; iter != end; iter++) {
-                            if (StrSceneNodeAgent == *iter) {
+                        auto inhIter = node->inherits->begin();
+                        auto inhEnd = node->inherits->end();
+                        for (; inhIter != inhEnd; inhIter++) {
+                            if (StrSceneNodeAgent == *inhIter) {
                                 char mbuf[512];
                                 snprintf(mbuf, 511,
                                          "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^(void* sceneNode)\n"
@@ -230,21 +232,29 @@ namespace xhn {
                                         auto childEnd = node->children->end();
                                         for (int i = 0; childIter != childEnd; childIter++, i++) {
                                             ASTNode* child = *childIter;
-                                            if (StrClassDecl == child->type && StrPublic == child->access) {
-                                                ///xhn::string fullClassName = node->name.c_str();
-                                                ///fullClassName += ".";
-                                                ///fullClassName += child->name.c_str();
-                                                
-                                                snprintf(mbuf, 511,
-                                                         "        id state%d = [[swiftClassFromString(@%c%s%c, @%c%s%c) alloc] init];\n"
-                                                         "        [ret SetState:@%c%s%c state:state%d];\n",
-                                                         i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
-                                                         '"', child->name.c_str(), '"', i);
-                                                bridgeFile += mbuf;
-                                                
-                                                if (!firstState.size()) {
-                                                    snprintf(mbuf, 511, "state%d", i);
-                                                    firstState = mbuf;
+                                            if (StrClassDecl == child->type && StrPublic == child->access && child->inherits) {
+                                                bool isInheritFromState = false;
+                                                bool isInheritFromStateInterface = false;
+                                                auto childInhIter = child->inherits->begin();
+                                                auto childInhEnd = child->inherits->end();
+                                                for (; childInhIter != childInhEnd; childInhIter++) {
+                                                    if (StrState == *childInhIter)
+                                                        isInheritFromState = true;
+                                                    if (StrStateInterface == *childInhIter)
+                                                        isInheritFromStateInterface = true;
+                                                }
+                                                if (isInheritFromState && isInheritFromStateInterface) {
+                                                    snprintf(mbuf, 511,
+                                                             "        id state%d = [[swiftClassFromString(@%c%s%c, @%c%s%c) alloc] init];\n"
+                                                             "        [ret SetState:@%c%s%c state:state%d];\n",
+                                                             i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
+                                                             '"', child->name.c_str(), '"', i);
+                                                    bridgeFile += mbuf;
+                                                    
+                                                    if (!firstState.size()) {
+                                                        snprintf(mbuf, 511, "state%d", i);
+                                                        firstState = mbuf;
+                                                    }
                                                 }
                                             }
                                         }
