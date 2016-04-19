@@ -12,18 +12,30 @@
 #import <Foundation/Foundation.h>
 
 #define USING_AST_LOG 0
+
 #if USING_AST_LOG
+
 #define AST_BUFFER_SIZE (1024 * 512)
+#define COMMAND_BUFFER_SIZE (1024)
 #define ASTLog(fmt,...) { \
 int size = \
 snprintf(s_ASTBuffer,AST_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
 fwrite(s_ASTBuffer, 1, size, s_ASTFile); }
 
+#define COMMANDLog(fmt,...) { \
+int size = \
+snprintf(s_COMMANDBuffer,COMMAND_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
+fwrite(s_COMMANDBuffer, 1, size, s_COMMANDFile); }
+
 static char s_ASTBuffer[AST_BUFFER_SIZE];
 static FILE* s_ASTFile = nullptr;
 
+static char s_COMMANDBuffer[AST_BUFFER_SIZE];
+static FILE* s_COMMANDFile = nullptr;
+
 #else
 #define ASTLog(fmt,...)
+#define COMMANDLog(fmt,...)
 #endif
 
 static xhn::SpinLock s_SwiftCommandLineUtilsLock;
@@ -228,11 +240,14 @@ namespace xhn {
                 }
             }
         };
-        while (count <= length) {
+        while (count < length) {
             char c = strBuffer[count];
-            ASTLog("%c\n", c);
+            ASTLog("%c, m_isNodeType %d, m_isName %d, m_isApostropheBlock %d, m_isQuotationBlock %d\n",
+                   c,   m_isNodeType,    m_isName,    m_isApostropheBlock,    m_isQuotationBlock);
             switch (c)
             {
+                case '\0':
+                    break;
                 case '(':
                     m_symbolBuffer.bufferTop = 0;
                     m_isName = false;
@@ -293,6 +308,18 @@ namespace xhn {
                     break;
                 case '=':
                 case ' ':
+                    if (m_isName && !m_isQuotationBlock) {
+                        m_isName = false;
+                    }
+                    if (m_isApostropheBlock &&
+                        m_isQuotationBlock) {
+                        m_symbolBuffer.AddCharacter(c);
+                    }
+                    else {
+                        reduceNodeType();
+                        m_symbolBuffer.bufferTop = 0;
+                    }
+                    break;
                 case '\n':
                     if (m_isName && !m_isQuotationBlock) {
                         m_isName = false;
@@ -305,7 +332,7 @@ namespace xhn {
                         reduceNodeType();
                         m_symbolBuffer.bufferTop = 0;
                     }
-                    if (m_isInherits && '\n' == c) {
+                    if (m_isInherits) {
                         reduceInherit();
                         m_isInherits = false;
                     }
@@ -364,6 +391,9 @@ namespace xhn {
 @implementation SwiftCommandLineUtil
 {
     void(^mCallback)(const xhn::string&);
+    NSTask *mTask;
+    NSPipe *mPipe;
+    NSFileHandle *mFile;
 }
 - (void) dealloc
 {
@@ -396,30 +426,30 @@ namespace xhn {
 - (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&))proc
 {
     mCallback = proc;
-    NSTask *task;
-    task = [[NSTask alloc] init];
-    [task setLaunchPath: @"/bin/sh"];
+    mTask = [[NSTask alloc] init];
+    [mTask setLaunchPath: @"/bin/sh"];
     
     NSArray *arguments = [NSArray arrayWithObjects:
                           @"-c" ,
                           [NSString stringWithFormat:@"%@", commandToRun],
                           nil];
-    NSLog(@"run command: %@",commandToRun);
-    [task setArguments: arguments];
+#if USING_AST_LOG
+    s_COMMANDFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/command.txt", "wb");
+#endif
+    COMMANDLog("run command: %s", [commandToRun UTF8String]);
+#if USING_AST_LOG
+    fclose(s_COMMANDFile);
+#endif
+    [mTask setArguments: arguments];
     
-    NSPipe *pipe;
-    pipe = [NSPipe pipe];
-    [task setStandardOutput: pipe];
-    [task setStandardError: [task standardOutput]];
+    mPipe = [NSPipe pipe];
+    [mTask setStandardOutput: mPipe];
+    [mTask setStandardError: [mTask standardOutput]];
     
-    NSPipe* inPipe = [NSPipe pipe];
-    [task setStandardInput:inPipe];
+    mFile = [mPipe fileHandleForReading];
     
-    NSFileHandle *file;
-    file = [pipe fileHandleForReading];
-    
-    [file waitForDataInBackgroundAndNotify];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedData:) name:NSFileHandleDataAvailableNotification object:file];
+    [mFile waitForDataInBackgroundAndNotify];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedData:) name:NSFileHandleDataAvailableNotification object:mFile];
     
     {
         auto inst = s_SwiftCommandLineUtilsLock.Lock();
@@ -430,6 +460,6 @@ namespace xhn {
     }
     self.parser = VNEW xhn::SwiftParser();
     self.parser->BeginParse();
-    [task launch];
+    [mTask launch];
 }
 @end
