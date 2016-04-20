@@ -16,6 +16,7 @@
 #include "xhn_static_string.hpp"
 #include "xhn_vector.hpp"
 #include "xhn_smart_ptr.hpp"
+#include "xhn_map.hpp"
 
 namespace xhn {
 
@@ -84,7 +85,8 @@ private:
 public:
     void BeginParse();
     string EndParse();
-    string CreateBridgeFile();
+    string CreateBridgeFile(const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& inheritMap,
+                            xhn::Lambda<bool (xhn::static_string, xhn::static_string)>& isInheritFromClassProc);
     void Parse(const char* strBuffer, euint length);
     static void ParseSwifts(const xhn::string& paths, xhn::Lambda<void (const xhn::string&)>& callback);
     SwiftParser();

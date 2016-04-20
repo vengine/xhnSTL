@@ -120,51 +120,102 @@ namespace xhn {
     }
     string SwiftParser::EndParse()
     {
+        xhn::map<xhn::static_string, xhn::vector<xhn::static_string>> inheritMap;
+        
+        xhn::Lambda<void (const xhn::string&, ASTNode*)> makeInheritMapProc;
+        xhn::Lambda<bool (xhn::static_string, xhn::static_string)> isInheritFromClassProc;
+        
+        makeInheritMapProc = [&makeInheritMapProc, &inheritMap](const xhn::string& parentPath, ASTNode* node) -> void {
+            if (StrClassDecl == node->type) {
+                xhn::string nodePath = parentPath;
+                if (parentPath.size()) {
+                    nodePath += ".";
+                }
+                nodePath += node->name.c_str();
+                if (node->inherits) {
+                    auto inhIter = node->inherits->begin();
+                    auto inhEnd = node->inherits->end();
+                    for (; inhIter != inhEnd; inhIter++) {
+                        inheritMap[nodePath.c_str()].push_back(*inhIter);
+                    }
+                }
+                if (node->children) {
+                    auto childIter = node->children->begin();
+                    auto childEnd = node->children->end();
+                    for (; childIter != childEnd; childIter++) {
+                        ASTNode* child = *childIter;
+                        
+                        makeInheritMapProc(nodePath, child);
+                    }
+                }
+            }
+            else {
+                if (node->children) {
+                    auto childIter = node->children->begin();
+                    auto childEnd = node->children->end();
+                    for (; childIter != childEnd; childIter++) {
+                        ASTNode* child = *childIter;
+                        makeInheritMapProc(parentPath, child);
+                    }
+                }
+            }
+        };
+        
+        isInheritFromClassProc = [&isInheritFromClassProc, &inheritMap](xhn::static_string _class, xhn::static_string parentClass) -> bool {
+            auto iter = inheritMap.find(_class);
+            if (iter != inheritMap.end()) {
+                auto inhIter = iter->second.begin();
+                auto inhEnd = iter->second.end();
+                for (; inhIter != inhEnd; inhIter++) {
+                    if (*inhIter == parentClass) {
+                        return true;
+                    }
+                    if (isInheritFromClassProc(*inhIter, parentClass))
+                        return true;
+                }
+            }
+            return false;
+        };
+        
+        xhn::string emptyPath;
         auto rootIter = m_roots.begin();
         auto rootEnd = m_roots.end();
         for (; rootIter != rootEnd; rootIter++) {
             ASTNode* root = *rootIter;
             if (!root->children)
                 continue;
-            auto iter = root->children->begin();
-            auto end = root->children->end();
-            for (; iter != end; iter++) {
-                ASTNode* node = *iter;
-                if (StrClassDecl == node->type) {
-                    ASTLog("CLASS:%s %s ACCESS: %s inherits:", node->type.c_str(), node->name.c_str(), node->access.c_str());
-                    if (node->inherits) {
-                        auto inhIter = node->inherits->begin();
-                        auto inhEnd = node->inherits->end();
-                        for (; inhIter != inhEnd; inhIter++) {
-                            ASTLog("%s ", (*inhIter).c_str());
-                        }
-                    }
-                    {
-                        if (node->children) {
-                            auto childIter = node->children->begin();
-                            auto childEnd = node->children->end();
-                            for (; childIter != childEnd; childIter++) {
-                                ASTNode* child = *childIter;
-                                if (StrClassDecl == child->type) {
-                                    ASTLog("\n    CHILD_CLASS:%s %s ACCESS: %s inherits:", child->type.c_str(), child->name.c_str(), child->access.c_str());
-                                    if (child->inherits) {
-                                        auto inhIter = child->inherits->begin();
-                                        auto inhEnd = child->inherits->end();
-                                        for (; inhIter != inhEnd; inhIter++) {
-                                            ASTLog("%s ", (*inhIter).c_str());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    ASTLog("\n");
-                }
+            auto rootChildIter = root->children->begin();
+            auto rootChildEnd = root->children->end();
+            for (; rootChildIter != rootChildEnd; rootChildIter++) {
+                ASTNode* node = *rootChildIter;
+                makeInheritMapProc(emptyPath, node);
             }
         }
-        return CreateBridgeFile();
+        ///
+        auto inhMapIter = inheritMap.begin();
+        auto inhMapEnd = inheritMap.end();
+        for (; inhMapIter != inhMapEnd; inhMapIter++) {
+            ASTLog("##%s : ", inhMapIter->first.c_str());
+            auto inhIter = inhMapIter->second.begin();
+            auto inhEnd = inhMapIter->second.end();
+            for (; inhIter != inhEnd; inhIter++) {
+                ASTLog("%s ", (*inhIter).c_str());
+            }
+            ASTLog("\n");
+        }
+        if (isInheritFromClassProc("TranslationScript.ZMoveState", "NSObject")) {
+            ASTLog("@ TranslationScript.ZMoveState is inherit from NSObject\n");
+        }
+        if (isInheritFromClassProc("TranslationScript.ZMoveState", "State")) {
+            ASTLog("@ TranslationScript.ZMoveState is inherit from State\n");
+        }
+        if (!isInheritFromClassProc("TranslationScript.ZMoveState", "None")) {
+            ASTLog("@ TranslationScript.ZMoveState is not inherit from None\n");
+        }
+        return CreateBridgeFile(inheritMap, isInheritFromClassProc);
     }
-    string SwiftParser::CreateBridgeFile()
+    string SwiftParser::CreateBridgeFile(const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& inheritMap,
+                                         xhn::Lambda<bool (xhn::static_string, xhn::static_string)>& isInheritFromClassProc)
     {
         xhn::string bridgeFile;
         bridgeFile = "static xhn::SpinLock s_lock;\n";
@@ -235,14 +286,13 @@ namespace xhn {
                                             if (StrClassDecl == child->type && StrPublic == child->access && child->inherits) {
                                                 bool isInheritFromState = false;
                                                 bool isInheritFromStateInterface = false;
-                                                auto childInhIter = child->inherits->begin();
-                                                auto childInhEnd = child->inherits->end();
-                                                for (; childInhIter != childInhEnd; childInhIter++) {
-                                                    if (StrState == *childInhIter)
-                                                        isInheritFromState = true;
-                                                    if (StrStateInterface == *childInhIter)
-                                                        isInheritFromStateInterface = true;
-                                                }
+                                                xhn::string fullClassName = node->name.c_str();
+                                                fullClassName += ".";
+                                                fullClassName += child->name.c_str();
+                                                xhn::static_string strFullClassName = fullClassName.c_str();
+                                                isInheritFromState = isInheritFromClassProc(strFullClassName, StrState);
+                                                isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface);
+                                                
                                                 if (isInheritFromState && isInheritFromStateInterface) {
                                                     snprintf(mbuf, 511,
                                                              "        id state%d = [[swiftClassFromString(@%c%s%c, @%c%s%c) alloc] init];\n"
