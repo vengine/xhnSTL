@@ -239,13 +239,29 @@ namespace xhn {
         snprintf(mbuf, 1023,
         "Class swiftClassFromString(NSString *nameSpace, NSString *className) {\n"
         ///"   NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@%cCFBundleName%c];\n"
-        "   NSString *appName = @%cVEngineLogic%c;\n"
-        "   NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%cld%c@%cld%c@%c, \n"
-        "   appName.length, appName, nameSpace.length, nameSpace, className.length, className];\n"
-        "   return NSClassFromString(classStringName);\n"
+        "    NSString *appName = @%cVEngineLogic%c;\n"
+        "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%cld%c@%cld%c@%c, \n"
+        "    appName.length, appName, nameSpace.length, nameSpace, className.length, className];\n"
+        "    return NSClassFromString(classStringName);\n"
         "}\n",
         '"', '"',
         '"', '%', '%', '%', '%', '%', '%', '"');
+        bridgeFile += mbuf;
+        
+        snprintf(mbuf, 1023,
+        "Class swiftClassFromPath(NSString *path) {\n"
+        "    NSString *appName = @%cVEngineLogic%c;\n"
+        "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%c, appName.length, appName];\n"
+        "    NSArray *subpaths = [path componentsSeparatedByString:@%c.%c];\n"
+        "    for (NSString* subpath in subpaths) {\n"
+        "        classStringName = [classStringName stringByAppendingString:[NSString stringWithFormat:@%c%cld%c@%c, subpath]];\n"
+        "    }\n"
+        "    return NSClassFromString(classStringName);\n"
+        "}\n",
+        '"', '"',
+        '"', '%', '%', '"',
+        '"', '"',
+        '"', '%', '%', '"');
         bridgeFile += mbuf;
 
         bridgeFile += "void InitProcDic() {\n";
