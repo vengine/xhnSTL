@@ -557,6 +557,14 @@ public:
         else
             return false;
     }
+    vector& append (const vector& v) {
+        iterator i = v.begin();
+        iterator e = v.end();
+        for (; i != e; i++) {
+            push_back(*i);
+        }
+        return *this;
+    }
     void throw_front(iterator i) {
         T tmp = *i;
         erase(i);
