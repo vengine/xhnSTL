@@ -27,11 +27,13 @@ public:
     static const xhn::static_string StrClassDecl;
     static const xhn::static_string StrImportDecl;
     static const xhn::static_string StrFuncDecl;
+    static const xhn::static_string StrDeclRefExpr;
     static const xhn::static_string StrInherits;
     static const xhn::static_string StrAccess;
     static const xhn::static_string StrPrivate;
     static const xhn::static_string StrInternal;
     static const xhn::static_string StrPublic;
+    static const xhn::static_string StrDecl;
     
     static const xhn::static_string StrSceneNodeAgent;
     static const xhn::static_string StrState;
@@ -49,6 +51,7 @@ public:
         xhn::static_string type;
         xhn::static_string name;
         xhn::static_string access;
+        xhn::static_string decl;
         xhn::SmartPtr<xhn::vector<xhn::static_string>> inherits;
         xhn::SmartPtr<xhn::vector<ASTNode*>> children;
         ASTNode()
@@ -82,6 +85,7 @@ private:
     bool m_isName;
     bool m_isInherits;
     bool m_isAccess;
+    bool m_isDecl;
 public:
     void BeginParse();
     string EndParse();

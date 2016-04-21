@@ -54,11 +54,13 @@ namespace xhn {
     const xhn::static_string SwiftParser::StrClassDecl("class_decl");
     const xhn::static_string SwiftParser::StrImportDecl("import_decl");
     const xhn::static_string SwiftParser::StrFuncDecl("func_decl");
+    const xhn::static_string SwiftParser::StrDeclRefExpr("declref_expr");
     const xhn::static_string SwiftParser::StrInherits("inherits:");
     const xhn::static_string SwiftParser::StrAccess("access");
     const xhn::static_string SwiftParser::StrPrivate("private");
     const xhn::static_string SwiftParser::StrInternal("internal");
     const xhn::static_string SwiftParser::StrPublic("public");
+    const xhn::static_string SwiftParser::StrDecl("decl");
     
     const xhn::static_string SwiftParser::StrSceneNodeAgent("SceneNodeAgent");
     const xhn::static_string SwiftParser::StrState("State");
@@ -296,9 +298,20 @@ namespace xhn {
         bridgeFile += "@end\n";
         
         char mbuf[1024];
+        
+        snprintf(mbuf, 1023,
+                 "NSString* swiftClassString(NSString *nameSpace, NSString *className) {\n"
+                 "    NSString *appName = @%cVEngineLogic%c;\n"
+                 "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%cld%c@%cld%c@%c, \n"
+                 "    appName.length, appName, nameSpace.length, nameSpace, className.length, className];\n"
+                 "    return classStringName;\n"
+                 "}\n",
+                 '"', '"',
+                 '"', '%', '%', '%', '%', '%', '%', '"');
+        bridgeFile += mbuf;
+        
         snprintf(mbuf, 1023,
         "Class swiftClassFromString(NSString *nameSpace, NSString *className) {\n"
-        ///"   NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@%cCFBundleName%c];\n"
         "    NSString *appName = @%cVEngineLogic%c;\n"
         "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%cld%c@%cld%c@%c, \n"
         "    appName.length, appName, nameSpace.length, nameSpace, className.length, className];\n"
@@ -309,12 +322,28 @@ namespace xhn {
         bridgeFile += mbuf;
         
         snprintf(mbuf, 1023,
+                 "NSString* swiftClassStringFromPath(NSString *path) {\n"
+                 "    NSString *appName = @%cVEngineLogic%c;\n"
+                 "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%c, appName.length, appName];\n"
+                 "    NSArray *subpaths = [path componentsSeparatedByString:@%c.%c];\n"
+                 "    for (NSString* subpath in subpaths) {\n"
+                 "        classStringName = [classStringName stringByAppendingString:[NSString stringWithFormat:@%c%cld%c@%c, subpath.length, subpath]];\n"
+                 "    }\n"
+                 "    return classStringName;\n"
+                 "}\n",
+                 '"', '"',
+                 '"', '%', '%', '"',
+                 '"', '"',
+                 '"', '%', '%', '"');
+        bridgeFile += mbuf;
+        
+        snprintf(mbuf, 1023,
         "Class swiftClassFromPath(NSString *path) {\n"
         "    NSString *appName = @%cVEngineLogic%c;\n"
         "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%c, appName.length, appName];\n"
         "    NSArray *subpaths = [path componentsSeparatedByString:@%c.%c];\n"
         "    for (NSString* subpath in subpaths) {\n"
-        "        classStringName = [classStringName stringByAppendingString:[NSString stringWithFormat:@%c%cld%c@%c, subpath]];\n"
+        "        classStringName = [classStringName stringByAppendingString:[NSString stringWithFormat:@%c%cld%c@%c, subpath.length, subpath]];\n"
         "    }\n"
         "    return NSClassFromString(classStringName);\n"
         "}\n",
@@ -323,6 +352,8 @@ namespace xhn {
         '"', '"',
         '"', '%', '%', '"');
         bridgeFile += mbuf;
+        
+        
 
         bridgeFile += "void InitProcDic() {\n";
         bridgeFile += "    s_agentSet = [NSMutableSet new];\n";
@@ -340,69 +371,64 @@ namespace xhn {
             for (; rootChildIter != rootChildEnd; rootChildIter++) {
                 ASTNode* node = *rootChildIter;
                 if (StrClassDecl == node->type && StrPublic == node->access) {
-                    if (node->inherits) {
-                        auto inhIter = node->inherits->begin();
-                        auto inhEnd = node->inherits->end();
-                        for (; inhIter != inhEnd; inhIter++) {
-                            if (StrSceneNodeAgent == *inhIter) {
+                    if (isInheritFromClassProc(node->name, StrSceneNodeAgent, inheritPath)) {
+                        char mbuf[512];
+                        snprintf(mbuf, 511,
+                                 "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^(void* sceneNode)\n"
+                                 "    {\n"
+                                 "        %s* ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n",
+                                 '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
+                        
+                        bridgeFile += mbuf;
+                        {
+                            if (node->children) {
                                 char mbuf[512];
-                                snprintf(mbuf, 511,
-                                         "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^(void* sceneNode)\n"
-                                         "    {\n"
-                                         "        %s* ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n",
-                                         '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
-                                
-                                bridgeFile += mbuf;
-                                {
-                                    if (node->children) {
-                                        char mbuf[512];
-                                        xhn::string firstState;
-                                        auto childIter = node->children->begin();
-                                        auto childEnd = node->children->end();
-                                        for (int i = 0; childIter != childEnd; childIter++, i++) {
-                                            ASTNode* child = *childIter;
-                                            if (StrClassDecl == child->type && StrPublic == child->access && child->inherits) {
-                                                bool isInheritFromState = false;
-                                                bool isInheritFromStateInterface = false;
-                                                xhn::string fullClassName = node->name.c_str();
-                                                fullClassName += ".";
-                                                fullClassName += child->name.c_str();
-                                                xhn::static_string strFullClassName = fullClassName.c_str();
-                                                inheritPath.clear();
-                                                isInheritFromState = isInheritFromClassProc(strFullClassName, StrState, inheritPath);
-                                                inheritPath.clear();
-                                                isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, inheritPath);
-                                                
-                                                if (isInheritFromState && isInheritFromStateInterface) {
-                                                    snprintf(mbuf, 511,
-                                                             "        id state%d = [[swiftClassFromString(@%c%s%c, @%c%s%c) alloc] init];\n"
-                                                             "        [ret SetState:@%c%s%c state:state%d];\n",
-                                                             i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
-                                                             '"', child->name.c_str(), '"', i);
-                                                    bridgeFile += mbuf;
-                                                    
-                                                    if (!firstState.size()) {
-                                                        snprintf(mbuf, 511, "state%d", i);
-                                                        firstState = mbuf;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (firstState.size()) {
+                                xhn::string firstState;
+                                auto childIter = node->children->begin();
+                                auto childEnd = node->children->end();
+                                for (int i = 0; childIter != childEnd; childIter++, i++) {
+                                    ASTNode* child = *childIter;
+                                    if (StrClassDecl == child->type && StrPublic == child->access && child->inherits) {
+                                        bool isInheritFromState = false;
+                                        bool isInheritFromStateInterface = false;
+                                        xhn::string fullClassName = node->name.c_str();
+                                        fullClassName += ".";
+                                        fullClassName += child->name.c_str();
+                                        xhn::static_string strFullClassName = fullClassName.c_str();
+                                        inheritPath.clear();
+                                        isInheritFromState = isInheritFromClassProc(strFullClassName, StrState, inheritPath);
+                                        inheritPath.clear();
+                                        isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, inheritPath);
+                                        
+                                        if (isInheritFromState && isInheritFromStateInterface) {
                                             snprintf(mbuf, 511,
-                                                     "        [ret SetCurrentState:%s];\n",
-                                                     firstState.c_str());
+                                                     "        NSString* state%dName = swiftClassString(@%c%s%c, @%c%s%c);\n"
+                                                     "        id state%d = [[swiftClassFromString(@%c%s%c, @%c%s%c) alloc] init];\n"
+                                                     "        [ret SetState:state%dName state:state%d];\n",
+                                                     i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
+                                                     i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
+                                                     i, i);
                                             bridgeFile += mbuf;
+                                            
+                                            if (!firstState.size()) {
+                                                snprintf(mbuf, 511, "state%d", i);
+                                                firstState = mbuf;
+                                            }
                                         }
                                     }
                                 }
-                                bridgeFile +=
-                                "        [ret Start];\n"
-                                "        return ret;\n"
-                                "    }];\n";
-                                break;
+                                if (firstState.size()) {
+                                    snprintf(mbuf, 511,
+                                             "        [ret SetCurrentState:%s];\n",
+                                             firstState.c_str());
+                                    bridgeFile += mbuf;
+                                }
                             }
                         }
+                        bridgeFile +=
+                        "        [ret Start];\n"
+                        "        return ret;\n"
+                        "    }];\n";
                     }
                 }
             }
@@ -458,6 +484,14 @@ namespace xhn {
                 }
                 m_isAccess = false;
             }
+            else if (m_isDecl) {
+                xhn::static_string symbol = m_symbolBuffer.GetSymbol();
+                m_symbolBuffer.bufferTop = 0;
+                if (m_nodeStack.size()) {
+                    m_nodeStack.back()->decl = symbol;
+                }
+                m_isDecl = false;
+            }
             else {
                 xhn::static_string symbol = m_symbolBuffer.GetSymbol();
                 if (StrInherits == symbol) {
@@ -465,6 +499,9 @@ namespace xhn {
                 }
                 else if (StrAccess == symbol) {
                     m_isAccess = true;
+                }
+                else if (StrDecl == symbol) {
+                    m_isDecl = true;
                 }
             }
         };
@@ -618,6 +655,7 @@ namespace xhn {
     , m_isName(false)
     , m_isInherits(false)
     , m_isAccess(false)
+    , m_isDecl(false)
     {
 #if USING_AST_LOG
         s_ASTLogFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main2.txt", "wb");
