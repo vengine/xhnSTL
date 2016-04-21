@@ -124,9 +124,11 @@ namespace xhn {
     {
         xhn::map<xhn::static_string, xhn::vector<xhn::static_string>> inheritMap;
         xhn::map<xhn::static_string, xhn::vector<xhn::static_string>> childrenClassMap;
+        xhn::map<xhn::static_string, ASTNode*> classMap;
         
         xhn::Lambda<void (const xhn::string&, ASTNode*)> makeInheritMapProc;
         xhn::Lambda<void (const xhn::string&, ASTNode*)> makeChildrenClassMapProc;
+        xhn::Lambda<void (const xhn::string&, ASTNode*)> makeClassMapProc;
         xhn::Lambda<bool (xhn::static_string, xhn::static_string, xhn::vector<xhn::static_string>&)> isInheritFromClassProc;
         
         makeInheritMapProc = [&makeInheritMapProc, &inheritMap](const xhn::string& parentPath, ASTNode* node) -> void {
@@ -185,6 +187,24 @@ namespace xhn {
             }
         };
         
+        makeClassMapProc = [&makeClassMapProc, &classMap](const xhn::string& parentPath, ASTNode* node) -> void {
+            if (StrClassDecl == node->type) {
+                xhn::string nodePath = parentPath;
+                if (parentPath.size()) {
+                    nodePath += ".";
+                }
+                nodePath += node->name.c_str();
+                if (node->children) {
+                    auto childIter = node->children->begin();
+                    auto childEnd = node->children->end();
+                    for (; childIter != childEnd; childIter++) {
+                        makeClassMapProc(nodePath, *childIter);
+                    }
+                }
+                classMap[nodePath.c_str()] = node;
+            }
+        };
+        
         isInheritFromClassProc = [&isInheritFromClassProc, &inheritMap](xhn::static_string _class,
                                                                         xhn::static_string parentClass,
                                                                         xhn::vector<xhn::static_string>& inheritPath) -> bool {
@@ -221,6 +241,7 @@ namespace xhn {
                 ASTNode* node = *rootChildIter;
                 makeInheritMapProc(emptyPath, node);
                 makeChildrenClassMapProc(emptyPath, node);
+                makeClassMapProc(emptyPath, node);
             }
         }
         ///
@@ -273,9 +294,11 @@ namespace xhn {
             }
             ASTLog("\n");
         }
-        return CreateBridgeFile(inheritMap, isInheritFromClassProc);
+        return CreateBridgeFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
     }
     string SwiftParser::CreateBridgeFile(const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& inheritMap,
+                                         const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& childrenClassMap,
+                                         const xhn::map<xhn::static_string, ASTNode*>& classMap,
                                          xhn::Lambda<bool (xhn::static_string, xhn::static_string,
                                                            xhn::vector<xhn::static_string>&)>& isInheritFromClassProc)
     {
@@ -360,6 +383,68 @@ namespace xhn {
         bridgeFile += "    s_procDic = [NSMutableDictionary new];\n";
         
         xhn::vector<xhn::static_string> inheritPath;
+        
+        auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile]() {
+            xhn::vector<xhn::static_string> stateInheritPath;
+            char mbuf[512];
+            xhn::string firstState;
+            xhn::static_string agentClassName = inheritPath.back();
+            printf("%s\n", agentClassName.c_str());
+            ASTNode* node = nullptr;
+            auto nodeIter = classMap.find(agentClassName);
+            if (nodeIter != classMap.end()) {
+                node = nodeIter->second;
+            }
+            
+            auto childClassIter = childrenClassMap.find(agentClassName);
+            if (childClassIter != childrenClassMap.end()) {
+                auto childIter = childClassIter->second.begin();
+                auto childEnd = childClassIter->second.end();
+                for (int i = 0; childIter != childEnd; childIter++, i++) {
+                    xhn::static_string childClassName = *childIter;
+                    printf("%s\n", childClassName.c_str());
+                    auto childNodeIter = classMap.find(childClassName);
+                    if (childNodeIter != classMap.end()) {
+                        ASTNode* child = childNodeIter->second;
+                        if (StrClassDecl == child->type && StrPublic == child->access && child->inherits) {
+                            bool isInheritFromState = false;
+                            bool isInheritFromStateInterface = false;
+                            xhn::string fullClassName = node->name.c_str();
+                            fullClassName += ".";
+                            fullClassName += child->name.c_str();
+                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            stateInheritPath.clear();
+                            isInheritFromState = isInheritFromClassProc(strFullClassName, StrState, stateInheritPath);
+                            stateInheritPath.clear();
+                            isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, stateInheritPath);
+                            
+                            if (isInheritFromState && isInheritFromStateInterface) {
+                                snprintf(mbuf, 511,
+                                         "        NSString* state%dName = swiftClassString(@%c%s%c, @%c%s%c);\n"
+                                         "        id state%d = [[swiftClassFromString(@%c%s%c, @%c%s%c) alloc] init];\n"
+                                         "        [ret SetState:state%dName state:state%d];\n",
+                                         i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
+                                         i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
+                                         i, i);
+                                bridgeFile += mbuf;
+                                
+                                if (!firstState.size()) {
+                                    snprintf(mbuf, 511, "state%d", i);
+                                    firstState = mbuf;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (firstState.size()) {
+                    snprintf(mbuf, 511,
+                             "        [ret SetCurrentState:%s];\n",
+                             firstState.c_str());
+                    bridgeFile += mbuf;
+                }
+            }
+        };
+        
         auto rootIter = m_roots.begin();
         auto rootEnd = m_roots.end();
         for (; rootIter != rootEnd; rootIter++) {
@@ -372,6 +457,7 @@ namespace xhn {
                 ASTNode* node = *rootChildIter;
                 if (StrClassDecl == node->type && StrPublic == node->access) {
                     if (isInheritFromClassProc(node->name, StrSceneNodeAgent, inheritPath)) {
+                        inheritPath.insert(inheritPath.begin(), node->name);
                         char mbuf[512];
                         snprintf(mbuf, 511,
                                  "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^(void* sceneNode)\n"
@@ -380,50 +466,9 @@ namespace xhn {
                                  '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
                         
                         bridgeFile += mbuf;
-                        {
-                            if (node->children) {
-                                char mbuf[512];
-                                xhn::string firstState;
-                                auto childIter = node->children->begin();
-                                auto childEnd = node->children->end();
-                                for (int i = 0; childIter != childEnd; childIter++, i++) {
-                                    ASTNode* child = *childIter;
-                                    if (StrClassDecl == child->type && StrPublic == child->access && child->inherits) {
-                                        bool isInheritFromState = false;
-                                        bool isInheritFromStateInterface = false;
-                                        xhn::string fullClassName = node->name.c_str();
-                                        fullClassName += ".";
-                                        fullClassName += child->name.c_str();
-                                        xhn::static_string strFullClassName = fullClassName.c_str();
-                                        inheritPath.clear();
-                                        isInheritFromState = isInheritFromClassProc(strFullClassName, StrState, inheritPath);
-                                        inheritPath.clear();
-                                        isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, inheritPath);
-                                        
-                                        if (isInheritFromState && isInheritFromStateInterface) {
-                                            snprintf(mbuf, 511,
-                                                     "        NSString* state%dName = swiftClassString(@%c%s%c, @%c%s%c);\n"
-                                                     "        id state%d = [[swiftClassFromString(@%c%s%c, @%c%s%c) alloc] init];\n"
-                                                     "        [ret SetState:state%dName state:state%d];\n",
-                                                     i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
-                                                     i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
-                                                     i, i);
-                                            bridgeFile += mbuf;
-                                            
-                                            if (!firstState.size()) {
-                                                snprintf(mbuf, 511, "state%d", i);
-                                                firstState = mbuf;
-                                            }
-                                        }
-                                    }
-                                }
-                                if (firstState.size()) {
-                                    snprintf(mbuf, 511,
-                                             "        [ret SetCurrentState:%s];\n",
-                                             firstState.c_str());
-                                    bridgeFile += mbuf;
-                                }
-                            }
+                        while (inheritPath.size()) {
+                            addStatesProc();
+                            inheritPath.pop_back();
                         }
                         bridgeFile +=
                         "        [ret Start];\n"

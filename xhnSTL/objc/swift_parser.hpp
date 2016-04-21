@@ -90,6 +90,8 @@ public:
     void BeginParse();
     string EndParse();
     string CreateBridgeFile(const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& inheritMap,
+                            const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& childrenClassMap,
+                            const xhn::map<xhn::static_string, ASTNode*>& classMap,
                             xhn::Lambda<bool (xhn::static_string,
                                               xhn::static_string, xhn::vector<xhn::static_string>&)>& isInheritFromClassProc);
     void Parse(const char* strBuffer, euint length);
