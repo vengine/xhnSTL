@@ -218,9 +218,10 @@ namespace xhn {
                         return true;
                     }
                     xhn::vector<xhn::static_string> path(inheritPath);
-                    path.push_back(_class);
+                    ///path.push_back(_class);
                     if (isInheritFromClassProc(*inhIter, parentClass, path)) {
                         inheritPath = path;
+                        inheritPath.insert(inheritPath.begin(), (*inhIter));
                         return true;
                     }
                 }
@@ -384,12 +385,12 @@ namespace xhn {
         
         xhn::vector<xhn::static_string> inheritPath;
         
-        auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile]() {
+        auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile](int& i) {
             xhn::vector<xhn::static_string> stateInheritPath;
             char mbuf[512];
             xhn::string firstState;
             xhn::static_string agentClassName = inheritPath.back();
-            printf("%s\n", agentClassName.c_str());
+            
             ASTNode* node = nullptr;
             auto nodeIter = classMap.find(agentClassName);
             if (nodeIter != classMap.end()) {
@@ -400,9 +401,9 @@ namespace xhn {
             if (childClassIter != childrenClassMap.end()) {
                 auto childIter = childClassIter->second.begin();
                 auto childEnd = childClassIter->second.end();
-                for (int i = 0; childIter != childEnd; childIter++, i++) {
+                for (; childIter != childEnd; childIter++, i++) {
                     xhn::static_string childClassName = *childIter;
-                    printf("%s\n", childClassName.c_str());
+                    
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
@@ -420,11 +421,11 @@ namespace xhn {
                             
                             if (isInheritFromState && isInheritFromStateInterface) {
                                 snprintf(mbuf, 511,
-                                         "        NSString* state%dName = swiftClassString(@%c%s%c, @%c%s%c);\n"
-                                         "        id state%d = [[swiftClassFromString(@%c%s%c, @%c%s%c) alloc] init];\n"
+                                         "        NSString* state%dName = swiftClassStringFromPath(@%c%s%c);\n"
+                                         "        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
                                          "        [ret SetState:state%dName state:state%d];\n",
-                                         i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
-                                         i, '"', node->name.c_str(), '"', '"', child->name.c_str() , '"',
+                                         i, '"', fullClassName.c_str(), '"',
+                                         i, '"', fullClassName.c_str(), '"',
                                          i, i);
                                 bridgeFile += mbuf;
                                 
@@ -466,8 +467,9 @@ namespace xhn {
                                  '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
                         
                         bridgeFile += mbuf;
+                        int i = 0;
                         while (inheritPath.size()) {
-                            addStatesProc();
+                            addStatesProc(i);
                             inheritPath.pop_back();
                         }
                         bridgeFile +=
