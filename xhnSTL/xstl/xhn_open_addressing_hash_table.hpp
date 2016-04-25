@@ -210,6 +210,27 @@ namespace xhn
                 rebuild();
             }
         }
+        void remove ( const K &key ) {
+            euint32 hash_value = m_hash_proc(key);
+            euint32 ukey = hash_value & m_hash_mask;
+            singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey];
+            hash_node<K, V>* current_node = bucket->begin();
+            while (current_node) {
+                if (current_node->m_key == key) {
+                    bucket->remove(current_node);
+                    
+                    euint32 count = 0;
+                    hash_node<K, V>* head = bucket->begin();
+                    if (head) {
+                        count = head->m_count;
+                        count--;
+                        head->m_count = count;
+                    }
+                    return;
+                }
+                current_node = current_node->m_iter_next;
+            }
+        }
     };
     
 }
