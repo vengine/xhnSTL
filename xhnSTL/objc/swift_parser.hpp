@@ -40,6 +40,7 @@ public:
     static const xhn::static_string StrStateInterface;
     
     static const xhn::static_string StrActorAgent;
+    static const xhn::static_string StrAction;
     static const xhn::static_string StrActionInterface;
     enum ASTNodeType
     {

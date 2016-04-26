@@ -67,6 +67,7 @@ namespace xhn {
     const xhn::static_string SwiftParser::StrStateInterface("StateInterface");
     
     const xhn::static_string SwiftParser::StrActorAgent("ActorAgent");
+    const xhn::static_string SwiftParser::StrAction("Action");
     const xhn::static_string SwiftParser::StrActionInterface("ActionInterface");
 
     SwiftParser::SymbolBuffer::SymbolBuffer()
@@ -490,14 +491,17 @@ namespace xhn {
                         ASTNode* child = childNodeIter->second;
                         if (StrClassDecl == child->type && StrPublic == child->access && child->inherits) {
                             bool isInheritFromAction = false;
+                            bool isInheritFromActionInterface = false;
                             xhn::string fullClassName = node->name.c_str();
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             xhn::static_string strFullClassName = fullClassName.c_str();
                             actionInheritPath.clear();
-                            isInheritFromAction = isInheritFromClassProc(strFullClassName, StrActionInterface, actionInheritPath);
+                            isInheritFromAction = isInheritFromClassProc(strFullClassName, StrAction, actionInheritPath);
+                            actionInheritPath.clear();
+                            isInheritFromActionInterface = isInheritFromClassProc(strFullClassName, StrActionInterface, actionInheritPath);
                             
-                            if (isInheritFromAction) {
+                            if (isInheritFromAction && isInheritFromActionInterface) {
                                 snprintf(mbuf, 511,
                                          "        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        id action%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
