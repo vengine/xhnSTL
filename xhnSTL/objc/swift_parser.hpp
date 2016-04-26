@@ -38,6 +38,9 @@ public:
     static const xhn::static_string StrSceneNodeAgent;
     static const xhn::static_string StrState;
     static const xhn::static_string StrStateInterface;
+    
+    static const xhn::static_string StrActorAgent;
+    static const xhn::static_string StrActionInterface;
     enum ASTNodeType
     {
         SourceFileNode,
