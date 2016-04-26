@@ -607,6 +607,27 @@ namespace xhn {
         bridgeFile += "    SceneNodeAgent* agentID = (__bridge id)agent;\n";
         bridgeFile += "    [agentID Update:elapsedTime];\n";
         bridgeFile += "}\n";
+        bridgeFile += "void* CreateActorAgent(const char* type, void* renderSys, void* skin) {\n";
+        bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
+        bridgeFile += "    CreateActorAgentProc* proc = s_createActorAgentProcDic[strType];\n";
+        bridgeFile += "    ActorAgent* agent = proc.createAgentProc(renderSys, skin);\n";
+        bridgeFile += "    {\n";
+        bridgeFile += "        auto inst = s_lock.Lock();\n";
+        bridgeFile += "        [s_actorAgentSet addObject:agent];\n";
+        bridgeFile += "        return  (__bridge void *)agent;\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "void RemoveActorAgent(void* agent) {\n";
+        bridgeFile += "    {\n";
+        bridgeFile += "        auto inst = s_lock.Lock();\n";
+        bridgeFile += "        ActorAgent* agentID = (__bridge id)agent;\n";
+        bridgeFile += "        [s_actorAgentSet removeObject:agentID];\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "void UpdateActorAgent(void* agent, double elapsedTime) {\n";
+        bridgeFile += "    ActorAgent* agentID = (__bridge id)agent;\n";
+        bridgeFile += "    [agentID Update:elapsedTime];\n";
+        bridgeFile += "}\n";
         ///printf("%s\n", bridgeFile.c_str());
         return bridgeFile;
     }
