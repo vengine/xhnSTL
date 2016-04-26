@@ -305,14 +305,29 @@ namespace xhn {
     {
         xhn::string bridgeFile;
         bridgeFile = "static xhn::SpinLock s_lock;\n";
-        bridgeFile += "static NSMutableSet* s_agentSet = nil;\n";
-        bridgeFile += "static NSMutableDictionary* s_procDic = nil;\n";
-        bridgeFile += "@interface CreateAgentProc : NSObject\n";
+        bridgeFile += "static NSMutableSet* s_sceneNodeAgentSet = nil;\n";
+        bridgeFile += "static NSMutableSet* s_actorAgentSet = nil;\n";
+        bridgeFile += "static NSMutableDictionary* s_createSceneNodeAgentProcDic = nil;\n";
+        bridgeFile += "static NSMutableDictionary* s_createActorAgentProcDic = nil;\n";
+        bridgeFile += "@interface CreateSceneNodeAgentProc : NSObject\n";
         bridgeFile += "@property (assign) SceneNodeAgent* (^createAgentProc)(void*);\n";
         bridgeFile += "-(id)initWithProc:(SceneNodeAgent*(^)(void*))proc;\n";
         bridgeFile += "@end;\n";
-        bridgeFile += "@implementation CreateAgentProc \n";
+        bridgeFile += "@implementation CreateSceneNodeAgentProc \n";
         bridgeFile += "-(id)initWithProc:(SceneNodeAgent*(^)(void*))proc {\n";
+        bridgeFile += "   self = [super init];\n";
+        bridgeFile += "   if (self) {\n";
+        bridgeFile += "       self.createAgentProc = proc;\n";
+        bridgeFile += "   }\n";
+        bridgeFile += "   return self;\n";
+        bridgeFile += "}\n";
+        bridgeFile += "@end\n";
+        bridgeFile += "@interface CreateActorAgentProc : NSObject\n";
+        bridgeFile += "@property (assign) ActorAgent* (^createAgentProc)(void*);\n";
+        bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*))proc;\n";
+        bridgeFile += "@end;\n";
+        bridgeFile += "@implementation CreateActorAgentProc \n";
+        bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*))proc {\n";
         bridgeFile += "   self = [super init];\n";
         bridgeFile += "   if (self) {\n";
         bridgeFile += "       self.createAgentProc = proc;\n";
@@ -377,11 +392,11 @@ namespace xhn {
         '"', '%', '%', '"');
         bridgeFile += mbuf;
         
-        
-
         bridgeFile += "void InitProcDic() {\n";
-        bridgeFile += "    s_agentSet = [NSMutableSet new];\n";
-        bridgeFile += "    s_procDic = [NSMutableDictionary new];\n";
+        bridgeFile += "    s_sceneNodeAgentSet = [NSMutableSet new];\n";
+        bridgeFile += "    s_createSceneNodeAgentProcDic = [NSMutableDictionary new];\n";
+        bridgeFile += "    s_actorAgentSet = [NSMutableSet new];\n";
+        bridgeFile += "    s_createActorAgentProcDic = [NSMutableDictionary new];\n";
         
         xhn::vector<xhn::static_string> inheritPath;
         
@@ -461,7 +476,7 @@ namespace xhn {
                         inheritPath.insert(inheritPath.begin(), node->name);
                         char mbuf[512];
                         snprintf(mbuf, 511,
-                                 "    s_procDic[@%c%s%c] = [[CreateAgentProc alloc] initWithProc:^(void* sceneNode)\n"
+                                 "    s_createSceneNodeAgentProcDic[@%c%s%c] = [[CreateSceneNodeAgentProc alloc] initWithProc:^(void* sceneNode)\n"
                                  "    {\n"
                                  "        %s* ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n",
                                  '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
@@ -481,24 +496,24 @@ namespace xhn {
             }
         }
         bridgeFile += "}\n";
-        bridgeFile += "void* CreateAgent(const char* type, void* sceneNode) {\n";
+        bridgeFile += "void* CreateSceneNodeAgent(const char* type, void* sceneNode) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
-        bridgeFile += "    CreateAgentProc* proc = s_procDic[strType];\n";
+        bridgeFile += "    CreateSceneNodeAgentProc* proc = s_createSceneNodeAgentProcDic[strType];\n";
         bridgeFile += "    SceneNodeAgent* agent = proc.createAgentProc(sceneNode);\n";
         bridgeFile += "    {\n";
         bridgeFile += "        auto inst = s_lock.Lock();\n";
-        bridgeFile += "        [s_agentSet addObject:agent];\n";
+        bridgeFile += "        [s_sceneNodeAgentSet addObject:agent];\n";
         bridgeFile += "        return  (__bridge void *)agent;\n";
         bridgeFile += "    }\n";
         bridgeFile += "}\n";
-        bridgeFile += "void RemoveAgent(void* agent) {\n";
+        bridgeFile += "void RemoveSceneNodeAgent(void* agent) {\n";
         bridgeFile += "    {\n";
         bridgeFile += "        auto inst = s_lock.Lock();\n";
         bridgeFile += "        SceneNodeAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "        [s_agentSet removeObject:agentID];\n";
+        bridgeFile += "        [s_sceneNodeAgentSet removeObject:agentID];\n";
         bridgeFile += "    }\n";
         bridgeFile += "}\n";
-        bridgeFile += "void UpdateAgent(void* agent, double elapsedTime) {\n";
+        bridgeFile += "void UpdateSceneNodeAgent(void* agent, double elapsedTime) {\n";
         bridgeFile += "    SceneNodeAgent* agentID = (__bridge id)agent;\n";
         bridgeFile += "    [agentID Update:elapsedTime];\n";
         bridgeFile += "}\n";
