@@ -69,22 +69,25 @@ private:
     state* m_current_state;
 protected:
     template <typename STATE_TYPE>
-    void add_state() {
+    STATE_TYPE* add_state() {
         STATE_TYPE* st = VNEW STATE_TYPE(this);
         st->init();
         m_states.insert(st->get_name(), st);
+        return st;
     }
     template <typename STATE_TYPE>
-    void add_state(state_argument_ptr argument) {
+    STATE_TYPE* add_state(state_argument_ptr argument) {
         STATE_TYPE* st = VNEW STATE_TYPE(this, argument);
         st->init();
         m_states.insert(st->get_name(), st);
+        return st;
     }
     template <typename STATE_TYPE, typename ...ARGS>
-    void add_state(ARGS&&... args) {
+    STATE_TYPE* add_state(ARGS&&... args) {
         STATE_TYPE* st = VNEW STATE_TYPE(this, args...);
         st->init();
         m_states.insert(st->get_name(), st);
+        return st;
     }
     inline void set_current_state(const static_string state_name) {
         m_current_state = m_states[state_name].get();
