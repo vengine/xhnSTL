@@ -27,7 +27,6 @@ API_EXPORT void ELog_write();
 
 #define elog(fmt,...) { ELock_lock(&g_elog_lock); \
     snprintf(g_elog_buffer,ELOG_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
-    printf("%s\n", g_elog_buffer); \
     ELog_write(); \
     ELock_unlock(&g_elog_lock); }
 #ifdef __cplusplus
