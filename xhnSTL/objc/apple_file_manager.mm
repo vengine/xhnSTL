@@ -247,9 +247,18 @@ void AppleFileManager::get_resource_dirs(xhn::vector<xhn::wstring>& result)
         NSArray* frameworks = [NSBundle allFrameworks];
         for (NSBundle* framework in frameworks) {
             NSString* resPath = [framework resourcePath];
+            /**
+            if ([resPath containsString:@"PrivateFrameworks"])
+                continue;
             const char* str = [resPath UTF8String];
             xhn::Unicode uniStr(str);
             result.push_back(uniStr);
+             **/
+            if ([resPath containsString:@"VEngine"]) {
+                const char* str = [resPath UTF8String];
+                xhn::Unicode uniStr(str);
+                result.push_back(uniStr);
+            }
         }
     }
 }
