@@ -150,7 +150,7 @@ or
         }
 #    endif
 
-#    define ALIGN_FLAG(n) __declspec(align(n))
+#    define ALIGN_FLAG(n) __attribute__((aligned(n)))
 
 #    ifdef __cplusplus
 #        define VNEW new(__FILE__, __LINE__)
