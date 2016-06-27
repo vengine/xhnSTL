@@ -154,7 +154,7 @@ or
 
 #    ifdef __cplusplus
 #        define VNEW new(__FILE__, __LINE__)
-#        define VDELETE delete(__FILE__, __LINE__)
+#        define VDELETE delete
 #        define VNEW_ARRAY new
 #        define VDELETE_ARRAY delete
 #    endif
