@@ -329,11 +329,11 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
         bridgeFile += "@interface CreateActorAgentProc : NSObject\n";
-        bridgeFile += "@property (strong) ActorAgent* (^createAgentProc)(void*, unsigned int, void**);\n";
-        bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*, unsigned int, void**))proc;\n";
+        bridgeFile += "@property (strong) ActorAgent* (^createAgentProc)(void*, void*);\n";
+        bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*, void*))proc;\n";
         bridgeFile += "@end;\n";
         bridgeFile += "@implementation CreateActorAgentProc \n";
-        bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*, unsigned int, void**))proc {\n";
+        bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*, void*))proc {\n";
         bridgeFile += "   self = [super init];\n";
         bridgeFile += "   if (self) {\n";
         bridgeFile += "       self.createAgentProc = proc;\n";
@@ -563,9 +563,9 @@ namespace xhn {
                             inheritPath.insert(inheritPath.begin(), node->name);
                             char mbuf[512];
                             snprintf(mbuf, 511,
-                                     "    s_createActorAgentProcDic[@%c%s%c] = [[CreateActorAgentProc alloc] initWithProc:^(void* renderSys, unsigned int numSkin, void** skin)\n"
+                                     "    s_createActorAgentProcDic[@%c%s%c] = [[CreateActorAgentProc alloc] initWithProc:^(void* renderSys, void* actor)\n"
                                      "    {\n"
-                                     "        %s* ret = [[%s alloc] initWithActor:[[VActor alloc] initWithVRenderSystemSkin:renderSys numSkin:numSkin skin:skin]];\n",
+                                     "        %s* ret = [[%s alloc] initWithActor:[[VActor alloc] initWithVRenderSystemActor:renderSys actor:actor]];\n",
                                      '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
                             bridgeFile += mbuf;
                             int i = 0;
@@ -605,10 +605,10 @@ namespace xhn {
         bridgeFile += "    SceneNodeAgent* agentID = (__bridge id)agent;\n";
         bridgeFile += "    [agentID Update:elapsedTime];\n";
         bridgeFile += "}\n";
-        bridgeFile += "void* CreateActorAgent(const char* type, void* renderSys, unsigned int numSkin, void** skin) {\n";
+        bridgeFile += "void* CreateActorAgent(const char* type, void* renderSys, void* actor) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
         bridgeFile += "    CreateActorAgentProc* proc = s_createActorAgentProcDic[strType];\n";
-        bridgeFile += "    ActorAgent* agent = proc.createAgentProc(renderSys, numSkin, skin);\n";
+        bridgeFile += "    ActorAgent* agent = proc.createAgentProc(renderSys, actor);\n";
         bridgeFile += "    {\n";
         bridgeFile += "        auto inst = s_lock.Lock();\n";
         bridgeFile += "        [s_actorAgentSet addObject:agent];\n";
