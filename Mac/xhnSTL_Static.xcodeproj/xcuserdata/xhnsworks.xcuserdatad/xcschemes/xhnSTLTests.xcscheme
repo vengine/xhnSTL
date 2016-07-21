@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0720"
+   LastUpgradeVersion = "0730"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -19,7 +19,7 @@
                BlueprintIdentifier = "68FC12D41BC9D31A00C8A0BE"
                BuildableName = "xhnSTLTests.xctest"
                BlueprintName = "xhnSTLTests"
-               ReferencedContainer = "container:xhnSTL.xcodeproj">
+               ReferencedContainer = "container:xhnSTL_Static.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0730"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -17,7 +17,7 @@
                BlueprintIdentifier = "68FC12CA1BC9D31A00C8A0BE"
                BuildableName = "xhnSTL.framework"
                BlueprintName = "xhnSTL"
-               ReferencedContainer = "container:xhnSTL.xcodeproj">
+               ReferencedContainer = "container:xhnSTL_Static.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,26 +28,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "68FC12D41BC9D31A00C8A0BE"
-               BuildableName = "xhnSTLTests.xctest"
-               BlueprintName = "xhnSTLTests"
-               ReferencedContainer = "container:xhnSTL.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "68FC12CA1BC9D31A00C8A0BE"
-            BuildableName = "xhnSTL.framework"
-            BlueprintName = "xhnSTL"
-            ReferencedContainer = "container:xhnSTL.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -67,7 +48,7 @@
             BlueprintIdentifier = "68FC12CA1BC9D31A00C8A0BE"
             BuildableName = "xhnSTL.framework"
             BlueprintName = "xhnSTL"
-            ReferencedContainer = "container:xhnSTL.xcodeproj">
+            ReferencedContainer = "container:xhnSTL_Static.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -85,7 +66,7 @@
             BlueprintIdentifier = "68FC12CA1BC9D31A00C8A0BE"
             BuildableName = "xhnSTL.framework"
             BlueprintName = "xhnSTL"
-            ReferencedContainer = "container:xhnSTL.xcodeproj">
+            ReferencedContainer = "container:xhnSTL_Static.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
