@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "68FC12CA1BC9D31A00C8A0BE"
-               BuildableName = "xhnSTL.framework"
-               BlueprintName = "xhnSTL"
+               BuildableName = "xhnSTLStatic.framework"
+               BlueprintName = "xhnSTLStatic"
                ReferencedContainer = "container:xhnSTL_Static.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,8 +46,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "68FC12CA1BC9D31A00C8A0BE"
-            BuildableName = "xhnSTL.framework"
-            BlueprintName = "xhnSTL"
+            BuildableName = "xhnSTLStatic.framework"
+            BlueprintName = "xhnSTLStatic"
             ReferencedContainer = "container:xhnSTL_Static.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,8 +64,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "68FC12CA1BC9D31A00C8A0BE"
-            BuildableName = "xhnSTL.framework"
-            BlueprintName = "xhnSTL"
+            BuildableName = "xhnSTLStatic.framework"
+            BlueprintName = "xhnSTLStatic"
             ReferencedContainer = "container:xhnSTL_Static.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
