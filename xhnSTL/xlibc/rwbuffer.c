@@ -10,6 +10,7 @@
 
 #include "rwbuffer.h"
 #include "emem.h"
+
 /// |0x0000                 |0x0004                 |0x0008                  |0x000c
 /// |0x00 |0x01 |0x02 |0x03 |0x04 |0x05 |0x06 |0x07 | 0x08 |0x09 |0x0a |0x0b |0x0c |0x0d |0x0e |0x0f
 /// |top barrier                                    |bottom barrier          |
@@ -23,16 +24,16 @@ typedef struct _rw_buffer
     volatile euint* bottom_pointer;
 } rw_buffer;
 
-RWBuffer RWBuffer_new(euint buffer_size)
+RWBuffer RWBuffer_new(rw_buffer_allocator* allocator, euint buffer_size)
 {
     RWBuffer ret;
     euint real_size = 0;
     euint number_uints = 0;
-    ret = (rw_buffer*)SMalloc(sizeof(rw_buffer));
+    ret = (rw_buffer*)allocator->alloc(allocator, sizeof(rw_buffer));
 
     real_size = GetRealSize(euint, buffer_size);
     number_uints = real_size / sizeof(euint);
-    ret->top_barrier = (euint*)SMalloc(real_size);
+    ret->top_barrier = (euint*)allocator->alloc(allocator, real_size);
     ret->bottom_barrier = ret->top_barrier + number_uints;
     ret->top_pointer = (volatile euint*)ret->top_barrier;
     ret->bottom_pointer = (volatile euint*)ret->top_barrier;
@@ -40,16 +41,16 @@ RWBuffer RWBuffer_new(euint buffer_size)
     return ret;
 }
 
-void RWBuffer_delete(RWBuffer _self)
+void RWBuffer_delete(rw_buffer_allocator* allocator, RWBuffer _self)
 {
     if (_self->top_barrier)
     {
-        Mfree((void*)_self->top_barrier);
+        allocator->free(allocator, (void*)_self->top_barrier);
         _self->top_barrier = NULL;
         _self->bottom_barrier = NULL;
     }
 	if (_self)
-	    Mfree(_self);
+	    allocator->free(allocator, _self);
 }
 
 euint RWBuffer_offset(RWBuffer _self, euint* ptr)
@@ -106,8 +107,11 @@ bool RWBuffer_Read(RWBuffer _self, euint* result, euint* read_size)
 		memcpy(&result[number_uints], buffer_chunk_pointer, *read_size % sizeof(euint));
 		buffer_chunk_pointer++;
 	}
-
+#if defined (_WIN32) || defined (_WIN64)
+    MemoryBarrier();
+#elif defined (__APPLE__)
     OSMemoryBarrier();
+#endif
     _self->top_pointer = next;
     return true;
 }
@@ -166,7 +170,11 @@ bool RWBuffer_Write(RWBuffer _self, const euint* from, const euint write_size)
 
     *registered_bottom_pointer = (euint)buffer_chunk_pointer;
 
+#if defined (_WIN32) || defined (_WIN64)
+    MemoryBarrier();
+#elif defined (__APPLE__)
     OSMemoryBarrier();
+#endif
     _self->bottom_pointer = buffer_chunk_pointer;
     return true;
 }
