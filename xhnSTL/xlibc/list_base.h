@@ -13,8 +13,7 @@
 
 typedef struct _list
 {
-	MALLOC alloc_proc;
-	MFREE free_proc;
+    native_memory_allocator* native_allocator;
 	struct list_node* head;
 	struct list_node* tail;
 	euint count;
@@ -33,24 +32,23 @@ _INLINE_ void ListFunc(node_Init)(struct list_node* _node, var _data)
 	_node->iter_next = NULL;
 	_node->value = _data;
 }
-List ListFunc(Init)(List _lst, etype _value_type, MALLOC _alc, MFREE _fre)
+List ListFunc(Init)(List _lst, etype _value_type, native_memory_allocator* _alloc)
 {
 	list* lst = (list*)_lst;
 	lst->head = NULL;
 	lst->tail = NULL;
 	lst->count = 0;
 	lst->value_type = _value_type;
-	lst->alloc_proc = _alc;
-	lst->free_proc = _fre;
+	lst->native_allocator = _alloc;
 #ifdef ALLOW_CONCURRENT
 	ELock_Init(&lst->elock);
 #endif
 	return _lst;
 }
-List ListFunc(new)(etype _value_type, MALLOC _alc, MFREE _fre)
+List ListFunc(new)(etype _value_type, native_memory_allocator* _alloc)
 {
-	list* ret = (list*)_alc(sizeof(list));
-	return ListFunc(Init)(ret, _value_type, _alc, _fre);
+	list* ret = (list*)_alloc->alloc(_alloc, sizeof(list));
+	return ListFunc(Init)(ret, _value_type, _alloc);
 }
 void ListFunc(Dest)(List _lst)
 {
@@ -63,7 +61,7 @@ void ListFunc(Dest)(List _lst)
 
 Iterator ListFunc(push_back)(List _lst, var _data)
 {
-	struct list_node* node = (struct list_node*)_lst->alloc_proc(sizeof(struct list_node));
+	struct list_node* node = (struct list_node*)_lst->native_allocator->alloc(_lst->native_allocator, sizeof(struct list_node));
 	Iterator ret = NULL;
 	ListFunc(node_Init)(node, _data);
 #ifdef ALLOW_CONCURRENT
@@ -92,7 +90,7 @@ Iterator ListFunc(push_back)(List _lst, var _data)
 
 Iterator ListFunc(push_front)(List _lst, var _data)
 {
-	struct list_node* node = (struct list_node*)_lst->alloc_proc(sizeof(struct list_node));
+	struct list_node* node = (struct list_node*)_lst->native_allocator->alloc(_lst->native_allocator, sizeof(struct list_node));
 	Iterator ret = NULL;
 	ListFunc(node_Init)(node, _data);
 #ifdef ALLOW_CONCURRENT
@@ -122,7 +120,7 @@ Iterator ListFunc(push_front)(List _lst, var _data)
 Iterator ListFunc(insert_after)(List _lst, Iterator _i, var _data)
 {
 	struct list_node* node = (struct list_node*)_i;
-	struct list_node* n = (struct list_node*)_lst->alloc_proc(sizeof(struct list_node));
+	struct list_node* n = (struct list_node*)_lst->native_allocator->alloc(_lst->native_allocator, sizeof(struct list_node));
 	ListFunc(node_Init)(n, _data);
 #ifdef ALLOW_CONCURRENT
 	ELock_lock(&_lst->elock);
@@ -158,7 +156,7 @@ Iterator ListFunc(insert_after)(List _lst, Iterator _i, var _data)
 Iterator ListFunc(insert_before)(List _lst, Iterator _i, var _data)
 {
 	struct list_node* node = (struct list_node*)_i;
-	struct list_node* n = (struct list_node*)_lst->alloc_proc(sizeof(struct list_node));
+	struct list_node* n = (struct list_node*)_lst->native_allocator->alloc(_lst->native_allocator, sizeof(struct list_node));
 	ListFunc(node_Init)(n, _data);
 #ifdef ALLOW_CONCURRENT
 	ELock_lock(&_lst->elock);
@@ -212,7 +210,7 @@ Iterator ListFunc(remove)(List _lst, Iterator _i)
 #ifdef ALLOW_CONCURRENT
 			ELock_unlock(&_lst->elock);
 #endif
-			_lst->free_proc((vptr)node);
+			_lst->native_allocator->free(_lst->native_allocator, (vptr)node);
 			return ret;
 		}
 		else if (node != _lst->head && node == _lst->tail)
@@ -222,7 +220,7 @@ Iterator ListFunc(remove)(List _lst, Iterator _i)
 #ifdef ALLOW_CONCURRENT
 			ELock_unlock(&_lst->elock);
 #endif
-			_lst->free_proc(node);
+			_lst->native_allocator->free(_lst->native_allocator, node);
 			return NULL;
 		}
 		else if (node == _lst->head && node != _lst->tail)
@@ -233,7 +231,7 @@ Iterator ListFunc(remove)(List _lst, Iterator _i)
 #ifdef ALLOW_CONCURRENT
 			ELock_unlock(&_lst->elock);
 #endif
-			_lst->free_proc(node);
+			_lst->native_allocator->free(_lst->native_allocator, node);
 			return ret;
 		}
 		else
@@ -243,7 +241,7 @@ Iterator ListFunc(remove)(List _lst, Iterator _i)
 #ifdef ALLOW_CONCURRENT
 			ELock_unlock(&_lst->elock);
 #endif
-			_lst->free_proc(tmp);
+			_lst->native_allocator->free(_lst->native_allocator, tmp);
 			return NULL;
 		}
 	}
@@ -367,7 +365,7 @@ List ListFunc(break)(List _lst, Iterator _i)
 #endif
 			return NULL;
 		}
-		ret = (List)_lst->alloc_proc(sizeof(list));
+		ret = (List)_lst->native_allocator->alloc(_lst->native_allocator, sizeof(list));
 		ret->head = (struct list_node*)_i;
 		ret->tail = _lst->tail;
 		ret->count = count;

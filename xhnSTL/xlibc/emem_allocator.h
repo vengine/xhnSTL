@@ -1,6 +1,7 @@
 #include "list.h"
 struct MemPoolDef(mem_pool)
 {
+    native_memory_allocator* native_allocator;
 	euint real_chk_size;
 	euint num_chunk_per_mem_block;
 	List mem_pool_chain;
@@ -31,7 +32,7 @@ struct AllocInfoDef(alloc_info)
 	Iterator iter;
 };
 
-struct MemPoolDef(mem_pool)* MemPoolFunc(new)(euint _chk_size)
+struct MemPoolDef(mem_pool)* MemPoolFunc(new)(native_memory_allocator* _alloc, euint _chk_size)
 {
 	struct MemPoolDef(mem_pool)* ret = NULL;
 	euint num_chunk_per_mem_block = 0;
@@ -39,8 +40,9 @@ struct MemPoolDef(mem_pool)* MemPoolFunc(new)(euint _chk_size)
 	MemPoolNode node = {NULL};
 	var v;
 
-	ret = (struct MemPoolDef(mem_pool)*)malloc(sizeof(struct MemPoolDef(mem_pool)));
-	ret->mem_pool_chain = List_new(Vptr,  (MALLOC)malloc, (MFREE)free);
+	ret = (struct MemPoolDef(mem_pool)*)_alloc->alloc(_alloc, sizeof(struct MemPoolDef(mem_pool)));
+    ret->native_allocator = _alloc;
+	ret->mem_pool_chain = List_new(Vptr,  _alloc);
 	ret->real_chk_size = cale_alloc_size(_chk_size);
 	ret->next = NULL;
 
@@ -51,7 +53,7 @@ struct MemPoolDef(mem_pool)* MemPoolFunc(new)(euint _chk_size)
 	}
 	ret->num_chunk_per_mem_block = num_chunk_per_mem_block;
 
-	node = MemPoolNode_new(_chk_size, ret->num_chunk_per_mem_block);
+	node = MemPoolNode_new(_alloc, _chk_size, ret->num_chunk_per_mem_block);
 
 	v.vptr_var = node.self;
 	List_push_back(ret->mem_pool_chain, v);
@@ -73,7 +75,7 @@ void MemPoolFunc(delete)(struct MemPoolDef(mem_pool)* _self)
 		MemPoolNode_delete(node);
 		iter = List_next(iter);
 	}
-	free(_self);
+    _self->native_allocator->free(_self->native_allocator, _self);
 }
 
 totel_refer_info MemPoolFunc(log)(struct MemPoolDef(mem_pool)* _self)
@@ -170,7 +172,7 @@ void* MemPoolFunc(alloc)(struct MemPoolDef(mem_pool)* _self,
 		{
 			euint chk_size = _self->real_chk_size;
 			euint num_chks = _self->num_chunk_per_mem_block;
-			node = MemPoolNode_new(chk_size, num_chks);
+			node = MemPoolNode_new(_self->native_allocator, chk_size, num_chks);
 			v.vptr_var = node.self;
 			List_push_front(_self->mem_pool_chain, v);
 			_self->num_chunk_per_mem_block *= 2;
@@ -207,10 +209,10 @@ euint MemPoolFunc(chunk_size)(struct MemPoolDef(mem_pool)* _self)
 	return _self->real_chk_size;
 }
 
-struct MemPoolListDef(mem_pool_list)* MemPoolListFunc(new)()
+struct MemPoolListDef(mem_pool_list)* MemPoolListFunc(new)(native_memory_allocator* _alloc)
 {
 	struct MemPoolListDef(mem_pool_list)* ret = NULL;
-	ret = (struct MemPoolListDef(mem_pool_list)*)malloc(sizeof(struct MemPoolListDef(mem_pool_list)));
+	ret = (struct MemPoolListDef(mem_pool_list)*)_alloc->alloc(_alloc, sizeof(struct MemPoolListDef(mem_pool_list)));
 	ret->head = NULL;
 	ret->tail = NULL;
 #ifdef ALLOW_CONCURRENT
@@ -218,9 +220,9 @@ struct MemPoolListDef(mem_pool_list)* MemPoolListFunc(new)()
 #endif
 	return ret;
 }
-void MemPoolListFunc(delete)(struct MemPoolListDef(mem_pool_list)* _self)
+void MemPoolListFunc(delete)(native_memory_allocator* _alloc, struct MemPoolListDef(mem_pool_list)* _self)
 {
-	free(_self);
+	_alloc->free(_alloc, _self);
 }
 struct MemPoolDef(mem_pool)* MemPoolListFunc(pop_front)(struct MemPoolListDef(mem_pool_list)* _self)
 {
@@ -259,6 +261,7 @@ void MemPoolListFunc(push_back)(struct MemPoolListDef(mem_pool_list)* _self, str
 
 struct MemAllocatorDef(mem_allocator)
 {
+    native_memory_allocator* native_allocator;
 	struct MemPoolDef(mem_pool)* mem_pools[MAX_MEM_POOLS];
 #ifdef ALLOW_CONCURRENT
 	ELock elock;
@@ -269,16 +272,17 @@ struct MemAllocatorDef(mem_allocator)
 	mem_pool_node* tail;
 };
 
-MemAllocatorDef(mem_allocator)* MemAllocatorFunc(new)()
+MemAllocatorDef(mem_allocator)* MemAllocatorFunc(new)(native_memory_allocator* _alloc)
 {
     MemAllocatorDef(mem_allocator)* ret = NULL;
     int i = 0;
-	ret = (struct MemAllocatorDef(mem_allocator)*)malloc(sizeof(MemAllocatorDef(mem_allocator)));
+	ret = (struct MemAllocatorDef(mem_allocator)*)_alloc->alloc(_alloc, sizeof(MemAllocatorDef(mem_allocator)));
+    ret->native_allocator = _alloc;
 	memset(ret->mem_pools, 0, sizeof(ret->mem_pools));
     for (; i < MAX_MEM_POOLS; i++)
     {
         struct MemPoolDef(mem_pool)* mp =
-        MemPoolFunc(new)( (i + 1) * DEFAULT_CHUNK_SIZE +
+        MemPoolFunc(new)( _alloc, (i + 1) * DEFAULT_CHUNK_SIZE +
                     ALLOC_INFO_RESERVED + REFER_INFO_RESERVED );
         ret->mem_pools[i] = mp;
     }
@@ -301,7 +305,7 @@ void MemAllocatorFunc(delete)(MemAllocatorDef(mem_allocator)* _self)
 			MemPoolFunc(delete)(_self->mem_pools[i]);
 		}
 	}
-	free(_self);
+	_self->native_allocator->free(_self->native_allocator, _self);
 }
 void* MemAllocatorFunc(alloc)(MemAllocatorDef(mem_allocator)* _self, euint _size, bool _is_safe_alloc)
 {
@@ -325,11 +329,7 @@ void* MemAllocatorFunc(alloc)(MemAllocatorDef(mem_allocator)* _self, euint _size
 	}
 	else
 	{
-#ifndef __APPLE__
-		ret = (char*)__mingw_aligned_malloc(_size, 16);
-#else
-        ret = (char*)malloc(_size);
-#endif
+        ret = _self->native_allocator->aligned_alloc_16(_self->native_allocator, _size);
 		if (_is_safe_alloc)
 		    meminit(ret, _size);
 	}
@@ -369,11 +369,7 @@ void MemAllocatorFunc(free)(MemAllocatorDef(mem_allocator)* _self, void* _ptr)
 
 	if ( !to_ptr(info.mem_pool) )
 	{
-#ifndef __APPLE__
-		__mingw_aligned_free(ptr);
-#else
-        free(ptr);
-#endif
+        _self->native_allocator->aligned_free_16(_self->native_allocator, ptr);
 	}
 	else
 	{

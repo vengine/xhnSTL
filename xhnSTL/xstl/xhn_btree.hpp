@@ -318,7 +318,7 @@ namespace xhn
         pointer allocate(size_type count)
         {
             if (!s_unlocked_allocator) {
-                s_unlocked_allocator = UnlockedMemAllocator_new();
+                s_unlocked_allocator = UnlockedMemAllocator_new(&g_DefaultMemoryAllcator);
             }
             return (pointer)UnlockedMemAllocator_alloc(
                                                        s_unlocked_allocator,
@@ -329,7 +329,7 @@ namespace xhn
         pointer allocate(size_type count, const void*)
         {
             if (!s_unlocked_allocator) {
-                s_unlocked_allocator = UnlockedMemAllocator_new();
+                s_unlocked_allocator = UnlockedMemAllocator_new(&g_DefaultMemoryAllcator);
             }
             return (pointer)UnlockedMemAllocator_alloc(
                                                        s_unlocked_allocator,
@@ -397,7 +397,7 @@ namespace xhn
         pointer allocate(size_type count)
         {
             if (!s_unlocked_allocator) {
-                s_unlocked_allocator = UnlockedMemAllocator_new();
+                s_unlocked_allocator = UnlockedMemAllocator_new(&g_DefaultMemoryAllcator);
             }
             return (pointer)UnlockedMemAllocator_alloc(
                                                        s_unlocked_allocator,
@@ -408,7 +408,7 @@ namespace xhn
         pointer allocate(size_type count, const void*)
         {
             if (!s_unlocked_allocator) {
-                s_unlocked_allocator = UnlockedMemAllocator_new();
+                s_unlocked_allocator = UnlockedMemAllocator_new(&g_DefaultMemoryAllcator);
             }
             return (pointer)UnlockedMemAllocator_alloc(
                                                        s_unlocked_allocator,

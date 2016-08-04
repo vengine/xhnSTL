@@ -86,7 +86,8 @@ _INLINE_ void mem_node_init(mem_node* _node)
 
 #define cale_alloc_size(s) ( s + (16 - (s % 16)) );
 
-void* alloc_mem_list(euint _chk_size, euint _num_chks, euint* _real_chk_size, vptr* _begin, vptr* _end, mem_node** _head)
+void* alloc_mem_list(native_memory_allocator* _alloc, euint _chk_size, euint _num_chks,
+                     euint* _real_chk_size, vptr* _begin, vptr* _end, mem_node** _head)
 {
 	char* ret = NULL;
 	euint total_size = 0;
@@ -97,11 +98,7 @@ void* alloc_mem_list(euint _chk_size, euint _num_chks, euint* _real_chk_size, vp
 	total_size = chk_size * _num_chks;
 
     *_real_chk_size = chk_size;
-#ifndef __APPLE__
-    ret = (char*)__mingw_aligned_malloc(total_size, 16);
-#else
-    ret = (char*)malloc(total_size);
-#endif
+    ret = _alloc->aligned_alloc_16(_alloc, total_size);
 #if CLEAR_MEMORY_WHEN_THE_ALLOCATE
     memset(ret, 0, total_size);
 #endif
@@ -123,17 +120,14 @@ void* alloc_mem_list(euint _chk_size, euint _num_chks, euint* _real_chk_size, vp
     }
     return ret;
 }
-void free_mem_list(void* _mem_list)
+void free_mem_list(native_memory_allocator* _alloc, void* _mem_list)
 {
-#ifndef __APPLE__
-    __mingw_aligned_free(_mem_list);
-#else
-    free(_mem_list);
-#endif
+    _alloc->aligned_free_16(_alloc, _mem_list);
 }
 
 typedef struct _mem_pool_node
 {
+    native_memory_allocator* native_allocator;
     void* mem_list;
     euint real_chk_size;
     vptr begin;
@@ -145,10 +139,11 @@ typedef struct _mem_pool_node
 	struct _mem_pool_node* prev;
 } mem_pool_node;
 
-mem_pool_node allco_mem_pool_node(euint _chk_size, euint _num_chks)
+mem_pool_node alloc_mem_pool_node(native_memory_allocator* _alloc, euint _chk_size, euint _num_chks)
 {
     mem_pool_node ret;
-    ret.mem_list = alloc_mem_list(_chk_size, _num_chks, &ret.real_chk_size, &ret.begin, &ret.end, &ret.head);
+    ret.native_allocator = _alloc;
+    ret.mem_list = alloc_mem_list(_alloc, _chk_size, _num_chks, &ret.real_chk_size, &ret.begin, &ret.end, &ret.head);
 	ret.num_chks = _num_chks;
 	ret.chk_cnt = _num_chks;
 	ret.next = NULL;
@@ -266,18 +261,18 @@ void dealloc(mem_pool_node* _node, void* _ptr)
 	_node->chk_cnt++;
 }
 
-MemPoolNode MemPoolNode_new(euint _chk_size, euint _num_chks)
+MemPoolNode MemPoolNode_new(native_memory_allocator* _alloc, euint _chk_size, euint _num_chks)
 {
     MemPoolNode ret;
-    ret.self = (struct _mem_pool_node*)malloc(sizeof(mem_pool_node));
-    *ret.self = allco_mem_pool_node(_chk_size, _num_chks);
+    ret.self = (struct _mem_pool_node*)_alloc->alloc(_alloc, sizeof(mem_pool_node));
+    *ret.self = alloc_mem_pool_node(_alloc, _chk_size, _num_chks);
     return ret;
 }
 
 void MemPoolNode_delete(MemPoolNode _self)
 {
-    free_mem_list(_self.self->mem_list);
-    free(_self.self);
+    free_mem_list(_self.self->native_allocator, _self.self->mem_list);
+    _self.self->native_allocator->free(_self.self->native_allocator, _self.self);
 }
 
 void* MemPoolNode_alloc(MemPoolNode _self, bool _is_safe_alloc)
@@ -325,24 +320,6 @@ bool MemPoolNode_empty(MemPoolNode _self)
 
 #define MAX_MEM_POOLS      512
 #define DEFAULT_CHUNK_SIZE 32
-
-void* align_malloc_16(euint size)
-{
-#ifndef __APPLE__
-	return __mingw_aligned_malloc(size, 16);
-#else
-	return malloc(size);
-#endif
-}
-
-void align_free_16(void* ptr)
-{
-#ifndef __APPLE__
-	return _aligned_free(ptr);
-#else
-	return free(ptr);
-#endif
-}
 
 #define VENGINE_PAGE_SIZE (512)
 #define MemPoolDef(x) x
@@ -415,11 +392,44 @@ int MyAllocHook( int nAllocType, void *pvData,  size_t nSize, int nBlockUse, lon
 }
 #endif
 
+static void* DefaultAlloc(void* self, euint size)
+{
+    return malloc(size);
+}
+static void DefaultFree(void* self, void* ptr)
+{
+    free(ptr);
+}
+static void* DefaultAlignedAlloc16(void* self, euint size)
+{
+#ifndef __APPLE__
+    return __mingw_aligned_malloc(size, 16);
+#else
+    return malloc(size);
+#endif
+}
+static void DefaultAlignedFree16(void* self, void* ptr)
+{
+#ifndef __APPLE__
+    return _aligned_free(ptr);
+#else
+    return free(ptr);
+#endif
+}
+
+native_memory_allocator g_DefaultMemoryAllcator =
+{
+    DefaultAlloc,
+    DefaultFree,
+    DefaultAlignedAlloc16,
+    DefaultAlignedFree16,
+};
+
 void MInit()
 {
 #ifndef USE_C_MALLOC
 	if (!g_MemAllocator) {
-        g_MemAllocator = MemAllocator_new();
+        g_MemAllocator = MemAllocator_new(&g_DefaultMemoryAllcator);
 	} 
 #endif
 #if 0
@@ -527,14 +537,14 @@ vptr Ealloc(euint _size)
 #else
 #    ifndef USE_C_MALLOC
 	if (!g_MemAllocator) {
-	    g_MemAllocator = MemAllocator_new();
+	    g_MemAllocator = MemAllocator_new(&g_DefaultMemoryAllcator);
     }
 #    endif
 #    if 0
 	_CrtSetAllocHook( MyAllocHook );
 #    endif
 #    ifdef USE_C_MALLOC
-	vptr ret = align_malloc_16(_size);
+	vptr ret = g_DefaultMemoryAllcator.aligned_alloc_16(&g_DefaultMemoryAllcator, _size);
 	return ret;
 #    else
 	return MemAllocator_alloc(g_MemAllocator, _size, false);
@@ -545,14 +555,14 @@ vptr SEalloc(euint _size)
 {
 #ifndef USE_C_MALLOC
 	if (!g_MemAllocator) {
-		g_MemAllocator = MemAllocator_new();
+		g_MemAllocator = MemAllocator_new(&g_DefaultMemoryAllcator);
 	}
 #endif
 #if 0
 	_CrtSetAllocHook( MyAllocHook );
 #endif
 #ifdef USE_C_MALLOC
-    vptr ret = align_malloc_16(_size);
+    vptr ret = g_DefaultMemoryAllcator.aligned_alloc_16(&g_DefaultMemoryAllcator, _size);
     if (ret)
         memset(ret, 0, _size);
     return ret;
@@ -566,7 +576,7 @@ vptr SEalloc(euint _size)
 void Efree(vptr _ptr)
 {
 #ifdef USE_C_MALLOC
-    align_free_16(_ptr);
+    g_DefaultMemoryAllcator.aligned_free_16(&g_DefaultMemoryAllcator, _ptr);
     return;
 #else
 	MemAllocator_free(g_MemAllocator, _ptr);

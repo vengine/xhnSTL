@@ -27,12 +27,7 @@ extern "C"
 
 #define _MEM_BLOCK_HEAD_SIZE_ sizeof(euint) * 8
     
-typedef struct _native_memory_allocator
-{
-    void* (*alloc)(void*, euint);
-    void (*free)(void*, void*);
-    void* (*alloc_aligned16)(void*, euint);
-} native_memory_allocator;
+extern native_memory_allocator g_DefaultMemoryAllcator;
 
 /// 必须确保所有分配出来的内存都是经过初始化的
 API_EXPORT void TestInit();
@@ -67,7 +62,7 @@ typedef struct _mem_pool_node_
 {
     struct _mem_pool_node* self;
 } MemPoolNode;
-API_EXPORT MemPoolNode MemPoolNode_new(euint _chk_size, euint _num_chks);
+API_EXPORT MemPoolNode MemPoolNode_new(native_memory_allocator* _alloc, euint _chk_size, euint _num_chks);
 API_EXPORT void MemPoolNode_delete(MemPoolNode _self);
 API_EXPORT void* MemPoolNode_alloc(MemPoolNode _self, bool _is_safe_alloc);
 ///API_EXPORT void* MemPoolNode_salloc(MemPoolNode _self);
@@ -76,7 +71,7 @@ API_EXPORT bool MemPoolNode_empty(MemPoolNode _self);
 
 typedef struct mem_pool mem_pool;
 
-API_EXPORT mem_pool* MemPool_new(euint _chk_size);
+API_EXPORT mem_pool* MemPool_new(native_memory_allocator* _alloc, euint _chk_size);
 API_EXPORT void MemPool_delete(mem_pool* _self);
 API_EXPORT void* MemPool_alloc(mem_pool* _self,
                                Iterator* _iter,
@@ -89,14 +84,14 @@ API_EXPORT euint MemPool_chunk_size(mem_pool* _self);
 
 typedef struct mem_pool_list mem_pool_list;
 
-API_EXPORT mem_pool_list* MemPoolList_new();
-API_EXPORT void MemPoolList_delete(mem_pool_list* _self);
+API_EXPORT mem_pool_list* MemPoolList_new(native_memory_allocator* _alloc);
+API_EXPORT void MemPoolList_delete(native_memory_allocator* _alloc, mem_pool_list* _self);
 API_EXPORT mem_pool* MemPoolList_pop_front(mem_pool_list* _self);
 API_EXPORT void MemPoolList_push_back(mem_pool_list* _self, mem_pool* _pool);
 
 typedef struct mem_allocator mem_allocator;
 
-API_EXPORT mem_allocator* MemAllocator_new();
+API_EXPORT mem_allocator* MemAllocator_new(native_memory_allocator* _alloc);
 API_EXPORT void MemAllocator_delete(mem_allocator* _self);
 API_EXPORT void* MemAllocator_alloc(mem_allocator* _self, euint _size, bool _is_safe_alloc);
 API_EXPORT void* MemAllocator_salloc(mem_allocator* _self, euint _size);
@@ -107,7 +102,7 @@ API_EXPORT euint MemAllocator_get_alloced_mem_size(mem_allocator* _self);
 
 typedef struct Unlocked_mem_allocator Unlocked_mem_allocator;
 
-API_EXPORT Unlocked_mem_allocator* UnlockedMemAllocator_new();
+API_EXPORT Unlocked_mem_allocator* UnlockedMemAllocator_new(native_memory_allocator* _alloc);
 API_EXPORT void UnlockedMemAllocator_delete(Unlocked_mem_allocator* _self);
 API_EXPORT void* UnlockedMemAllocator_alloc(Unlocked_mem_allocator* _self, euint _size, bool _is_safe_alloc);
 API_EXPORT void* UnlockedMemAllocator_salloc(Unlocked_mem_allocator* _self, euint _size);

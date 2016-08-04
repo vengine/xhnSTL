@@ -19,9 +19,26 @@ typedef struct
 
 typedef string_hash_bucket* StringHashBucket;
 
-void StringHashBucket_Init(StringHashBucket self)
+static void* StringHashAlloc(void* self, euint size)
 {
-    self->string_list = StringList_new(Vptr, Ealloc, Efree);
+    return Ealloc(size);
+}
+static void StringHashFree(void* self, void* ptr)
+{
+    Efree(ptr);
+}
+
+static native_memory_allocator g_StringHashAllocator =
+{
+    StringHashAlloc,
+    StringHashFree,
+    StringHashAlloc,
+    StringHashFree,
+};
+
+void StringHashBucket_Init(StringHashBucket self, native_memory_allocator* alloc)
+{
+    self->string_list = StringList_new(Vptr, alloc);
     self->lock = 0;
 }
 
@@ -63,7 +80,7 @@ typedef string_hash_set* StringHashSet;
 void StringHashSet_Init(StringHashSet self)
 {
     for (int i = 0; i < STRING_HASH_BUCKET_COUNT; i++) {
-        StringHashBucket_Init(&self->buckets[i]);
+        StringHashBucket_Init(&self->buckets[i], &g_StringHashAllocator);
     }
 }
 

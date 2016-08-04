@@ -81,7 +81,7 @@ public:
     public:
         ThreadAllocator()
         {
-            m_base_allocator = UnlockedMemAllocator_new();
+            m_base_allocator = UnlockedMemAllocator_new(&g_DefaultMemoryAllcator);
         }
         ~ThreadAllocator()
         {

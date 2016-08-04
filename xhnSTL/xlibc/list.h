@@ -18,8 +18,8 @@ extern "C"
 #include "etypes.h"
 struct _list;
 typedef struct _list* List;
-API_EXPORT List List_new(etype _value_type, MALLOC _alc, MFREE _fre);
-API_EXPORT List List_Init(List _lst, etype _value_type, MALLOC _alc, MFREE _fre);
+API_EXPORT List List_new(etype _value_type, native_memory_allocator* _alloc);
+API_EXPORT List List_Init(List _lst, etype _value_type, native_memory_allocator* _alloc);
 API_EXPORT void List_Dest(List _lst);
 API_EXPORT Iterator List_push_back(List _lst, var _data);
 API_EXPORT Iterator List_push_front(List _lst, var _data);
