@@ -12,22 +12,17 @@
 #define RWBUFFER_H
 #include "common.h"
 #include "etypes.h"
+#include "emem.h"
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 typedef struct _rw_buffer* RWBuffer;
-    
-typedef struct _rw_buffer_allocator
-{
-    void* (*alloc)(void*, euint);
-    void (*free)(void*, void*);
-} rw_buffer_allocator;
 
 #define GetRealSize(type, size) size + ( sizeof(type) - (size % sizeof(type)) )
 
-API_EXPORT RWBuffer RWBuffer_new(rw_buffer_allocator* allocator, euint buffer_size);
-API_EXPORT void RWBuffer_delete(rw_buffer_allocator* allocator, RWBuffer _self);
+API_EXPORT RWBuffer RWBuffer_new(native_memory_allocator* allocator, euint buffer_size);
+API_EXPORT void RWBuffer_delete(native_memory_allocator* allocator, RWBuffer _self);
 API_EXPORT bool RWBuffer_Read(RWBuffer _self, euint* result, euint* read_size);
 API_EXPORT bool RWBuffer_Write(RWBuffer _self, const euint* from, const euint write_size);
 API_EXPORT bool RWBuffer_IsEmpty(RWBuffer _self);

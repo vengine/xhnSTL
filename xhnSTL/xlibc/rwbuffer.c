@@ -24,7 +24,7 @@ typedef struct _rw_buffer
     volatile euint* bottom_pointer;
 } rw_buffer;
 
-RWBuffer RWBuffer_new(rw_buffer_allocator* allocator, euint buffer_size)
+RWBuffer RWBuffer_new(native_memory_allocator* allocator, euint buffer_size)
 {
     RWBuffer ret;
     euint real_size = 0;
@@ -41,7 +41,7 @@ RWBuffer RWBuffer_new(rw_buffer_allocator* allocator, euint buffer_size)
     return ret;
 }
 
-void RWBuffer_delete(rw_buffer_allocator* allocator, RWBuffer _self)
+void RWBuffer_delete(native_memory_allocator* allocator, RWBuffer _self)
 {
     if (_self->top_barrier)
     {

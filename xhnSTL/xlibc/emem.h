@@ -26,6 +26,13 @@ extern "C"
 #define REFER_INFO_RESERVED 16
 
 #define _MEM_BLOCK_HEAD_SIZE_ sizeof(euint) * 8
+    
+typedef struct _native_memory_allocator
+{
+    void* (*alloc)(void*, euint);
+    void (*free)(void*, void*);
+    void* (*alloc_aligned16)(void*, euint);
+} native_memory_allocator;
 
 /// 必须确保所有分配出来的内存都是经过初始化的
 API_EXPORT void TestInit();
