@@ -311,6 +311,7 @@ namespace xhn {
         char mbuf[1024];
 
         bridgeFile = "static xhn::SpinLock s_lock;\n";
+        bridgeFile += "static void (*s_writeLogProc)(int, const char*) = NULL;\n";
         bridgeFile += "static NSMutableSet* s_sceneNodeAgentSet = nil;\n";
         bridgeFile += "static NSMutableSet* s_actorAgentSet = nil;\n";
         bridgeFile += "static NSMutableDictionary* s_createSceneNodeAgentProcDic = nil;\n";
@@ -655,6 +656,14 @@ namespace xhn {
         bridgeFile += "        i++;\n";
         bridgeFile += "    }\n";
         bridgeFile += "    return ret;\n";
+        bridgeFile += "}\n";
+        bridgeFile += "void SetWriteLogProc(void (*writeLogProc)(int, const char*)) {\n";
+        bridgeFile += "    s_writeLogProc = writeLogProc;\n";
+        bridgeFile += "}\n";
+        bridgeFile += "void WriteLog(int type, const char* log) {\n";
+        bridgeFile += "    if (s_writeLogProc) {\n";
+        bridgeFile += "        s_writeLogProc(type, log);\n";
+        bridgeFile += "    }\n";
         bridgeFile += "}\n";
         ///printf("%s\n", bridgeFile.c_str());
         return bridgeFile;
