@@ -23,25 +23,25 @@ namespace xhn {
 class SwiftParser : public MemObject
 {
 public:
-    static const xhn::static_string StrSourceFile;
-    static const xhn::static_string StrClassDecl;
-    static const xhn::static_string StrImportDecl;
-    static const xhn::static_string StrFuncDecl;
-    static const xhn::static_string StrDeclRefExpr;
-    static const xhn::static_string StrInherits;
-    static const xhn::static_string StrAccess;
-    static const xhn::static_string StrPrivate;
-    static const xhn::static_string StrInternal;
-    static const xhn::static_string StrPublic;
-    static const xhn::static_string StrDecl;
+    static const static_string StrSourceFile;
+    static const static_string StrClassDecl;
+    static const static_string StrImportDecl;
+    static const static_string StrFuncDecl;
+    static const static_string StrDeclRefExpr;
+    static const static_string StrInherits;
+    static const static_string StrAccess;
+    static const static_string StrPrivate;
+    static const static_string StrInternal;
+    static const static_string StrPublic;
+    static const static_string StrDecl;
     
-    static const xhn::static_string StrSceneNodeAgent;
-    static const xhn::static_string StrState;
-    static const xhn::static_string StrStateInterface;
+    static const static_string StrSceneNodeAgent;
+    static const static_string StrState;
+    static const static_string StrStateInterface;
     
-    static const xhn::static_string StrActorAgent;
-    static const xhn::static_string StrAction;
-    static const xhn::static_string StrActionInterface;
+    static const static_string StrActorAgent;
+    static const static_string StrAction;
+    static const static_string StrActionInterface;
     enum ASTNodeType
     {
         SourceFileNode,
@@ -52,15 +52,15 @@ public:
     };
     struct ASTNode : public MemObject
     {
-        xhn::static_string type;
-        xhn::static_string name;
-        xhn::static_string access;
-        xhn::static_string decl;
-        xhn::SmartPtr<xhn::vector<xhn::static_string>> inherits;
-        xhn::SmartPtr<xhn::vector<ASTNode*>> children;
+        static_string type;
+        static_string name;
+        static_string access;
+        static_string decl;
+        SmartPtr<vector<static_string>> inherits;
+        SmartPtr<vector<ASTNode*>> children;
         ASTNode()
         {}
-        ASTNode(const xhn::static_string nodeName)
+        ASTNode(const static_string nodeName)
         {}
     };
     class SymbolBuffer
@@ -90,6 +90,9 @@ private:
     bool m_isInherits;
     bool m_isAccess;
     bool m_isDecl;
+private:
+    vector<static_string> m_sceneNodeAgentNameVector;
+    vector<static_string> m_actorAgentNameVector;
 public:
     void BeginParse();
     string EndParse();
@@ -99,9 +102,13 @@ public:
                             xhn::Lambda<bool (xhn::static_string,
                                               xhn::static_string, xhn::vector<xhn::static_string>&)>& isInheritFromClassProc);
     void Parse(const char* strBuffer, euint length);
-    static void ParseSwifts(const xhn::string& paths, xhn::Lambda<void (const xhn::string&)>& callback);
+    static void ParseSwifts(const xhn::string& paths, xhn::Lambda<void (const xhn::string&,
+                                                                        const xhn::vector<xhn::static_string>&,
+                                                                        const xhn::vector<xhn::static_string>&)>& callback);
     SwiftParser();
     ~SwiftParser();
+    inline const vector<static_string>& GetSceneNodeAgentNameVector() const { return m_sceneNodeAgentNameVector; }
+    inline const vector<static_string>& GetActorAgentNameVector() const { return m_actorAgentNameVector; }
 };
     
 }

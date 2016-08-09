@@ -45,30 +45,32 @@ static NSMutableSet* s_SwiftCommandLineUtils = nil;
 
 @interface SwiftCommandLineUtil : NSObject
 @property (assign) xhn::SwiftParser* parser;
-- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&))proc;
+- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&,
+                                                              const xhn::vector<xhn::static_string>&,
+                                                              const xhn::vector<xhn::static_string>&))proc;
 @end
 
 namespace xhn {
     
-    const xhn::static_string SwiftParser::StrSourceFile("source_file");
-    const xhn::static_string SwiftParser::StrClassDecl("class_decl");
-    const xhn::static_string SwiftParser::StrImportDecl("import_decl");
-    const xhn::static_string SwiftParser::StrFuncDecl("func_decl");
-    const xhn::static_string SwiftParser::StrDeclRefExpr("declref_expr");
-    const xhn::static_string SwiftParser::StrInherits("inherits:");
-    const xhn::static_string SwiftParser::StrAccess("access");
-    const xhn::static_string SwiftParser::StrPrivate("private");
-    const xhn::static_string SwiftParser::StrInternal("internal");
-    const xhn::static_string SwiftParser::StrPublic("public");
-    const xhn::static_string SwiftParser::StrDecl("decl");
+    const static_string SwiftParser::StrSourceFile("source_file");
+    const static_string SwiftParser::StrClassDecl("class_decl");
+    const static_string SwiftParser::StrImportDecl("import_decl");
+    const static_string SwiftParser::StrFuncDecl("func_decl");
+    const static_string SwiftParser::StrDeclRefExpr("declref_expr");
+    const static_string SwiftParser::StrInherits("inherits:");
+    const static_string SwiftParser::StrAccess("access");
+    const static_string SwiftParser::StrPrivate("private");
+    const static_string SwiftParser::StrInternal("internal");
+    const static_string SwiftParser::StrPublic("public");
+    const static_string SwiftParser::StrDecl("decl");
     
-    const xhn::static_string SwiftParser::StrSceneNodeAgent("SceneNodeAgent");
-    const xhn::static_string SwiftParser::StrState("State");
-    const xhn::static_string SwiftParser::StrStateInterface("StateInterface");
+    const static_string SwiftParser::StrSceneNodeAgent("SceneNodeAgent");
+    const static_string SwiftParser::StrState("State");
+    const static_string SwiftParser::StrStateInterface("StateInterface");
     
-    const xhn::static_string SwiftParser::StrActorAgent("ActorAgent");
-    const xhn::static_string SwiftParser::StrAction("Action");
-    const xhn::static_string SwiftParser::StrActionInterface("ActionInterface");
+    const static_string SwiftParser::StrActorAgent("ActorAgent");
+    const static_string SwiftParser::StrAction("Action");
+    const static_string SwiftParser::StrActionInterface("ActionInterface");
 
     SwiftParser::SymbolBuffer::SymbolBuffer()
     {
@@ -402,7 +404,7 @@ namespace xhn {
         bridgeFile += "    s_createSceneNodeAgentProcDic = [NSMutableDictionary new];\n";
         bridgeFile += "    s_actorAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createActorAgentProcDic = [NSMutableDictionary new];\n";
-        
+        /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
         xhn::vector<xhn::static_string> inheritPath;
         
         auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile](int& i) {
@@ -527,6 +529,9 @@ namespace xhn {
             }
         };
         
+        m_sceneNodeAgentNameVector.clear();
+        m_actorAgentNameVector.clear();
+        
         auto rootIter = m_roots.begin();
         auto rootEnd = m_roots.end();
         for (; rootIter != rootEnd; rootIter++) {
@@ -539,6 +544,7 @@ namespace xhn {
                 ASTNode* node = *rootChildIter;
                 if (StrClassDecl == node->type && StrPublic == node->access) {
                     if (isInheritFromClassProc(node->name, StrSceneNodeAgent, inheritPath)) {
+                        /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
                         inheritPath.insert(inheritPath.begin(), node->name);
                         char mbuf[512];
                         snprintf(mbuf, 511,
@@ -546,6 +552,7 @@ namespace xhn {
                                  "    {\n"
                                  "        %s* ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n",
                                  '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
+                        m_sceneNodeAgentNameVector.push_back(node->name);
                         
                         bridgeFile += mbuf;
                         int i = 0;
@@ -561,6 +568,7 @@ namespace xhn {
                     else {
                         inheritPath.clear();
                         if (isInheritFromClassProc(node->name, StrActorAgent, inheritPath)) {
+                            /// 这里将创建actor代理的回调放在s_createActorAgentProcDic里
                             inheritPath.insert(inheritPath.begin(), node->name);
                             char mbuf[512];
                             snprintf(mbuf, 511,
@@ -568,6 +576,8 @@ namespace xhn {
                                      "    {\n"
                                      "        %s* ret = [[%s alloc] initWithActor:[[VActor alloc] initWithVRenderSystemActor:renderSys actor:actor]];\n",
                                      '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
+                            m_actorAgentNameVector.push_back(node->name);
+                            
                             bridgeFile += mbuf;
                             int i = 0;
                             while (inheritPath.size()) {
@@ -847,14 +857,22 @@ namespace xhn {
             count++;
         }
     }
-    void SwiftParser::ParseSwifts(const string& paths, xhn::Lambda<void (const xhn::string&)>& callback)
+    void SwiftParser::ParseSwifts(const string& paths, xhn::Lambda<void (const xhn::string&,
+                                                                         const xhn::vector<xhn::static_string>&,
+                                                                         const xhn::vector<xhn::static_string>&)>& callback)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
         NSString* command = [[NSString alloc] initWithFormat:@"swiftc -dump-ast %@",
                              [[NSString alloc] initWithUTF8String:paths.c_str()]];
-        __block xhn::Lambda<void (const xhn::string&)> tmpCallback = callback;
-        void (^objcCallback)(const xhn::string&)  = ^(const xhn::string& result) {
-            tmpCallback(result);
+        __block xhn::Lambda<void (const xhn::string&,
+                                  const xhn::vector<xhn::static_string>&,
+                                  const xhn::vector<xhn::static_string>&)> tmpCallback = callback;
+        void (^objcCallback)(const xhn::string&,
+                             const xhn::vector<xhn::static_string>&,
+                             const xhn::vector<xhn::static_string>&)  = ^(const xhn::string& result,
+                                                                          const xhn::vector<xhn::static_string>& sceneNodeAgentNames,
+                                                                          const xhn::vector<xhn::static_string>& actorAgentNames) {
+            tmpCallback(result, sceneNodeAgentNames, actorAgentNames);
         };
         [sclu runCommand:command callback:objcCallback];
     }
@@ -883,7 +901,9 @@ namespace xhn {
 
 @implementation SwiftCommandLineUtil
 {
-    void(^mCallback)(const xhn::string&);
+    void(^mCallback)(const xhn::string&,
+                     const xhn::vector<xhn::static_string>&,
+                     const xhn::vector<xhn::static_string>&);
     NSTask *mTask;
     NSPipe *mPipe;
     NSFileHandle *mFile;
@@ -906,6 +926,8 @@ namespace xhn {
     }
     else {
         xhn::string ret = self.parser->EndParse();
+        xhn::vector<xhn::static_string> sceneNodeAgentNameVector = self.parser->GetSceneNodeAgentNameVector();
+        xhn::vector<xhn::static_string> actorAgentNameVector = self.parser->GetActorAgentNameVector();
         ASTLog("%s\n", ret.c_str());
         delete self.parser;
         {
@@ -914,11 +936,13 @@ namespace xhn {
                 [s_SwiftCommandLineUtils removeObject:self];
             }
         }
-        mCallback(ret);
+        mCallback(ret, sceneNodeAgentNameVector, actorAgentNameVector);
     }
 }
 
-- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&))proc
+- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&,
+                                                              const xhn::vector<xhn::static_string>&,
+                                                              const xhn::vector<xhn::static_string>&))proc
 {
     mCallback = proc;
     mTask = [[NSTask alloc] init];
