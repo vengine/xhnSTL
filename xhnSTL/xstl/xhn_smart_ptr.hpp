@@ -290,20 +290,20 @@ template< typename T>
 class Handle
 {
 private:
-    volatile T* m_ptr;
+    mutable volatile T* m_ptr;
 public:
-    inline void _inc(volatile T* ptr)
+    inline void _incSelf() const
     {
-        if (ptr)
+        if (m_ptr)
         {
-            AtomicIncrement(&ptr->ref_count);
+            AtomicIncrement(&m_ptr->ref_count);
         }
     }
-    inline void _dec(volatile T* ptr)
+    inline void _decSelf() const
     {
-        if (ptr) {
-            if (!AtomicDecrement(&ptr->ref_count)) {
-                delete ptr;
+        if (m_ptr) {
+            if (!AtomicDecrement(&m_ptr->ref_count)) {
+                delete m_ptr;
             }
         }
     }
@@ -364,11 +364,11 @@ public:
     inline operator bool () const {
         return m_ptr != NULL;
     }
-    inline void Retain() {
-        _inc(m_ptr);
+    inline void Retain() const {
+        _incSelf();
     }
-    inline void Release() {
-        _dec(m_ptr);
+    inline void Release() const {
+        _decSelf();
         m_ptr = nullptr;
     }
 };

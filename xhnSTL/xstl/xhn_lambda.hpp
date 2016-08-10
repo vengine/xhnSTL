@@ -31,7 +31,7 @@ namespace xhn
     template <typename Out, typename... In>
     class LambdaExecutor<Out(In...)> {
     public:
-        Out operator()(In ... in)
+        Out operator()(In ... in) const
         {
             EAssert(lambda != nullptr, "lambda is nullptr");
             return executeLambda(lambda, in...);
@@ -63,7 +63,7 @@ namespace xhn
     template <typename... In>
     class LambdaExecutor<void(In...)> {
     public:
-        void operator()(In ... in)
+        void operator()(In ... in) const
         {
             EAssert(lambda != nullptr, "lambda is nullptr");
             executeLambda(lambda, in...);
