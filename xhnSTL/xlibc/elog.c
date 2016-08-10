@@ -22,12 +22,12 @@ void ELog_Init()
 #ifdef USE_LOG_SYSTEM
     if (!g_elog_file) {
 #if defined(_WIN32) || defined(_WIN64)
-        g_elog_file = SafeFOpen("log.log", "w+");
+        g_elog_file = SafeFOpen("log.txt", "w+");
 #elif defined(__APPLE__)
         char homeDir[256];
         GetHomeDirectory(homeDir, 255);
         char logFilename[256];
-        snprintf(logFilename, 255, "%s/Documents/log.log", homeDir);
+        snprintf(logFilename, 255, "%s/Documents/log.txt", homeDir);
         g_elog_file = SafeFOpen(logFilename, "w+");
 #endif
     }
@@ -43,6 +43,7 @@ void ELog_write()
     if (g_elog_file) {
         snprintf(g_elog_buffer, ELOG_BUFFER_SIZE - 1, "%s\n", g_elog_buffer);
         fwrite(g_elog_buffer, strlen(g_elog_buffer), 1, g_elog_file);
+        fflush(g_elog_file);
     }
 #else
     printf("%s\n", g_elog_buffer);
@@ -52,7 +53,7 @@ void ELog_write()
 void ELog_Release()
 {
 #ifdef USE_LOG_SYSTEM
-    if (g_elog_buffer) {
+    if (g_elog_file) {
         fclose(g_elog_file);
         g_elog_file = NULL;
     }
