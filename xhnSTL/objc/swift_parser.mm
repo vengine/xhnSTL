@@ -668,7 +668,7 @@ namespace xhn {
         bridgeFile += "    return ret;\n";
         bridgeFile += "}\n";
         bridgeFile += "void SetPrintLogProc(void (*printLogProc)(int, const char*)) {\n";
-        bridgeFile += "    s_writeLogProc = writeLogProc;\n";
+        bridgeFile += "    s_printLogProc = printLogProc;\n";
         bridgeFile += "}\n";
         bridgeFile += "void PrintLog(int type, const char* log) {\n";
         bridgeFile += "    if (s_printLogProc) {\n";
