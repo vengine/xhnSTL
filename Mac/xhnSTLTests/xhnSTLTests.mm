@@ -69,6 +69,10 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
         *stop = true;
     });
     intArray.for_each(proc);
+    
+    for (auto i : intArray) {
+        printf("for %d\n", i);
+    }
 }
 
 #include <xhnSTL/xhn_hash_map.hpp>
