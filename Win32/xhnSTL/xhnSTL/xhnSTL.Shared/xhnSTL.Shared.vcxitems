@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{4037fb26-014f-497e-9d9d-c05d560a60c9}</ItemsProjectGuid>
+    <ItemsRootNamespace>xhnSTL</ItemsRootNamespace>
+    <ItemsProjectName>xhnSTL.Shared</ItemsProjectName>
+    <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\array.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\comparison_algorithm.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\container.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\eassert.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\elog.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\emem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\emem_allocator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\esignal.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\estring.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\exception.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\hash.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\list.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\list_base.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\mem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\prime.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\rwbuffer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\sha256.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\spin_lock.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\stack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\static_string.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\tree.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\utility.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)etypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xhnSTL.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\eassert.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\elog.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\emem.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\estring.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\hash.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\list.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\prime.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\rwbuffer.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\sha256.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\stack.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\static_string.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\tree.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\utility.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)xhnSTL.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)xhnSTL.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\array.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\comparison_algorithm.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\container.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\eassert.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\elog.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\emem.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\emem_allocator.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\esignal.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\estring.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\exception.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\hash.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\list.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\list_base.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\mem.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\prime.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\rwbuffer.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\sha256.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\spin_lock.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\stack.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\static_string.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\tree.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\utility.h">
+      <Filter>xlibc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)etypes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)xhnSTL.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\eassert.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\elog.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\emem.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\estring.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\hash.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\list.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\prime.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\rwbuffer.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\sha256.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\stack.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\static_string.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\tree.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\..\xhnSTL\xlibc\utility.c">
+      <Filter>xlibc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="xlibc">
+      <UniqueIdentifier>{4393913b-f66a-47e0-b413-7a71db42610e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xstl">
+      <UniqueIdentifier>{cb895906-a03b-4264-b7c9-1a951ecefe8d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

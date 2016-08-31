@@ -402,18 +402,18 @@ static void DefaultFree(void* self, void* ptr)
 }
 static void* DefaultAlignedAlloc16(void* self, euint size)
 {
-#ifndef __APPLE__
-    return __mingw_aligned_malloc(size, 16);
-#else
+#ifdef _MSC_VER
+    return _aligned_malloc(size, 16);
+#elif defined(__APPLE__)
     return malloc(size);
 #endif
 }
 static void DefaultAlignedFree16(void* self, void* ptr)
 {
-#ifndef __APPLE__
-    return _aligned_free(ptr);
-#else
-    return free(ptr);
+#ifdef _MSC_VER
+    _aligned_free(ptr);
+#elif defined(__APPLE__)
+    free(ptr);
 #endif
 }
 
@@ -506,7 +506,7 @@ bool MCheck()
 void MCheck2(void* checker, FnCheckMemory fnCheckMem)
 {
 #ifndef USE_C_MALLOC
-    return MemAllocator_check2(g_MemAllocator, checker, fnCheckMem);
+    MemAllocator_check2(g_MemAllocator, checker, fnCheckMem);
 #endif
 }
 
