@@ -16,7 +16,7 @@ log.log
 
 *.xcuserstate
 
-Debug/*
+*/Debug/*
 
-ipch/*
+*/ipch/*
 *.sdf
