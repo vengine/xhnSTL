@@ -15,3 +15,8 @@ log.log
 *DerivedData*
 
 *.xcuserstate
+
+Debug/*
+
+ipch/*
+*.sdf
