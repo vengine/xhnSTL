@@ -886,8 +886,8 @@ namespace xhn {
     , m_isDecl(false)
     {
 #if USING_AST_LOG
-        s_ASTLogFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main2.txt", "wb");
-        s_ASTFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/main3.txt", "wb");
+        s_ASTLogFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/main2.txt", "wb");
+        s_ASTFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/main3.txt", "wb");
 #endif
     }
     SwiftParser::~SwiftParser()
@@ -953,7 +953,7 @@ namespace xhn {
                           [NSString stringWithFormat:@"%@", commandToRun],
                           nil];
 #if USING_AST_LOG
-    s_COMMANDFile = fopen("/Users/xhnsworks/Documents/测试工程/swiftTest/swiftTest/command.txt", "wb");
+    s_COMMANDFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/command.txt", "wb");
 #endif
     COMMANDLog("run command: %s", [commandToRun UTF8String]);
 #if USING_AST_LOG
