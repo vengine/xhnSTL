@@ -52,3 +52,24 @@ euint xhn::create_uid()
     s_uid_list->pop_front();
     return ret;
 }
+
+#include <uuid/uuid.h>
+xhn::string xhn::create_uuid_string()
+{
+    char mbuf[256];
+    char* strbuf = mbuf;
+    int remainder = 255;
+    uuid_t uuid;
+    uuid_generate(uuid);
+    
+    unsigned char *p = uuid;
+    for (int i = 0; i < sizeof(uuid_t); i++, p++)
+    {
+        int len = snprintf(strbuf, remainder, "%02x", *p);
+        strbuf += len;
+        remainder -= len;
+    }
+    
+    xhn::string ret(mbuf);
+    return ret;
+}

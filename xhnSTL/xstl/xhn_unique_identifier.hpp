@@ -11,12 +11,14 @@
 
 #include "common.h"
 #include "etypes.h"
+#include "xhn_string.hpp"
 
 #ifdef __cplusplus
 
 namespace xhn
 {
     euint create_uid();
+    string create_uuid_string();
 }
 
 #endif
