@@ -65,9 +65,17 @@ xhn::string xhn::create_uuid_string()
     unsigned char *p = uuid;
     for (int i = 0; i < sizeof(uuid_t); i++, p++)
     {
-        int len = snprintf(strbuf, remainder, "%02x", *p);
+        int len = snprintf(strbuf, remainder, "%02X", *p);
         strbuf += len;
         remainder -= len;
+        if (i == 3 ||
+            i == 5 ||
+            i == 7 ||
+            i == 9) {
+            int len = snprintf(strbuf, remainder, "-");
+            strbuf += len;
+            remainder -= len;
+        }
     }
     
     xhn::string ret(mbuf);
