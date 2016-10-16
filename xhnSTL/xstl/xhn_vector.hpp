@@ -439,6 +439,25 @@ public:
 			m_barrier -= m_ele_real_size;
 		}
 	}
+    inline void remove_first(const vector& v) {
+        for (auto& e : v) {
+            for (auto i = begin(); i != end(); i++) {
+                if (e == *i) {
+                    erase(i);
+                    break;
+                }
+            }
+        }
+    }
+    inline bool remove_first(const T& v) {
+        for (auto i = begin(); i != end(); i++) {
+            if (v == *i) {
+                erase(i);
+                return true;
+            }
+        }
+        return false;
+    }
     inline iterator remove(iterator i) {
         if ((ref_ptr)i.m_ptr >= (ref_ptr)m_begin_addr && (ref_ptr)i.m_ptr < (ref_ptr)m_barrier) {
             iterator ret = i;
