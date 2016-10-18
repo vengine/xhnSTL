@@ -448,7 +448,7 @@ namespace xhn {
                                 snprintf(mbuf, 511,
                                          "        NSString* state%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
-                                         "        [ret SetState:state%dName state:state%d];\n",
+                                         "        [ret setState:state%dName state:state%d];\n",
                                          i, '"', fullClassName.c_str(), '"',
                                          i, '"', fullClassName.c_str(), '"',
                                          i, i);
@@ -464,7 +464,7 @@ namespace xhn {
                 }
                 if (firstState.size()) {
                     snprintf(mbuf, 511,
-                             "        [ret SetCurrentState:%s];\n",
+                             "        [ret setCurrentState:%s];\n",
                              firstState.c_str());
                     bridgeFile += mbuf;
                 }
@@ -511,7 +511,7 @@ namespace xhn {
                                 snprintf(mbuf, 511,
                                          "        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        id action%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
-                                         "        [ret SetAction:action%dName action:action%d];\n",
+                                         "        [ret setAction:action%dName action:action%d];\n",
                                          i, '"', fullClassName.c_str(), '"',
                                          i, '"', fullClassName.c_str(), '"',
                                          i, i);
@@ -527,7 +527,7 @@ namespace xhn {
                 }
                 if (firstAction.size()) {
                     snprintf(mbuf, 511,
-                             "        [ret SetCurrentAction:%s];\n",
+                             "        [ret setCurrentAction:%s];\n",
                              firstAction.c_str());
                     bridgeFile += mbuf;
                 }
@@ -567,7 +567,7 @@ namespace xhn {
                             inheritPath.pop_back();
                         }
                         bridgeFile +=
-                        "        [ret Start];\n"
+                        "        [ret start];\n"
                         "        return ret;\n"
                         "    }];\n";
                     }
@@ -591,7 +591,7 @@ namespace xhn {
                                 inheritPath.pop_back();
                             }
                             bridgeFile +=
-                            "        [ret Start];\n"
+                            "        [ret start];\n"
                             "        return ret;\n"
                             "    }];\n";
                         }
@@ -620,7 +620,7 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "void UpdateSceneNodeAgent(void* agent, double elapsedTime) {\n";
         bridgeFile += "    SceneNodeAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    [agentID Update:elapsedTime];\n";
+        bridgeFile += "    [agentID update:elapsedTime];\n";
         bridgeFile += "}\n";
         bridgeFile += "void* CreateActorAgent(const char* type, void* renderSys, void* actor) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
@@ -641,7 +641,7 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "void UpdateActorAgent(void* agent, double elapsedTime) {\n";
         bridgeFile += "    ActorAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    [agentID Update:elapsedTime];\n";
+        bridgeFile += "    [agentID update:elapsedTime];\n";
         bridgeFile += "}\n";
         bridgeFile += "int GetNumSceneNodeAgentProcs() {\n";
         bridgeFile += "    return (int)[s_createSceneNodeAgentProcDic count];\n";
