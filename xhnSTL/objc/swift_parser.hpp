@@ -33,6 +33,7 @@ public:
     static const static_string StrPrivate;
     static const static_string StrInternal;
     static const static_string StrPublic;
+    static const static_string StrOpen;
     static const static_string StrDecl;
     
     static const static_string StrSceneNodeAgent;

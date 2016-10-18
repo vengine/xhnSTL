@@ -62,6 +62,7 @@ namespace xhn {
     const static_string SwiftParser::StrPrivate("private");
     const static_string SwiftParser::StrInternal("internal");
     const static_string SwiftParser::StrPublic("public");
+    const static_string SwiftParser::StrOpen("open");
     const static_string SwiftParser::StrDecl("decl");
     
     const static_string SwiftParser::StrSceneNodeAgent("SceneNodeAgent");
@@ -429,7 +430,9 @@ namespace xhn {
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
-                        if (StrClassDecl == child->type && StrPublic == child->access && child->inherits) {
+                        if (StrClassDecl == child->type &&
+                            (StrPublic == child->access || StrOpen == child->access) &&
+                            child->inherits) {
                             bool isInheritFromState = false;
                             bool isInheritFromStateInterface = false;
                             xhn::string fullClassName = node->name.c_str();
@@ -490,7 +493,9 @@ namespace xhn {
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
-                        if (StrClassDecl == child->type && StrPublic == child->access && child->inherits) {
+                        if (StrClassDecl == child->type &&
+                            (StrPublic == child->access || StrOpen == child->access) &&
+                            child->inherits) {
                             bool isInheritFromAction = false;
                             bool isInheritFromActionInterface = false;
                             xhn::string fullClassName = node->name.c_str();
@@ -542,7 +547,8 @@ namespace xhn {
             auto rootChildEnd = root->children->end();
             for (; rootChildIter != rootChildEnd; rootChildIter++) {
                 ASTNode* node = *rootChildIter;
-                if (StrClassDecl == node->type && StrPublic == node->access) {
+                if (StrClassDecl == node->type &&
+                    (StrPublic == node->access || StrOpen == node->access)) {
                     if (isInheritFromClassProc(node->name, StrSceneNodeAgent, inheritPath)) {
                         /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
                         inheritPath.insert(inheritPath.begin(), node->name);
