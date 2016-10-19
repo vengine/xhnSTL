@@ -45,7 +45,8 @@ static NSMutableSet* s_SwiftCommandLineUtils = nil;
 
 @interface SwiftCommandLineUtil : NSObject
 @property (assign) xhn::SwiftParser* parser;
-- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&,
+- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string& bridgeFile,
+                                                              const xhn::string& stateActionFile,
                                                               const xhn::vector<xhn::static_string>&,
                                                               const xhn::vector<xhn::static_string>&))proc;
 @end
@@ -127,20 +128,20 @@ namespace xhn {
     {
         ///
     }
-    string SwiftParser::EndParse()
+    void SwiftParser::EndParse(string& bridgeFile, string& stateActionFile)
     {
-        xhn::map<xhn::static_string, xhn::vector<xhn::static_string>> inheritMap;
-        xhn::map<xhn::static_string, xhn::vector<xhn::static_string>> childrenClassMap;
-        xhn::map<xhn::static_string, ASTNode*> classMap;
+        map<static_string, vector<static_string>> inheritMap;
+        map<static_string, vector<static_string>> childrenClassMap;
+        map<static_string, ASTNode*> classMap;
         
-        xhn::Lambda<void (const xhn::string&, ASTNode*)> makeInheritMapProc;
-        xhn::Lambda<void (const xhn::string&, ASTNode*)> makeChildrenClassMapProc;
-        xhn::Lambda<void (const xhn::string&, ASTNode*)> makeClassMapProc;
-        xhn::Lambda<bool (xhn::static_string, xhn::static_string, xhn::vector<xhn::static_string>&)> isInheritFromClassProc;
+        Lambda<void (const string&, ASTNode*)> makeInheritMapProc;
+        Lambda<void (const string&, ASTNode*)> makeChildrenClassMapProc;
+        Lambda<void (const string&, ASTNode*)> makeClassMapProc;
+        Lambda<bool (static_string, static_string, vector<static_string>&)> isInheritFromClassProc;
         
-        makeInheritMapProc = [&makeInheritMapProc, &inheritMap](const xhn::string& parentPath, ASTNode* node) -> void {
+        makeInheritMapProc = [&makeInheritMapProc, &inheritMap](const string& parentPath, ASTNode* node) -> void {
             if (StrClassDecl == node->type) {
-                xhn::string nodePath = parentPath;
+                string nodePath = parentPath;
                 if (parentPath.size()) {
                     nodePath += ".";
                 }
@@ -174,9 +175,9 @@ namespace xhn {
             }
         };
         
-        makeChildrenClassMapProc = [&makeChildrenClassMapProc, &childrenClassMap](const xhn::string& parentPath, ASTNode* node) -> void {
+        makeChildrenClassMapProc = [&makeChildrenClassMapProc, &childrenClassMap](const string& parentPath, ASTNode* node) -> void {
             if (StrClassDecl == node->type) {
-                xhn::string nodePath = parentPath;
+                string nodePath = parentPath;
                 if (parentPath.size()) {
                     nodePath += ".";
                 }
@@ -194,9 +195,9 @@ namespace xhn {
             }
         };
         
-        makeClassMapProc = [&makeClassMapProc, &classMap](const xhn::string& parentPath, ASTNode* node) -> void {
+        makeClassMapProc = [&makeClassMapProc, &classMap](const string& parentPath, ASTNode* node) -> void {
             if (StrClassDecl == node->type) {
-                xhn::string nodePath = parentPath;
+                string nodePath = parentPath;
                 if (parentPath.size()) {
                     nodePath += ".";
                 }
@@ -212,9 +213,9 @@ namespace xhn {
             }
         };
         
-        isInheritFromClassProc = [&isInheritFromClassProc, &inheritMap](xhn::static_string _class,
-                                                                        xhn::static_string parentClass,
-                                                                        xhn::vector<xhn::static_string>& inheritPath) -> bool {
+        isInheritFromClassProc = [&isInheritFromClassProc, &inheritMap](static_string _class,
+                                                                        static_string parentClass,
+                                                                        vector<static_string>& inheritPath) -> bool {
             auto iter = inheritMap.find(_class);
             if (iter != inheritMap.end()) {
                 auto inhIter = iter->second.begin();
@@ -224,7 +225,7 @@ namespace xhn {
                         inheritPath.push_back(parentClass);
                         return true;
                     }
-                    xhn::vector<xhn::static_string> path(inheritPath);
+                    vector<static_string> path(inheritPath);
                     ///path.push_back(_class);
                     if (isInheritFromClassProc(*inhIter, parentClass, path)) {
                         inheritPath = path;
@@ -236,7 +237,7 @@ namespace xhn {
             return false;
         };
         
-        xhn::string emptyPath;
+        string emptyPath;
         auto rootIter = m_roots.begin();
         auto rootEnd = m_roots.end();
         for (; rootIter != rootEnd; rootIter++) {
@@ -264,7 +265,7 @@ namespace xhn {
             }
             ASTLog("\n");
         }
-        xhn::vector<xhn::static_string> inheritPath;
+        vector<static_string> inheritPath;
         if (isInheritFromClassProc("TranslationScript.ZMoveState", "NSObject", inheritPath)) {
             ASTLog("@ TranslationScript.ZMoveState is inherit from NSObject\n");
             ASTLog("PATH: ");
@@ -302,13 +303,14 @@ namespace xhn {
             }
             ASTLog("\n");
         }
-        return CreateBridgeFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
+        bridgeFile = CreateBridgeFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
+        stateActionFile = CreateStateActionFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
     }
-    string SwiftParser::CreateBridgeFile(const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& inheritMap,
-                                         const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& childrenClassMap,
-                                         const xhn::map<xhn::static_string, ASTNode*>& classMap,
-                                         xhn::Lambda<bool (xhn::static_string, xhn::static_string,
-                                                           xhn::vector<xhn::static_string>&)>& isInheritFromClassProc)
+    string SwiftParser::CreateBridgeFile(const map<static_string, vector<static_string>>& inheritMap,
+                                         const map<static_string, vector<static_string>>& childrenClassMap,
+                                         const map<static_string, ASTNode*>& classMap,
+                                         Lambda<bool (static_string, static_string,
+                                                      vector<static_string>&)>& isInheritFromClassProc)
     {
         xhn::string bridgeFile;
         char mbuf[1024];
@@ -684,6 +686,208 @@ namespace xhn {
         ///printf("%s\n", bridgeFile.c_str());
         return bridgeFile;
     }
+    string SwiftParser::CreateStateActionFile(const map<static_string, vector<static_string>>& inheritMap,
+                                              const map<static_string, vector<static_string>>& childrenClassMap,
+                                              const map<static_string, ASTNode*>& classMap,
+                                              Lambda<bool (static_string, static_string,
+                                                           vector<static_string>&)>& isInheritFromClassProc)
+    {
+        string actionFile;
+        
+        /// func class
+        map<string, string> stateFuncClassMap;
+        /// func class
+        map<string, string> actionFuncClassMap;
+        
+        /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
+        vector<static_string> inheritPath;
+        
+        auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &stateFuncClassMap](int& i) {
+            xhn::vector<xhn::static_string> stateInheritPath;
+            char mbuf[512];
+            xhn::string firstState;
+            xhn::static_string agentClassName = inheritPath.back();
+            
+            ASTNode* node = nullptr;
+            auto nodeIter = classMap.find(agentClassName);
+            if (nodeIter != classMap.end()) {
+                node = nodeIter->second;
+            }
+            
+            auto childClassIter = childrenClassMap.find(agentClassName);
+            if (childClassIter != childrenClassMap.end()) {
+                auto childIter = childClassIter->second.begin();
+                auto childEnd = childClassIter->second.end();
+                for (; childIter != childEnd; childIter++, i++) {
+                    xhn::static_string childClassName = *childIter;
+                    
+                    auto childNodeIter = classMap.find(childClassName);
+                    if (childNodeIter != classMap.end()) {
+                        ASTNode* child = childNodeIter->second;
+                        if (StrClassDecl == child->type &&
+                            (StrPublic == child->access || StrOpen == child->access) &&
+                            child->inherits) {
+                            bool isInheritFromState = false;
+                            bool isInheritFromStateInterface = false;
+                            
+                            xhn::string fullClassName = node->name.c_str();
+                            fullClassName += ".";
+                            fullClassName += child->name.c_str();
+                            
+                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            xhn::string stateFuncName = mbuf;
+                            stateFuncName += node->name.c_str();
+                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            stateFuncName += mbuf;
+                            stateFuncName += child->name.c_str();
+                            
+                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            stateInheritPath.clear();
+                            isInheritFromState = isInheritFromClassProc(strFullClassName, StrState, stateInheritPath);
+                            stateInheritPath.clear();
+                            isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, stateInheritPath);
+                            
+                            if (isInheritFromState && isInheritFromStateInterface) {
+                                stateFuncClassMap.insert(make_pair(stateFuncName, fullClassName));
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        auto addActionsProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &actionFuncClassMap](int& i) {
+            vector<static_string> actionInheritPath;
+            char mbuf[512];
+            string firstAction;
+            static_string agentClassName = inheritPath.back();
+            
+            ASTNode* node = nullptr;
+            auto nodeIter = classMap.find(agentClassName);
+            if (nodeIter != classMap.end()) {
+                node = nodeIter->second;
+            }
+            
+            auto childClassIter = childrenClassMap.find(agentClassName);
+            if (childClassIter != childrenClassMap.end()) {
+                auto childIter = childClassIter->second.begin();
+                auto childEnd = childClassIter->second.end();
+                for (; childIter != childEnd; childIter++, i++) {
+                    xhn::static_string childClassName = *childIter;
+                    
+                    auto childNodeIter = classMap.find(childClassName);
+                    if (childNodeIter != classMap.end()) {
+                        ASTNode* child = childNodeIter->second;
+                        if (StrClassDecl == child->type &&
+                            (StrPublic == child->access || StrOpen == child->access) &&
+                            child->inherits) {
+                            bool isInheritFromAction = false;
+                            bool isInheritFromActionInterface = false;
+                            
+                            xhn::string fullClassName = node->name.c_str();
+                            fullClassName += ".";
+                            fullClassName += child->name.c_str();
+                            
+                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            xhn::string actionFuncName = mbuf;
+                            actionFuncName += node->name.c_str();
+                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            actionFuncName += mbuf;
+                            actionFuncName += child->name.c_str();
+                            
+                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            
+                            actionInheritPath.clear();
+                            isInheritFromAction = isInheritFromClassProc(strFullClassName, StrAction, actionInheritPath);
+                            actionInheritPath.clear();
+                            isInheritFromActionInterface = isInheritFromClassProc(strFullClassName, StrActionInterface, actionInheritPath);
+                            
+                            if (isInheritFromAction && isInheritFromActionInterface) {
+                                actionFuncClassMap.insert(make_pair(actionFuncName, fullClassName));
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        m_sceneNodeAgentNameVector.clear();
+        m_actorAgentNameVector.clear();
+        
+        auto rootIter = m_roots.begin();
+        auto rootEnd = m_roots.end();
+        for (; rootIter != rootEnd; rootIter++) {
+            ASTNode* root = *rootIter;
+            if (!root->children)
+                continue;
+            auto rootChildIter = root->children->begin();
+            auto rootChildEnd = root->children->end();
+            for (; rootChildIter != rootChildEnd; rootChildIter++) {
+                ASTNode* node = *rootChildIter;
+                if (StrClassDecl == node->type &&
+                    (StrPublic == node->access || StrOpen == node->access)) {
+                    if (isInheritFromClassProc(node->name, StrSceneNodeAgent, inheritPath)) {
+                        /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
+                        inheritPath.insert(inheritPath.begin(), node->name);
+                        
+                        m_sceneNodeAgentNameVector.push_back(node->name);
+                        
+                        int i = 0;
+                        while (inheritPath.size()) {
+                            addStatesProc(i);
+                            inheritPath.pop_back();
+                        }
+                        
+                    }
+                    else {
+                        inheritPath.clear();
+                        if (isInheritFromClassProc(node->name, StrActorAgent, inheritPath)) {
+                            /// 这里将创建actor代理的回调放在s_createActorAgentProcDic里
+                            inheritPath.insert(inheritPath.begin(), node->name);
+                            
+                            m_actorAgentNameVector.push_back(node->name);
+                            
+                            int i = 0;
+                            while (inheritPath.size()) {
+                                addActionsProc(i);
+                                inheritPath.pop_back();
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+        actionFile += "open class SwiftStates : NSObject {\n";
+        
+        for (auto& p : stateFuncClassMap) {
+            char mbuf[512];
+            snprintf(mbuf, 511,
+                     "    open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
+                     "        return %s();\n"
+                     "    }\n",
+                     p.first.c_str(), p.second.c_str());
+            actionFile += mbuf;
+        }
+        
+        actionFile += "}\n";
+        
+        actionFile += "open class SwiftActions : NSObject {\n";
+        
+        for (auto& p : actionFuncClassMap) {
+            char mbuf[512];
+            snprintf(mbuf, 511,
+                     "    open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
+                     "        return %s();\n"
+                     "    }\n",
+                     p.first.c_str(), p.second.c_str());
+            actionFile += mbuf;
+        }
+        
+        actionFile += "}\n";
+        return actionFile;
+    }
     void SwiftParser::Parse(const char* strBuffer, euint length)
     {
         euint count = 0;
@@ -863,22 +1067,26 @@ namespace xhn {
             count++;
         }
     }
-    void SwiftParser::ParseSwifts(const string& paths, xhn::Lambda<void (const xhn::string&,
+    void SwiftParser::ParseSwifts(const string& paths, xhn::Lambda<void (const xhn::string& bridgeFile,
+                                                                         const xhn::string& stateActionFile,
                                                                          const xhn::vector<xhn::static_string>&,
                                                                          const xhn::vector<xhn::static_string>&)>& callback)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
         NSString* command = [[NSString alloc] initWithFormat:@"swiftc -dump-ast %@",
                              [[NSString alloc] initWithUTF8String:paths.c_str()]];
-        __block xhn::Lambda<void (const xhn::string&,
+        __block xhn::Lambda<void (const xhn::string& bridgeFile,
+                                  const xhn::string& stateActionFile,
                                   const xhn::vector<xhn::static_string>&,
                                   const xhn::vector<xhn::static_string>&)> tmpCallback = callback;
-        void (^objcCallback)(const xhn::string&,
+        void (^objcCallback)(const xhn::string& bridgeFile,
+                             const xhn::string& stateActionFile,
                              const xhn::vector<xhn::static_string>&,
-                             const xhn::vector<xhn::static_string>&)  = ^(const xhn::string& result,
+                             const xhn::vector<xhn::static_string>&)  = ^(const xhn::string& bridgeFile,
+                                                                          const xhn::string& stateActionFile,
                                                                           const xhn::vector<xhn::static_string>& sceneNodeAgentNames,
                                                                           const xhn::vector<xhn::static_string>& actorAgentNames) {
-            tmpCallback(result, sceneNodeAgentNames, actorAgentNames);
+            tmpCallback(bridgeFile, stateActionFile, sceneNodeAgentNames, actorAgentNames);
         };
         [sclu runCommand:command callback:objcCallback];
     }
@@ -907,7 +1115,8 @@ namespace xhn {
 
 @implementation SwiftCommandLineUtil
 {
-    void(^mCallback)(const xhn::string&,
+    void(^mCallback)(const xhn::string& bridgeFile,
+                     const xhn::string& stateActionFile,
                      const xhn::vector<xhn::static_string>&,
                      const xhn::vector<xhn::static_string>&);
     NSTask *mTask;
@@ -931,10 +1140,13 @@ namespace xhn {
 #endif
     }
     else {
-        xhn::string ret = self.parser->EndParse();
+        xhn::string bridgeFile;
+        xhn::string stateActionFile;
+        self.parser->EndParse(bridgeFile, stateActionFile);
         xhn::vector<xhn::static_string> sceneNodeAgentNameVector = self.parser->GetSceneNodeAgentNameVector();
         xhn::vector<xhn::static_string> actorAgentNameVector = self.parser->GetActorAgentNameVector();
-        ASTLog("%s\n", ret.c_str());
+        ASTLog("%s\n", bridgeFile.c_str());
+        ASTLog("%s\n", stateActionFile.c_str());
         delete self.parser;
         {
             auto inst = s_SwiftCommandLineUtilsLock.Lock();
@@ -942,11 +1154,12 @@ namespace xhn {
                 [s_SwiftCommandLineUtils removeObject:self];
             }
         }
-        mCallback(ret, sceneNodeAgentNameVector, actorAgentNameVector);
+        mCallback(bridgeFile, stateActionFile, sceneNodeAgentNameVector, actorAgentNameVector);
     }
 }
 
-- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&,
+- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string& bridgeFile,
+                                                              const xhn::string& stateActionFile,
                                                               const xhn::vector<xhn::static_string>&,
                                                               const xhn::vector<xhn::static_string>&))proc
 {

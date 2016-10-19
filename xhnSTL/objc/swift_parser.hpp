@@ -96,16 +96,22 @@ private:
     vector<static_string> m_actorAgentNameVector;
 public:
     void BeginParse();
-    string EndParse();
-    string CreateBridgeFile(const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& inheritMap,
-                            const xhn::map<xhn::static_string, xhn::vector<xhn::static_string>>& childrenClassMap,
-                            const xhn::map<xhn::static_string, ASTNode*>& classMap,
-                            xhn::Lambda<bool (xhn::static_string,
-                                              xhn::static_string, xhn::vector<xhn::static_string>&)>& isInheritFromClassProc);
+    void EndParse(string& bridgeFile, string& stateActionFile);
+    string CreateBridgeFile(const map<static_string, vector<static_string>>& inheritMap,
+                            const map<static_string, vector<static_string>>& childrenClassMap,
+                            const map<static_string, ASTNode*>& classMap,
+                            xhn::Lambda<bool (static_string,
+                                              static_string, vector<static_string>&)>& isInheritFromClassProc);
+    string CreateStateActionFile(const map<static_string, vector<static_string>>& inheritMap,
+                                 const map<static_string, vector<static_string>>& childrenClassMap,
+                                 const map<static_string, ASTNode*>& classMap,
+                                 Lambda<bool (static_string, static_string,
+                                              vector<static_string>&)>& isInheritFromClassProc);
     void Parse(const char* strBuffer, euint length);
-    static void ParseSwifts(const xhn::string& paths, xhn::Lambda<void (const xhn::string&,
-                                                                        const xhn::vector<xhn::static_string>&,
-                                                                        const xhn::vector<xhn::static_string>&)>& callback);
+    static void ParseSwifts(const string& paths, Lambda<void (const xhn::string& bridgeFile,
+                                                              const xhn::string& stateActionFile,
+                                                              const vector<static_string>&,
+                                                              const vector<static_string>&)>& callback);
     SwiftParser();
     ~SwiftParser();
     inline const vector<static_string>& GetSceneNodeAgentNameVector() const { return m_sceneNodeAgentNameVector; }
