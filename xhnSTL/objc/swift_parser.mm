@@ -737,7 +737,7 @@ namespace xhn {
                             snprintf(mbuf, 511, "%lld", node->name.size());
                             xhn::string stateFuncName = mbuf;
                             stateFuncName += node->name.c_str();
-                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            snprintf(mbuf, 511, "%lld", child->name.size());
                             stateFuncName += mbuf;
                             stateFuncName += child->name.c_str();
                             
@@ -791,7 +791,7 @@ namespace xhn {
                             snprintf(mbuf, 511, "%lld", node->name.size());
                             xhn::string actionFuncName = mbuf;
                             actionFuncName += node->name.c_str();
-                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            snprintf(mbuf, 511, "%lld", child->name.size());
                             actionFuncName += mbuf;
                             actionFuncName += child->name.c_str();
                             
