@@ -437,9 +437,18 @@ namespace xhn {
                             child->inherits) {
                             bool isInheritFromState = false;
                             bool isInheritFromStateInterface = false;
+                            
                             xhn::string fullClassName = node->name.c_str();
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
+                            
+                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            xhn::string stateFuncName = mbuf;
+                            stateFuncName += node->name.c_str();
+                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            stateFuncName += mbuf;
+                            stateFuncName += child->name.c_str();
+                            
                             xhn::static_string strFullClassName = fullClassName.c_str();
                             stateInheritPath.clear();
                             isInheritFromState = isInheritFromClassProc(strFullClassName, StrState, stateInheritPath);
@@ -449,10 +458,12 @@ namespace xhn {
                             if (isInheritFromState && isInheritFromStateInterface) {
                                 snprintf(mbuf, 511,
                                          "        NSString* state%dName = swiftClassStringFromPath(@%c%s%c);\n"
-                                         "        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
+                                         ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
+                                         "        id state%d = [SwiftStates _TtCC12VEngineLogic%s];\n"
                                          "        [ret setState:state%dName state:state%d];\n",
                                          i, '"', fullClassName.c_str(), '"',
-                                         i, '"', fullClassName.c_str(), '"',
+                                         i, stateFuncName.c_str(),
+                                         ///i, '"', fullClassName.c_str(), '"',
                                          i, i);
                                 bridgeFile += mbuf;
                                 
@@ -500,9 +511,18 @@ namespace xhn {
                             child->inherits) {
                             bool isInheritFromAction = false;
                             bool isInheritFromActionInterface = false;
+                            
                             xhn::string fullClassName = node->name.c_str();
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
+                            
+                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            xhn::string actionFuncName = mbuf;
+                            actionFuncName += node->name.c_str();
+                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            actionFuncName += mbuf;
+                            actionFuncName += child->name.c_str();
+                            
                             xhn::static_string strFullClassName = fullClassName.c_str();
                             actionInheritPath.clear();
                             isInheritFromAction = isInheritFromClassProc(strFullClassName, StrAction, actionInheritPath);
@@ -512,10 +532,12 @@ namespace xhn {
                             if (isInheritFromAction && isInheritFromActionInterface) {
                                 snprintf(mbuf, 511,
                                          "        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
-                                         "        id action%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
+                                         "        id action%d = [SwiftActions _TtCC12VEngineLogic%s];\n"
+                                         ///"        id action%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
                                          "        [ret setAction:action%dName action:action%d];\n",
                                          i, '"', fullClassName.c_str(), '"',
-                                         i, '"', fullClassName.c_str(), '"',
+                                         i, actionFuncName.c_str(),
+                                         ///i, '"', fullClassName.c_str(), '"',
                                          i, i);
                                 bridgeFile += mbuf;
                                 
@@ -864,7 +886,7 @@ namespace xhn {
         for (auto& p : stateFuncClassMap) {
             char mbuf[512];
             snprintf(mbuf, 511,
-                     "    open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
+                     "    static open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
@@ -878,7 +900,7 @@ namespace xhn {
         for (auto& p : actionFuncClassMap) {
             char mbuf[512];
             snprintf(mbuf, 511,
-                     "    open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
+                     "    static open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
