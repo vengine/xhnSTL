@@ -25,7 +25,7 @@
 namespace xhn
 {
 template < typename T,
-           typename GET_ELEM_REAL_SIZE = FGetElementRealSizeProc<T>,
+           typename GET_ELEM_REAL_SIZE = FGetElementRealSizeProcUnaligned<T>,
            typename CTOR = FCtorProc<T>,
            typename DEST = FDestProc<T> >
 class vector : public RefObject
