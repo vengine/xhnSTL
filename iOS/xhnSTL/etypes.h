@@ -96,6 +96,14 @@ typedef struct _refer_info
 } refer_info;
 typedef void (*FnCheckMemory)(void* checker, void* memory, refer_info* info);
 
+typedef struct _native_memory_allocator
+{
+    void* (*alloc)(void*, euint);
+    void (*free)(void*, void*);
+    void* (*aligned_alloc_16)(void*, euint);
+    void (*aligned_free_16)(void*, void*);
+} native_memory_allocator;
+
 #define _32BIT_PIXEL_SIZE_ 4
 
 #endif

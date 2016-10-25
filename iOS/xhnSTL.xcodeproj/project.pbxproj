@@ -133,6 +133,8 @@
 		68ADE0FE1BA71B0D0013C025 /* xhnSTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 68ADE0FD1BA71B0D0013C025 /* xhnSTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68ADE1041BA71B0D0013C025 /* xhnSTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68ADE0F81BA71B0D0013C025 /* xhnSTL.framework */; };
 		68ADE10B1BA71B0E0013C025 /* xhnSTLTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 68ADE10A1BA71B0E0013C025 /* xhnSTLTests.m */; };
+		B10884C61DBEE96E00126C43 /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B10884C41DBEE96E00126C43 /* xhn_unique_identifier.cpp */; };
+		B10884C71DBEE96E00126C43 /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -275,6 +277,8 @@
 		68ADE1031BA71B0D0013C025 /* xhnSTLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = xhnSTLTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		68ADE1091BA71B0D0013C025 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		68ADE10A1BA71B0E0013C025 /* xhnSTLTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xhnSTLTests.m; sourceTree = "<group>"; };
+		B10884C41DBEE96E00126C43 /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
+		B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -358,6 +362,8 @@
 		68245B481BC9D7680006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B10884C41DBEE96E00126C43 /* xhn_unique_identifier.cpp */,
+				B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */,
 				68245B491BC9D7680006E99D /* exception.cpp */,
 				68245B4A1BC9D7680006E99D /* map.hpp */,
 				68245B4B1BC9D7680006E99D /* rtti.cpp */,
@@ -578,6 +584,7 @@
 				68245C281BC9D7680006E99D /* xhn_vector.hpp in Headers */,
 				68245BA91BC9D7680006E99D /* Singleton.h in Headers */,
 				68245C1E1BC9D7680006E99D /* xhn_string.hpp in Headers */,
+				B10884C71DBEE96E00126C43 /* xhn_unique_identifier.hpp in Headers */,
 				68245BD41BC9D7680006E99D /* timer.h in Headers */,
 				68245C0F1BC9D7680006E99D /* xhn_path_tree.hpp in Headers */,
 				68245BC61BC9D7680006E99D /* sha256.h in Headers */,
@@ -636,9 +643,12 @@
 				TargetAttributes = {
 					68ADE0F71BA71B0D0013C025 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = MUZJLS45FE;
+						ProvisioningStyle = Automatic;
 					};
 					68ADE1021BA71B0D0013C025 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = MUZJLS45FE;
 					};
 				};
 			};
@@ -720,6 +730,7 @@
 				68245BBB1BC9D7680006E99D /* hash.c in Sources */,
 				68245BB31BC9D7680006E99D /* emem.c in Sources */,
 				68245C051BC9D7680006E99D /* xhn_memory.cpp in Sources */,
+				B10884C61DBEE96E00126C43 /* xhn_unique_identifier.cpp in Sources */,
 				68245BF01BC9D7680006E99D /* xhn_gc_string.cpp in Sources */,
 				68245C091BC9D7680006E99D /* xhn_operation.cpp in Sources */,
 				68245BFF1BC9D7680006E99D /* xhn_list2.cpp in Sources */,
@@ -842,8 +853,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer: haining xu (BJP846HHSV)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: haining xu (BJP846HHSV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = MUZJLS45FE;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -852,7 +864,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0ecb2556-6914-441a-8ae8-1886036db0c3";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -861,8 +874,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer: haining xu (BJP846HHSV)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: haining xu (BJP846HHSV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = MUZJLS45FE;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -871,7 +885,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0ecb2556-6914-441a-8ae8-1886036db0c3";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -879,6 +894,7 @@
 		68ADE1121BA71B0E0013C025 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = MUZJLS45FE;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -896,6 +912,7 @@
 		68ADE1131BA71B0E0013C025 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = MUZJLS45FE;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
