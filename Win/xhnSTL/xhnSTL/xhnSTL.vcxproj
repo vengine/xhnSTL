@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CFA5C109-DD11-420A-8D59-48812809859F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>xhnSTL</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\xhnsworks\CloudStation\vengine\dependencies\xhnSTL\xhnSTL\xstl;C:\Users\xhnsworks\CloudStation\vengine\dependencies\xhnSTL\xhnSTL\xlibc;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\xhnsworks\CloudStation\vengine\dependencies\xhnSTL\xhnSTL\xstl;C:\Users\xhnsworks\CloudStation\vengine\dependencies\xhnSTL\xhnSTL\xlibc;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\xhnsworks\CloudStation\vengine\dependencies\xhnSTL\xhnSTL\xstl;C:\Users\xhnsworks\CloudStation\vengine\dependencies\xhnSTL\xhnSTL\xlibc;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\xhnsworks\CloudStation\vengine\dependencies\xhnSTL\xhnSTL\xstl;C:\Users\xhnsworks\CloudStation\vengine\dependencies\xhnSTL\xhnSTL\xlibc;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;XHNSTL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;XHNSTL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XHNSTL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;XHNSTL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\xhnSTL\xlibc\array.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\comparison_algorithm.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\container.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\eassert.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\elog.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\emem.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\emem_allocator.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\esignal.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\estring.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\exception.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\hash.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\list.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\list_base.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\mem.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\prime.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\rwbuffer.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\sha256.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\spin_lock.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\stack.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\static_string.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\tree.h" />
+    <ClInclude Include="..\..\xhnSTL\xlibc\utility.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\map.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\rtti.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\timer.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_atomic_operation.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_btree.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_cloned_ptr.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_config.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_context.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_crypto.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_device.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_duplicate_finder.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_exception.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_filesystem_node.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_file_stream.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_fixed_queue.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_functor.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_garbage_collector.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_gc_array.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_gc_container_base.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_gc_string.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_gc_values.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_hash_map.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_hash_set.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_iterator.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_kernel.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_kernel_memory.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_lambda.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_library.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_list.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_list2.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_list_template.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_lock.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_map.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_memory.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_opencl.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_open_addressing_hash_table.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_operation.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_operation_manager.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_pair.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_path_tree.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_platform.h" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_rbtree.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_recursive.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_routine_pool.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_set.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_singly_linked_list.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_smart_ptr.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_state_machine.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_static_string.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_string.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_string_base.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_thread.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_thread_map.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_thread_pool.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_tuple.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_unique_identifier.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_utility.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_vector.hpp" />
+    <ClInclude Include="..\..\xhnSTL\xstl\xhn_void_vector.hpp" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\xhnSTL\xlibc\eassert.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\elog.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\emem.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\estring.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\hash.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\list.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\prime.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\rwbuffer.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\sha256.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\stack.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\static_string.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\tree.c" />
+    <ClCompile Include="..\..\xhnSTL\xlibc\utility.c" />
+    <ClCompile Include="..\..\xhnSTL\xstl\exception.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\rtti.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_btree.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_context.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_crypto.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_device.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_duplicate_finder.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_exception.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_filesystem_node.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_file_stream.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_garbage_collector.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_gc_array.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_gc_container_base.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_gc_string.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_gc_values.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_kernel.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_kernel_memory.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_library.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_list2.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_lock.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_memory.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_opencl.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_operation.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_operation_manager.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_path_tree.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_platform.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_routine_pool.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_smart_ptr.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_state_machine.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_static_string.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_string.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_thread.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_thread_map.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_thread_pool.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_unique_identifier.cpp" />
+    <ClCompile Include="..\..\xhnSTL\xstl\xhn_utility.cpp" />
+    <ClCompile Include="dllmain.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="xhnSTL.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
