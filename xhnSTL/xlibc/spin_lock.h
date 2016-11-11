@@ -42,7 +42,7 @@ inline void ELock_Init(ELock* lock) {
 }
      **/
 #define ELock_Init(lock) *lock = OS_SPINLOCK_INIT
-    
+    ///OSAtomicCompareAndSwap32(oldValue, newValue, value);
 inline void ELock_lock(ELock* lock) {
      ///while (!OSAtomicCompareAndSwap32((int32_t)0, (int32_t)1, (volatile int32_t*)lock))
      ///{}
@@ -55,6 +55,35 @@ inline void ELock_unlock(ELock* lock) {
 }
 inline bool ELock_try(ELock* lock) {
     return OSSpinLockTry(lock);
+}
+#elif defined(__ARCH_LINUX__)
+    ///AO_compare_and_swap  takes an address, an old value and a new value and
+    ///returns an int.  non-zero indicates the compare and swap succeeded.
+    ///AO_INLINE int
+    ///AO_compare_and_swap(volatile AO_t *addr, AO_t old, AO_t new_val)
+    ///void AO_load(AO_t *addr)
+    ///void AO_store(AO_t *addr, AO_t val)
+
+    ///int AO_test_and_set (AO_t *addr)
+
+    ///AO_t AO_fetch_and_add(AO_t *addr, AO_t incr)
+    ///AO_t AO_fetch_and_add1(AO_t *addr)
+    ///AO_t AO_fetch_and_sub1(AO_t *addr)
+
+    ///void AO_or(AO_t *p, AO_t incr)
+    ///int AO_compare_and_swap(AO_t *addr, AO_t old, AO_t new_val)
+typedef AO_t ELock;
+#define ELock_Init(lock) *lock = 0
+inline void ELock_lock(ELock* lock) {
+    while (!AO_compare_and_swap(lock, 0, 1))
+    {}
+}
+inline void ELock_unlock(ELock* lock) {
+    while (!AO_compare_and_swap(lock, 1, 0))
+    {}
+}
+inline bool ELock_try(ELock* lock) {
+    return AO_load(lock);
 }
 #endif
     
