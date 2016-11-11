@@ -59,11 +59,11 @@ public:
 		return Instance(&m_lock);
 	}
 };
-    
+
     /// \brief RWLock
     ///
     /// 读写锁
-    
+
 class RWLock : public RefObject
 {
 private:
@@ -114,7 +114,7 @@ public:
 		m_userdata = userdata;
 	}
 };
-    
+
     /// \brief RWLock2
     ///
     /// 另一种读写锁
@@ -161,7 +161,7 @@ public:
 		return Instance(&m_lock);
 	}
 };
-    
+
     /// \brief SpinLock
     ///
     /// 自旋锁
@@ -194,7 +194,7 @@ public:
 		: m_lock(0)
 		, m_userdata(NULL)
 	{}
-	inline Instance Lock() 
+	inline Instance Lock()
 	{
         ELock_lock(&m_lock);
 		return Instance(&m_lock);
@@ -209,7 +209,7 @@ public:
         return ELock_try(&m_lock);
     }
 };
-    
+
     /// \brief SpinObject
     ///
     /// 自旋物体
@@ -257,11 +257,11 @@ public:
         return Instance(&m_lock, &m_data);
     }
 };
-    
+
     /// \brief RecursiveSpinLock
     ///
     /// 可递归的自旋锁
-    
+
 class RecursiveSpinLock : public RefObject
 {
     friend class Instance;
@@ -286,7 +286,7 @@ public:
 		~Instance();
 	};
     RecursiveSpinLock()
-    : m_tid(NULL)
+    : m_tid(0)
     , m_userdata(NULL)
     {
         ELock_Init(&m_interlock);
@@ -294,11 +294,11 @@ public:
     }
     Instance Lock();
 };
-    
+
     /// \brief RecursiveSpinObject
     ///
     /// 可递归的自旋物体
-    
+
 template <typename T>
 class RecursiveSpinObject : public RefObject
 {
@@ -375,11 +375,11 @@ public:
         return Instance(this);
     }
 };
-    
+
     /// \brief MutexObject
     ///
     /// 互斥物体
-    
+
 template<typename T>
 class MutexObject : public RefObject
 {

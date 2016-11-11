@@ -46,7 +46,7 @@ void xhn::thread::milli_sleep(euint32 millisecond)
 #elif defined(LINUX)
     euint32 second = millisecond / 1000;
     millisecond = millisecond % 1000;
-    timespec t = {second, (long)(millisecond * 1000 * 1000)};
+    timespec t = {(__time_t)second, (long)(millisecond * 1000 * 1000)};
     struct timespec remainder;
     if (nanosleep(&t, &remainder) == -1) {
         if (errno == EINTR) {
@@ -81,7 +81,7 @@ void xhn::thread::micro_sleep(euint32 microsecond)
 #elif defined(LINUX)
     euint32 second = microsecond / (1000 * 1000);
     microsecond = microsecond % (1000 * 1000);
-    timespec t = {second, (long)(microsecond * 1000)};
+    timespec t = {(__time_t)second, (long)(microsecond * 1000)};
     struct timespec remainder;
     if (nanosleep(&t, &remainder) == -1) {
         if (errno == EINTR) {
@@ -112,7 +112,7 @@ void xhn::thread::nano_sleep(euint32 nanosecond)
         else perror("nanosleep");
     }
 #elif defined(LINUX)
-    timespec t = {0, (long)nanosecond};
+    timespec t = {(__time_t)0, (long)nanosecond};
     struct timespec remainder;
     if (nanosleep(&t, &remainder) == -1) {
         if (errno == EINTR) {

@@ -19,7 +19,7 @@ xhn::RecursiveSpinLock::Instance::~Instance()
 {
     ELock_lock(&m_prototype->m_interlock);
     if(!AtomicDecrement(&m_prototype->m_lock)) {
-        m_prototype->m_tid = NULL;
+        m_prototype->m_tid = 0;
     }
     ELock_unlock(&m_prototype->m_interlock);
 }
