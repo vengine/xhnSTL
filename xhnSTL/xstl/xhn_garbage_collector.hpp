@@ -65,7 +65,7 @@ public:
         }
     }
 };
-    
+
 class GCRootNode : public GCNode
 {
 public:
@@ -163,7 +163,7 @@ public:
         if (node == memTail) { memTail = node->prev; }
         if (node->prev) { node->prev->next = node->next; }
         if (node->next) { node->next->prev = node->prev; }
-        
+
         if (node->isRoot) {
             GCRootNode* rootNode = static_cast<GCRootNode*>(node);
             if (rootNode == rootHead) { rootHead = rootNode->rootNext; }
@@ -178,7 +178,11 @@ public:
         GCNode* node = memHead;
         while (node) {
             GCNode* next = node->next;
+#if defined(LINUX)
+            if (TimeCheckpoint::CaleElapsedTimeInNano(node->birthTime, currentTime) > timeLimit) {
+#else
             if (currentTime.timeStamp - node->birthTime.timeStamp > timeLimit) {
+#endif
                 RetainCountDecrement(node);
                 EraseNotFree(node);
                 if (node->isRoot) {
@@ -241,7 +245,7 @@ public:
         }
         return node->memory;
     }
-    
+
     void DetachRoot(GCRootNode* rootNode) {
 #ifdef GC_DEBUG
         TestMem(rootNode);
@@ -254,33 +258,33 @@ public:
 
     /// 一般的做法：
     /// 1.遍历所有节点，将isAlived标志标为false
-    
+
     /// 2.遍历所有生存的跟节点，将生存的跟节点的isAlived标为true，
     /// 然后将生存的根节点的“引用节点”标记为isAlived放到“生存者表0”里面
-    
+
     /// 3.将“生存者表0”中的所有节点的“引用节点”中isAlived为false的节点标记为isAlive＝true，
     /// 并将这些“引用节点”（原来isAlive是false，现在是true的节点）放入“生存者表1”中
-    
+
     /// 4.交换“生存者表0”和“生存者表1”重复以上操作，直到生存者表中没有节点为止
-    
+
     /// 5.遍历所有节点，将isAlived标志为false的节点加以回收即可
-    
+
     /// 分代收集的做法：
     /// 1.遍历所有节点，将没有被“较老的代”所引用的节点的isAlived标志标为false，
     /// 如果节点被“较老的代”所引用，则将isAlived标为true
-    
+
     /// 2.遍历所有生存的跟节点，将生存的跟节点的isAlived标为true，
     /// 然后将生存的根节点的“引用节点”之中”所处代“和“当前代”相同的节点标记为isAlived放到“生存者表0”里面，
     /// 对于和“当前代”不同的“引用节点”既不标记，也不放入“生存者表0”
-    
+
     /// 3.将“生存者表0”中的所有节点的“引用节点”中isAlived为false的节点标记为isAlive＝true，
     /// 并将这些“引用节点”（原来isAlive是false，现在是true的节点）的“引用节点”放入“生存者表1”中
     /// 同样的，以上操作也是剔除“所处代”的“当前代”不同的“引用节点”
-    
+
     /// 4.交换“生存者表0”和“生存者表1”重复以上操作，直到生存者表中没有节点为止
-    
+
     /// 5.遍历所有节点，将isAlived标志为false的节点加以回收即可
-    
+
     /// 那么如何知道一个节点是否被较老的代所引用呢？
     /// 那就需要一组引用计数，总共有多少代，就有多少引用计数，还需要“当前代”的索引。
     /// 当节点A attach 到节点B时，那么节点B会利用自己“当前代”的索引，从节点A的引用计数数组中取出对应的引用计数，并加一
@@ -290,19 +294,19 @@ public:
     /// 而对于一个节点而言，“当前代”并不是固定不变的，在一定的时间后，节点会“衰老”，从“年轻代”衰老到“老年代”
     /// 而在节点衰老的过程中，需要修改该节点所有“引用节点”的引用计数，
     /// 将所有“引用节点”的“年轻代”的引用计数减一，“年老代”引用计数加一
-    
+
     /// 当“年老代”和“年轻代”分开回收时，先回收“年老代”，
     /// 其中一个年老节点将要被回收，而该节点被一个年轻节点所引用，而该年轻节点不久也将被回收，
     /// 那么在回收年老节点时，必须清除年轻节点对年老节点的引用信息，否则，年老节点被回收了，年轻节点的“输出表”中就出现了“野指针”
     /// 为了让一个节点能顺利的找到所有引用它的节点，引入“输入表”的概念
-    
+
     /// “跨代标记”：
-    
+
     void PrepareCollect() {
-        
+
         buffer0.clear();
         buffer1.clear();
-        
+
         GCNode* node = memHead;
         while (node) {
             bool forceAlived = false;
@@ -317,7 +321,7 @@ public:
                     }
                 }
             }
-            
+
             if (forceAlived) {
                 /// 将强制保留的节点放入buffer
                 node->isAlived = true;
@@ -379,7 +383,7 @@ public:
         }
 
     }
-    
+
     void Collect() {
         {
             xhn::vector<GCNode*>::iterator iter = buffer0.begin();
@@ -415,7 +419,7 @@ public:
         return totalSize;
     }
 };
-    
+
 class GarbageCollector : public MemObject
 {
 private:
@@ -439,7 +443,7 @@ public:
     vptr AllocRootMem(euint size, GCRootNode** nodeOut = NULL) {
         return generations[MAX_GENERATIONS - 1]->AllocRootMem(size, nodeOut);
     }
-    
+
     void Attach(GCNode* parent, GCNode* child) {
         if (parent->attachedNodes.find(child) == parent->attachedNodes.end()) {
             parent->attachedNodes.insert(child);
@@ -460,11 +464,11 @@ public:
             generations[0]->PrepareCollect();
             generations[1]->PrepareCollect();
             generations[2]->PrepareCollect();
-            
+
             generations[0]->MarkAlived();
             generations[1]->MarkAlived();
             generations[2]->MarkAlived();
-            
+
             generations[2]->Collect();
             generations[1]->Collect();
             generations[0]->Collect();
@@ -472,7 +476,7 @@ public:
         else if (generations[1]->GetTotalSize() > 256 * 1024) {
             generations[1]->PrepareCollect();
             generations[2]->PrepareCollect();
-            
+
             generations[1]->MarkAlived();
             generations[2]->MarkAlived();
 
@@ -487,15 +491,15 @@ public:
             generations[2]->Aging(generations[1]);
         }
     }
-    void FullCollect() {        
+    void FullCollect() {
         generations[0]->PrepareCollect();
         generations[1]->PrepareCollect();
         generations[2]->PrepareCollect();
-        
+
         generations[0]->MarkAlived();
         generations[1]->MarkAlived();
         generations[2]->MarkAlived();
-        
+
         generations[2]->Collect();
         generations[1]->Collect();
         generations[0]->Collect();
@@ -527,7 +531,7 @@ public:
     {
         xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant new operator");
     }
-    
+
     void operator delete( void *p, const char* file,int line )
     {
         xhnSTLExce(xhn::InvalidMemoryFreeException, "this object cant delete operator");
@@ -542,7 +546,7 @@ public:
         obj->gcNode = node;
         return obj;
     }
-    
+
     void operator delete( void *p, void* ptr )
     {
         xhnSTLExce(xhn::InvalidMemoryFreeException, "this object cant delete operator");
@@ -552,7 +556,7 @@ public:
     {
         xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant new operator");
     }
-    
+
     void operator delete[]( void* ptr, size_t nSize )
     {
         xhnSTLExce(xhn::InvalidMemoryFreeException, "this object cant delete operator");

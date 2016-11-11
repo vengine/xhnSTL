@@ -32,11 +32,11 @@ ADD_LIBRARY(xhnSTL SHARED
     ../xhnSTL/xstl/xhn_exception.cpp
     ../xhnSTL/xstl/xhn_file_stream.cpp
     ../xhnSTL/xstl/xhn_filesystem_node.cpp
-    ../xhnSTL/xstl/xhn_garbage_collector.cpp
-    ../xhnSTL/xstl/xhn_gc_array.cpp
-    ../xhnSTL/xstl/xhn_gc_container_base.cpp
-    ../xhnSTL/xstl/xhn_gc_string.cpp
-    ../xhnSTL/xstl/xhn_gc_values.cpp
+    #../xhnSTL/xstl/xhn_garbage_collector.cpp
+    #../xhnSTL/xstl/xhn_gc_array.cpp
+    #../xhnSTL/xstl/xhn_gc_container_base.cpp
+    #../xhnSTL/xstl/xhn_gc_string.cpp
+    #../xhnSTL/xstl/xhn_gc_values.cpp
     ../xhnSTL/xstl/xhn_list2.cpp
     ../xhnSTL/xstl/xhn_lock.cpp
     ../xhnSTL/xstl/xhn_memory.cpp

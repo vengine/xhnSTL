@@ -636,13 +636,6 @@ struct FWCharFormat
         else
             return wc;
     }
-#elif defined(__ARCH_LINUX__)
-    wchar_t operator() (wchar_t wc) {
-        if (wc == L'\\')
-            return L'/';
-        else
-            return wc;
-    }
 #else
 #    error
 #endif
@@ -658,13 +651,6 @@ struct FCharFormat
             return c;
     }
 #elif defined(__APPLE__)
-    char operator() (char c) {
-        if (c == '\\')
-            return '/';
-        else
-            return c;
-    }
-#elif defined(__ARCH_LINUX__)
     char operator() (char c) {
         if (c == '\\')
             return '/';

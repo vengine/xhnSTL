@@ -51,8 +51,8 @@ struct FIncCallbackProc
     void operator() (volatile T* ptr) {
 	}
 };
-    
-    
+
+
 template< typename T,
           typename INC_CALLBACK = FIncCallbackProc<T>,
           typename DEST_CALLBACK = FDestCallbackProc<T>,
@@ -105,12 +105,12 @@ public:
         return ret;
     }
 };
-    
+
 /// 一个RefObject的派生类，直接VNEW出来以后它的ref_count是0，这是必须将该对象赋值给SmartPtr。这样保存起来
 /// 如果该对象没有赋值给SmartPtr，而是作为参数传递给一个参数类型是SmartPtr的函数，那么，
 /// 该类转为SmartPtr参数时ref_count为1，函数返回时ref_count为0，就直接销毁对象了
 /// 这可能会引起一个bug
-    
+
 template< typename T,
           typename INC_CALLBACK = FIncCallbackProc<T>,
           typename DEST_CALLBACK = FDestCallbackProc<T>,
@@ -249,6 +249,8 @@ public:
 	{
 #ifdef _WIN32
 		if (InterlockedCompareExchange((LONG volatile *)&m_ptr, (LONG)src.m_cloned, (LONG)src.m_original) == (LONG)src.m_original) {
+#elif defined(__ARCH_LINUX__)
+        if (AO_compare_and_swap((AO_t *)&m_ptr, (AO_t)src.m_original, (AO_t)src.m_cloned)) {
 #else
         if (OSAtomicCompareAndSwapPtr((void*)src.m_original, (void*)src.m_cloned, (void* volatile *)&m_ptr)) {
 #endif
@@ -284,7 +286,7 @@ public:
         }
     }
 };
-    
+
 /// Handle 这个东西的存在是为了解决Command在channel里传递的问题，Handle可以直接拷贝，不像SmartPtr
 template< typename T>
 class Handle
@@ -374,7 +376,7 @@ public:
 };
 
 }
-    
+
 #endif
 
 #endif

@@ -15,7 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
@@ -27,11 +27,11 @@ _INLINE_ void ELock_Init(ELock* lock) {
 }
      **/
 _INLINE_ void ELock_lock(ELock* lock) {
-	while (InterlockedCompareExchange((LONG volatile *)lock, (LONG)1, (LONG)0) == (LONG)1) 
+	while (InterlockedCompareExchange((LONG volatile *)lock, (LONG)1, (LONG)0) == (LONG)1)
 	{}
 }
 _INLINE_ void ELock_unlock(ELock* lock) {
-	while (InterlockedCompareExchange((LONG volatile *)lock, (LONG)0, (LONG)1) == (LONG)0) 
+	while (InterlockedCompareExchange((LONG volatile *)lock, (LONG)0, (LONG)1) == (LONG)0)
 	{}
 }
 #elif defined(__APPLE__)
@@ -72,21 +72,21 @@ inline bool ELock_try(ELock* lock) {
 
     ///void AO_or(AO_t *p, AO_t incr)
     ///int AO_compare_and_swap(AO_t *addr, AO_t old, AO_t new_val)
-typedef AO_t ELock;
+typedef volatile esint32 ELock;
 #define ELock_Init(lock) *lock = 0
 inline void ELock_lock(ELock* lock) {
-    while (!AO_compare_and_swap(lock, 0, 1))
+    while (!AO_compare_and_swap((AO_t*)lock, 0, 1))
     {}
 }
 inline void ELock_unlock(ELock* lock) {
-    while (!AO_compare_and_swap(lock, 1, 0))
+    while (!AO_compare_and_swap((AO_t*)lock, 1, 0))
     {}
 }
 inline bool ELock_try(ELock* lock) {
-    return AO_load(lock);
+    return AO_load((AO_t*)lock);
 }
 #endif
-    
+
 #ifdef __cplusplus
 }
 #endif
