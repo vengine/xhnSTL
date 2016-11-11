@@ -74,17 +74,17 @@ inline bool ELock_try(ELock* lock) {
     ///int AO_compare_and_swap(AO_t *addr, AO_t old, AO_t new_val)
 typedef volatile esint32 ELock;
 #define ELock_Init(lock) *lock = 0
-inline void ELock_lock(ELock* lock) {
-    while (!AO_compare_and_swap((AO_t*)lock, 0, 1))
+#define ELock_lock(lock) \
+    while (!AO_compare_and_swap((AO_t*)lock, 0, 1)) \
     {}
-}
-inline void ELock_unlock(ELock* lock) {
-    while (!AO_compare_and_swap((AO_t*)lock, 1, 0))
+
+#define ELock_unlock(lock) \
+    while (!AO_compare_and_swap((AO_t*)lock, 1, 0)) \
     {}
-}
-inline bool ELock_try(ELock* lock) {
-    return AO_load((AO_t*)lock);
-}
+
+#define ELock_try(lock) \
+    AO_load((AO_t*)lock)
+
 #endif
 
 #ifdef __cplusplus

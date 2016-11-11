@@ -5,7 +5,7 @@ add_definitions("-std=c++11")
 INCLUDE_DIRECTORIES(/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/include/ 
                     /home/parallels/Projects/vengine/dependencies/xhnSTL/ArchLinux/
                     /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/xstl/
-                    /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/xstl/linux/
+                    /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/linux/
                     /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/xlibc/)
 
 LINK_DIRECTORIES(/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/lib)

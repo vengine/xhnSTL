@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
-PROJECT(xhnSTL CXX)
+PROJECT(xhnSTL)
 add_definitions("-std=c++11")
 
 INCLUDE_DIRECTORIES(/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/include/ 
