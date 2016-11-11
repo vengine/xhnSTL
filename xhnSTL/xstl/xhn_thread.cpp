@@ -2,6 +2,10 @@
 #ifdef __APPLE__
 #include <unistd.h>
 #include <limits.h>
+#elif defined(LINUX)
+#include <sys/errno.h>
+#include <unistd.h>
+#include <limits.h>
 #endif
 
 xhn::SpinLock xhn::thread::s_thread_stack_range_map_lock;
@@ -39,6 +43,19 @@ void xhn::thread::milli_sleep(euint32 millisecond)
         }
         else perror("nanosleep");
     }
+#elif defined(LINUX)
+    euint32 second = millisecond / 1000;
+    millisecond = millisecond % 1000;
+    timespec t = {second, (long)(millisecond * 1000 * 1000)};
+    struct timespec remainder;
+    if (nanosleep(&t, &remainder) == -1) {
+        if (errno == EINTR) {
+            (void)printf("nanosleep interrupted\n");
+            (void)printf("Remaining secs: %ld\n", remainder.tv_sec);
+            (void)printf("Remaining nsecs: %ld\n", remainder.tv_nsec);
+        }
+        else perror("nanosleep");
+    }
 #else
 #error
 #endif
@@ -61,6 +78,19 @@ void xhn::thread::micro_sleep(euint32 microsecond)
         }
         else perror("nanosleep");
     }
+#elif defined(LINUX)
+    euint32 second = microsecond / (1000 * 1000);
+    microsecond = microsecond % (1000 * 1000);
+    timespec t = {second, (long)(microsecond * 1000)};
+    struct timespec remainder;
+    if (nanosleep(&t, &remainder) == -1) {
+        if (errno == EINTR) {
+            (void)printf("nanosleep interrupted\n");
+            (void)printf("Remaining secs: %ld\n", remainder.tv_sec);
+            (void)printf("Remaining nsecs: %ld\n", remainder.tv_nsec);
+        }
+        else perror("nanosleep");
+    }
 #else
 #error
 #endif
@@ -72,6 +102,17 @@ void xhn::thread::nano_sleep(euint32 nanosecond)
     SleepEx(1, FALSE);
 #elif defined(__APPLE__)
     timespec t = {(__darwin_time_t)0, (long)nanosecond};
+    struct timespec remainder;
+    if (nanosleep(&t, &remainder) == -1) {
+        if (errno == EINTR) {
+            (void)printf("nanosleep interrupted\n");
+            (void)printf("Remaining secs: %ld\n", remainder.tv_sec);
+            (void)printf("Remaining nsecs: %ld\n", remainder.tv_nsec);
+        }
+        else perror("nanosleep");
+    }
+#elif defined(LINUX)
+    timespec t = {0, (long)nanosecond};
     struct timespec remainder;
     if (nanosleep(&t, &remainder) == -1) {
         if (errno == EINTR) {
@@ -118,7 +159,7 @@ begin:
                 }
                 if (isTaskEmpty && !m_is_finished) {
                     m_is_completed = true;
-                    
+
                     pthread_mutex_lock(&m_mutex);
                     {
                         SpinLock::Instance taskInst = m_taskLock.Lock();
@@ -293,7 +334,7 @@ xhn::thread::thread()
     pthread_attr_t thread_attr;
     size_t stack_size;
     int status;
-    
+
     status = pthread_attr_init (&thread_attr);
     EAssert(!status, "Create attr");
     status = pthread_attr_setdetachstate (&thread_attr, PTHREAD_CREATE_DETACHED);
@@ -358,10 +399,10 @@ void xhn::thread::assign_to_local_thread(thread_ptr& local_thread, thread_ptr& g
         local_thread = global_thread;
     }
     if (!local_thread) {
-        
+
         local_thread = VNEW xhn::thread;
         while (!local_thread->is_running()) {}
-        
+
         {
             xhn::SpinLock::Instance inst = lock.Lock();
             if (!global_thread) {

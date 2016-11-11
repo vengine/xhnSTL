@@ -12,6 +12,8 @@
 
 #if defined(__APPLE__)
 #include "ObjCString.h"
+#elif defined(LINUX)
+#include "LinuxString.hpp"
 #endif
 
 wchar_t get_char(euint i)
@@ -118,31 +120,31 @@ bool xhn::Utf8::utf8fromwcs(const wchar_t* wcs, vector< char, FGetCharRealSizePr
 	const wchar_t *pc = wcs;
 	euint num_errors = 0;
 	///int i = 0;
-	for(unsigned int c = *pc; c != 0 ; c = *(++pc)) 
+	for(unsigned int c = *pc; c != 0 ; c = *(++pc))
 	{
-		if (c < (1 << 7)) 
+		if (c < (1 << 7))
 		{
 			outbuf.push_back(char(c));
-		} 
-		else if (c < (1 << 11)) 
+		}
+		else if (c < (1 << 11))
 		{
 			outbuf.push_back(char((c >> 6) | 0xc0));
 			outbuf.push_back(char((c & 0x3f) | 0x80));
-		} 
-		else if (c < (1 << 16)) 
+		}
+		else if (c < (1 << 16))
 		{
 			outbuf.push_back(char((c >> 12) | 0xe0));
 			outbuf.push_back(char(((c >> 6) & 0x3f) | 0x80));
 			outbuf.push_back(char((c & 0x3f) | 0x80));
-		} 
-		else if (c < (1 << 21)) 
+		}
+		else if (c < (1 << 21))
 		{
 			outbuf.push_back(char((c >> 18) | 0xf0));
 			outbuf.push_back(char(((c >> 12) & 0x3f) | 0x80));
 			outbuf.push_back(char(((c >> 6) & 0x3f) | 0x80));
 			outbuf.push_back(char((c & 0x3f) | 0x80));
 		}
-		else 
+		else
 			++num_errors;
 	}
 	return num_errors == 0;
@@ -162,7 +164,7 @@ bool xhn::Unicode::utf8towcs(const char *utf8, vector< wchar_t, FGetCharRealSize
 	}
 	if (!count) return true;
 	last = &utf8[count];
-	while (*pc) 
+	while (*pc)
 	{
 		b = *pc++;
 
@@ -173,8 +175,8 @@ bool xhn::Unicode::utf8towcs(const char *utf8, vector< wchar_t, FGetCharRealSize
 		{
 			// 1-byte sequence: 000000000xxxxxxx = 0xxxxxxx
             outbuf.push_back(wchar_t(b));
-		} 
-		else if ((b & 0xe0) == 0xc0) 
+		}
+		else if ((b & 0xe0) == 0xc0)
 		{
 			// 2-byte sequence: 00000yyyyyxxxxxx = 110yyyyy 10xxxxxx
 			if(pc == last) {
@@ -183,8 +185,8 @@ bool xhn::Unicode::utf8towcs(const char *utf8, vector< wchar_t, FGetCharRealSize
 			b = (b & 0x1f) << 6;
 			b |= (*pc++ & 0x3f);
             outbuf.push_back(wchar_t(b));
-		} 
-		else if ((b & 0xf0) == 0xe0) 
+		}
+		else if ((b & 0xf0) == 0xe0)
 		{
 			// 3-byte sequence: zzzzyyyyyyxxxxxx = 1110zzzz 10yyyyyy 10xxxxxx
 			if(pc >= last - 1) {
@@ -197,8 +199,8 @@ bool xhn::Unicode::utf8towcs(const char *utf8, vector< wchar_t, FGetCharRealSize
 				i == 0) // bom at start
 				continue; // skip it
             outbuf.push_back(wchar_t(b));
-		} 
-		else if ((b & 0xf8) == 0xf0) 
+		}
+		else if ((b & 0xf8) == 0xf0)
 		{
 #if defined(USAGE_UCS2)
             /// 大于16bit的unicode是不被允许的
@@ -209,7 +211,7 @@ bool xhn::Unicode::utf8towcs(const char *utf8, vector< wchar_t, FGetCharRealSize
             return true;
 #elif defined(USAGE_UCS4)
             // 4-byte sequence: uuuzzzzzzyyyyyyxxxxxx = 11110uuu 10zzzzzz 10yyyyyy 10xxxxxx
-            
+
 			if(pc >= last - 2) {
                 outbuf.push_back('?'); break;
             }
@@ -243,7 +245,7 @@ bool xhn::Unicode::utf8towcs(const char *utf8, vector< wchar_t, FGetCharRealSize
 #    error
 #endif
         }
-		else 
+		else
 		{
             outbuf.clear();
             char* tmp = string_convert_to_utf8(utf8);

@@ -26,7 +26,7 @@ euint fast_hashnr(euint64 timeStamp)
         nr^= (((nr & 63)+nr2)*((euint) *key++))+ (nr << 8);
         nr2+=3;
     }
-    
+
     return (nr & 0xfffffffffffffff0) | ((nr >> 16) & 0x000000000000000f);
 }
 euint xhn::create_uid()
@@ -39,10 +39,19 @@ euint xhn::create_uid()
         xhn::set<euint> uidSet;
         TimeCheckpoint tc = TimeCheckpoint::Tick();
         for (euint i = 0; i < 1000; i++) {
+#ifdef LINUX
+            euint uid = fast_hashnr(tc.timeStamp.tv_usec);
+#else
             euint uid = fast_hashnr(tc.timeStamp);
+#endif
             while (uidSet.find(uid) != uidSet.end()) {
+#ifdef LINUX
+                tc.timeStamp.tv_usec++;
+                uid = fast_hashnr(tc.timeStamp.tv_usec);
+#else
                 tc.timeStamp++;
                 uid = fast_hashnr(tc.timeStamp);
+#endif
             }
             uidSet.insert(uid);
             s_uid_list->push_back(uid);
@@ -61,7 +70,7 @@ xhn::string xhn::create_uuid_string()
     int remainder = 255;
     uuid_t uuid;
     uuid_generate(uuid);
-    
+
     unsigned char *p = uuid;
     for (int i = 0; i < sizeof(uuid_t); i++, p++)
     {
@@ -77,7 +86,7 @@ xhn::string xhn::create_uuid_string()
             remainder -= len;
         }
     }
-    
+
     xhn::string ret(mbuf);
     return ret;
 }
