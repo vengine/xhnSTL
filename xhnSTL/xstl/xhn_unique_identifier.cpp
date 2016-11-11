@@ -72,7 +72,7 @@ xhn::string xhn::create_uuid_string()
     uuid_generate(uuid);
 
     unsigned char *p = uuid;
-    for (int i = 0; i < sizeof(uuid_t); i++, p++)
+    for (euint i = 0; i < sizeof(uuid_t); i++, p++)
     {
         int len = snprintf(strbuf, remainder, "%02X", *p);
         strbuf += len;

@@ -505,9 +505,15 @@ public:
         generations[0]->Collect();
     }
     void Print() {
+#if BIT_WIDTH == 32
+        printf("%lld, %d, %d\n", generations[0]->GetTotalSize(), generations[0]->buffer0.size(), generations[0]->buffer1.size());
+        printf("%lld, %d, %d\n", generations[1]->GetTotalSize(), generations[1]->buffer0.size(), generations[1]->buffer1.size());
+        printf("%lld, %d, %d\n", generations[2]->GetTotalSize(), generations[2]->buffer0.size(), generations[2]->buffer1.size());
+#else
         printf("%lld, %lld, %lld\n", generations[0]->GetTotalSize(), generations[0]->buffer0.size(), generations[0]->buffer1.size());
         printf("%lld, %lld, %lld\n", generations[1]->GetTotalSize(), generations[1]->buffer0.size(), generations[1]->buffer1.size());
         printf("%lld, %lld, %lld\n", generations[2]->GetTotalSize(), generations[2]->buffer0.size(), generations[2]->buffer1.size());
+#endif
     }
 };
 

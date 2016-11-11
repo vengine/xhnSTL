@@ -325,10 +325,10 @@ void xhn::thread::stop_thread_and_join(SmartPtr<thread>& t)
 }
 
 xhn::thread::thread()
-: m_is_running(false)
+: m_is_completed(false)
 , m_is_finished(false)
+, m_is_running(false)
 , m_is_stopped(false)
-, m_is_completed(false)
 , m_is_errored(false)
 {
     pthread_attr_t thread_attr;
@@ -342,19 +342,33 @@ xhn::thread::thread()
 #ifdef _POSIX_THREAD_ATTR_STACKSIZE
     status = pthread_attr_getstacksize (&thread_attr, &stack_size);
     EAssert (!status, "Get stack size");
-    printf ("Default stack size is %ld; minimum is %u\n",
+#if BIT_WIDTH == 32
+    printf ("Default stack size is %u; minimum is %u\n",
             stack_size, PTHREAD_STACK_MIN);
+#else
+    printf ("Default stack size is %lu; minimum is %u\n",
+            stack_size, PTHREAD_STACK_MIN);
+#endif
     vptr base = (void *) malloc(1024 * 1024);
     status = pthread_attr_setstack(&thread_attr, base, 1024 * 1024);
     EAssert (!status, "Set stack");
     status = pthread_attr_getstacksize (&thread_attr, &stack_size);
     EAssert (!status, "Get stack size");
-    printf ("Default stack size is %ld; minimum is %u\n",
+#if BIT_WIDTH == 32
+    printf ("Default stack size is %u; minimum is %u\n",
             stack_size, PTHREAD_STACK_MIN);
+#else
+    printf ("Default stack size is %lu; minimum is %u\n",
+            stack_size, PTHREAD_STACK_MIN);
+#endif
     m_stack_range.m_begin_addr = base;
     m_stack_range.m_size = 1024 * 1024;
 #endif
+#if BIT_WIDTH == 32
+    printf("%x\n", (ref_ptr)this);
+#else
     printf("%llx\n", (ref_ptr)this);
+#endif
     pthread_mutex_init(&m_mutex, NULL);
     pthread_cond_init(&m_cond, NULL);
     SpinLock::Instance inst = s_thread_stack_range_map_lock.Lock();

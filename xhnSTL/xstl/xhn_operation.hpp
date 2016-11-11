@@ -24,7 +24,7 @@ namespace xhn
     /// \brief collect_folder_information_operation
     ///
     ///
-    
+
 class collect_folder_information_operation : public operation
 {
 private:
@@ -33,8 +33,8 @@ private:
     const char* m_folder;
 public:
     collect_folder_information_operation(const char* folder, folder_information* info)
-    : m_folder(folder)
-    , m_folder_information(info)
+    : m_folder_information(info)
+    , m_folder(folder)
     {}
     virtual bool run();
     virtual float get_progress_rate();
@@ -42,7 +42,7 @@ public:
     virtual void cancel();
     virtual const static_string type() const;
 };
-    
+
 class collect_folder_information_operatoion_handle : public operation_handle
 {
 private:
@@ -53,7 +53,7 @@ public:
     {}
     virtual void collect_folder_information(folder_information* info) = 0;
 };
-    
+
 template <typename T>
 collect_folder_information_operatoion_handle*
 new_collect_folder_information_operation(const char* folder, folder_information* info)
@@ -68,10 +68,10 @@ new_collect_folder_information_operation(const char* folder, folder_information*
     return handle;
 }
 
-    
+
 class duplicate_node;
 class duplicate_node_cache;
-    
+
     /// \brief duplicate_files
     ///
     ///
@@ -82,7 +82,7 @@ public:
     map<euint64, vector<duplicate_node*>> m_duplicate_files;
     void print();
 };
-    
+
 class search_duplicate_files_operation : public operation
 {
 private:
@@ -121,7 +121,7 @@ public:
         return m_cancel_flag;
     }
 };
-    
+
 class search_duplicate_files_operation_handle : public operation_handle
 {
 private:
@@ -144,7 +144,7 @@ public:
         return m_search_duplicate_files_operation->get_cancel_flag();
     }
 };
-    
+
 template <typename T>
 search_duplicate_files_operation_handle*
 new_search_duplicate_files_operation(path_enumerator_ptr paths)
@@ -157,7 +157,7 @@ new_search_duplicate_files_operation(path_enumerator_ptr paths)
     (paths);
     return handle;
 }
-    
+
 template <typename T, typename P>
 search_duplicate_files_operation_handle*
 new_search_duplicate_files_operation(path_enumerator_ptr paths, P p)
@@ -171,7 +171,7 @@ new_search_duplicate_files_operation(path_enumerator_ptr paths, P p)
     (paths, p);
     return handle;
 }
-    
+
 }
 
 #endif

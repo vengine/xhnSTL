@@ -94,7 +94,11 @@ void xhn::duplicate_files::print()
             printf("\n");
         }
     }
+#if BIT_WIDTH == 32
+    printf("file_count %d\n", file_count);
+#else
     printf("file_count %lld\n", file_count);
+#endif
 }
 STATIC_CONST xhn::static_string str_search_duplicate_files_operation("search duplicate files operation");
 const xhn::static_string xhn::search_duplicate_files_operation::type() const

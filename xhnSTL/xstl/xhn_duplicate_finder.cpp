@@ -10,7 +10,7 @@ namespace xhn
         ret->m_current_status = m_current_status;
         return ret;
     }
-    
+
     duplicate_node_cache::~duplicate_node_cache()
     {
         clear();
@@ -45,7 +45,7 @@ namespace xhn
             else {
                 m_node_count++;
             }
-    
+
             node->m_file.open(node->m_path);
             node->m_prev = nullptr;
             node->m_next = m_head;
@@ -79,19 +79,19 @@ namespace xhn
             ///fclose(node->m_file);
             ///node->m_file = nullptr;
             node->m_file.close();
-            
+
             m_node_count--;
         }
         else {
             if (node == m_head) {
                 m_head = m_tail = nullptr;
-                
+
                 node->m_prev = nullptr;
                 node->m_next = nullptr;
                 ///fclose(node->m_file);
                 ///node->m_file = nullptr;
                 node->m_file.close();
-                
+
                 m_node_count--;
             }
         }
@@ -115,7 +115,7 @@ namespace xhn
             wstring filename3 = homeDir + L"/file3.txt";
             wstring filename4 = homeDir + L"/file4.txt";
             wstring filename5 = homeDir + L"/file5.txt";
-            
+
             file_stream_ptr file0 = mgr->create_and_open(filename0);
             file_stream_ptr file1 = mgr->create_and_open(filename1);
             file_stream_ptr file2 = mgr->create_and_open(filename2);
@@ -138,21 +138,21 @@ namespace xhn
         {
             wstring homeDir = mgr->get_home_dir();
             Utf8 utf8HomeDir(homeDir.c_str());
-            
+
             string filename0 = ((string)utf8HomeDir) + "/file0.txt";
             string filename1 = ((string)utf8HomeDir) + "/file1.txt";
             string filename2 = ((string)utf8HomeDir) + "/file2.txt";
             string filename3 = ((string)utf8HomeDir) + "/file3.txt";
             string filename4 = ((string)utf8HomeDir) + "/file4.txt";
             string filename5 = ((string)utf8HomeDir) + "/file5.txt";
-            
+
             duplicate_node* node0 = VNEW duplicate_node(filename0, ((string)utf8HomeDir).c_str(), 0);
             duplicate_node* node1 = VNEW duplicate_node(filename1, ((string)utf8HomeDir).c_str(), 0);
             duplicate_node* node2 = VNEW duplicate_node(filename2, ((string)utf8HomeDir).c_str(), 0);
             duplicate_node* node3 = VNEW duplicate_node(filename3, ((string)utf8HomeDir).c_str(), 0);
             duplicate_node* node4 = VNEW duplicate_node(filename4, ((string)utf8HomeDir).c_str(), 0);
             duplicate_node* node5 = VNEW duplicate_node(filename5, ((string)utf8HomeDir).c_str(), 0);
-            
+
             duplicate_node_cache* cache = VNEW duplicate_node_cache;
             cache->open(node0);
             cache->open(node1);
@@ -204,7 +204,7 @@ namespace xhn
                     status->m_processing_file = iter->m_path.c_str();
                 }
             }
-            
+
             ///fseek(iter->m_file.get(), iter->m_offset, SEEK_SET);
             iter->m_file.Seek(iter->m_offset);
             ///fread(&iter->m_symbol, 1, sizeof(SYMBOL), iter->m_file.get());
@@ -292,7 +292,11 @@ namespace xhn
         duplicate_node* iter = this;
         while (iter) {
             duplicate_node* next = iter->m_next0;
+#if BIT_WIDTH == 32
+            printf("node %x next %x, %d\n", (ref_ptr)iter, (ref_ptr)iter->m_next0, iter->m_symbol);
+#else
             printf("node %llx next %llx, %lld\n", (ref_ptr)iter, (ref_ptr)iter->m_next0, iter->m_symbol);
+#endif
             iter = next;
         }
     }
@@ -300,7 +304,7 @@ namespace xhn
     {
         file_manager* mgr = file_manager::get();
         vector<duplicate_node*> entrances;
-        
+
         {
             wstring homeDir = mgr->get_home_dir();
             wstring filename0 = homeDir + L"/file0.txt";
@@ -309,7 +313,7 @@ namespace xhn
             wstring filename3 = homeDir + L"/file3.txt";
             wstring filename4 = homeDir + L"/file4.txt";
             wstring filename5 = homeDir + L"/file5.txt";
-            
+
             file_stream_ptr file0 = mgr->create_and_open(filename0);
             file_stream_ptr file1 = mgr->create_and_open(filename1);
             file_stream_ptr file2 = mgr->create_and_open(filename2);
@@ -332,18 +336,18 @@ namespace xhn
         {
             search_duplicate_files_status* status = VNEW search_duplicate_files_status(0);
             SpinLock lock;
-            
+
             duplicate_node_cache* cache = VNEW duplicate_node_cache;
             wstring homeDir = mgr->get_home_dir();
             Utf8 utf8HomeDir(homeDir.c_str());
-            
+
             string filename0 = ((string)utf8HomeDir) + "/file0.txt";
             string filename1 = ((string)utf8HomeDir) + "/file1.txt";
             string filename2 = ((string)utf8HomeDir) + "/file2.txt";
             string filename3 = ((string)utf8HomeDir) + "/file3.txt";
             string filename4 = ((string)utf8HomeDir) + "/file4.txt";
             string filename5 = ((string)utf8HomeDir) + "/file5.txt";
-            
+
             duplicate_node* node0 = VNEW duplicate_node(filename0, ((string)utf8HomeDir).c_str(), 0);
             duplicate_node* node1 = VNEW duplicate_node(filename1, ((string)utf8HomeDir).c_str(), 0);
             duplicate_node* node2 = VNEW duplicate_node(filename2, ((string)utf8HomeDir).c_str(), 0);
