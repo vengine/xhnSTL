@@ -56,7 +56,7 @@ inline void ELock_unlock(ELock* lock) {
 inline bool ELock_try(ELock* lock) {
     return OSSpinLockTry(lock);
 }
-#elif defined(__ARCH_LINUX__)
+#elif defined(LINUX) && defined(AO_ATOMIC_OPS_H)
     ///AO_compare_and_swap  takes an address, an old value and a new value and
     ///returns an int.  non-zero indicates the compare and swap succeeded.
     ///AO_INLINE int

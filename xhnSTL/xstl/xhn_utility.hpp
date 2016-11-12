@@ -636,7 +636,7 @@ struct FWCharFormat
         else
             return wc;
     }
-#elif defined(__ARCH_LINUX__)
+#elif defined(LINUX)
     wchar_t operator() (wchar_t wc) {
         if (wc == L'\\')
             return L'/';
@@ -664,7 +664,7 @@ struct FCharFormat
         else
             return c;
     }
-#elif defined(__ARCH_LINUX__)
+#elif defined(LINUX)
     char operator() (char c) {
         if (c == '\\')
             return '/';

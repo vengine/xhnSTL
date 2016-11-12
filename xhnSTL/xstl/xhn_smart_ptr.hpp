@@ -249,7 +249,7 @@ public:
 	{
 #ifdef _WIN32
 		if (InterlockedCompareExchange((LONG volatile *)&m_ptr, (LONG)src.m_cloned, (LONG)src.m_original) == (LONG)src.m_original) {
-#elif defined(__ARCH_LINUX__)
+#elif defined(LINUX) && defined(AO_ATOMIC_OPS_H)
         if (AO_compare_and_swap((AO_t *)&m_ptr, (AO_t)src.m_original, (AO_t)src.m_cloned)) {
 #else
         if (OSAtomicCompareAndSwapPtr((void*)src.m_original, (void*)src.m_cloned, (void* volatile *)&m_ptr)) {
