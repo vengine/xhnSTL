@@ -66,11 +66,13 @@ inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile e
 #elif defined(LINUX) && defined(AO_ATOMIC_OPS_H)
 inline esint32 AtomicIncrement(volatile esint32* i)
 {
-    return AO_fetch_and_add1((AO_t*)i);
+    AO_fetch_and_add1((AO_t*)i);
+    return AO_load((AO_t*)i);
 }
 inline esint32 AtomicDecrement(volatile esint32* i)
 {
-    return AO_fetch_and_sub1((AO_t*)i);
+    AO_fetch_and_sub1((AO_t*)i);
+    return AO_load((AO_t*)i);
 }
 inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
 {
