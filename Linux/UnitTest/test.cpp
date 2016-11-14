@@ -4,10 +4,7 @@
 #include <xhnSTL/xhn_thread.hpp>
 int main(int argc, char *argv[])
 {
-    printf("hello world\n");
-    printf("here\n");
     xhn::thread_ptr t = VNEW xhn::thread();
-    /**
     while(!t->is_running()) {}
     volatile bool completed = false;
 
@@ -19,6 +16,5 @@ int main(int argc, char *argv[])
 
     t->add_lambda_task(proc);
     while (!completed) {}
-    **/
     return 0;
 }
