@@ -1,0 +1,4 @@
+g++ test.cpp \
+-I./.. \
+-I/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/include/ \
+-lxhnSTL -L./.. -Wl,-rpath=./.. -o test
