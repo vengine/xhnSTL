@@ -8,6 +8,7 @@ rm cmake_install.cmake
 rm Makefile
 rm -rf xhnSTL
 cmake . -DCMAKE_TOOLCHAIN_FILE=OEToolchainConfig.cmake
+make
 mkdir xhnSTL
 cp ../xhnSTL/xlibc/array.h xhnSTL/array.h
 cp ../xhnSTL/xlibc/comparison_algorithm.h xhnSTL/comparison_algorithm.h

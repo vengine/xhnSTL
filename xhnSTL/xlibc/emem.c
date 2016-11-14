@@ -62,7 +62,7 @@ _INLINE_ void meminit(void* _mem, euint _size)
 
 	euint cnt = _size / 16;
 	__m128* m128_ptr = NULL;
-    
+
     if (!zero_ptr)
     {
         ref_ptr offs = (ref_ptr)align_char % 16;
@@ -406,6 +406,41 @@ static void* DefaultAlignedAlloc16(void* self, euint size)
     return _aligned_malloc(size, 16);
 #elif defined(__APPLE__)
     return malloc(size);
+#elif defined(LINUX)
+    void* raw_malloc_ptr; //初始分配的地址
+    void* aligned_ptr; //最终我们获得的alignment地址
+    int align = 16;
+#if 0
+    if( align & (align - 1) ) //如果alignment不是2的n次方，返回
+    {
+        errno = EINVAL;
+        return ( (void*)0 );
+    }
+#endif
+    if( 0 == size )
+    {
+        return ( (void*)0 );
+    }
+
+    //将alignment置为至少为2*sizeof(void*),一种优化做法。
+    if( align < 2*sizeof(void*) )
+    {
+        align = 2 * sizeof(void*);
+    }
+
+    raw_malloc_ptr = malloc(size + align);
+    if( !raw_malloc_ptr )
+    {
+        return ( (void*)0 );
+    }
+
+    //Align We have at least sizeof (void *) space below malloc'd ptr.
+    aligned_ptr = (void*) ( ((size_t)raw_malloc_ptr + align) & ~((size_t)align - 1));
+    ( (void**)aligned_ptr )[-1] = raw_malloc_ptr;
+
+    return aligned_ptr;
+#else
+#   error
 #endif
 }
 static void DefaultAlignedFree16(void* self, void* ptr)
@@ -414,6 +449,14 @@ static void DefaultAlignedFree16(void* self, void* ptr)
     _aligned_free(ptr);
 #elif defined(__APPLE__)
     free(ptr);
+#elif defined(LINUX)
+    void* aligned_ptr = ptr;
+    if( aligned_ptr )
+    {
+        free( ((void**)aligned_ptr)[-1] );
+    }
+#else
+#   error
 #endif
 }
 
@@ -430,7 +473,7 @@ void MInit()
 #ifndef USE_C_MALLOC
 	if (!g_MemAllocator) {
         g_MemAllocator = MemAllocator_new(&g_DefaultMemoryAllcator);
-	} 
+	}
 #endif
 #if 0
 	_CrtSetAllocHook( MyAllocHook );
