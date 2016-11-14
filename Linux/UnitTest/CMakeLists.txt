@@ -14,7 +14,8 @@ INCLUDE_DIRECTORIES(/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-po
                     /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/xlibc/)
 
 LINK_DIRECTORIES(/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/lib/
-                 /home/parallels/Projects/vengine/dependencies/xhnSTL/Linux/)
+                 /home/parallels/Projects/vengine/dependencies/xhnSTL/Linux/
+                 /var/nfs/)
 
 add_definitions(-DLINUX -DBIT_WIDTH=32)
 ADD_EXECUTABLE(test
@@ -23,4 +24,4 @@ ADD_EXECUTABLE(test
 
 target_link_libraries(test xhnSTL)
 
-set(CMAKE_INSTALL_RPATH .)
+#set(CMAKE_INSTALL_RPATH /var/nfs)
