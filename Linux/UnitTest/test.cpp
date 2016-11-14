@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     while(!t->is_running()) {}
     volatile bool completed = false;
 
-    xhn::Lambda<xhn::thread::TaskStatus()> proc([&completed, &tp](){
+    xhn::Lambda<xhn::thread::TaskStatus()> proc([&completed](){
         printf("hello world from other thread!\n");
         completed = true;
         return xhn::thread::Completed;

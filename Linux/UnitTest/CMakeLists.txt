@@ -21,6 +21,6 @@ ADD_EXECUTABLE(test
     test.cpp
 )
 
-target_link_libraries(test GLESv2 GLU EGL X11 m xhnSTL)
+target_link_libraries(test xhnSTL)
 
 set(CMAKE_INSTALL_RPATH .)

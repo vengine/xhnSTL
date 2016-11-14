@@ -548,10 +548,7 @@ bool xhn::bit_reader::read_byte(euint8* output)
 ///  file_manager                                                            ///
 ///==========================================================================///
 
-#if defined(__APPLE__)
-#include "apple_file_manager.h"
-static AppleFileManager* s_AppleFileManager = NULL;
-
+#if defined(__APPLE__) || defined(LINUX)
 xhn::wstring xhn::file_manager::get_upper_directory(const wstring& path)
 {
     wstring ret;
@@ -634,6 +631,8 @@ xhn::string xhn::file_manager::get_upper_directory(const xhn::string& path)
     return ret;
 }
 
+#endif
+
 void xhn::file_manager::force_create_file(const xhn::wstring& path)
 {
     wstring upperDir = get_upper_directory(path);
@@ -671,12 +670,28 @@ euint64 xhn::file_manager::compare_two_files(const wstring& path0, const wstring
     }
     return 0;
 }
+
+#if defined(__APPLE__)
+#include "apple_file_manager.h"
+static AppleFileManager* s_AppleFileManager = NULL;
+
 xhn::file_manager* xhn::file_manager::get()
 {
     if (!s_AppleFileManager) {
         s_AppleFileManager = VNEW AppleFileManager;
     }
     return s_AppleFileManager;
+}
+#elif defined(LINUX)
+#include "linux_file_manager.hpp"
+static LinuxFileManager* s_LinuxFileManager = NULL;
+
+xhn::file_manager* xhn::file_manager::get()
+{
+    if (!s_LinuxFileManager) {
+        s_LinuxFileManager = VNEW LinuxFileManager;
+    }
+    return s_LinuxFileManager;
 }
 #endif
 

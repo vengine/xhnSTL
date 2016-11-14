@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
 #set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
 #set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
-INCLUDE_DIRECTORIES(/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/include/ 
+INCLUDE_DIRECTORIES(/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/include/
                     /home/parallels/Projects/vengine/dependencies/xhnSTL/Linux/
                     /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/xstl/
                     /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/linux/
@@ -28,6 +28,7 @@ ADD_LIBRARY(xhnSTL SHARED
     ../xhnSTL/xlibc/stack.c
     ../xhnSTL/xlibc/static_string.c
     ../xhnSTL/xlibc/tree.c
+    ../xhnSTL/xlibc/sha256.c
     ../xhnSTL/xlibc/utility.c
 
     ../xhnSTL/xstl/exception.cpp
@@ -61,6 +62,7 @@ ADD_LIBRARY(xhnSTL SHARED
     ../xhnSTL/xstl/xhn_utility.cpp
 
     ../xhnSTL/linux/LinuxString.cpp
+    ../xhnSTL/linux/linux_file_manager.cpp
 )
 
-target_link_libraries(xhnSTL GLESv2 GLU EGL X11 m)
+target_link_libraries(xhnSTL GLESv2 GLU EGL X11 m pthread uuid)
