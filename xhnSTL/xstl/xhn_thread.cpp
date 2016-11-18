@@ -185,7 +185,7 @@ begin:
                 }
             }
             if (t) {
-#if THREAD_DEBUG
+#if DEBUG_THREAD
                 const static_string task_type = t->type();
                 printf("@@begin task %s\n", task_type.c_str());
 #endif
@@ -201,7 +201,7 @@ begin:
                     /// 必须要push到队列前
                     m_tasks.push_front(t);
                 }
-#if THREAD_DEBUG
+#if DEBUG_THREAD
                 printf("@@end task %s\n", task_type.c_str());
 #endif
             }
