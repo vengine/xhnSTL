@@ -8,13 +8,13 @@ set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
 #set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
 INCLUDE_DIRECTORIES(/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/include/
-                    /home/parallels/Projects/vengine/dependencies/xhnSTL/Linux/
-                    /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/xstl/
-                    /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/linux/
-                    /home/parallels/Projects/vengine/dependencies/xhnSTL/xhnSTL/xlibc/)
+                    /home/parallels/Projects/xhnSTL/Linux/
+                    /home/parallels/Projects/xhnSTL/xhnSTL/xstl/
+                    /home/parallels/Projects/xhnSTL/xhnSTL/linux/
+                    /home/parallels/Projects/xhnSTL/xhnSTL/xlibc/)
 
 LINK_DIRECTORIES(/home/parallels/Projects/SDK/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/lib/
-                 /home/parallels/Projects/vengine/dependencies/xhnSTL/Linux/
+                 /home/parallels/Projects/xhnSTL/Linux/
                  /var/nfs/)
 
 add_definitions(-DLINUX -DBIT_WIDTH=32)
