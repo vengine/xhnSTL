@@ -86,5 +86,7 @@ cp ../xhnSTL/xstl/xhn_void_vector.hpp xhnSTL/xhn_void_vector.hpp
 cp common.h xhnSTL/common.h
 cp etypes.h xhnSTL/etypes.h
 
-#cd ./UnitTest
-#./build.sh
+cd ./UnitTest
+./build.sh
+
+mv ./*.so ./../../
