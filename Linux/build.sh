@@ -87,3 +87,7 @@ cp common.h xhnSTL/common.h
 cp etypes.h xhnSTL/etypes.h
 
 mv ./*.so ./../../
+
+rm -rf ./../../../include/xhnSTL
+mkdir ./../../../include/xhnSTL
+cp ./xhnSTL/* ./../../../include/xhnSTL/
