@@ -88,6 +88,6 @@ cp etypes.h xhnSTL/etypes.h
 
 mv ./*.so ./../../
 
-rm -rf ./../../../include/xhnSTL
-mkdir ./../../../include/xhnSTL
-cp ./xhnSTL/* ./../../../include/xhnSTL/
+rm -rf ./../../../includes/xhnSTL
+mkdir ./../../../includes/xhnSTL
+cp ./xhnSTL/* ./../../../includes/xhnSTL/
