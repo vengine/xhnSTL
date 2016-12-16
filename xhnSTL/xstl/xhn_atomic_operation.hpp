@@ -24,31 +24,97 @@ inline esint32 AtomicDecrement(volatile esint32* i)
 	return InterlockedDecrement((volatile LONG*)i);
 }
 #elif defined (__APPLE__)
+#define USING_BUILTIN_ATOMIC 1
+#if USING_BUILTIN_ATOMIC
+#include <atomic>
+#endif
 inline esint32 AtomicIncrement(volatile esint32* i)
 {
+#if !USING_BUILTIN_ATOMIC
 	return OSAtomicIncrement32Barrier(i);
+#else
+    esint32 ret;
+    ///__atomic_fetch_add(i, 1, __ATOMIC_ACQ_REL);
+    ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    __atomic_fetch_add(i, 1, __ATOMIC_SEQ_CST);
+    __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    return ret;
+#endif
 }
 inline esint32 AtomicDecrement(volatile esint32* i)
 {
+#if !USING_BUILTIN_ATOMIC
 	return OSAtomicDecrement32Barrier(i);
+#else
+    esint32 ret;
+    ///__atomic_fetch_sub(i, 1, __ATOMIC_ACQ_REL);
+    ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    __atomic_fetch_sub(i, 1, __ATOMIC_SEQ_CST);
+    __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    return ret;
+#endif
 }
 inline esint64 AtomicIncrement64(volatile esint64* i)
 {
+#if !USING_BUILTIN_ATOMIC
 	return OSAtomicIncrement64Barrier(i);
+#else
+    esint64 ret;
+    ///__atomic_fetch_add(i, 1, __ATOMIC_ACQ_REL);
+    ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    __atomic_fetch_add(i, 1, __ATOMIC_SEQ_CST);
+    __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    return ret;
+#endif
 }
 inline esint64 AtomicDecrement(volatile esint64* i)
 {
+#if !USING_BUILTIN_ATOMIC
 	return OSAtomicDecrement64Barrier(i);
+#else
+    esint64 ret;
+    ///__atomic_fetch_sub(i, 1, __ATOMIC_ACQ_REL);
+    ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    __atomic_fetch_sub(i, 1, __ATOMIC_SEQ_CST);
+    __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    return ret;
+#endif
 }
 inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
 {
+#if !USING_BUILTIN_ATOMIC
     return OSAtomicCompareAndSwap32Barrier(oldValue, newValue, theValue);
+#else
+    ///int succ = __ATOMIC_ACQ_REL;
+    ///int fail = __ATOMIC_RELAXED;
+    int succ = __ATOMIC_SEQ_CST;
+    int fail = __ATOMIC_SEQ_CST;
+    return __atomic_compare_exchange(theValue, &oldValue, &newValue,
+                                     false,
+                                     succ,
+                                     fail);
+#endif
 }
 inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * volatile * theValue)
 {
+#if !USING_BUILTIN_ATOMIC
     return OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, theValue);
+#else
+    ///int succ = __ATOMIC_ACQ_REL;
+    ///int fail = __ATOMIC_RELAXED;
+    int succ = __ATOMIC_SEQ_CST;
+    int fail = __ATOMIC_SEQ_CST;
+    return __atomic_compare_exchange(theValue, &oldValue, &newValue,
+                                     false,
+                                     succ,
+                                     fail);
+#endif
 }
+#if !USING_BUILTIN_ATOMIC
 #define MemBarrier OSMemoryBarrier()
+#else
+#define MemBarrier __atomic_thread_fence(__ATOMIC_SEQ_CST)
+#endif
 #elif defined(ANDROID) || defined(__ANDROID__)
 ///#include <sys/atomics.h>
 inline esint32 AtomicIncrement(volatile esint32* i)
