@@ -9,6 +9,7 @@
  */
 #include "elog.h"
 #include "string.h"
+#include <unistd.h>
 
 void (*GetHomeDirectory)(char* output, int outlen) = NULL;
 ELock g_elog_lock = 0;
@@ -48,6 +49,33 @@ void ELog_write()
 #else
     printf("%s\n", g_elog_buffer);
 #endif
+}
+
+void ELog2_Init(struct elogger* logger)
+{
+    ELock_lock(&g_elog_lock);
+#if defined(_WIN32) || defined(_WIN64)
+    logger->logFile = SafeFOpen("log.txt", "w+");
+#elif defined(__APPLE__)
+    char homeDir[256];
+    GetHomeDirectory(homeDir, 255);
+    char logFilename[256];
+    int logCount = 0;
+    snprintf(logFilename, 255, "%s/Documents/log%d.txt", homeDir, logCount);
+    while (access(logFilename, 0) == 0) {
+        logCount++;
+        snprintf(logFilename, 255, "%s/Documents/log%d.txt", homeDir, logCount);
+    }
+    logger->logFile = SafeFOpen(logFilename, "w+");
+#endif
+    ELock_unlock(&g_elog_lock);
+}
+
+void ELog2_write(struct elogger* logger)
+{
+    snprintf(g_elog_buffer, ELOG_BUFFER_SIZE - 1, "%s\n", g_elog_buffer);
+    fwrite(g_elog_buffer, strlen(g_elog_buffer), 1, logger->logFile);
+    fflush(logger->logFile);
 }
 
 void ELog_Release()

@@ -29,6 +29,19 @@ API_EXPORT void ELog_write();
     snprintf(g_elog_buffer,ELOG_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
     ELog_write(); \
     ELock_unlock(&g_elog_lock); }
+    
+struct elogger
+{
+    FILE* logFile;
+};
+API_EXPORT void ELog2_Init(struct elogger* logger);
+API_EXPORT void ELog2_write(struct elogger* logger);
+    
+#define elog2(renderSys, fmt,...) { ELock_lock(&g_elog_lock); \
+snprintf(g_elog_buffer,ELOG_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
+ELog2_write(renderSys); \
+ELock_unlock(&g_elog_lock); }
+    
 #ifdef __cplusplus
 }
 #endif
