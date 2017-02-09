@@ -24,7 +24,7 @@ inline esint32 AtomicDecrement(volatile esint32* i)
 	return InterlockedDecrement((volatile LONG*)i);
 }
 #elif defined (__APPLE__)
-#define USING_BUILTIN_ATOMIC 0
+#define USING_BUILTIN_ATOMIC 1
 #if USING_BUILTIN_ATOMIC
 #include <atomic>
 #endif
@@ -33,12 +33,12 @@ inline esint32 AtomicIncrement(volatile esint32* i)
 #if !USING_BUILTIN_ATOMIC
 	return OSAtomicIncrement32Barrier(i);
 #else
-    esint32 ret;
+    ///esint32 ret;
     ///__atomic_fetch_add(i, 1, __ATOMIC_ACQ_REL);
     ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
-    __atomic_fetch_add(i, 1, __ATOMIC_SEQ_CST);
-    __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
-    return ret;
+    return __atomic_fetch_add(i, 1, __ATOMIC_SEQ_CST) + 1;
+    ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    ///return ret;
 #endif
 }
 inline esint32 AtomicDecrement(volatile esint32* i)
@@ -46,12 +46,12 @@ inline esint32 AtomicDecrement(volatile esint32* i)
 #if !USING_BUILTIN_ATOMIC
 	return OSAtomicDecrement32Barrier(i);
 #else
-    esint32 ret;
+    ///esint32 ret;
     ///__atomic_fetch_sub(i, 1, __ATOMIC_ACQ_REL);
     ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
-    __atomic_fetch_sub(i, 1, __ATOMIC_SEQ_CST);
-    __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
-    return ret;
+    return __atomic_fetch_sub(i, 1, __ATOMIC_SEQ_CST) - 1;
+    ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    ///return ret;
 #endif
 }
 inline esint64 AtomicIncrement64(volatile esint64* i)
@@ -59,12 +59,12 @@ inline esint64 AtomicIncrement64(volatile esint64* i)
 #if !USING_BUILTIN_ATOMIC
 	return OSAtomicIncrement64Barrier(i);
 #else
-    esint64 ret;
+    ///esint64 ret;
     ///__atomic_fetch_add(i, 1, __ATOMIC_ACQ_REL);
     ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
-    __atomic_fetch_add(i, 1, __ATOMIC_SEQ_CST);
-    __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
-    return ret;
+    return __atomic_fetch_add(i, 1, __ATOMIC_SEQ_CST) + 1;
+    ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    ///return ret;
 #endif
 }
 inline esint64 AtomicDecrement(volatile esint64* i)
@@ -72,12 +72,12 @@ inline esint64 AtomicDecrement(volatile esint64* i)
 #if !USING_BUILTIN_ATOMIC
 	return OSAtomicDecrement64Barrier(i);
 #else
-    esint64 ret;
+    ///esint64 ret;
     ///__atomic_fetch_sub(i, 1, __ATOMIC_ACQ_REL);
     ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
-    __atomic_fetch_sub(i, 1, __ATOMIC_SEQ_CST);
-    __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
-    return ret;
+    return __atomic_fetch_sub(i, 1, __ATOMIC_SEQ_CST) - 1;
+    ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    ///return ret;
 #endif
 }
 inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
@@ -85,10 +85,10 @@ inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile e
 #if !USING_BUILTIN_ATOMIC
     return OSAtomicCompareAndSwap32Barrier(oldValue, newValue, theValue);
 #else
-    ///int succ = __ATOMIC_ACQ_REL;
-    ///int fail = __ATOMIC_RELAXED;
-    int succ = __ATOMIC_SEQ_CST;
-    int fail = __ATOMIC_SEQ_CST;
+    int succ = __ATOMIC_ACQ_REL;
+    int fail = __ATOMIC_RELAXED;
+    ///int succ = __ATOMIC_SEQ_CST;
+    ///int fail = __ATOMIC_SEQ_CST;
     bool ret = __atomic_compare_exchange(theValue, &oldValue, &newValue,
                                          false,
                                          succ,
@@ -101,10 +101,10 @@ inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * vola
 #if !USING_BUILTIN_ATOMIC
     return OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, theValue);
 #else
-    ///int succ = __ATOMIC_ACQ_REL;
-    ///int fail = __ATOMIC_RELAXED;
-    int succ = __ATOMIC_SEQ_CST;
-    int fail = __ATOMIC_SEQ_CST;
+    int succ = __ATOMIC_ACQ_REL;
+    int fail = __ATOMIC_RELAXED;
+    ///int succ = __ATOMIC_SEQ_CST;
+    ///int fail = __ATOMIC_SEQ_CST;
     bool ret = __atomic_compare_exchange(theValue, &oldValue, &newValue,
                                          false,
                                          succ,
