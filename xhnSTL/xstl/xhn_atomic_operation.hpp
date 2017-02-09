@@ -38,6 +38,7 @@ inline esint32 AtomicIncrement(volatile esint32* i)
     ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
     __atomic_fetch_add(i, 1, __ATOMIC_SEQ_CST);
     __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    __atomic_thread_fence(__ATOMIC_SEQ_CST);
     return ret;
 #endif
 }
@@ -51,6 +52,7 @@ inline esint32 AtomicDecrement(volatile esint32* i)
     ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
     __atomic_fetch_sub(i, 1, __ATOMIC_SEQ_CST);
     __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    __atomic_thread_fence(__ATOMIC_SEQ_CST);
     return ret;
 #endif
 }
@@ -64,6 +66,7 @@ inline esint64 AtomicIncrement64(volatile esint64* i)
     ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
     __atomic_fetch_add(i, 1, __ATOMIC_SEQ_CST);
     __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    __atomic_thread_fence(__ATOMIC_SEQ_CST);
     return ret;
 #endif
 }
@@ -77,6 +80,7 @@ inline esint64 AtomicDecrement(volatile esint64* i)
     ///__atomic_load(i, &ret, __ATOMIC_SEQ_CST);
     __atomic_fetch_sub(i, 1, __ATOMIC_SEQ_CST);
     __atomic_load(i, &ret, __ATOMIC_SEQ_CST);
+    __atomic_thread_fence(__ATOMIC_SEQ_CST);
     return ret;
 #endif
 }
@@ -89,10 +93,12 @@ inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile e
     ///int fail = __ATOMIC_RELAXED;
     int succ = __ATOMIC_SEQ_CST;
     int fail = __ATOMIC_SEQ_CST;
-    return __atomic_compare_exchange(theValue, &oldValue, &newValue,
-                                     false,
-                                     succ,
-                                     fail);
+    bool ret = __atomic_compare_exchange(theValue, &oldValue, &newValue,
+                                         false,
+                                         succ,
+                                         fail);
+    __atomic_thread_fence(__ATOMIC_SEQ_CST);
+    return ret;
 #endif
 }
 inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * volatile * theValue)
@@ -104,10 +110,12 @@ inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * vola
     ///int fail = __ATOMIC_RELAXED;
     int succ = __ATOMIC_SEQ_CST;
     int fail = __ATOMIC_SEQ_CST;
-    return __atomic_compare_exchange(theValue, &oldValue, &newValue,
-                                     false,
-                                     succ,
-                                     fail);
+    bool ret = __atomic_compare_exchange(theValue, &oldValue, &newValue,
+                                         false,
+                                         succ,
+                                         fail);
+    __atomic_thread_fence(__ATOMIC_SEQ_CST);
+    return ret;
 #endif
 }
 #if !USING_BUILTIN_ATOMIC
