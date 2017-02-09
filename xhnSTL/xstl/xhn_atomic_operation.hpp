@@ -24,7 +24,7 @@ inline esint32 AtomicDecrement(volatile esint32* i)
 	return InterlockedDecrement((volatile LONG*)i);
 }
 #elif defined (__APPLE__)
-#define USING_BUILTIN_ATOMIC 1
+#define USING_BUILTIN_ATOMIC 0
 #if USING_BUILTIN_ATOMIC
 #include <atomic>
 #endif
