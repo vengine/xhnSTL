@@ -301,14 +301,17 @@ public:
 	{
 		ref_count = 0;
         weak_count = VNEW WeakCounter(this);
+        EAssert(weak_count, "weak count must be not null");
 	}
     RefObject(const RefObject& obj)
     {
         ref_count = 0;
-        weak_count = VNEW WeakCounter(this);;
+        weak_count = VNEW WeakCounter(this);
+        EAssert(weak_count, "weak count must be not null");
     }
 	virtual ~RefObject()
 	{
+        EAssert(weak_count, "weak count must be not null");
         volatile bool must_delete_count = false;
         {
             RefSpinLock::Instance inst = weak_count->lock.Lock();
