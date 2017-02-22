@@ -179,7 +179,7 @@ public:
         while (node) {
             GCNode* next = node->next;
 #if defined(LINUX)
-            if (TimeCheckpoint::CaleElapsedTimeInNano(node->birthTime, currentTime) > timeLimit) {
+            if (TimeCheckpoint::CalcElapsedTimeInNano(node->birthTime, currentTime) > timeLimit) {
 #else
             if (currentTime.timeStamp - node->birthTime.timeStamp > timeLimit) {
 #endif

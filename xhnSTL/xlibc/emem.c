@@ -84,7 +84,7 @@ _INLINE_ void mem_node_init(mem_node* _node)
     memset(_node->data, 0, ALLOC_INFO_RESERVED + REFER_INFO_RESERVED);
 }
 
-#define cale_alloc_size(s) ( s + (16 - (s % 16)) );
+#define calc_alloc_size(s) ( s + (16 - (s % 16)) );
 
 void* alloc_mem_list(native_memory_allocator* _alloc, euint _chk_size, euint _num_chks,
                      euint* _real_chk_size, vptr* _begin, vptr* _end, mem_node** _head)
@@ -94,7 +94,7 @@ void* alloc_mem_list(native_memory_allocator* _alloc, euint _chk_size, euint _nu
     euint chk_size = 0;
 	euint i = 0;
 
-	chk_size = cale_alloc_size(_chk_size);
+	chk_size = calc_alloc_size(_chk_size);
 	total_size = chk_size * _num_chks;
 
     *_real_chk_size = chk_size;

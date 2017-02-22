@@ -43,12 +43,12 @@ struct MemPoolDef(mem_pool)* MemPoolFunc(new)(native_memory_allocator* _alloc, e
 	ret = (struct MemPoolDef(mem_pool)*)_alloc->alloc(_alloc, sizeof(struct MemPoolDef(mem_pool)));
     ret->native_allocator = _alloc;
 	ret->mem_pool_chain = List_new(Vptr,  _alloc);
-	ret->real_chk_size = cale_alloc_size(_chk_size);
+	ret->real_chk_size = calc_alloc_size(_chk_size);
 	ret->next = NULL;
 
 	while (!num_chunk_per_mem_block)
 	{
-		num_chunk_per_mem_block = (VENGINE_PAGE_SIZE * c) / cale_alloc_size(_chk_size);
+		num_chunk_per_mem_block = (VENGINE_PAGE_SIZE * c) / calc_alloc_size(_chk_size);
 		c++;
 	}
 	ret->num_chunk_per_mem_block = num_chunk_per_mem_block;

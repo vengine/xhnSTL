@@ -80,7 +80,7 @@ inline double pref_frequency(void)
 	QueryPerformanceFrequency((LARGE_INTEGER*)&temp);
 	return ((double)temp.QuadPart) / 1000000.0;
 }
-inline double cale_elapsed_time(euint64 start, euint64 end, double freq)
+inline double calc_elapsed_time(euint64 start, euint64 end, double freq)
 {
 	return ((double)end - (double)start) / freq;
 }
@@ -98,27 +98,27 @@ struct TimeCheckpoint
 		ret.freq = pref_frequency();
 		return ret;
 	}
-	static inline double CaleElapsedTime(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+	static inline double CalcElapsedTime(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
 		double avFreq = (curtCheckpoint.freq + prevCheckpoint.freq) / 2.0;
-        return cale_elapsed_time(prevCheckpoint.timeStamp, curtCheckpoint.timeStamp, avFreq);
+        return calc_elapsed_time(prevCheckpoint.timeStamp, curtCheckpoint.timeStamp, avFreq);
 	}
-    static inline double CaleElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
-        return CaleElapsedTime(prevCheckpoint, curtCheckpoint) * 1000.0;
+    static inline double CalcElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+        return CalcElapsedTime(prevCheckpoint, curtCheckpoint) * 1000.0;
     }
     static inline double Tock(const TimeCheckpoint& prevCheckpoint)
     {
         TimeCheckpoint curtCheckpoint = Tick();
-        return CaleElapsedTime(prevCheckpoint, curtCheckpoint);
+        return CalcElapsedTime(prevCheckpoint, curtCheckpoint);
     }
     static inline void Tock(const TimeCheckpoint& prevCheckpoint, VTime& result)
     {
         TimeCheckpoint curtCheckpoint = Tick();
-        result.m_nanoTime = CaleElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
+        result.m_nanoTime = CalcElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
     }
 };
 #elif defined (LINUX)
 #include<sys/time.h>
-inline double cale_elapsed_time_in_us(struct timeval start, struct timeval end)
+inline double calc_elapsed_time_in_us(struct timeval start, struct timeval end)
 {
     return 1000000.0 * (end.tv_sec-start.tv_sec)+ end.tv_usec-start.tv_usec;
 }
@@ -134,21 +134,21 @@ struct TimeCheckpoint
 		gettimeofday(&ret.timeStamp, nullptr);
 		return ret;
 	}
-	static inline double CaleElapsedTime(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
-        return cale_elapsed_time_in_us(prevCheckpoint.timeStamp, curtCheckpoint.timeStamp) / 1000000.0;
+	static inline double CalcElapsedTime(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+        return calc_elapsed_time_in_us(prevCheckpoint.timeStamp, curtCheckpoint.timeStamp) / 1000000.0;
 	}
-	static inline double CaleElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
-        return cale_elapsed_time_in_us(prevCheckpoint.timeStamp, curtCheckpoint.timeStamp) * 1000.0;
+	static inline double CalcElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+        return calc_elapsed_time_in_us(prevCheckpoint.timeStamp, curtCheckpoint.timeStamp) * 1000.0;
     }
     static inline double Tock(const TimeCheckpoint& prevCheckpoint)
     {
         TimeCheckpoint curtCheckpoint = Tick();
-        return CaleElapsedTime(prevCheckpoint, curtCheckpoint);
+        return CalcElapsedTime(prevCheckpoint, curtCheckpoint);
     }
     static inline void Tock(const TimeCheckpoint& prevCheckpoint, VTime& result)
     {
         TimeCheckpoint curtCheckpoint = Tick();
-        result.m_nanoTime = CaleElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
+        result.m_nanoTime = CalcElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
     }
 };
 #elif defined (__APPLE__)
@@ -179,7 +179,7 @@ struct TimeCheckpoint
         ret.timeStamp = mach_absolute_time();
         return ret;
     }
-    static inline double CaleElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+    static inline double CalcElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
         uint64_t        elapsed;
         uint64_t        elapsedNano;
         static mach_timebase_info_data_t    sTimebaseInfo;
@@ -194,19 +194,19 @@ struct TimeCheckpoint
         uint64_t ret = elapsedNano;
         return (double)ret;
     }
-    static inline double CaleElapsedTime(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
-        return CaleElapsedTimeInNano(prevCheckpoint, curtCheckpoint) / 1000.0;
+    static inline double CalcElapsedTime(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+        return CalcElapsedTimeInNano(prevCheckpoint, curtCheckpoint) / 1000.0;
     }
 
     static inline double Tock(const TimeCheckpoint& prevCheckpoint)
     {
         TimeCheckpoint curtCheckpoint = Tick();
-        return CaleElapsedTime(prevCheckpoint, curtCheckpoint);
+        return CalcElapsedTime(prevCheckpoint, curtCheckpoint);
     }
     static inline void Tock(const TimeCheckpoint& prevCheckpoint, VTime& result)
     {
         TimeCheckpoint curtCheckpoint = Tick();
-        result.m_nanoTime = CaleElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
+        result.m_nanoTime = CalcElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
     }
 };
 #    elif TARGET_OS_MAC
@@ -224,7 +224,7 @@ struct TimeCheckpoint
 		ret.timeStamp = mach_absolute_time();
 		return ret;
 	}
-    static inline double CaleElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+    static inline double CalcElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
         uint64        elapsed;
         uint64        elapsedNano;
         static mach_timebase_info_data_t    sTimebaseInfo;
@@ -239,19 +239,19 @@ struct TimeCheckpoint
         uint64 ret = elapsedNano;
         return (double)ret;
     }
-	static inline double CaleElapsedTime(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
-        return CaleElapsedTimeInNano(prevCheckpoint, curtCheckpoint) / 1000.0;
+	static inline double CalcElapsedTime(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
+        return CalcElapsedTimeInNano(prevCheckpoint, curtCheckpoint) / 1000.0;
 	}
 
     static inline double Tock(const TimeCheckpoint& prevCheckpoint)
     {
         TimeCheckpoint curtCheckpoint = Tick();
-        return CaleElapsedTime(prevCheckpoint, curtCheckpoint);
+        return CalcElapsedTime(prevCheckpoint, curtCheckpoint);
     }
     static inline void Tock(const TimeCheckpoint& prevCheckpoint, VTime& result)
     {
         TimeCheckpoint curtCheckpoint = Tick();
-        result.m_nanoTime = CaleElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
+        result.m_nanoTime = CalcElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
     }
 };
 #    endif
