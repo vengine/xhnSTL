@@ -210,6 +210,10 @@ public:
 	{
 		return m_ptr < ptr.m_ptr;
 	}
+    inline bool operator > (const SmartPtr& ptr) const
+    {
+        return m_ptr > ptr.m_ptr;
+    }
 	inline bool operator == (const SmartPtr& ptr) const
 	{
 		return m_ptr == ptr.m_ptr;
@@ -232,11 +236,23 @@ public:
 	inline const T* operator ->() const {
 		return (const T*)m_ptr;
 	}
+    inline T& operator *() {
+        return (T&)*m_ptr;
+    }
+    inline const T& operator *() const {
+        return (const T&)*m_ptr;
+    }
 	inline bool operator!() const {
 		return !m_ptr;
 	}
     inline operator bool () const {
         return m_ptr != NULL;
+    }
+    inline operator const T* () const {
+        return (const T*)m_ptr;
+    }
+    inline operator T* () {
+        return (T*)m_ptr;
     }
 
 	CheckoutHandle Checkout()
