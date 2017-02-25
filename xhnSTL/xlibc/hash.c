@@ -27,12 +27,12 @@ euint32 ELFHash( char   * str)
     return  (hash  &   0x7FFFFFFF );
 }
 
-void init_hash_status(struct hash_status* status)
+void init_hash_status(struct hash_calc_status* status)
 {
     status->nr = 1;
     status->nr2 = 4;
 }
-void update_hash_status(struct hash_status* status, const char* mem, euint length)
+void update_hash_status(struct hash_calc_status* status, const char* mem, euint length)
 {
     while (length--)
     {
@@ -40,7 +40,7 @@ void update_hash_status(struct hash_status* status, const char* mem, euint lengt
         status->nr2+=3;
     }
 }
-euint32 get_hash_value(struct hash_status* status)
+euint32 get_hash_value(struct hash_calc_status* status)
 {
     return (status->nr & 0xfffffff0) | ((status->nr >> 16) & 0x0000000f);
 }

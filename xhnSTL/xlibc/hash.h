@@ -16,14 +16,14 @@
 extern "C"
 {
 #endif
-struct hash_status
+struct hash_calc_status
 {
     euint32 nr;
     euint32 nr2;
 };
-void init_hash_status(struct hash_status* status);
-void update_hash_status(struct hash_status* status, const char* mem, euint length);
-euint32 get_hash_value(struct hash_status* status);
+void init_hash_status(struct hash_calc_status* status);
+void update_hash_status(struct hash_calc_status* status, const char* mem, euint length);
+euint32 get_hash_value(struct hash_calc_status* status);
 euint32 calc_hashnr(const char *key, euint length);
 #ifdef __cplusplus
 }

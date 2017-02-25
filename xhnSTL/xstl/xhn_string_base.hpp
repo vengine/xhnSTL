@@ -448,6 +448,14 @@ public:
         return get_hash();
     }
     
+    inline void update_hash_status( struct hash_status* status ) const {
+        int count = 0;
+        while (m_str[count]) {
+            count++;
+        }
+        update_hash_status(status, (const char*)m_str, count * sizeof(C) );
+    }
+    
     C& operator[] (euint pos) const {
         return m_str[pos];
     }

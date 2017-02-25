@@ -596,7 +596,7 @@ public:
         push_back(tmp);
     }
     euint32 hash_value() const {
-        struct hash_status status;
+        struct hash_calc_status status;
         init_hash_status(&status);
         const_iterator i = begin();
         const_iterator e = end();
@@ -604,6 +604,13 @@ public:
             update_hash_status(&status, (const char*)&*i, sizeof(*i));
         }
         return get_hash_value(&status);
+    }
+    void update_hash_status( struct hash_calc_status* status ) const {
+        const_iterator i = begin();
+        const_iterator e = end();
+        for (; i != e; i++) {
+            update_hash_status(&status, (const char*)&*i, sizeof(*i));
+        }
     }
     vector() {
         euint size = m_get_elem_real_size();

@@ -89,6 +89,14 @@ public:
         }
         return calc_hashnr ( (const char*)m_str, count * sizeof(*m_str) );
     }
+    
+    void update_hash_status( struct hash_calc_status* status ) const {
+        int count = 0;
+        while (m_str[count]) {
+            count++;
+        }
+        ::update_hash_status(status, (const char*)m_str, count );
+    }
 };
     
 inline euint32 _hash ( const static_string& key )

@@ -721,19 +721,83 @@ struct FCharFormat
         template<typename U> static int Test(...);
         static const bool Has = sizeof(Test<T>(0)) == sizeof(char);
     };
+    
+    template<typename T>
+    struct HasUpdateHashStatusMethod
+    {
+        template<typename U, euint32 (U::*)() const> struct SFINAE {};
+        template<typename U> static char Test(SFINAE<U, &U::update_hash_status>*);
+        template<typename U> static int Test(...);
+        static const bool Has = sizeof(Test<T>(0)) == sizeof(char);
+    };
+    
+    struct FUpdateCharPointerHashStatusProc
+    {
+        void operator ()(struct hash_calc_status* status, const char* key) {
+            update_hash_status( status, key, _strlen ( key ) );
+        }
+    };
+    
+    struct FUpdateWCharPointerHashStatusProc
+    {
+        void operator ()(struct hash_calc_status* status, const wchar_t* key) {
+            int count = 0;
+            while (key[count]) {
+                count++;
+            }
+            update_hash_status ( status, (const char*)key, count * sizeof(wchar_t) );
+        }
+    };
+    
+    struct FUpdateVoidPointerHashStatusProc
+    {
+        void operator ()(struct hash_calc_status* status, const void* key) {
+            update_hash_status( status, (const char*)&key, sizeof(void*) );
+        }
+    };
+    
     template <typename T>
-    struct FHashProc
+    struct FUpdateHashStatusSpecProc
+    {
+        void operator ()(struct hash_calc_status* status, const T& key) {
+            key.update_hash_status(status);
+        }
+    };
+    
+    template <typename T>
+    struct FUpdateHashStatusImmeProc
+    {
+        void operator ()(struct hash_calc_status* status, const T& key) {
+            update_hash_status( status, (const char*)&key, sizeof(key) );
+        }
+    };
+    
+    template <typename T>
+    struct FUpdateHashStatusProc
     {
         typedef
         typename conditional<is_pointer<T>::value,
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, FHashCharPointer,
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, FHashWCharPointer, FHashVoidPointer>::type
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, FUpdateCharPointerHashStatusProc,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, FUpdateWCharPointerHashStatusProc, FUpdateVoidPointerHashStatusProc>::type
         >::type,
-        typename conditional<HasHashValueMethod<T>::Has, FHashSpec<T>, FHashImme<T>>::type
-        >::type hashProc;
-        hashProc proc;
+        typename conditional<HasUpdateHashStatusMethod<T>::Has, FUpdateHashStatusSpecProc<T>, FUpdateHashStatusImmeProc<T>>::type
+        >::type updateHashStatusProc;
+        updateHashStatusProc proc;
+        void operator() (struct hash_calc_status* status, const T& v) {
+            proc ( status, v );
+        }
+    };
+    
+    template <typename T>
+    struct FHashProc
+    {
+        FUpdateHashStatusProc<T> updateHashStatusProc;
+        
         euint32 operator() (const T& v) {
-            return proc ( v );
+            hash_calc_status status;
+            init_hash_status(&status);
+            updateHashStatusProc(&status, v);
+            return get_hash_value(&status);
         }
     };
     
