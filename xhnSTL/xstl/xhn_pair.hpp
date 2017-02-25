@@ -110,6 +110,9 @@ public:
                 return false;
         }
     }
+    bool operator == ( const pair &p ) const {
+        return rbtree_node<F>::first == p.first && second == p.second;
+    }
 };
 template<typename F, typename S>
 inline pair<F, S> *to_pair ( F *f )
