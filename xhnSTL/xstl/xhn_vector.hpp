@@ -576,6 +576,20 @@ public:
         else
             return false;
     }
+    bool operator == (const vector& v) const {
+        const_iterator _viter = v.begin();
+        const_iterator _vend = v.end();
+        const_iterator _iter = begin();
+        const_iterator _end = end();
+        for (; _iter != _end && _viter != _vend; _iter++, _viter++) {
+            if (*_iter != *_viter)
+                return false;
+        }
+        if (_iter == _end && _viter == _vend)
+            return true;
+        else
+            return false;
+    }
     vector& append (const vector& v) {
         iterator i = v.begin();
         iterator e = v.end();
@@ -609,7 +623,7 @@ public:
         const_iterator i = begin();
         const_iterator e = end();
         for (; i != e; i++) {
-            update_hash_status(&status, (const char*)&*i, sizeof(*i));
+            ::update_hash_status(status, (const char*)&*i, sizeof(*i));
         }
     }
     vector() {
