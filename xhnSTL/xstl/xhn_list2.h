@@ -133,6 +133,14 @@ public:
             }
         }
     }
+    
+    euint size() const {
+        return m_count;
+    }
+    
+    bool empty() const {
+        return !m_count;
+    }
 };
 }
 

@@ -318,6 +318,11 @@ bool MemPoolNode_empty(MemPoolNode _self)
     return SELF.head == NULL;
 }
 
+bool MemPoolNode_is_from(MemPoolNode _self, void* _ptr)
+{
+    return is_from(_self.self, _ptr);
+}
+
 #define MAX_MEM_POOLS      512
 #define DEFAULT_CHUNK_SIZE 32
 

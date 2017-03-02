@@ -65,9 +65,9 @@ typedef struct _mem_pool_node_
 API_EXPORT MemPoolNode MemPoolNode_new(native_memory_allocator* _alloc, euint _chk_size, euint _num_chks);
 API_EXPORT void MemPoolNode_delete(MemPoolNode _self);
 API_EXPORT void* MemPoolNode_alloc(MemPoolNode _self, bool _is_safe_alloc);
-///API_EXPORT void* MemPoolNode_salloc(MemPoolNode _self);
 API_EXPORT bool MemPoolNode_free(MemPoolNode _self, void* _ptr);
 API_EXPORT bool MemPoolNode_empty(MemPoolNode _self);
+API_EXPORT bool MemPoolNode_is_from(MemPoolNode _self, void* _ptr);
 
 typedef struct mem_pool mem_pool;
 
