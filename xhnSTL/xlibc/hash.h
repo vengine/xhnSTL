@@ -12,15 +12,15 @@
 #define HASH_H
 #include "common.h"
 #include "etypes.h"
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 struct hash_calc_status
 {
     euint32 nr;
     euint32 nr2;
 };
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 void init_hash_status(struct hash_calc_status* status);
 void update_hash_status(struct hash_calc_status* status, const char* mem, euint length);
 euint32 get_hash_value(struct hash_calc_status* status);

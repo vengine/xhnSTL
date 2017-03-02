@@ -599,10 +599,16 @@ public:
         return *this;
     }
     void throw_front(iterator i) {
-        T tmp = *i;
-        erase(i);
-        iterator b = begin();
-        insert(b, tmp);
+        if ((ref_ptr)i.m_ptr > (ref_ptr)m_begin_addr && (ref_ptr)i.m_ptr < (ref_ptr)m_barrier) {
+            T tmp = *i;
+            m_dest(i.m_ptr);
+            iterator prev_iter = i - 1;
+            for (; i != begin(); i--, prev_iter--)
+            {
+                memcpy((void*)i.m_ptr, (void*)prev_iter.m_ptr, m_ele_real_size);
+            }
+            m_ctor( (T*)m_begin_addr, tmp );
+        }
     }
     void throw_back(iterator i) {
         T tmp = *i;
@@ -610,7 +616,7 @@ public:
         push_back(tmp);
     }
     euint32 hash_value() const {
-        struct hash_calc_status status;
+        ::hash_calc_status status;
         init_hash_status(&status);
         const_iterator i = begin();
         const_iterator e = end();
@@ -619,7 +625,7 @@ public:
         }
         return get_hash_value(&status);
     }
-    void update_hash_status( struct hash_calc_status* status ) const {
+    void update_hash_status( ::hash_calc_status* status ) const {
         const_iterator i = begin();
         const_iterator e = end();
         for (; i != e; i++) {

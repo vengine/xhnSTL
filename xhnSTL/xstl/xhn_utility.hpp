@@ -18,6 +18,7 @@
 #include "hash.h"
 #include "emem.h"
 #include "xhn_atomic_operation.hpp"
+
 inline euint _strlen(const char* s)
 {
     euint count = 0;
@@ -722,37 +723,28 @@ struct FCharFormat
         static const bool Has = sizeof(Test<T>(0)) == sizeof(char);
     };
     
-    template<typename T>
-    struct HasUpdateHashStatusMethod
-    {
-        template<typename U, euint32 (U::*)() const> struct SFINAE {};
-        template<typename U> static char Test(SFINAE<U, &U::update_hash_status>*);
-        template<typename U> static int Test(...);
-        static const bool Has = sizeof(Test<T>(0)) == sizeof(char);
-    };
-    
     struct FUpdateCharPointerHashStatusProc
     {
-        void operator ()(struct hash_calc_status* status, const char* key) {
-            update_hash_status( status, key, _strlen ( key ) );
+        void operator ()(::hash_calc_status* status, const char* key) {
+            ::update_hash_status( status, key, _strlen ( key ) );
         }
     };
     
     struct FUpdateWCharPointerHashStatusProc
     {
-        void operator ()(struct hash_calc_status* status, const wchar_t* key) {
+        void operator ()(::hash_calc_status* status, const wchar_t* key) {
             int count = 0;
             while (key[count]) {
                 count++;
             }
-            update_hash_status ( status, (const char*)key, count * sizeof(wchar_t) );
+            ::update_hash_status ( status, (const char*)key, count * sizeof(wchar_t) );
         }
     };
     
     struct FUpdateVoidPointerHashStatusProc
     {
-        void operator ()(struct hash_calc_status* status, const void* key) {
-            update_hash_status( status, (const char*)&key, sizeof(void*) );
+        void operator ()(::hash_calc_status* status, const void* key) {
+            ::update_hash_status( status, (const char*)&key, sizeof(void*) );
         }
     };
     
@@ -767,8 +759,8 @@ struct FCharFormat
     template <typename T>
     struct FUpdateHashStatusImmeProc
     {
-        void operator ()(struct hash_calc_status* status, const T& key) {
-            update_hash_status( status, (const char*)&key, sizeof(key) );
+        void operator ()(::hash_calc_status* status, const T& key) {
+            ::update_hash_status( status, (const char*)&key, sizeof(key) );
         }
     };
     
@@ -780,7 +772,7 @@ struct FCharFormat
         typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, FUpdateCharPointerHashStatusProc,
         typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, FUpdateWCharPointerHashStatusProc, FUpdateVoidPointerHashStatusProc>::type
         >::type,
-        typename conditional<HasUpdateHashStatusMethod<T>::Has, FUpdateHashStatusSpecProc<T>, FUpdateHashStatusImmeProc<T>>::type
+        typename conditional<HasHashValueMethod<T>::Has, FUpdateHashStatusSpecProc<T>, FUpdateHashStatusImmeProc<T>>::type
         >::type updateHashStatusProc;
         updateHashStatusProc proc;
         void operator() (struct hash_calc_status* status, const T& v) {
@@ -794,7 +786,7 @@ struct FCharFormat
         FUpdateHashStatusProc<T> updateHashStatusProc;
         
         euint32 operator() (const T& v) {
-            hash_calc_status status;
+            ::hash_calc_status status;
             init_hash_status(&status);
             updateHashStatusProc(&status, v);
             return get_hash_value(&status);

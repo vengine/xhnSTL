@@ -64,11 +64,16 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
     intArray.push_back(0);
     intArray.push_back(1);
     intArray.push_back(2);
+    intArray.push_back(3);
+    intArray.push_back(4);
+    intArray.push_back(5);
     xhn::Lambda<void(int&, bool*)> proc([](int& i, bool* stop){
         printf("%d\n", i);
         *stop = true;
     });
     intArray.for_each(proc);
+    
+    intArray.throw_front(intArray.begin() + 2);
     
     for (auto i : intArray) {
         printf("for %d\n", i);

@@ -116,7 +116,7 @@ public:
     bool operator != ( const pair &p ) const {
         return rbtree_node<F>::first != p.first || second != p.second;
     }
-    inline void update_hash_status( struct hash_status* status ) const {
+    inline void update_hash_status( struct hash_calc_status* status ) const {
         update_hash_status(status, (const char*)&rbtree_node<F>::first, sizeof(rbtree_node<F>::first) );
         update_hash_status(status, (const char*)&second, sizeof(second) );
     }

@@ -90,7 +90,7 @@ public:
         return calc_hashnr ( (const char*)m_str, count * sizeof(*m_str) );
     }
     
-    void update_hash_status( struct hash_calc_status* status ) const {
+    void update_hash_status( ::hash_calc_status* status ) const {
         int count = 0;
         while (m_str[count]) {
             count++;
