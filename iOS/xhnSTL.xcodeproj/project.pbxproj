@@ -135,6 +135,8 @@
 		68ADE10B1BA71B0E0013C025 /* xhnSTLTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 68ADE10A1BA71B0E0013C025 /* xhnSTLTests.m */; };
 		B10884C61DBEE96E00126C43 /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B10884C41DBEE96E00126C43 /* xhn_unique_identifier.cpp */; };
 		B10884C71DBEE96E00126C43 /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B116FACB1E68241C0064C17C /* xhn_open_addressing_hash_table.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B116FACA1E68241C0064C17C /* xhn_open_addressing_hash_table.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B116FACD1E68244F0064C17C /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B116FACC1E68244F0064C17C /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -279,6 +281,8 @@
 		68ADE10A1BA71B0E0013C025 /* xhnSTLTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xhnSTLTests.m; sourceTree = "<group>"; };
 		B10884C41DBEE96E00126C43 /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
 		B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
+		B116FACA1E68241C0064C17C /* xhn_open_addressing_hash_table.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_open_addressing_hash_table.hpp; sourceTree = "<group>"; };
+		B116FACC1E68244F0064C17C /* xhn_singly_linked_list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_singly_linked_list.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -362,6 +366,8 @@
 		68245B481BC9D7680006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B116FACC1E68244F0064C17C /* xhn_singly_linked_list.hpp */,
+				B116FACA1E68241C0064C17C /* xhn_open_addressing_hash_table.hpp */,
 				B10884C41DBEE96E00126C43 /* xhn_unique_identifier.cpp */,
 				B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */,
 				68245B491BC9D7680006E99D /* exception.cpp */,
@@ -520,6 +526,7 @@
 				68245C151BC9D7680006E99D /* xhn_routine_pool.hpp in Headers */,
 				68245BEB1BC9D7680006E99D /* xhn_garbage_collector.hpp in Headers */,
 				68245BE31BC9D7680006E99D /* xhn_exception.hpp in Headers */,
+				B116FACD1E68244F0064C17C /* xhn_singly_linked_list.hpp in Headers */,
 				68245BC41BC9D7680006E99D /* rwbuffer.h in Headers */,
 				68245BD31BC9D7680006E99D /* rtti.hpp in Headers */,
 				68245BA51BC9D7680006E99D /* ObjCPropertys.h in Headers */,
@@ -579,6 +586,7 @@
 				68245C0D1BC9D7680006E99D /* xhn_pair.hpp in Headers */,
 				68245BF11BC9D7680006E99D /* xhn_gc_string.h in Headers */,
 				68245BC71BC9D7680006E99D /* spin_lock.h in Headers */,
+				B116FACB1E68241C0064C17C /* xhn_open_addressing_hash_table.hpp in Headers */,
 				68245BFB1BC9D7680006E99D /* xhn_lambda.hpp in Headers */,
 				68245C161BC9D7680006E99D /* xhn_set.hpp in Headers */,
 				68245C281BC9D7680006E99D /* xhn_vector.hpp in Headers */,
