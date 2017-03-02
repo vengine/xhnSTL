@@ -17,6 +17,7 @@
 #include "etypes.h"
 #include "emem.h"
 
+#include "xhn_memory.hpp"
 #include "xhn_list.hpp"
 #include "xhn_vector.hpp"
 
@@ -73,7 +74,7 @@ public:
     }
 };
     
-class fixed_memory_pool
+class fixed_memory_pool : public MemObject
 {
 private:
     MemPoolNode m_pool;
@@ -125,12 +126,6 @@ public:
     euint chunk_size() const {
         return m_chunk_size;
     }
-};
-    
-class allocator_layer
-{
-public:
-    xhn::vector<fixed_memory_pool*> m_mem_pools;
 };
 
 }
