@@ -18,6 +18,7 @@
 #include "xhn_singly_linked_list.hpp"
 #include "xhn_memory.hpp"
 #include "xhn_utility.hpp"
+#include <new>
 
 namespace xhn
 {
