@@ -137,6 +137,8 @@
 		B10884C71DBEE96E00126C43 /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B116FACB1E68241C0064C17C /* xhn_open_addressing_hash_table.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B116FACA1E68241C0064C17C /* xhn_open_addressing_hash_table.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B116FACD1E68244F0064C17C /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B116FACC1E68244F0064C17C /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B11892761E6BEA8900AD5279 /* cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = B11892741E6BEA8900AD5279 /* cpu.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B11892771E6BEA8900AD5279 /* cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = B11892751E6BEA8900AD5279 /* cpu.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -283,6 +285,8 @@
 		B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B116FACA1E68241C0064C17C /* xhn_open_addressing_hash_table.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_open_addressing_hash_table.hpp; sourceTree = "<group>"; };
 		B116FACC1E68244F0064C17C /* xhn_singly_linked_list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_singly_linked_list.hpp; sourceTree = "<group>"; };
+		B11892741E6BEA8900AD5279 /* cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpu.h; sourceTree = "<group>"; };
+		B11892751E6BEA8900AD5279 /* cpu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -323,6 +327,8 @@
 		68245B221BC9D7680006E99D /* xlibc */ = {
 			isa = PBXGroup;
 			children = (
+				B11892741E6BEA8900AD5279 /* cpu.h */,
+				B11892751E6BEA8900AD5279 /* cpu.c */,
 				68245B231BC9D7680006E99D /* array.h */,
 				68245B251BC9D7680006E99D /* comparison_algorithm.h */,
 				68245B261BC9D7680006E99D /* container.h */,
@@ -570,6 +576,7 @@
 				68245BB01BC9D7680006E99D /* eassert.h in Headers */,
 				68245C061BC9D7680006E99D /* xhn_memory.hpp in Headers */,
 				68245C181BC9D7680006E99D /* xhn_smart_ptr.hpp in Headers */,
+				B11892761E6BEA8900AD5279 /* cpu.h in Headers */,
 				68245BE11BC9D7680006E99D /* xhn_duplicate_finder.h in Headers */,
 				68245BAE1BC9D7680006E99D /* container.h in Headers */,
 				68245C031BC9D7680006E99D /* xhn_lock.hpp in Headers */,
@@ -730,6 +737,7 @@
 				68245BC11BC9D7680006E99D /* prime.c in Sources */,
 				68245C0E1BC9D7680006E99D /* xhn_path_tree.cpp in Sources */,
 				68245C141BC9D7680006E99D /* xhn_routine_pool.cpp in Sources */,
+				B11892771E6BEA8900AD5279 /* cpu.c in Sources */,
 				68245C221BC9D7680006E99D /* xhn_thread_map.cpp in Sources */,
 				68245BA81BC9D7680006E99D /* ObjCString.mm in Sources */,
 				68245BD21BC9D7680006E99D /* rtti.cpp in Sources */,
