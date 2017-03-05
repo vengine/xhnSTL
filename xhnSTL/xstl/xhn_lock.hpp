@@ -295,87 +295,6 @@ public:
     Instance Lock();
 };
 
-    /// \brief RecursiveSpinObject
-    ///
-    /// 可递归的自旋物体
-
-template <typename T>
-class RecursiveSpinObject : public RefObject
-{
-    friend class Instance;
-private:
-    ELock m_interlock;
-    volatile pthread_t m_tid;
-    ELock m_lock;
-    T m_data;
-public:
-    class Instance
-    {
-        friend class RecursiveSpinObject;
-    private:
-        RecursiveSpinObject* m_prototype;
-        inline Instance(RecursiveSpinObject* prototype)
-        : m_prototype(prototype)
-        {}
-    public:
-        inline Instance(const Instance& inst)
-        : m_prototype(inst.m_prototype)
-        {}
-        ~Instance() {
-            ELock_lock(&m_prototype->m_interlock);
-            if(!AtomicDecrement(&m_prototype->m_lock)) {
-                m_prototype->m_tid = NULL;
-            }
-            ELock_unlock(&m_prototype->m_interlock);
-        }
-        inline T* operator->() {
-            return &m_prototype->m_data;
-        }
-        inline const T* operator->() const {
-            return &m_prototype->m_data;
-        }
-    };
-    RecursiveSpinObject()
-    : m_tid(nullptr)
-    {
-        ELock_Init(&m_interlock);
-        ELock_Init(&m_lock);
-    }
-    template <typename ...ARGS>
-    RecursiveSpinObject(ARGS... args)
-    : m_tid(nullptr)
-    , m_data(args...)
-    {
-        ELock_Init(&m_interlock);
-        ELock_Init(&m_lock);
-    }
-    Instance Lock() {
-        ELock_lock(&m_interlock);
-        if (!m_tid) {
-            m_tid = pthread_self();
-        }
-        else {
-            if (m_tid != pthread_self()) {
-                /// 这里先解锁了
-                ELock_unlock(&m_interlock);
-                ///
-                while (1) {
-                    ELock_lock(&m_interlock);
-                    if (!m_tid) {
-                        /// break以后实际上是锁住的
-                        m_tid = pthread_self();
-                        break;
-                    }
-                    ELock_unlock(&m_interlock);
-                }
-            }
-        }
-        AtomicIncrement(&m_lock);
-        ELock_unlock(&m_interlock);
-        return Instance(this);
-    }
-};
-
     /// \brief MutexObject
     ///
     /// 互斥物体
@@ -434,6 +353,68 @@ public:
         return Instance(&m_lock, &m_data);
     }
 };
+    
+template<typename T>
+class RecursiveMutexObject : public RefObject
+{
+public:
+    mutable pthread_mutex_t m_lock;
+    T m_data;
+public:
+    class Instance
+    {
+        friend class RecursiveMutexObject;
+    private:
+        pthread_mutex_t* m_prototype;
+        T* m_data;
+        inline Instance(pthread_mutex_t* lock, T* data)
+        : m_prototype(lock)
+        , m_data(data)
+        {}
+    public:
+        inline Instance(const Instance& inst)
+        : m_prototype(inst.m_prototype)
+        , m_data(inst.m_data)
+        {}
+        inline ~Instance()
+        {
+            pthread_mutex_unlock(m_prototype);
+        }
+        inline T* operator ->() {
+            return m_data;
+        }
+        inline const T* operator->() const {
+            return m_data;
+        }
+    };
+public:
+    inline RecursiveMutexObject()
+    {
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutex_init(&m_lock, &attr);
+    }
+    template <typename ...ARGS>
+    RecursiveMutexObject(ARGS... args)
+    : m_data(args...)
+    {
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutex_init(&m_lock, &attr);
+    }
+    inline ~RecursiveMutexObject()
+    {
+        pthread_mutex_destroy(&m_lock);
+    }
+    inline Instance Lock()
+    {
+        pthread_mutex_lock(&m_lock);
+        return Instance(&m_lock, &m_data);
+    }
+};
+    
 }
 
 /// \brief AutoMutexLock
