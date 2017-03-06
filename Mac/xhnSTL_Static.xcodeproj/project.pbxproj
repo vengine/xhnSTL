@@ -138,6 +138,8 @@
 		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; };
 		B1A89DB31CAF9B7000358DD4 /* xhn_open_addressing_hash_table.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB11CAF9B7000358DD4 /* xhn_open_addressing_hash_table.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1A89DB71CAF9F2700358DD4 /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1D0B56D1E6D036B004D1206 /* cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = B1D0B56B1E6D036B004D1206 /* cpu.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1D0B56E1E6D036B004D1206 /* cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = B1D0B56C1E6D036B004D1206 /* cpu.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -285,6 +287,8 @@
 		B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
 		B1A89DB11CAF9B7000358DD4 /* xhn_open_addressing_hash_table.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_open_addressing_hash_table.hpp; sourceTree = "<group>"; };
 		B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_singly_linked_list.hpp; sourceTree = "<group>"; };
+		B1D0B56B1E6D036B004D1206 /* cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpu.h; sourceTree = "<group>"; };
+		B1D0B56C1E6D036B004D1206 /* cpu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +331,8 @@
 		68245C331BC9D8F80006E99D /* xlibc */ = {
 			isa = PBXGroup;
 			children = (
+				B1D0B56B1E6D036B004D1206 /* cpu.h */,
+				B1D0B56C1E6D036B004D1206 /* cpu.c */,
 				68245C341BC9D8F80006E99D /* array.h */,
 				68245C361BC9D8F80006E99D /* comparison_algorithm.h */,
 				68245C371BC9D8F80006E99D /* container.h */,
@@ -533,6 +539,7 @@
 				68245CF61BC9D8F90006E99D /* xhn_file_stream.hpp in Headers */,
 				68245D421BC9E8F60006E99D /* etypes.h in Headers */,
 				68245CEA1BC9D8F90006E99D /* xhn_config.hpp in Headers */,
+				B1D0B56D1E6D036B004D1206 /* cpu.h in Headers */,
 				68245D341BC9D8F90006E99D /* xhn_thread_map.hpp in Headers */,
 				68245CDC1BC9D8F90006E99D /* static_string.h in Headers */,
 				68245CE81BC9D8F90006E99D /* xhn_btree.hpp in Headers */,
@@ -715,6 +722,7 @@
 				68245CFB1BC9D8F90006E99D /* xhn_garbage_collector.cpp in Sources */,
 				68245CD21BC9D8F90006E99D /* prime.c in Sources */,
 				68245D1F1BC9D8F90006E99D /* xhn_path_tree.cpp in Sources */,
+				B1D0B56E1E6D036B004D1206 /* cpu.c in Sources */,
 				68245D251BC9D8F90006E99D /* xhn_routine_pool.cpp in Sources */,
 				68245D331BC9D8F90006E99D /* xhn_thread_map.cpp in Sources */,
 				68245CB91BC9D8F90006E99D /* ObjCString.mm in Sources */,
