@@ -56,6 +56,7 @@ public:
 	inline Instance Lock() const
 	{
 		pthread_mutex_lock(&m_lock);
+        MemBarrier;
 		return Instance(&m_lock);
 	}
 };
@@ -350,6 +351,7 @@ public:
     inline Instance Lock()
     {
         pthread_mutex_lock(&m_lock);
+        MemBarrier;
         return Instance(&m_lock, &m_data);
     }
 };
@@ -411,6 +413,7 @@ public:
     inline Instance Lock()
     {
         pthread_mutex_lock(&m_lock);
+        MemBarrier;
         return Instance(&m_lock, &m_data);
     }
 };
