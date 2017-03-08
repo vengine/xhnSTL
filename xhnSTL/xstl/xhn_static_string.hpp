@@ -25,6 +25,8 @@ private:
     static hash_set<string>* s_static_string_set;
 private:
     const char *m_str;
+    euint32 m_hash_value;
+    euint32 m_size;
 public:
     static const static_string empty_string;
 public:
@@ -33,8 +35,10 @@ public:
         if (!s_static_string_set) {
             s_static_string_set = VNEW hash_set<string>;
         }
-
-		euint32 hash_value = calc_hashnr ( str, strlen ( str ) );
+        
+        m_size = (euint32)strlen(str);
+		euint32 hash_value = calc_hashnr ( str, m_size );
+        m_hash_value = hash_value;
 		xhn::hash_set<string>::bucket& b = s_static_string_set->get_bucket(hash_value);
 		{
 			SpinLock::Instance inst = b.m_lock.Lock();
@@ -54,6 +58,8 @@ public:
     }
     static_string ( const static_string& str ) {
         m_str = str.m_str;
+        m_hash_value = str.m_hash_value;
+        m_size = str.m_size;
     }
     static_string () {
         if (!s_static_string_set) {
@@ -62,6 +68,8 @@ public:
         string value ( "" );
         const string &v = s_static_string_set->insert ( value );
         m_str = v.c_str();
+        m_hash_value = 0;
+        m_size = 0;
     }
     const char *c_str() const {
         return m_str;
@@ -79,23 +87,21 @@ public:
         return m_str != str.m_str;
     }
     euint size() const {
-        return strlen(m_str);
+        return m_size;
     }
     euint32 hash_value() const
     {
-        int count = 0;
-        while (m_str[count]) {
-            count++;
-        }
-        return calc_hashnr ( (const char*)m_str, count * sizeof(*m_str) );
+        return m_hash_value;
+    }
+    const static_string& operator = (const static_string& str) {
+        m_str = str.m_str;
+        m_hash_value = str.m_hash_value;
+        m_size = str.m_size;
+        return *this;
     }
     
     void update_hash_status( ::hash_calc_status* status ) const {
-        int count = 0;
-        while (m_str[count]) {
-            count++;
-        }
-        ::update_hash_status(status, (const char*)m_str, count );
+        ::update_hash_status(status, (const char*)m_str, m_size );
     }
 };
     
