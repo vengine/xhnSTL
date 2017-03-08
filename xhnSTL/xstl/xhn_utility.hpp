@@ -679,13 +679,13 @@ struct FCharFormat
     
     struct FHashCharPointer
     {
-        euint32 operator ()(const char* key) {
+        euint32 operator ()(const char* key) const {
             return calc_hashnr ( key, _strlen ( key ) );
         }
     };
     struct FHashWCharPointer
     {
-        euint32 operator ()(const wchar_t* key) {
+        euint32 operator ()(const wchar_t* key) const {
             int count = 0;
             while (key[count]) {
                 count++;
@@ -695,21 +695,21 @@ struct FCharFormat
     };
     struct FHashVoidPointer
     {
-        euint32 operator ()(const void* key) {
+        euint32 operator ()(const void* key) const {
             return calc_hashnr ( (const char*)&key, sizeof(void*) );
         }
     };
     template <typename T>
     struct FHashSpec
     {
-        euint32 operator ()(const T& key) {
+        euint32 operator ()(const T& key) const {
             return key.hash_value();
         }
     };
     template <typename T>
     struct FHashImme
     {
-        euint32 operator ()(const T& key) {
+        euint32 operator ()(const T& key) const {
             return (euint32)key;
         }
     };
@@ -725,14 +725,14 @@ struct FCharFormat
     
     struct FUpdateCharPointerHashStatusProc
     {
-        void operator ()(::hash_calc_status* status, const char* key) {
+        void operator ()(::hash_calc_status* status, const char* key) const {
             ::update_hash_status( status, key, _strlen ( key ) );
         }
     };
     
     struct FUpdateWCharPointerHashStatusProc
     {
-        void operator ()(::hash_calc_status* status, const wchar_t* key) {
+        void operator ()(::hash_calc_status* status, const wchar_t* key) const {
             int count = 0;
             while (key[count]) {
                 count++;
@@ -743,7 +743,7 @@ struct FCharFormat
     
     struct FUpdateVoidPointerHashStatusProc
     {
-        void operator ()(::hash_calc_status* status, const void* key) {
+        void operator ()(::hash_calc_status* status, const void* key) const {
             ::update_hash_status( status, (const char*)&key, sizeof(void*) );
         }
     };
@@ -751,7 +751,7 @@ struct FCharFormat
     template <typename T>
     struct FUpdateHashStatusSpecProc
     {
-        void operator ()(struct hash_calc_status* status, const T& key) {
+        void operator ()(struct hash_calc_status* status, const T& key) const {
             key.update_hash_status(status);
         }
     };
@@ -759,7 +759,7 @@ struct FCharFormat
     template <typename T>
     struct FUpdateHashStatusImmeProc
     {
-        void operator ()(::hash_calc_status* status, const T& key) {
+        void operator ()(::hash_calc_status* status, const T& key) const {
             ::update_hash_status( status, (const char*)&key, sizeof(key) );
         }
     };
@@ -775,7 +775,7 @@ struct FCharFormat
         typename conditional<HasHashValueMethod<T>::Has, FUpdateHashStatusSpecProc<T>, FUpdateHashStatusImmeProc<T>>::type
         >::type updateHashStatusProc;
         updateHashStatusProc proc;
-        void operator() (struct hash_calc_status* status, const T& v) {
+        void operator() (struct hash_calc_status* status, const T& v) const {
             proc ( status, v );
         }
     };
@@ -785,7 +785,7 @@ struct FCharFormat
     {
         FUpdateHashStatusProc<T> updateHashStatusProc;
         
-        euint32 operator() (const T& v) {
+        euint32 operator() (const T& v) const {
             ::hash_calc_status status;
             init_hash_status(&status);
             updateHashStatusProc(&status, v);
@@ -795,13 +795,13 @@ struct FCharFormat
     
     struct FEqualCharPointer
     {
-        bool operator ()(const char* a, const char* b) {
+        bool operator ()(const char* a, const char* b) const {
             return strcmp(a, b);
         }
     };
     struct FEqualWCharPointer
     {
-        bool operator ()(const wchar_t* a, const wchar_t* b) {
+        bool operator ()(const wchar_t* a, const wchar_t* b) const {
             int count = 0;
             while (a[count] && b[count]) {
                 if (a[count] != b[count])
@@ -816,21 +816,21 @@ struct FCharFormat
     };
     struct FEqualVoidPointer
     {
-        bool operator ()(const void* a, const void* b) {
+        bool operator ()(const void* a, const void* b) const {
             return a == b;
         }
     };
     template <typename T>
     struct FEqualSpec
     {
-        bool operator ()(const T& a, const T& b) {
+        bool operator ()(const T& a, const T& b) const {
             return a.equal(b);
         }
     };
     template <typename T>
     struct FEqualImme
     {
-        bool operator ()(const T& a, const T& b) {
+        bool operator ()(const T& a, const T& b) const {
             return a == b;
         }
     };
@@ -854,7 +854,7 @@ struct FCharFormat
         typename conditional<HasEqualValueMethod<T>::Has, FEqualSpec<T>, FEqualImme<T>>::type
         >::type equalProc;
         equalProc proc;
-        bool operator() (const T& a, const T& b) {
+        bool operator() (const T& a, const T& b) const {
             return proc ( a, b );
         }
     };

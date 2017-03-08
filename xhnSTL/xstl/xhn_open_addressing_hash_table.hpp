@@ -152,7 +152,7 @@ namespace xhn
             m_num_buckets = new_num_buckets;
         }
         
-        hash_node<K, V>* find_hash_node ( const K &key ) {
+        hash_node<K, V>* find_hash_node ( const K &key ) const {
             euint32 hash_value = m_hash_proc(key);
             euint32 ukey = hash_value & m_hash_mask;
             singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey];
@@ -174,7 +174,7 @@ namespace xhn
                 m_bucket_allocator.construct(&m_buckets[i]);
             }
         }
-        V* find ( const K &key ) {
+        V* find ( const K &key ) const {
             hash_node<K, V>* node = find_hash_node( key );
             if (node) {
                 return &node->m_value;
