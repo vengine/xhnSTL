@@ -783,13 +783,16 @@ struct FCharFormat
     template <typename T>
     struct FHashProc
     {
-        FUpdateHashStatusProc<T> updateHashStatusProc;
-        
+        typedef
+        typename conditional<is_pointer<T>::value,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, FHashCharPointer,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, FHashWCharPointer, FHashVoidPointer>::type
+        >::type,
+        typename conditional<HasHashValueMethod<T>::Has, FHashSpec<T>, FHashImme<T>>::type
+        >::type hashProc;
+        hashProc proc;
         euint32 operator() (const T& v) const {
-            ::hash_calc_status status;
-            init_hash_status(&status);
-            updateHashStatusProc(&status, v);
-            return get_hash_value(&status);
+            return proc ( v );
         }
     };
     
