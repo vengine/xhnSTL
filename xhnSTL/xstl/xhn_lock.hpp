@@ -217,8 +217,8 @@ template <typename T>
 class SpinObject : public RefObject
 {
 private:
-    ELock m_lock;
-    T m_data;
+    mutable ELock m_lock;
+    mutable T m_data;
 public:
     class Instance
     {
@@ -246,12 +246,23 @@ public:
         inline const T* operator->() const {
             return m_data;
         }
+        inline T& operator*() {
+            return *m_data;
+        }
+        inline const T& operator*() const {
+            return *m_data;
+        }
     };
 public:
     inline SpinObject()
     : m_lock(0)
     {}
     inline Instance Lock()
+    {
+        ELock_lock(&m_lock);
+        return Instance(&m_lock, &m_data);
+    }
+    inline Instance Lock() const
     {
         ELock_lock(&m_lock);
         return Instance(&m_lock, &m_data);
