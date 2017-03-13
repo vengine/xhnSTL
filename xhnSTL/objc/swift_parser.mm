@@ -646,6 +646,10 @@ namespace xhn {
         bridgeFile += "    SceneNodeAgent* agentID = (__bridge id)agent;\n";
         bridgeFile += "    [agentID update:elapsedTime];\n";
         bridgeFile += "}\n";
+        bridgeFile += "void SceneNodeAgentGotoState(void* agent, const char* nextStateName) {\n";
+        bridgeFile += "    SceneNodeAgent* agentID = (__bridge id)agent;\n";
+        bridgeFile += "    NSString* _Nonnull strNextStateName = [NSString stringWithUTF8String:nextStateName];\n";
+        bridgeFile += "    [agentID gotoState:strNextStateName];";
         bridgeFile += "void* CreateActorAgent(const char* type, void* renderSys, void* actor) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
         bridgeFile += "    CreateActorAgentProc* proc = s_createActorAgentProcDic[strType];\n";
