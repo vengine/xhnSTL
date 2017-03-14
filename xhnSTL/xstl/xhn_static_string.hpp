@@ -17,91 +17,100 @@
 #include "xhn_hash_set.hpp"
 #include "xhn_string.hpp"
 #include "xhn_utility.hpp"
+#include "xhn_pair.hpp"
 namespace xhn
 {
+    
+struct string_info
+{
+    euint32 m_hash_value;
+    euint32 m_size;
+    inline bool operator == (const string_info info) const {
+        return m_hash_value == info.m_hash_value &&
+        m_size == info.m_size;
+    }
+    inline bool operator != (const string_info info) const {
+        return m_hash_value != info.m_hash_value ||
+        m_size != info.m_size;
+    }
+};
+    
 class static_string
 {
 private:
-    static hash_set<string>* s_static_string_set;
+    static hash_set< pair<string, string_info> >* s_static_string_set;
 private:
-    const char *m_str;
-    euint32 m_hash_value;
-    euint32 m_size;
+    pair<string, string_info>* m_entry;
 public:
     static const static_string empty_string;
 public:
 	static void dest();
     static_string ( const char *str ) {
         if (!s_static_string_set) {
-            s_static_string_set = VNEW hash_set<string>;
+            s_static_string_set = VNEW hash_set< pair<string, string_info> >;
         }
         
-        m_size = (euint32)strlen(str);
-		euint32 hash_value = calc_hashnr ( str, m_size );
-        m_hash_value = hash_value;
-		xhn::hash_set<string>::bucket& b = s_static_string_set->get_bucket(hash_value);
+        euint32 size = (euint32)strlen(str);
+		euint32 hash_value = calc_hashnr ( str, size );
+        string_info info = { hash_value, size };
+        pair< string, string_info > entry = make_pair(string(str), info);
+		hash_set<pair<string, string_info>>::bucket& b = s_static_string_set->get_bucket(_hash(entry));
 		{
 			SpinLock::Instance inst = b.m_lock.Lock();
-			xhn::list<xhn::string>::iterator iter = b.begin();
-			xhn::list<xhn::string>::iterator end = b.end();
+			list<pair<string, string_info>>::iterator iter = b.begin();
+			list<pair<string, string_info>>::iterator end = b.end();
 			for (; iter != end; iter++) {
-				if (strcmp(iter->c_str(),str) == 0) {
-					m_str = iter->c_str();
+				if (strcmp(iter->first.c_str(),str) == 0) {
+                    m_entry = &*iter;
 					return;
 				}
 			}
 		}
 
-		string value ( str );
-		const string &v = s_static_string_set->insert ( value );
-		m_str = v.c_str();
+		const pair<string, string_info> &v = s_static_string_set->insert ( entry );
+        m_entry = (pair<string, string_info>*)&v;
     }
     static_string ( const static_string& str ) {
-        m_str = str.m_str;
-        m_hash_value = str.m_hash_value;
-        m_size = str.m_size;
+        m_entry = str.m_entry;
     }
     static_string () {
         if (!s_static_string_set) {
-            s_static_string_set = VNEW hash_set<string>;
+            s_static_string_set = VNEW hash_set< pair<string, string_info> >;
         }
         string value ( "" );
-        const string &v = s_static_string_set->insert ( value );
-        m_str = v.c_str();
-        m_hash_value = 0;
-        m_size = 0;
+        string_info info = { 0, 0, };
+        const pair<string, string_info> &v = s_static_string_set->insert ( make_pair(value, info) );
+        m_entry = (pair<string, string_info>*)&v;
     }
     const char *c_str() const {
-        return m_str;
+        return m_entry->first.c_str();
     }
     bool operator < ( const static_string &str ) const {
-        return m_str < str.m_str;
+        return m_entry < str.m_entry;
     }
     bool operator > ( const static_string &str ) const {
-        return m_str > str.m_str;
+        return m_entry > str.m_entry;
     }
     bool operator == ( const static_string &str ) const {
-        return m_str == str.m_str;
+        return m_entry == str.m_entry;
     }
     bool operator != ( const static_string &str ) const {
-        return m_str != str.m_str;
+        return m_entry != str.m_entry;
     }
     euint size() const {
-        return m_size;
+        return m_entry->second.m_size;
     }
     euint32 hash_value() const
     {
-        return m_hash_value;
+        return m_entry->second.m_hash_value;
     }
     const static_string& operator = (const static_string& str) {
-        m_str = str.m_str;
-        m_hash_value = str.m_hash_value;
-        m_size = str.m_size;
+        m_entry = str.m_entry;
         return *this;
     }
     
     void update_hash_status( ::hash_calc_status* status ) const {
-        ::update_hash_status(status, (const char*)m_str, m_size );
+        ::update_hash_status(status, (const char*)m_entry->first.c_str(), m_entry->second.m_size );
     }
 };
     

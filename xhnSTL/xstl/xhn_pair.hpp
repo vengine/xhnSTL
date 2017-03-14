@@ -18,6 +18,8 @@
 #include "emem.h"
 #include "xhn_memory.hpp"
 #include <new>
+#include "hash.h"
+#include "xhn_utility.hpp"
 namespace xhn
 {
 enum node_color {
@@ -78,11 +80,15 @@ inline rbtree_node<F> *to_rbtree_node ( F *f )
 {
     return ( rbtree_node<F> * ) ( ( ( char * ) f ) - ( esint ) ( & ( ( rbtree_node<F> * ) 0 )->first ) );
 }
-template<typename F, typename S>
+template<typename F, typename S,
+    typename UPDATE_FIRST_HASH_STATUS_PROC = FUpdateHashStatusProc<F>,
+    typename UPDATE_SECOND_HASH_STATUS_PROC = FUpdateHashStatusProc<S> >
 class pair : public rbtree_node<F>
 {
 public:
     ALIGN_FLAG ( 16 ) S second;
+    UPDATE_FIRST_HASH_STATUS_PROC first_hash_proc;
+    UPDATE_SECOND_HASH_STATUS_PROC second_hash_proc;
     pair ( const F &f, const S &s )
         : rbtree_node<F> ( f )
         , second ( s )
@@ -116,9 +122,15 @@ public:
     bool operator != ( const pair &p ) const {
         return rbtree_node<F>::first != p.first || second != p.second;
     }
+    inline euint32 hash_value() const {
+        struct hash_calc_status status;
+        ::init_hash_status(&status);
+        update_hash_status(&status);
+        return ::get_hash_value(&status);
+    }
     inline void update_hash_status( struct hash_calc_status* status ) const {
-        update_hash_status(status, (const char*)&rbtree_node<F>::first, sizeof(rbtree_node<F>::first) );
-        update_hash_status(status, (const char*)&second, sizeof(second) );
+        first_hash_proc(status, rbtree_node<F>::first);
+        second_hash_proc(status, second);
     }
 };
 template<typename F, typename S>
@@ -130,6 +142,11 @@ template<typename F, typename S>
 pair<F, S> make_pair ( const F &f, const S &s )
 {
     return pair<F, S> ( f, s );
+}
+template<typename F, typename S>
+inline euint32 _hash ( const pair<F, S>& pair )
+{
+    return pair.hash_value();
 }
 }
 
