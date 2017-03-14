@@ -286,6 +286,17 @@ struct SinglyLinkedListNode
 }
  **/
 
+#include <xhnSTL/xhn_static_string.hpp>
+- (void) testStaticString
+{
+    xhn::static_string aaa("aaa");
+    xhn::static_string bbb("bbb");
+    printf("aaa hash %d, %p\n", aaa.hash_value(), aaa.c_str());
+    printf("bbb hash %d, %p\n", bbb.hash_value(), bbb.c_str());
+    xhn::static_string aaa2("aaa");
+    printf("aaa2 hash %d, %p\n", aaa2.hash_value(), aaa2.c_str());
+}
+
 - (void)testPerformanceExample {
     // This is an example of a performance test case.
     [self measureBlock:^{
