@@ -181,10 +181,21 @@ namespace xhn
                 m_bucket_allocator.destroy(&m_buckets[i]);
             }
             m_bucket_allocator.deallocate(m_buckets, m_num_buckets);
+            
+            m_hash_mask = 0x7;
+            m_num_buckets = 8;
+            m_buckets = m_bucket_allocator.allocate(m_num_buckets);
+            for (euint32 i = 0; i < m_num_buckets; i++) {
+                m_bucket_allocator.construct(&m_buckets[i]);
+            }
         }
         ~open_addressing_hash_table()
         {
-            clear();
+            for (euint32 i = 0; i < m_num_buckets; i++) {
+                destroy_hash_node_list(&m_buckets[i]);
+                m_bucket_allocator.destroy(&m_buckets[i]);
+            }
+            m_bucket_allocator.deallocate(m_buckets, m_num_buckets);
         }
         V* find ( const K &key ) const {
             hash_node<K, V>* node = find_hash_node( key );
