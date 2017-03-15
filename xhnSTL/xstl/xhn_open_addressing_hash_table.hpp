@@ -114,7 +114,7 @@ namespace xhn
                 hash_node<K, V>* deleted_node = current_node;
                 current_node = hash_node_list->remove(current_node);
                 m_node_allocator.destroy(deleted_node);
-                m_node_allocator.deallocate(deleted_node);
+                m_node_allocator.deallocate(deleted_node, 1);
             }
         }
         void rebuild()
@@ -173,6 +173,18 @@ namespace xhn
             for (euint32 i = 0; i < m_num_buckets; i++) {
                 m_bucket_allocator.construct(&m_buckets[i]);
             }
+        }
+        void clear()
+        {
+            for (euint32 i = 0; i < m_num_buckets; i++) {
+                destroy_hash_node_list(&m_buckets[i]);
+                m_bucket_allocator.destroy(&m_buckets[i]);
+            }
+            m_bucket_allocator.deallocate(m_buckets, m_num_buckets);
+        }
+        ~open_addressing_hash_table()
+        {
+            clear();
         }
         V* find ( const K &key ) const {
             hash_node<K, V>* node = find_hash_node( key );
