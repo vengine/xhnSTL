@@ -32,9 +32,13 @@ namespace xhn
         hash_node* m_iter_prev;
         euint32 m_hash_value;
         euint32 m_count;
+        vptr m_hash_table;
+        euint32 m_bucket_index;
         hash_node( const K &key, const V &value )
         : m_value(value)
         , m_key(key)
+        , m_hash_table(nullptr)
+        , m_bucket_index(0)
         {}
     };
     
@@ -63,6 +67,7 @@ namespace xhn
         
         size_type max_size() const                                   { return static_cast<size_type>(-1) / sizeof(value_type); }
     };
+    
     template <typename K, typename V>
     class FHashListNodeAllocator
     {
@@ -142,6 +147,7 @@ namespace xhn
                         count = new_bucket->begin()->m_count + 1;
                     }
                     node->m_count = count;
+                    node->m_bucket_index = node->m_hash_value & m_hash_mask;
                     new_bucket->add(node);
                 }
                 m_bucket_allocator.destroy(old_bucket);
@@ -226,6 +232,8 @@ namespace xhn
             }
             hash_node<K, V>* node = m_node_allocator.allocate(1);
             m_node_allocator.construct(node, key, value);
+            node->m_hash_table = this;
+            node->m_bucket_index = ukey;
             
             bucket->add(node);
             
