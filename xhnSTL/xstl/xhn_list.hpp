@@ -357,7 +357,7 @@ public:
 			return &base_type::m_ptr->m_value;
 		}
 	};
-	class const_reverse_iterator : public bidirectional_readwrite_iterator<
+	class const_reverse_iterator : public const_bidirectional_readwrite_iterator<
     node_type,
     FReadProc<node_type>,
     FWriteProc<node_type>,
@@ -365,7 +365,7 @@ public:
     FNextProc<node_type> >
 	{
 	public:
-		typedef bidirectional_readwrite_iterator<
+		typedef const_bidirectional_readwrite_iterator<
         node_type,
         FReadProc<node_type>,
         FWriteProc<node_type>,
