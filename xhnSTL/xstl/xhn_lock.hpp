@@ -257,6 +257,12 @@ public:
     inline SpinObject()
     : m_lock(0)
     {}
+    template <typename ...ARGS>
+    SpinObject(ARGS... args)
+    : m_data(args...)
+    , m_lock(0)
+    {
+    }
     inline Instance Lock()
     {
         ELock_lock(&m_lock);
