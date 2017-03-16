@@ -378,48 +378,52 @@ namespace xhn
                 return nullptr;
             }
         }
+
 #define INSERT \
-        euint32 hash_value = m_hash_proc(key); \
-        euint32 ukey = hash_value & m_hash_mask; \
-        singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey]; \
-        hash_node<K, V>* current_node = bucket->begin(); \
-        while (current_node) { \
-            if (current_node->first == key) { \
-                current_node->second = value; \
-                return; \
+            euint32 hash_value = m_hash_proc(key); \
+            euint32 ukey = hash_value & m_hash_mask; \
+            singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey]; \
+            hash_node<K, V>* current_node = bucket->begin(); \
+            while (current_node) { \
+                if (current_node->first == key) { \
+                    current_node->second = value; \
+                    return &current_node->second; \
+                } \
+                current_node = current_node->m_iter_next; \
             } \
-            current_node = current_node->m_iter_next; \
-        } \
-        \
-        euint32 count = 0; \
-        hash_node<K, V>* head = bucket->begin(); \
-        if (head) { \
-            count = head->m_count; \
-        } \
-        hash_node<K, V>* node = m_node_allocator.allocate(1); \
-        m_node_allocator.construct(node, key, value); \
-        node->m_hash_table = this; \
-        node->m_bucket_index = ukey; \
-        \
-        bucket->add(node); \
-        \
-        node->m_hash_value = hash_value; \
-        node->m_count = count + 1; \
-        \
-        if (m_hash_mask != 0xffffffff && count > m_rebuild_tolerance) { \
-            rebuild(); \
-        }
+            \
+            euint32 count = 0; \
+            hash_node<K, V>* head = bucket->begin(); \
+            if (head) { \
+                count = head->m_count; \
+            } \
+            hash_node<K, V>* node = m_node_allocator.allocate(1); \
+            m_node_allocator.construct(node, key, value); \
+            node->m_hash_table = this; \
+            node->m_bucket_index = ukey; \
+            \
+            bucket->add(node); \
+            \
+            node->m_hash_value = hash_value; \
+            node->m_count = count + 1; \
+            \
+            if (m_hash_mask != 0xffffffff && count > m_rebuild_tolerance) { \
+                rebuild(); \
+            } \
+            return &node->second; \
+
+    public:
         
-        void insert ( const K &key, const V& value ) {
+        V* insert ( const K &key, const V& value ) {
             INSERT
         }
-        void insert ( K &&key, V&& value ) {
+        V* insert ( K &&key, V&& value ) {
             INSERT
         }
-        void insert ( const K &key, V&& value ) {
+        V* insert ( const K &key, V&& value ) {
             INSERT
         }
-        void insert ( K &&key, const V& value ) {
+        V* insert ( K &&key, const V& value ) {
             INSERT
         }
         void remove ( const K &key ) {

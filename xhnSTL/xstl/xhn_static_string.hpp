@@ -73,7 +73,19 @@ public:
     static_string ( const static_string& str ) {
         m_entry = str.m_entry;
     }
+    static_string ( static_string&& str ) {
+        m_entry = str.m_entry;
+    }
     static_string () {
+        if (!s_static_string_set) {
+            s_static_string_set = VNEW hash_set< pair<string, string_info> >;
+        }
+        string value ( "" );
+        string_info info = { 0, 0, };
+        const pair<string, string_info> &v = s_static_string_set->insert ( make_pair(value, info) );
+        m_entry = (pair<string, string_info>*)&v;
+    }
+    static_string (int) {
         if (!s_static_string_set) {
             s_static_string_set = VNEW hash_set< pair<string, string_info> >;
         }
@@ -108,7 +120,10 @@ public:
         m_entry = str.m_entry;
         return *this;
     }
-    
+    const static_string& operator = (static_string&& str) {
+        m_entry = str.m_entry;
+        return *this;
+    }
     void update_hash_status( ::hash_calc_status* status ) const {
         ::update_hash_status(status, (const char*)m_entry->first.c_str(), m_entry->second.m_size );
     }
