@@ -12,7 +12,8 @@
 #include <xhnSTL/timer.h>
 #include <xhnSTL/xhn_smart_ptr.hpp>
 #include <xhnSTL/xhn_vector.hpp>
-
+#include <map>
+#include <unordered_map>
 
 @interface xhnSTLTests : XCTestCase
 
@@ -279,12 +280,193 @@ struct SinglyLinkedListNode
         printf("#2:%d\n", *v);
     }
 }
-/**
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+
+- (void) testDictionary4
+{
+    char mbufs[100][256];
+    for (int i = 0; i < 100; i++) {
+        snprintf(&mbufs[i][0], 255, "abc%dde%dfgh", i, i);
+    }
+    int totalValue = 0;
+    
+    xhn::dictionary<xhn::static_string, int> hash_table;
+    for (int i = 0; i < 100; i++) {
+        ///char mbuf[256];
+        ///snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        hash_table.insert(&mbufs[i][0], i);
+        totalValue += i;
+    }
+    int validationValue = 0;
+    xhn::dictionary<xhn::static_string, int>::iterator iter = hash_table.begin();
+    xhn::dictionary<xhn::static_string, int>::iterator end = hash_table.end();
+    for (; iter != end; iter++) {
+        printf("%s, %d\n", iter->first.c_str(), iter->second);
+        validationValue += iter->second;
+    }
+    printf("total value %d, validation value %d\n", totalValue, validationValue);
 }
- **/
+
+- (void) testStdMap1
+{
+    __block int num = 1024 * 128;
+    __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
+    for (int i = 0; i < num; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        strs[i] = mbuf;
+    }
+    __block std::map<xhn::static_string, int> std_map;
+    [self measureBlock:^{
+        for (int i = 0; i < num; i++) {
+            std_map.insert(std::make_pair(strs[i], i));
+        }
+    }];
+    VDELETE_ARRAY[] strs;
+}
+
+- (void) testStdMap
+{
+    __block int num = 1024 * 128;
+    __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
+    for (int i = 0; i < num; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        strs[i] = mbuf;
+    }
+    __block std::map<xhn::static_string, int> std_map;
+    for (int i = 0; i < num; i++) {
+        std_map.insert(std::make_pair(strs[i], i));
+    }
+    
+    [self measureBlock:^{
+        int value = 0;
+        for (int i = 0; i < num; i++) {
+            value += std_map[strs[i]];
+        }
+    }];
+    VDELETE_ARRAY[] strs;
+}
+
+- (void) testDictionary5
+{
+    __block int num = 1024 * 128;
+    __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
+    for (int i = 0; i < num; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        strs[i] = mbuf;
+    }
+    __block xhn::dictionary<xhn::static_string, int> hash_table;
+    [self measureBlock:^{
+        for (int i = 0; i < num; i++) {
+            hash_table.insert(strs[i], i);
+        }
+    }];
+    VDELETE_ARRAY[] strs;
+}
+
+- (void) testDictionary6
+{
+    __block int num = 1024 * 128;
+    __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
+    for (int i = 0; i < num; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        strs[i] = mbuf;
+    }
+    __block xhn::dictionary<xhn::static_string, int> hash_table;
+    for (int i = 0; i < num; i++) {
+        hash_table.insert(strs[i], i);
+    }
+    [self measureBlock:^{
+        int value = 0;
+        for (int i = 0; i < num; i++) {
+            int* v = hash_table.find(strs[i]);
+            value += *v;
+        }
+    }];
+    VDELETE_ARRAY[] strs;
+}
+
+- (void) testXhnMap1
+{
+    __block int num = 1024 * 128;
+    __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
+    for (int i = 0; i < num; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        strs[i] = mbuf;
+    }
+    __block xhn::map<xhn::static_string, int> xhn_map;
+    [self measureBlock:^{
+        for (int i = 0; i < num; i++) {
+            xhn_map.insert(strs[i], i);
+        }
+    }];
+    VDELETE_ARRAY[] strs;
+}
+
+- (void) testXhnMap2
+{
+    __block int num = 1024 * 128;
+    __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
+    for (int i = 0; i < num; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        strs[i] = mbuf;
+    }
+    __block xhn::map<xhn::static_string, int> xhn_map;
+    for (int i = 0; i < num; i++) {
+        xhn_map.insert(strs[i], i);
+    }
+    [self measureBlock:^{
+        int value = 0;
+        for (int i = 0; i < num; i++) {
+            value += xhn_map[strs[i]];
+        }
+    }];
+    VDELETE_ARRAY[] strs;
+}
+
+- (void) testStdUnorderedMap1
+{
+    __block int num = 1024 * 128;
+    __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
+    for (int i = 0; i < num; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        strs[i] = mbuf;
+    }
+    __block std::unordered_map<const char*, int> std_map;
+    [self measureBlock:^{
+        for (int i = 0; i < num; i++) {
+            std_map.insert(std::make_pair(strs[i].c_str(), i));
+        }
+    }];
+    VDELETE_ARRAY[] strs;
+}
+
+- (void) testStdUnorderedMap2
+{
+    __block int num = 1024 * 128;
+    __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
+    for (int i = 0; i < num; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        strs[i] = mbuf;
+    }
+    __block std::unordered_map<const char*, int> std_map;
+    for (int i = 0; i < num; i++) {
+        std_map.insert(std::make_pair(strs[i].c_str(), i));
+    }
+    [self measureBlock:^{
+        int value = 0;
+        for (int i = 0; i < num; i++) {
+            value += std_map[strs[i].c_str()];
+        }
+    }];
+    VDELETE_ARRAY[] strs;
+}
 
 #include <xhnSTL/xhn_static_string.hpp>
 - (void) testStaticString
