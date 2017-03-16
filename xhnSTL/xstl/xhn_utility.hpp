@@ -461,6 +461,9 @@ struct FCtorProc {
     void operator () (T* dst, const T& src) {
         new ( dst ) T ( src );
     }
+    void operator () (T* dst, T&& src) {
+        new ( dst ) T ( src );
+    }
 };
 
 template < typename T >

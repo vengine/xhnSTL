@@ -338,6 +338,16 @@ public:
         m_ctor( (T*)m_barrier, v );
         m_barrier += m_ele_real_size;
     }
+    inline void push_back ( T&& v ) {
+        euint curt_count = _get_size();
+        
+        if ( curt_count + 1 > m_totel_ele_count ) {
+            reserve((curt_count + 1) * 8);
+        }
+        
+        m_ctor( (T*)m_barrier, v );
+        m_barrier += m_ele_real_size;
+    }
     inline void pop_back() {
         if ( m_barrier != m_begin_addr ) {
             m_dest( ( T * ) ( m_barrier - m_ele_real_size ) );
@@ -639,9 +649,23 @@ public:
         m_ele_real_size = size;
         m_totel_ele_count = 32;
     }
+    vector(int) {
+        euint size = m_get_elem_real_size();
+        m_begin_addr = ( char * ) NMalloc ( size * 32 );
+        m_barrier = m_begin_addr;
+        m_ele_real_size = size;
+        m_totel_ele_count = 32;
+    }
 	vector(const vector& v) {
 		_init(v);
 	}
+    vector(vector&& v) {
+        m_begin_addr = v.m_begin_addr;
+        m_barrier = v.m_barrier;
+        m_ele_real_size = v.m_ele_real_size;
+        m_totel_ele_count = v.m_totel_ele_count;
+        v.m_begin_addr = NULL;
+    }
     template <class InputIterator>
     vector (InputIterator first, InputIterator last) {
         euint size = m_get_elem_real_size();
@@ -656,7 +680,9 @@ public:
         push_back(*last);
     }
     ~vector() {
-        _dest();
+        if (m_begin_addr) {
+            _dest();
+        }
     }
     void for_each(Lambda<void(T&, bool*)>& proc) {
         bool stop = false;

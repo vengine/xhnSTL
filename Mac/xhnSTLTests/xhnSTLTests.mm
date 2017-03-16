@@ -60,8 +60,8 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
 }
 
 #include <xhnSTL/xhn_vector.hpp>
-- (void) testVector {
-    xhn::vector<int> intArray;
+- (void) testVector1 {
+    xhn::vector<int> intArray( xhn::vector<int>(0) );
     intArray.push_back(0);
     intArray.push_back(1);
     intArray.push_back(2);
@@ -79,6 +79,16 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
     for (auto i : intArray) {
         printf("for %d\n", i);
     }
+}
+
+- (void) testVector2 {
+    xhn::vector< xhn::vector<int> > intArray;
+    intArray.push_back( xhn::vector<int>() );
+    intArray.push_back( xhn::vector<int>() );
+    xhn::Lambda<void(xhn::vector<int>&, bool*)> proc([](xhn::vector<int>& i, bool* stop){
+        *stop = true;
+    });
+    intArray.for_each(proc);
 }
 
 #include <xhnSTL/xhn_hash_map.hpp>
