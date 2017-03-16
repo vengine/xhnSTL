@@ -210,11 +210,11 @@ struct SinglyLinkedListNode
     delete node2;
 }
 
-#include <xhnSTL/xhn_open_addressing_hash_table.hpp>
+#include <xhnSTL/xhn_dictionary.hpp>
 
-- (void)testOpenAddressingHashTable0
+- (void)testDictionary0
 {
-    xhn::open_addressing_hash_table<xhn::string, int> hash_table;
+    xhn::dictionary<xhn::string, int> hash_table;
     hash_table.insert("abc", 1);
     hash_table.insert("123", 2);
     hash_table.insert("xyz", 3);
@@ -229,9 +229,9 @@ struct SinglyLinkedListNode
     printf("%d\n", *xyz);
 }
 
-- (void)testOpenAddressingHashTable1
+- (void)testDictionary1
 {
-    xhn::open_addressing_hash_table<xhn::string, int> hash_table;
+    xhn::dictionary<xhn::string, int> hash_table;
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
         snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
@@ -246,9 +246,9 @@ struct SinglyLinkedListNode
     }
 }
 
-- (void)testOpenAddressingHashTable2
+- (void)testDictionary2
 {
-    xhn::open_addressing_hash_table<const char*, int> hash_table;
+    xhn::dictionary<const char*, int> hash_table;
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
         snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
@@ -263,9 +263,9 @@ struct SinglyLinkedListNode
     }
 }
 
-- (void)testOpenAddressingHashTable3
+- (void)testDictionary3
 {
-    xhn::open_addressing_hash_table<xhn::static_string, int> hash_table;
+    xhn::dictionary<xhn::static_string, int> hash_table;
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
         snprintf(mbuf, 255, "abc%dde%dfgh", i, i);

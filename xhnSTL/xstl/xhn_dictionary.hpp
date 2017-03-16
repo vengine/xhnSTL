@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef xhn_open_addressing_hash_table_hpp
-#define xhn_open_addressing_hash_table_hpp
+#ifndef xhn_dictionary_hpp
+#define xhn_dictionary_hpp
 
 #ifdef __cplusplus
 
@@ -101,7 +101,7 @@ namespace xhn
               typename EQUAL_PROC = FEqualProc<K>,
               typename BUCKET_ALLOCATOR = FHashBucketAllocator<K, V>,
               typename NODE_ALLOCATOR = FHashListNodeAllocator<K, V> >
-    class open_addressing_hash_table : public RefObject
+    class dictionary : public RefObject
     {
     public:
         singly_linked_list<hash_node<K, V>>* m_buckets;
@@ -171,7 +171,7 @@ namespace xhn
             return nullptr;
         }
     public:
-        open_addressing_hash_table()
+        dictionary()
         : m_hash_mask(0x7)
         , m_num_buckets(8)
         {
@@ -195,7 +195,7 @@ namespace xhn
                 m_bucket_allocator.construct(&m_buckets[i]);
             }
         }
-        ~open_addressing_hash_table()
+        ~dictionary()
         {
             for (euint32 i = 0; i < m_num_buckets; i++) {
                 destroy_hash_node_list(&m_buckets[i]);
