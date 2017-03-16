@@ -17,6 +17,7 @@
 #include "etypes.h"
 #include "xhn_singly_linked_list.hpp"
 #include "xhn_memory.hpp"
+#include "xhn_iterator.hpp"
 #include "xhn_utility.hpp"
 #include <new>
 
@@ -417,7 +418,7 @@ namespace xhn
             singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey];
             hash_node<K, V>* current_node = bucket->begin();
             while (current_node) {
-                if (current_node->m_key == key) {
+                if (current_node->first == key) {
                     bucket->remove(current_node);
                     
                     euint32 count = 0;
