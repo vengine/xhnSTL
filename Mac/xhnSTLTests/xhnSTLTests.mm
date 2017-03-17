@@ -489,6 +489,41 @@ struct SinglyLinkedListNode
     printf("aaa2 hash %d, %p\n", aaa2.hash_value(), aaa2.c_str());
 }
 
+#include <xhnSTL/xhn_cache.hpp>
+- (void) testCache
+{
+    xhn::cache<xhn::static_string, int, 128> cache;
+    cache.insert("##aaa", 1);
+    cache.insert("##bbb", 2);
+    cache.insert("##ccc", 3);
+    cache.insert("##ddd", 4);
+    cache.insert("##eee", 5);
+    cache.insert("##fff", 6);
+    cache.insert("##ggg", 7);
+    cache.insert("##hhh", 8);
+    cache.insert("##iii", 9);
+    cache.insert("##jjj", 10);
+    cache.insert("##kkk", 11);
+    cache.insert("##lll", 12);
+    cache.insert("##mmm", 13);
+    cache.insert("##nnn", 14);
+    cache.insert("##ooo", 15);
+    cache.insert("##ppp", 16);
+    cache.insert("##qqq", 17);
+    cache.insert("##rrr", 18);
+    cache.insert("##sss", 19);
+    cache.insert("##ttt", 20);
+    cache.insert("##uuu", 21);
+    cache.insert("##vvv", 22);
+    cache.insert("##www", 23);
+    cache.insert("##xxx", 24);
+    cache.insert("##yyy", 25);
+    cache.insert("##zzz", 26);
+    for (auto& n : cache) {
+        printf("%s, %d\n", n.first.c_str(), n.second);
+    }
+}
+
 - (void)testPerformanceExample {
     // This is an example of a performance test case.
     [self measureBlock:^{

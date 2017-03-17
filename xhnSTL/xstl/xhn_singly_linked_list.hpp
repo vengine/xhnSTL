@@ -69,6 +69,10 @@ namespace xhn
                 }
             }
         }
+        
+        void force_clear() {
+            m_head = nullptr;
+        }
     };
 }
 

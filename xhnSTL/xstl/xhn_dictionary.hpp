@@ -47,6 +47,10 @@ namespace xhn
         , m_hash_table(nullptr)
         , m_bucket_index(0)
         {}
+        hash_node()
+        : m_hash_table(nullptr)
+        , m_bucket_index(0)
+        {}
     };
     
     template <typename K, typename V>
