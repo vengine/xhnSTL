@@ -139,7 +139,7 @@
 		B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; };
 		B17CCE6E1E683CA0002B1946 /* xhn_memory_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B17CCE6D1E683A5F002B1946 /* xhn_memory_pool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
-		B19C547F1E7BD6C3009FC8A8 /* xhn_cache.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19C547E1E7BD696009FC8A8 /* xhn_cache.hpp */; settings = {ATTRIBUTES = (Private, ); }; };
+		B19C547F1E7BD6C3009FC8A8 /* xhn_cache.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19C547E1E7BD696009FC8A8 /* xhn_cache.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1A89DB31CAF9B7000358DD4 /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB11CAF9B7000358DD4 /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1A89DB71CAF9F2700358DD4 /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
