@@ -69,9 +69,9 @@ namespace xhn
         {}
         void clear() {
             for (euint32 i = 0; i < base_type::m_num_buckets; i++) {
-                base_type::m_buckets[i]->force_clear();
+                base_type::m_buckets[i].force_clear();
             }
-            base_type::m_node_allocator->m_top_pointer = 0;
+            base_type::m_node_allocator.m_top_pointer = 0;
         }
         iterator begin() {
             return base_type::m_node_allocator.m_node_buffer.begin();
