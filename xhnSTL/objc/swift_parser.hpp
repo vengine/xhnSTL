@@ -17,6 +17,7 @@
 #include "xhn_vector.hpp"
 #include "xhn_smart_ptr.hpp"
 #include "xhn_map.hpp"
+#include "symbol_buffer.hpp"
 
 namespace xhn {
 
@@ -63,19 +64,6 @@ public:
         {}
         ASTNode(const static_string nodeName)
         {}
-    };
-    class SymbolBuffer
-    {
-    public:
-        char buffer[1024];
-        int bufferTop;
-    public:
-        SymbolBuffer();
-        void AddCharacter(char c);
-        bool IsInteger();
-        bool IsIdentifier();
-        bool IsFunctionResult();
-        static_string GetSymbol();
     };
 private:
     vector<ASTNode*> m_roots;

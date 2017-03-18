@@ -524,6 +524,13 @@ struct SinglyLinkedListNode
     }
 }
 
+#include <xhnSTL/llvm_parser.hpp>
+
+- (void) testLLVMParser
+{
+    _TestLLVMParser();
+}
+
 - (void)testPerformanceExample {
     // This is an example of a performance test case.
     [self measureBlock:^{

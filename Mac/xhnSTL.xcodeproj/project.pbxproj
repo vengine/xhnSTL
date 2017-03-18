@@ -135,6 +135,9 @@
 		B10D55A71CBE6D47003733D9 /* swift_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10D55A51CBE6D47003733D9 /* swift_parser.mm */; };
 		B11892701E6BE7AF00AD5279 /* cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = B118926E1E6BE7AF00AD5279 /* cpu.c */; };
 		B11892711E6BE7AF00AD5279 /* cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = B118926F1E6BE7AF00AD5279 /* cpu.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1607BB41E7D217900CBBDDD /* llvm_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1607BB21E7D217900CBBDDD /* llvm_parser.mm */; };
+		B1607BB51E7D217900CBBDDD /* llvm_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1607BD21E7D31CA00CBBDDD /* symbol_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */; };
 		B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; };
@@ -286,6 +289,9 @@
 		B10D55A51CBE6D47003733D9 /* swift_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = swift_parser.mm; sourceTree = "<group>"; };
 		B118926E1E6BE7AF00AD5279 /* cpu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu.c; sourceTree = "<group>"; };
 		B118926F1E6BE7AF00AD5279 /* cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpu.h; sourceTree = "<group>"; };
+		B1607BB21E7D217900CBBDDD /* llvm_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = llvm_parser.mm; sourceTree = "<group>"; };
+		B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = llvm_parser.hpp; sourceTree = "<group>"; };
+		B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = symbol_buffer.hpp; sourceTree = "<group>"; };
 		B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
 		B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
@@ -317,6 +323,7 @@
 		68245C2A1BC9D8F80006E99D /* objc */ = {
 			isa = PBXGroup;
 			children = (
+				B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */,
 				B10D55A41CBE6D47003733D9 /* swift_parser.hpp */,
 				B10D55A51CBE6D47003733D9 /* swift_parser.mm */,
 				68245C2B1BC9D8F80006E99D /* apple_file_manager.h */,
@@ -327,6 +334,8 @@
 				68245C301BC9D8F80006E99D /* ObjCString.mm */,
 				68245C311BC9D8F80006E99D /* Singleton.h */,
 				68245C321BC9D8F80006E99D /* xhn_filesystem_node.mm */,
+				B1607BB21E7D217900CBBDDD /* llvm_parser.mm */,
+				B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */,
 			);
 			name = objc;
 			path = ../../xhnSTL/objc;
@@ -552,6 +561,7 @@
 				68245CD11BC9D8F90006E99D /* mem.h in Headers */,
 				68245D381BC9D8F90006E99D /* xhn_utility.hpp in Headers */,
 				68245CB41BC9D8F90006E99D /* apple_file_manager.h in Headers */,
+				B1607BB51E7D217900CBBDDD /* llvm_parser.hpp in Headers */,
 				68245D361BC9D8F90006E99D /* xhn_thread_pool.hpp in Headers */,
 				68245CD01BC9D8F90006E99D /* list_base.h in Headers */,
 				68245CB81BC9D8F90006E99D /* ObjCString.h in Headers */,
@@ -577,6 +587,7 @@
 				68245CBF1BC9D8F90006E99D /* container.h in Headers */,
 				68245D141BC9D8F90006E99D /* xhn_lock.hpp in Headers */,
 				68245CDE1BC9D8F90006E99D /* tree.h in Headers */,
+				B1607BD21E7D31CA00CBBDDD /* symbol_buffer.hpp in Headers */,
 				68245CC91BC9D8F90006E99D /* estring.h in Headers */,
 				68245CC61BC9D8F90006E99D /* emem_allocator.h in Headers */,
 				68245D1D1BC9D8F90006E99D /* xhn_operation_manager.hpp in Headers */,
@@ -728,6 +739,7 @@
 				68245CF71BC9D8F90006E99D /* xhn_filesystem_node.cpp in Sources */,
 				68245CF31BC9D8F90006E99D /* xhn_exception.cpp in Sources */,
 				68245CFB1BC9D8F90006E99D /* xhn_garbage_collector.cpp in Sources */,
+				B1607BB41E7D217900CBBDDD /* llvm_parser.mm in Sources */,
 				68245CD21BC9D8F90006E99D /* prime.c in Sources */,
 				68245D1F1BC9D8F90006E99D /* xhn_path_tree.cpp in Sources */,
 				B11892701E6BE7AF00AD5279 /* cpu.c in Sources */,

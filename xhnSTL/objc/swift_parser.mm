@@ -73,56 +73,6 @@ namespace xhn {
     const static_string SwiftParser::StrActorAgent("ActorAgent");
     const static_string SwiftParser::StrAction("Action");
     const static_string SwiftParser::StrActionInterface("ActionInterface");
-
-    SwiftParser::SymbolBuffer::SymbolBuffer()
-    {
-        buffer[0] = 0;
-        bufferTop = 0;
-    }
-    
-    void SwiftParser::SymbolBuffer::AddCharacter(char c)
-    {
-        buffer[bufferTop] = c;
-        bufferTop++;
-        buffer[bufferTop] = 0;
-    }
-    
-    bool SwiftParser::SymbolBuffer::IsInteger()
-    {
-        if (bufferTop) {
-            int num;
-            return to_int(buffer, &num);
-        }
-        else {
-            return false;
-        }
-    }
-    
-    bool SwiftParser::SymbolBuffer::IsIdentifier()
-    {
-        if (bufferTop > 0) {
-            bool isLetter =
-            (buffer[0] >= 'a' && buffer[0] <= 'z') ||
-            (buffer[0] >= 'A' && buffer[0] <= 'Z');
-            return isLetter;
-        }
-        else {
-            return false;
-        }
-    }
-    
-    bool SwiftParser::SymbolBuffer::IsFunctionResult()
-    {
-        if (bufferTop == 2 && buffer[0] == '-' && buffer[1] == '>')
-            return true;
-        else
-            return false;
-    }
-    
-    xhn::static_string SwiftParser::SymbolBuffer::GetSymbol()
-    {
-        return buffer;
-    }
     
     void SwiftParser::BeginParse()
     {
