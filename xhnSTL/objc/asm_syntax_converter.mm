@@ -88,12 +88,17 @@ namespace xhn
         bool isWaitingCompletedForSelectorData = false;
         buffer.reserve(length + 1);
         for (euint i = 0; i < length; i++) {
-            printf("%c\n", bytes[i]);
+            ///printf("%c\n", bytes[i]);
             if (isWaitingProcessingIsCompleted) {
                 
                 if (isWaitingCompletedForSelector) {
                     if (')' != bytes[i]) {
-                        matchBuffer.push_back(bytes[i]);
+                        if (':' != bytes[i]) {
+                            matchBuffer.push_back(bytes[i]);
+                        }
+                        else {
+                            matchBuffer.push_back('S');
+                        }
                     }
                     else {
                         for (auto c : prefixString) {
@@ -123,7 +128,12 @@ namespace xhn
                 }
                 else if (isWaitingCompletedForSelectorData) {
                     if (')' != bytes[i]) {
-                        matchBuffer.push_back(bytes[i]);
+                        if (':' != bytes[i]) {
+                            matchBuffer.push_back(bytes[i]);
+                        }
+                        else {
+                            matchBuffer.push_back('S');
+                        }
                     }
                     else {
                         for (auto c : prefixString) {
