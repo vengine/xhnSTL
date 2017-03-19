@@ -70,6 +70,54 @@ static NSMutableSet* s_ASMCommandLineUtils = nil;
 
 namespace xhn
 {
+    void RemoveSectionDirective(const char* srcPath, const char* dstPath)
+    {
+        NSFileManager* fileManager = [NSFileManager defaultManager];
+        NSData* srcData = [fileManager contentsAtPath:[NSString stringWithUTF8String:srcPath]];
+        const char* bytes = (const char*)[srcData bytes];
+        euint length = [srcData length];
+        xhn::string matchingString = ".section";
+        xhn::vector<char> matchBuffer;
+        xhn::vector<char> buffer;
+        bool isSkipping = false;
+        for (euint i = 0; i < length; i++) {
+            if (isSkipping) {
+                if ('\n' == bytes[i]) {
+                    buffer.push_back(bytes[i]);
+                    isSkipping = false;
+                }
+            }
+            else {
+                if (matchingString[matchBuffer.size()] == bytes[i]) {
+                    matchBuffer.push_back(bytes[i]);
+                    if (matchBuffer.size() == matchingString.size()) {
+                        isSkipping = true;
+                        matchBuffer.clear();
+                    }
+                }
+                else {
+                    if (matchBuffer.size()) {
+                        for (auto c : matchBuffer) {
+                            buffer.push_back(c);
+                        }
+                        matchBuffer.clear();
+                    }
+                    buffer.push_back(bytes[i]);
+                }
+            }
+            
+        }
+        
+        NSMutableData* data = [NSMutableData new];
+        [data appendBytes:buffer.get() length:buffer.size()];
+        
+        if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:dstPath]]) {
+            NSError* error = nil;
+            [fileManager removeItemAtPath:[NSString stringWithUTF8String:dstPath] error:&error];
+        }
+        [fileManager createFileAtPath:[NSString stringWithUTF8String:dstPath]
+                             contents:data attributes:nil];
+    }
     void RemoveQuotes(const char* srcPath, const char* dstPath)
     {
         NSFileManager* fileManager = [NSFileManager defaultManager];
@@ -245,6 +293,11 @@ namespace xhn
         }
         NSMutableData* data = [NSMutableData new];
         [data appendBytes:buffer.get() length:buffer.size()];
+        
+        if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:dstPath]]) {
+            NSError* error = nil;
+            [fileManager removeItemAtPath:[NSString stringWithUTF8String:dstPath] error:&error];
+        }
         [fileManager createFileAtPath:[NSString stringWithUTF8String:dstPath]
                              contents:data attributes:nil];
     }
@@ -258,6 +311,7 @@ namespace xhn
         LLCCommandLineUtil* util = [LLCCommandLineUtil new];
         [util runCommand:cmd callback:^(){
             RemoveQuotes("/Users/xhnsworks/VEngineProjects/tmp0.s", "/Users/xhnsworks/VEngineProjects/tmp0.ss");
+            RemoveSectionDirective("/Users/xhnsworks/VEngineProjects/tmp0.ss", "/Users/xhnsworks/VEngineProjects/tmp0.sss");
             stopFlag = YES;
         }];
         ///while (!stopFlag) {}
