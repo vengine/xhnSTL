@@ -138,6 +138,8 @@
 		B1607BB41E7D217900CBBDDD /* llvm_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1607BB21E7D217900CBBDDD /* llvm_parser.mm */; };
 		B1607BB51E7D217900CBBDDD /* llvm_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BD21E7D31CA00CBBDDD /* symbol_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1607BEA1E7E423A00CBBDDD /* asm_syntax_converter.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1607BE81E7E423A00CBBDDD /* asm_syntax_converter.mm */; };
+		B1607BEB1E7E423A00CBBDDD /* asm_syntax_converter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BE91E7E423A00CBBDDD /* asm_syntax_converter.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */; };
 		B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; };
@@ -292,6 +294,8 @@
 		B1607BB21E7D217900CBBDDD /* llvm_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = llvm_parser.mm; sourceTree = "<group>"; };
 		B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = llvm_parser.hpp; sourceTree = "<group>"; };
 		B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = symbol_buffer.hpp; sourceTree = "<group>"; };
+		B1607BE81E7E423A00CBBDDD /* asm_syntax_converter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = asm_syntax_converter.mm; sourceTree = "<group>"; };
+		B1607BE91E7E423A00CBBDDD /* asm_syntax_converter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = asm_syntax_converter.hpp; sourceTree = "<group>"; };
 		B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
 		B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
@@ -336,6 +340,8 @@
 				68245C321BC9D8F80006E99D /* xhn_filesystem_node.mm */,
 				B1607BB21E7D217900CBBDDD /* llvm_parser.mm */,
 				B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */,
+				B1607BE81E7E423A00CBBDDD /* asm_syntax_converter.mm */,
+				B1607BE91E7E423A00CBBDDD /* asm_syntax_converter.hpp */,
 			);
 			name = objc;
 			path = ../../xhnSTL/objc;
@@ -545,6 +551,7 @@
 				68245CFE1BC9D8F90006E99D /* xhn_gc_array.h in Headers */,
 				68245D071BC9D8F90006E99D /* xhn_iterator.hpp in Headers */,
 				68245CD31BC9D8F90006E99D /* prime.h in Headers */,
+				B1607BEB1E7E423A00CBBDDD /* asm_syntax_converter.hpp in Headers */,
 				68245D051BC9D8F90006E99D /* xhn_hash_map.hpp in Headers */,
 				B19C547F1E7BD6C3009FC8A8 /* xhn_cache.hpp in Headers */,
 				68FC12CF1BC9D31A00C8A0BE /* xhnSTL.h in Headers */,
@@ -750,6 +757,7 @@
 				68245CC81BC9D8F90006E99D /* estring.c in Sources */,
 				68245CF11BC9D8F90006E99D /* xhn_duplicate_finder.cpp in Sources */,
 				68245CCC1BC9D8F90006E99D /* hash.c in Sources */,
+				B1607BEA1E7E423A00CBBDDD /* asm_syntax_converter.mm in Sources */,
 				68245CC41BC9D8F90006E99D /* emem.c in Sources */,
 				68245D161BC9D8F90006E99D /* xhn_memory.cpp in Sources */,
 				68245D011BC9D8F90006E99D /* xhn_gc_string.cpp in Sources */,

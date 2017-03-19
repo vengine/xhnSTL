@@ -7,6 +7,7 @@
 //
 
 #include "llvm_parser.hpp"
+#include "asm_syntax_converter.hpp"
 #import <Foundation/Foundation.h>
 
 static xhn::SpinLock s_LLVMCommandLineUtilsLock;
@@ -122,7 +123,10 @@ void _TestLLVMParser()
     @"xcrun -sdk iphoneos swiftc -target armv7-apple-ios8.0 -parse-as-library -emit-ir /Users/xhnsworks/VEngineProjects/initial_script.swift /Users/xhnsworks/VEngineProjects/VEngineBridgingInterface.swift /Users/xhnsworks/VEngineProjects/VEngineBridgingInterface2.swift -module-name VEngineLogic\n";
     //@"/Users/xhnsworks/Projects/llvm-bin/Debug/bin/llc /Users/xhnsworks/VEngineProjects/tmp0.ll /Users/xhnsworks/VEngineProjects/tmp1.ll /Users/xhnsworks/VEngineProjects/tmp2.ll";
     LLVMCommandLineUtil* util = [LLVMCommandLineUtil new];
-    [util runCommand:cmd callback:^(){ stopFlag = YES; }];
+    [util runCommand:cmd callback:^(){
+        _TestASMSyntaxConverter();
+        stopFlag = YES;
+    }];
     ///while (!stopFlag) {}
     {
         auto inst = s_LLVMCommandLineUtilsLock.Lock();
