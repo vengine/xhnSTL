@@ -245,6 +245,24 @@ namespace xhn
         }
     };
     
+    class PrivateExternCatcher : public DirectiveCatcher
+    {
+    public:
+        PrivateExternCatcher()
+        : DirectiveCatcher(".private_extern")
+        {}
+        virtual void CatchImpl(char c) override {}
+    };
+    
+    class WeakDefinition : public DirectiveCatcher
+    {
+    public:
+        WeakDefinition()
+        : DirectiveCatcher(".weak_definition")
+        {}
+        virtual void CatchImpl(char c) {}
+    };
+    
     template <typename T>
     void RunDirectiveCatcher(const char* srcPath, const char* dstPath)
     {
@@ -657,6 +675,8 @@ namespace xhn
         AltEntryCatcher ac;
         LinkerOptionCatcher lc;
         IndirectSymbolCatcher ic;
+        PrivateExternCatcher pc;
+        WeakDefinition wc;
         RemoveQuotes(input, output);
         sc.Catch(output.get(), output.size());
         zc.Catch(sc.m_outputBuffer.get(), sc.m_outputBuffer.size());
@@ -664,9 +684,11 @@ namespace xhn
         ac.Catch(nc.m_outputBuffer.get(), nc.m_outputBuffer.size());
         lc.Catch(ac.m_outputBuffer.get(), ac.m_outputBuffer.size());
         ic.Catch(lc.m_outputBuffer.get(), lc.m_outputBuffer.size());
+        pc.Catch(ic.m_outputBuffer.get(), ic.m_outputBuffer.size());
+        wc.Catch(pc.m_outputBuffer.get(), pc.m_outputBuffer.size());
         
         NSMutableData* data = [NSMutableData new];
-        [data appendBytes:ic.m_outputBuffer.get() length:ic.m_outputBuffer.size()];
+        [data appendBytes:wc.m_outputBuffer.get() length:wc.m_outputBuffer.size()];
         
         if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:dstPath]]) {
             NSError* error = nil;
