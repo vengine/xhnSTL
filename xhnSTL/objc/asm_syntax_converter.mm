@@ -328,6 +328,24 @@ namespace xhn
         }
     };
     
+    class iOSVersionMinCatcher : public DirectiveCatcher
+    {
+    public:
+        iOSVersionMinCatcher()
+        : DirectiveCatcher(".ios_version_min")
+        {}
+        virtual void CatchImpl(char c) override {}
+    };
+    
+    class SubsectionsViaSymbolsCatcher : public DirectiveCatcher
+    {
+    public:
+        SubsectionsViaSymbolsCatcher()
+        : DirectiveCatcher(".subsections_via_symbols")
+        {}
+        virtual void CatchImpl(char c) override {}
+    };
+    
     template <typename T>
     void RunDirectiveCatcher(const char* srcPath, const char* dstPath)
     {
@@ -743,6 +761,9 @@ namespace xhn
         PrivateExternCatcher pc;
         WeakDefinitionCatcher wc;
         FirstDataRegionCatcher fc;
+        iOSVersionMinCatcher ioc;
+        SubsectionsViaSymbolsCatcher svc;
+        
         RemoveQuotes(input, output);
         sc.Catch(output.get(), output.size());
         zc.Catch(sc.m_outputBuffer.get(), sc.m_outputBuffer.size());
@@ -753,13 +774,15 @@ namespace xhn
         pc.Catch(ic.m_outputBuffer.get(), ic.m_outputBuffer.size());
         wc.Catch(pc.m_outputBuffer.get(), pc.m_outputBuffer.size());
         fc.Catch(wc.m_outputBuffer.get(), wc.m_outputBuffer.size());
+        ioc.Catch(fc.m_outputBuffer.get(), fc.m_outputBuffer.size());
+        svc.Catch(ioc.m_outputBuffer.get(), ioc.m_outputBuffer.size());
         
         xhn::string stringBuffer0;
         xhn::string stringBuffer1;
         xhn::string* inputStringBuffer = &stringBuffer0;
         xhn::string* outputStringBuffer = &stringBuffer1;
         
-        for (auto c : fc.m_outputBuffer) {
+        for (auto c : svc.m_outputBuffer) {
             (*inputStringBuffer) += c;
         }
         
