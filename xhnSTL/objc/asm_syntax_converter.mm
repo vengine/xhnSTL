@@ -73,12 +73,15 @@ namespace xhn
     class DirectiveCatcher
     {
     public:
-        xhn::string m_matchingString;
-        xhn::vector<char> m_matchBuffer;
+        xhn::string m_inMatchingString;
+        xhn::vector<char> m_inMatchBuffer;
+        xhn::string m_outMatchingString;
+        xhn::vector<char> m_outMatchBuffer;
         xhn::vector<char> m_outputBuffer;
     public:
-        DirectiveCatcher(const char* directive)
-        : m_matchingString(directive)
+        DirectiveCatcher(const char* directive, const char* outSymbol = "\n")
+        : m_inMatchingString(directive)
+        , m_outMatchingString(outSymbol)
         {}
         virtual void CatchImpl(char c) = 0;
         virtual void EndCatch() {
@@ -89,28 +92,38 @@ namespace xhn
             bool isCatching = false;
             for (euint i = 0; i < length; i++) {
                 if (isCatching) {
-                    if ('\n' == bytes[i]) {
-                        EndCatch();
-                        isCatching = false;
+                    if (m_outMatchingString[m_outMatchBuffer.size()] == bytes[i]) {
+                        m_outMatchBuffer.push_back(bytes[i]);
+                        if (m_outMatchingString.size() == m_outMatchBuffer.size()) {
+                            m_outMatchBuffer.clear();
+                            EndCatch();
+                            isCatching = false;
+                        }
                     }
                     else {
+                        if (m_outMatchBuffer.size()) {
+                            for (auto c : m_outMatchBuffer) {
+                                CatchImpl(c);
+                            }
+                            m_outMatchBuffer.clear();
+                        }
                         CatchImpl(bytes[i]);
                     }
                 }
                 else {
-                    if (m_matchingString[m_matchBuffer.size()] == bytes[i]) {
-                        m_matchBuffer.push_back(bytes[i]);
-                        if (m_matchBuffer.size() == m_matchingString.size()) {
+                    if (m_inMatchingString[m_inMatchBuffer.size()] == bytes[i]) {
+                        m_inMatchBuffer.push_back(bytes[i]);
+                        if (m_inMatchBuffer.size() == m_inMatchingString.size()) {
                             isCatching = true;
-                            m_matchBuffer.clear();
+                            m_inMatchBuffer.clear();
                         }
                     }
                     else {
-                        if (m_matchBuffer.size()) {
-                            for (auto c : m_matchBuffer) {
+                        if (m_inMatchBuffer.size()) {
+                            for (auto c : m_inMatchBuffer) {
                                 m_outputBuffer.push_back(c);
                             }
-                            m_matchBuffer.clear();
+                            m_inMatchBuffer.clear();
                         }
                         m_outputBuffer.push_back(bytes[i]);
                     }
