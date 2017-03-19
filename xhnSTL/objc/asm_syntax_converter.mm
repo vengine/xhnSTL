@@ -351,6 +351,34 @@ namespace xhn
         virtual void CatchImpl(char c) override {}
     };
     
+    class TrapCatcher : public DirectiveCatcher
+    {
+    public:
+        TrapCatcher()
+        : DirectiveCatcher("trap")
+        {}
+        virtual void CatchImpl(char c) override {}
+        virtual void EndCatch() override {
+            m_outputBuffer.push_back('.');
+            m_outputBuffer.push_back('l');
+            m_outputBuffer.push_back('o');
+            m_outputBuffer.push_back('n');
+            m_outputBuffer.push_back('g');
+            m_outputBuffer.push_back(' ');
+            m_outputBuffer.push_back('0');
+            m_outputBuffer.push_back('x');
+            m_outputBuffer.push_back('e');
+            m_outputBuffer.push_back('7');
+            m_outputBuffer.push_back('f');
+            m_outputBuffer.push_back('f');
+            m_outputBuffer.push_back('d');
+            m_outputBuffer.push_back('e');
+            m_outputBuffer.push_back('f');
+            m_outputBuffer.push_back('e');
+            DirectiveCatcher::EndCatch();
+        }
+    };
+    
     template <typename T>
     void RunDirectiveCatcher(const char* srcPath, const char* dstPath)
     {
@@ -768,6 +796,7 @@ namespace xhn
         FirstDataRegionCatcher fc;
         iOSVersionMinCatcher ioc;
         SubsectionsViaSymbolsCatcher svc;
+        TrapCatcher tc;
         
         RemoveQuotes(input, output);
         sc.Catch(output.get(), output.size());
@@ -781,13 +810,14 @@ namespace xhn
         fc.Catch(wc.m_outputBuffer.get(), wc.m_outputBuffer.size());
         ioc.Catch(fc.m_outputBuffer.get(), fc.m_outputBuffer.size());
         svc.Catch(ioc.m_outputBuffer.get(), ioc.m_outputBuffer.size());
+        tc.Catch(svc.m_outputBuffer.get(), svc.m_outputBuffer.size());
         
         xhn::string stringBuffer0;
         xhn::string stringBuffer1;
         xhn::string* inputStringBuffer = &stringBuffer0;
         xhn::string* outputStringBuffer = &stringBuffer1;
         
-        for (auto c : svc.m_outputBuffer) {
+        for (auto c : tc.m_outputBuffer) {
             (*inputStringBuffer) += c;
         }
         
