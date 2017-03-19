@@ -267,13 +267,65 @@ namespace xhn
         virtual void CatchImpl(char c) override {}
     };
     
-    class WeakDefinition : public DirectiveCatcher
+    class WeakDefinitionCatcher : public DirectiveCatcher
     {
     public:
-        WeakDefinition()
+        WeakDefinitionCatcher()
         : DirectiveCatcher(".weak_definition")
         {}
         virtual void CatchImpl(char c) {}
+    };
+    
+    class FirstDataRegionCatcher : public DirectiveCatcher
+    {
+    public:
+        xhn::SymbolBuffer m_symbolBuffer;
+        xhn::vector<euint32> m_uintBuffer;
+        xhn::string m_tag;
+        xhn::map<xhn::string, euint64> m_dataMap;
+        bool m_isWaitingInteger;
+    public:
+        FirstDataRegionCatcher()
+        : DirectiveCatcher(".data_region", ".end_data_region\n")
+        , m_isWaitingInteger(false)
+        {}
+        virtual void CatchImpl(char c) override {
+            if (' ' != c &&
+                '\n' != c &&
+                '\t' != c) {
+                m_symbolBuffer.AddCharacter(c);
+            }
+            else {
+                if (m_symbolBuffer.bufferTop) {
+                    if (m_isWaitingInteger) {
+                        if (m_symbolBuffer.bufferTop) {
+                            m_uintBuffer.push_back(atoi(m_symbolBuffer.GetString().c_str()));
+                            m_isWaitingInteger = false;
+                        }
+                    }
+                    else if (m_symbolBuffer.GetString() == ".long") {
+                        m_isWaitingInteger = true;
+                    }
+                    else if (m_symbolBuffer.GetString().find(":") == m_symbolBuffer.GetString().size() - 1) {
+                        m_tag = m_symbolBuffer.GetString().substr(0, m_symbolBuffer.GetString().size() - 1);
+                    }
+                }
+                m_symbolBuffer.Clear();
+            }
+        }
+        virtual void EndCatch() override {
+            EAssert(m_tag.size() > 0, "error");
+            EAssert(m_uintBuffer.size() == 2, "error");
+            euint64 data;
+            euint32* dataPointer = (euint32*)&data;
+            dataPointer[0] = m_uintBuffer[0];
+            dataPointer[1] = m_uintBuffer[1];
+            m_dataMap[m_tag] = data;
+            m_uintBuffer.clear();
+            m_symbolBuffer.Clear();
+            EAssert(!m_isWaitingInteger, "error");
+            DirectiveCatcher::EndCatch();
+        }
     };
     
     template <typename T>
@@ -689,7 +741,8 @@ namespace xhn
         LinkerOptionCatcher lc;
         IndirectSymbolCatcher ic;
         PrivateExternCatcher pc;
-        WeakDefinition wc;
+        WeakDefinitionCatcher wc;
+        FirstDataRegionCatcher fc;
         RemoveQuotes(input, output);
         sc.Catch(output.get(), output.size());
         zc.Catch(sc.m_outputBuffer.get(), sc.m_outputBuffer.size());
@@ -699,9 +752,10 @@ namespace xhn
         ic.Catch(lc.m_outputBuffer.get(), lc.m_outputBuffer.size());
         pc.Catch(ic.m_outputBuffer.get(), ic.m_outputBuffer.size());
         wc.Catch(pc.m_outputBuffer.get(), pc.m_outputBuffer.size());
+        fc.Catch(wc.m_outputBuffer.get(), wc.m_outputBuffer.size());
         
         NSMutableData* data = [NSMutableData new];
-        [data appendBytes:wc.m_outputBuffer.get() length:wc.m_outputBuffer.size()];
+        [data appendBytes:fc.m_outputBuffer.get() length:fc.m_outputBuffer.size()];
         
         if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:dstPath]]) {
             NSError* error = nil;
