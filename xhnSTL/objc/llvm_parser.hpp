@@ -18,6 +18,7 @@
 #include "xhn_vector.hpp"
 #include "xhn_smart_ptr.hpp"
 #include "xhn_map.hpp"
+#include "symbol_buffer.hpp"
 
 namespace xhn
 {

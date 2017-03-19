@@ -22,23 +22,69 @@ static NSMutableSet* s_LLVMCommandLineUtils = nil;
     NSTask *mTask;
     NSPipe *mPipe;
     NSFileHandle *mFile;
+    
+    xhn::string mFilePath;
+    euint32 mFileCount;
+    NSMutableData* mWriteBuffer;
+    xhn::string mMatchingString;
+    xhn::vector<char> mMatchBuffer;
 }
-
+- (void) writeToFile
+{
+    if ([mWriteBuffer length] == 0)
+        return;
+    char mbuf[256];
+    snprintf(mbuf, 255, "%s%d.ll", mFilePath.c_str(), mFileCount++);
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:mbuf]]) {
+        NSError* error = nil;
+        [fileManager removeItemAtPath:[NSString stringWithUTF8String:mbuf] error:&error];
+    }
+    [fileManager createFileAtPath:[NSString stringWithUTF8String:mbuf] contents:mWriteBuffer attributes:nil];
+}
 - (void)receivedData:(NSNotification *)notif {
     NSFileHandle *fh = [notif object];
     NSData *data = [fh availableData];
     if (data.length > 0) { // if data is found, re-register for more data (and print)
         [fh waitForDataInBackgroundAndNotify];
         
-        printf("%s", (char*)data.bytes);
+        const char* string = (const char*)data.bytes;
+        
+        for (euint i = 0; i < data.length; i++) {
+            
+            if (mMatchingString[mMatchBuffer.size()] == string[i]) {
+                mMatchBuffer.push_back(string[i]);
+                if (mMatchBuffer.size() == mMatchingString.size()) {
+                    [self writeToFile];
+                    mWriteBuffer = [NSMutableData new];
+                    [mWriteBuffer appendBytes:mMatchBuffer.get() length:mMatchBuffer.size()];
+                    mMatchBuffer.clear();
+                }
+            }
+            else {
+                if (mMatchBuffer.size()) {
+                    [mWriteBuffer appendBytes:mMatchBuffer.get() length:mMatchBuffer.size()];
+                }
+                mMatchBuffer.clear();
+                [mWriteBuffer appendBytes:&string[i] length:1];
+            }
+        }
     }
     else {
+        if ([mWriteBuffer length]) {
+            [self writeToFile];
+            mWriteBuffer = nil;
+        }
         mCallback();
     }
 }
 
 - (void) runCommand:(NSString*)commandToRun callback:(void(^)())proc
 {
+    mFilePath = "/Users/xhnsworks/VEngineProjects/tmp";
+    mFileCount = 0;
+    mMatchingString = "; ModuleID";
+    mWriteBuffer = [NSMutableData new];
     mCallback = proc;
     mTask = [[NSTask alloc] init];
     [mTask setLaunchPath: @"/bin/sh"];
@@ -73,7 +119,8 @@ void _TestLLVMParser()
     __block volatile BOOL stopFlag = NO;
     NSString* cmd =
     
-    @"swiftc -parse-as-library -emit-ir /Users/xhnsworks/VEngineProjects/initial_script.swift /Users/xhnsworks/VEngineProjects/VEngineBridgingInterface.swift /Users/xhnsworks/VEngineProjects/VEngineBridgingInterface2.swift -module-name VEngineLogic";
+    @"xcrun -sdk iphoneos swiftc -target armv7-apple-ios8.0 -parse-as-library -emit-ir /Users/xhnsworks/VEngineProjects/initial_script.swift /Users/xhnsworks/VEngineProjects/VEngineBridgingInterface.swift /Users/xhnsworks/VEngineProjects/VEngineBridgingInterface2.swift -module-name VEngineLogic\n";
+    //@"/Users/xhnsworks/Projects/llvm-bin/Debug/bin/llc /Users/xhnsworks/VEngineProjects/tmp0.ll /Users/xhnsworks/VEngineProjects/tmp1.ll /Users/xhnsworks/VEngineProjects/tmp2.ll";
     LLVMCommandLineUtil* util = [LLVMCommandLineUtil new];
     [util runCommand:cmd callback:^(){ stopFlag = YES; }];
     ///while (!stopFlag) {}

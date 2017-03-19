@@ -71,6 +71,16 @@ public:
     {
         return buffer;
     }
+    
+    xhn::string GetString()
+    {
+        return buffer;
+    }
+    
+    void Clear()
+    {
+        bufferTop = 0;
+    }
 };
 
 }

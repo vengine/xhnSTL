@@ -528,7 +528,7 @@ struct SinglyLinkedListNode
 
 - (void) testLLVMParser
 {
-    _TestLLVMParser();
+    xhn::_TestLLVMParser();
 }
 
 - (void)testPerformanceExample {
