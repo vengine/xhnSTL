@@ -70,46 +70,76 @@ static NSMutableSet* s_ASMCommandLineUtils = nil;
 
 namespace xhn
 {
+    class DirectiveCatcher
+    {
+    public:
+        xhn::string m_matchingString;
+        xhn::vector<char> m_matchBuffer;
+        xhn::vector<char> m_outputBuffer;
+    public:
+        DirectiveCatcher(const char* directive)
+        : m_matchingString(directive)
+        {}
+        virtual void CatchImpl(char c) = 0;
+        virtual void EndCatch() {
+            m_outputBuffer.push_back('\n');
+        }
+        void Catch(const char* bytes, euint length)
+        {
+            bool isCatching = false;
+            for (euint i = 0; i < length; i++) {
+                if (isCatching) {
+                    if ('\n' == bytes[i]) {
+                        EndCatch();
+                        isCatching = false;
+                    }
+                    else {
+                        CatchImpl(bytes[i]);
+                    }
+                }
+                else {
+                    if (m_matchingString[m_matchBuffer.size()] == bytes[i]) {
+                        m_matchBuffer.push_back(bytes[i]);
+                        if (m_matchBuffer.size() == m_matchingString.size()) {
+                            isCatching = true;
+                            m_matchBuffer.clear();
+                        }
+                    }
+                    else {
+                        if (m_matchBuffer.size()) {
+                            for (auto c : m_matchBuffer) {
+                                m_outputBuffer.push_back(c);
+                            }
+                            m_matchBuffer.clear();
+                        }
+                        m_outputBuffer.push_back(bytes[i]);
+                    }
+                }
+                
+            }
+        }
+    };
+    
+    class SectionCatcher : public DirectiveCatcher
+    {
+    public:
+        SectionCatcher()
+        : DirectiveCatcher(".section")
+        {}
+        virtual void CatchImpl(char c) override {}
+    };
     void RemoveSectionDirective(const char* srcPath, const char* dstPath)
     {
         NSFileManager* fileManager = [NSFileManager defaultManager];
         NSData* srcData = [fileManager contentsAtPath:[NSString stringWithUTF8String:srcPath]];
         const char* bytes = (const char*)[srcData bytes];
         euint length = [srcData length];
-        xhn::string matchingString = ".section";
-        xhn::vector<char> matchBuffer;
-        xhn::vector<char> buffer;
-        bool isSkipping = false;
-        for (euint i = 0; i < length; i++) {
-            if (isSkipping) {
-                if ('\n' == bytes[i]) {
-                    buffer.push_back(bytes[i]);
-                    isSkipping = false;
-                }
-            }
-            else {
-                if (matchingString[matchBuffer.size()] == bytes[i]) {
-                    matchBuffer.push_back(bytes[i]);
-                    if (matchBuffer.size() == matchingString.size()) {
-                        isSkipping = true;
-                        matchBuffer.clear();
-                    }
-                }
-                else {
-                    if (matchBuffer.size()) {
-                        for (auto c : matchBuffer) {
-                            buffer.push_back(c);
-                        }
-                        matchBuffer.clear();
-                    }
-                    buffer.push_back(bytes[i]);
-                }
-            }
-            
-        }
+        
+        SectionCatcher sc;
+        sc.Catch(bytes, length);
         
         NSMutableData* data = [NSMutableData new];
-        [data appendBytes:buffer.get() length:buffer.size()];
+        [data appendBytes:sc.m_outputBuffer.get() length:sc.m_outputBuffer.size()];
         
         if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:dstPath]]) {
             NSError* error = nil;
