@@ -13,12 +13,17 @@ static xhn::SpinLock s_ASMCommandLineUtilsLock;
 static NSMutableSet* s_ASMCommandLineUtils = nil;
 
 @interface LLCCommandLineUtil : NSObject
-- (void) runCommand:(NSString*)commandToRun callback:(void(^)())proc;
+{
+@public
+    xhn::string mTargetDir;
+    xhn::string mFilename;
+}
+- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&, const xhn::string&))proc;
 @end
 
 @implementation LLCCommandLineUtil
 {
-    void(^mCallback)();
+    void(^mCallback)(const xhn::string&, const xhn::string&);
     NSTask *mTask;
     NSPipe *mPipe;
     NSFileHandle *mFile;
@@ -36,11 +41,11 @@ static NSMutableSet* s_ASMCommandLineUtils = nil;
     }
     else {
 
-        mCallback();
+        mCallback(mTargetDir, mFilename);
     }
 }
 
-- (void) runCommand:(NSString*)commandToRun callback:(void(^)())proc
+- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string&, const xhn::string&))proc
 {
     mCallback = proc;
     mTask = [[NSTask alloc] init];
@@ -825,33 +830,54 @@ namespace xhn
         [fileManager createFileAtPath:[NSString stringWithUTF8String:dstPath]
                              contents:data attributes:nil];
     }
+    
+    void CompileAllIRs(const xhn::string& llcPath, const xhn::string& targetDir, const xhn::vector<xhn::string>& filenames) {
+        for (auto& fn : filenames) {
+            NSString* command = [NSString stringWithFormat:@"%s %s/%s -o %s/%s_s",
+                                 llcPath.c_str(),
+                                 targetDir.c_str(), fn.c_str(),
+                                 targetDir.c_str(), fn.c_str()];
+            LLCCommandLineUtil* util = [LLCCommandLineUtil new];
+            util->mTargetDir = targetDir;
+            util->mFilename = fn;
+            [util runCommand:command callback:^(const xhn::string& targetDir, const xhn::string& filename){
+                
+                xhn::string inputPath = targetDir;
+                inputPath += "/";
+                inputPath += filename;
+                inputPath += "_s";
+                
+                xhn::string outputPath = targetDir;
+                outputPath += "/";
+                
+                euint pos = filename.rfind(".ll");
+                if (xhn::string::npos != pos) {
+                    xhn::string purename = filename.substr(0, filename.size() - 3);
+                    outputPath += purename;
+                    outputPath += ".s";
+                }
+                else {
+                    outputPath += filename;
+                    outputPath += "s";
+                }
+                RunAllDirectiveCatchers(inputPath.c_str(), outputPath.c_str());
+            }];
+            {
+                auto inst = s_ASMCommandLineUtilsLock.Lock();
+                if (!s_ASMCommandLineUtils) {
+                    s_ASMCommandLineUtils = [NSMutableSet new];
+                }
+                [s_ASMCommandLineUtils addObject:util];
+            }
+        }
+    }
     void _TestASMSyntaxConverter()
     {
-        __block volatile BOOL stopFlag = NO;
-        NSString* cmd =
-        
-        @"/Users/xhnsworks/Projects/llvm-bin/Debug/bin/llc /Users/xhnsworks/VEngineProjects/tmp0.ll\n";
-        //@"/Users/xhnsworks/Projects/llvm-bin/Debug/bin/llc /Users/xhnsworks/VEngineProjects/tmp0.ll /Users/xhnsworks/VEngineProjects/tmp1.ll /Users/xhnsworks/VEngineProjects/tmp2.ll";
-        LLCCommandLineUtil* util = [LLCCommandLineUtil new];
-        [util runCommand:cmd callback:^(){
-            ///RemoveQuotes("/Users/xhnsworks/VEngineProjects/tmp0.s", "/Users/xhnsworks/VEngineProjects/tmp0.ss");
-            RunAllDirectiveCatchers("/Users/xhnsworks/VEngineProjects/tmp0.s", "/Users/xhnsworks/VEngineProjects/tmp0.ss");
-            /**
-            RemoveSectionDirective("/Users/xhnsworks/VEngineProjects/tmp0.ss", "/Users/xhnsworks/VEngineProjects/tmp0.sss");
-            ConvertZerofillDirective("/Users/xhnsworks/VEngineProjects/tmp0.sss", "/Users/xhnsworks/VEngineProjects/tmp0.ssss");
-            RemoveNoDeadStripDirective("/Users/xhnsworks/VEngineProjects/tmp0.ssss", "/Users/xhnsworks/VEngineProjects/tmp0.sssss");
-            RemoveAltEntryDirective("/Users/xhnsworks/VEngineProjects/tmp0.sssss", "/Users/xhnsworks/VEngineProjects/tmp0.ssssss");
-             **/
-            stopFlag = YES;
-        }];
-        ///while (!stopFlag) {}
-        {
-            auto inst = s_ASMCommandLineUtilsLock.Lock();
-            if (!s_ASMCommandLineUtils) {
-                s_ASMCommandLineUtils = [NSMutableSet new];
-            }
-            [s_ASMCommandLineUtils addObject:util];
-        }
+        xhn::vector<xhn::string> filenames;
+        filenames.push_back("tmp0.ll");
+        filenames.push_back("tmp1.ll");
+        filenames.push_back("tmp2.ll");
+        CompileAllIRs("/Users/xhnsworks/Projects/llvm-bin/Debug/bin/llc", "/Users/xhnsworks/VEngineProjects", filenames);
     }
     
 }
