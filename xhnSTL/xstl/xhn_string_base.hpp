@@ -301,9 +301,13 @@ public:
                 if ( m_str[count] != str.m_str[match_count] ) {
                     match_count = 0;
                     matching = false;
+                    match_pos = pos + count + 1;
                 }
-
-                match_count++;
+                else {
+                    
+                    match_count++;
+                }
+                
             } else {
                 if ( m_str[count] != str.m_str[0] ) {
                     match_pos++;

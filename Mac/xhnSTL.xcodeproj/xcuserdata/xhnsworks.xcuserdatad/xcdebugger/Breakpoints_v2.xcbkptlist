@@ -259,5 +259,565 @@
             landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511611867.941408"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "782"
+            endingLineNumber = "782"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511611867.941408"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "787"
+            endingLineNumber = "787"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::RunAllDirectiveCatchers(char const*, char const*)::$_0::operator()() const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/objc/asm_syntax_converter.mm"
+                  timestampString = "511610432.226729"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "787"
+                  endingLineNumber = "787"
+                  offsetFromSymbolStart = "741">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::RunAllDirectiveCatchers(char const*, char const*)::$_0::operator()() const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/objc/asm_syntax_converter.mm"
+                  timestampString = "511610432.231761"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "787"
+                  endingLineNumber = "787"
+                  offsetFromSymbolStart = "847">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511611745.516915"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "772"
+            endingLineNumber = "772"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511611745.516915"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "779"
+            endingLineNumber = "779"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511611867.941408"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "786"
+            endingLineNumber = "786"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511610102.415541"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "768"
+            endingLineNumber = "768"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/xstl/xhn_string_base.hpp"
+            timestampString = "511610159.699875"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "286"
+            endingLineNumber = "286"
+            landmarkName = "find ( const string_base &amp;str, euint pos = 0 )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::get_hash() const"
+                  moduleName = "xhnSTLTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610276.128305"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "441"
+                  endingLineNumber = "441"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::find(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610276.154716"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "286"
+                  endingLineNumber = "286"
+                  offsetFromSymbolStart = "20">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/xstl/xhn_string_base.hpp"
+            timestampString = "511610160.78289"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "290"
+            endingLineNumber = "290"
+            landmarkName = "find ( const string_base &amp;str, euint pos = 0 )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::get_hash() const"
+                  moduleName = "xhnSTLTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610276.130311"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "441"
+                  endingLineNumber = "441"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::find(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610276.15659"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "290"
+                  endingLineNumber = "290"
+                  offsetFromSymbolStart = "78">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/xstl/xhn_string_base.hpp"
+            timestampString = "511610898.974613"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "315"
+            endingLineNumber = "315"
+            landmarkName = "find ( const string_base &amp;str, euint pos = 0 )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::get_hash() const"
+                  moduleName = "xhnSTLTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.468481"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "444"
+                  endingLineNumber = "444"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::find(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.484363"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "315"
+                  endingLineNumber = "315"
+                  offsetFromSymbolStart = "306">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/xstl/xhn_string_base.hpp"
+            timestampString = "511610179.330254"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "298"
+            endingLineNumber = "298"
+            landmarkName = "find ( const string_base &amp;str, euint pos = 0 )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::get_hash() const"
+                  moduleName = "xhnSTLTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610276.13506"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "441"
+                  endingLineNumber = "441"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::find(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610276.161261"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "298"
+                  endingLineNumber = "298"
+                  offsetFromSymbolStart = "155">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/xstl/xhn_string_base.hpp"
+            timestampString = "511610898.974613"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "303"
+            endingLineNumber = "303"
+            landmarkName = "find ( const string_base &amp;str, euint pos = 0 )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::get_hash() const"
+                  moduleName = "xhnSTLTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.470619"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "444"
+                  endingLineNumber = "444"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::find(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.48672"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "303"
+                  endingLineNumber = "303"
+                  offsetFromSymbolStart = "216">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/xstl/xhn_string_base.hpp"
+            timestampString = "511610898.974613"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "308"
+            endingLineNumber = "308"
+            landmarkName = "find ( const string_base &amp;str, euint pos = 0 )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::get_hash() const"
+                  moduleName = "xhnSTLTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.473072"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "444"
+                  endingLineNumber = "444"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::find(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.488777"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "308"
+                  endingLineNumber = "308"
+                  offsetFromSymbolStart = "237">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511610589.388548"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "769"
+            endingLineNumber = "769"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/xstl/xhn_string_base.hpp"
+            timestampString = "511610898.974613"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "313"
+            endingLineNumber = "313"
+            landmarkName = "find ( const string_base &amp;str, euint pos = 0 )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::get_hash() const"
+                  moduleName = "xhnSTLTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.475097"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "444"
+                  endingLineNumber = "444"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::find(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.49426"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "313"
+                  endingLineNumber = "313"
+                  offsetFromSymbolStart = "289">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/xstl/xhn_string_base.hpp"
+            timestampString = "511610898.974613"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "320"
+            endingLineNumber = "320"
+            landmarkName = "find ( const string_base &amp;str, euint pos = 0 )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::get_hash() const"
+                  moduleName = "xhnSTLTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.476854"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "444"
+                  endingLineNumber = "444"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::find(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511610899.496236"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "320"
+                  endingLineNumber = "320"
+                  offsetFromSymbolStart = "323">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511611964.65582"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "793"
+            endingLineNumber = "793"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511611964.65582"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "800"
+            endingLineNumber = "800"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

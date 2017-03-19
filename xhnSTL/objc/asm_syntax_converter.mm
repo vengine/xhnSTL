@@ -754,8 +754,46 @@ namespace xhn
         wc.Catch(pc.m_outputBuffer.get(), pc.m_outputBuffer.size());
         fc.Catch(wc.m_outputBuffer.get(), wc.m_outputBuffer.size());
         
+        xhn::string stringBuffer0;
+        xhn::string stringBuffer1;
+        xhn::string* inputStringBuffer = &stringBuffer0;
+        xhn::string* outputStringBuffer = &stringBuffer1;
+        
+        for (auto c : fc.m_outputBuffer) {
+            (*inputStringBuffer) += c;
+        }
+        
+        auto replaceTags = [&fc, &inputStringBuffer, &outputStringBuffer]() {
+            for (auto& p : fc.m_dataMap) {
+                euint pos = inputStringBuffer->find(p.first);
+                while (xhn::string::npos != pos) {
+                    char mbuf[256];
+                    snprintf(mbuf, 255, "=0x%llx", p.second);
+                    
+                    (*outputStringBuffer) = inputStringBuffer->substr(0, pos);
+                    (*outputStringBuffer) += mbuf;
+                    (*outputStringBuffer) += inputStringBuffer->substr(pos + p.first.size(), inputStringBuffer->size() - pos - p.first.size());
+                    pos = outputStringBuffer->find(p.first);
+                    
+                    inputStringBuffer->clear();
+                    
+                    xhn::string* tmp = inputStringBuffer;
+                    inputStringBuffer = outputStringBuffer;
+                    outputStringBuffer = tmp;
+                }
+            }
+        };
+        
+        replaceTags();
+        
+        if (outputStringBuffer->size() == 0) {
+            xhn::string* tmp = inputStringBuffer;
+            inputStringBuffer = outputStringBuffer;
+            outputStringBuffer = tmp;
+        }
+        
         NSMutableData* data = [NSMutableData new];
-        [data appendBytes:fc.m_outputBuffer.get() length:fc.m_outputBuffer.size()];
+        [data appendBytes:outputStringBuffer->c_str() length:outputStringBuffer->size()];
         
         if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:dstPath]]) {
             NSError* error = nil;
