@@ -188,18 +188,38 @@ namespace xhn
             
         }
     };
-    void ConvertZerofillDirective(const char* srcPath, const char* dstPath)
+    
+    class NoDeadStripCatcher : public DirectiveCatcher
+    {
+    public:
+        NoDeadStripCatcher()
+        : DirectiveCatcher(".no_dead_strip")
+        {}
+        virtual void CatchImpl(char c) override {}
+    };
+    
+    class AltEntryCatcher : public DirectiveCatcher
+    {
+    public:
+        AltEntryCatcher()
+        : DirectiveCatcher(".alt_entry")
+        {}
+        virtual void CatchImpl(char c) override {}
+    };
+    
+    template <typename T>
+    void RunDirectiveCatcher(const char* srcPath, const char* dstPath)
     {
         NSFileManager* fileManager = [NSFileManager defaultManager];
         NSData* srcData = [fileManager contentsAtPath:[NSString stringWithUTF8String:srcPath]];
         const char* bytes = (const char*)[srcData bytes];
         euint length = [srcData length];
         
-        ZerofillCatcher zc;
-        zc.Catch(bytes, length);
+        T c;
+        c.Catch(bytes, length);
         
         NSMutableData* data = [NSMutableData new];
-        [data appendBytes:zc.m_outputBuffer.get() length:zc.m_outputBuffer.size()];
+        [data appendBytes:c.m_outputBuffer.get() length:c.m_outputBuffer.size()];
         
         if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:dstPath]]) {
             NSError* error = nil;
@@ -208,25 +228,22 @@ namespace xhn
         [fileManager createFileAtPath:[NSString stringWithUTF8String:dstPath]
                              contents:data attributes:nil];
     }
+    
+    void RemoveAltEntryDirective(const char* srcPath, const char* dstPath)
+    {
+        RunDirectiveCatcher<AltEntryCatcher>(srcPath, dstPath);
+    }
+    void RemoveNoDeadStripDirective(const char* srcPath, const char* dstPath)
+    {
+        RunDirectiveCatcher<NoDeadStripCatcher>(srcPath, dstPath);
+    }
+    void ConvertZerofillDirective(const char* srcPath, const char* dstPath)
+    {
+        RunDirectiveCatcher<ZerofillCatcher>(srcPath, dstPath);
+    }
     void RemoveSectionDirective(const char* srcPath, const char* dstPath)
     {
-        NSFileManager* fileManager = [NSFileManager defaultManager];
-        NSData* srcData = [fileManager contentsAtPath:[NSString stringWithUTF8String:srcPath]];
-        const char* bytes = (const char*)[srcData bytes];
-        euint length = [srcData length];
-        
-        SectionCatcher sc;
-        sc.Catch(bytes, length);
-        
-        NSMutableData* data = [NSMutableData new];
-        [data appendBytes:sc.m_outputBuffer.get() length:sc.m_outputBuffer.size()];
-        
-        if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:dstPath]]) {
-            NSError* error = nil;
-            [fileManager removeItemAtPath:[NSString stringWithUTF8String:dstPath] error:&error];
-        }
-        [fileManager createFileAtPath:[NSString stringWithUTF8String:dstPath]
-                             contents:data attributes:nil];
+        RunDirectiveCatcher<SectionCatcher>(srcPath, dstPath);
     }
     void RemoveQuotes(const char* srcPath, const char* dstPath)
     {
@@ -423,6 +440,8 @@ namespace xhn
             RemoveQuotes("/Users/xhnsworks/VEngineProjects/tmp0.s", "/Users/xhnsworks/VEngineProjects/tmp0.ss");
             RemoveSectionDirective("/Users/xhnsworks/VEngineProjects/tmp0.ss", "/Users/xhnsworks/VEngineProjects/tmp0.sss");
             ConvertZerofillDirective("/Users/xhnsworks/VEngineProjects/tmp0.sss", "/Users/xhnsworks/VEngineProjects/tmp0.ssss");
+            RemoveNoDeadStripDirective("/Users/xhnsworks/VEngineProjects/tmp0.ssss", "/Users/xhnsworks/VEngineProjects/tmp0.sssss");
+            RemoveAltEntryDirective("/Users/xhnsworks/VEngineProjects/tmp0.sssss", "/Users/xhnsworks/VEngineProjects/tmp0.ssssss");
             stopFlag = YES;
         }];
         ///while (!stopFlag) {}
