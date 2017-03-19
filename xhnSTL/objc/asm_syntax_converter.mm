@@ -128,6 +128,86 @@ namespace xhn
         {}
         virtual void CatchImpl(char c) override {}
     };
+    
+    class ZerofillCatcher : public DirectiveCatcher
+    {
+    public:
+        SymbolBuffer m_symbolBuffer;
+        euint m_symbolCount;
+        xhn::string m_symbol;
+        xhn::string m_size;
+    public:
+        ZerofillCatcher()
+        : DirectiveCatcher(".zerofill")
+        , m_symbolCount(0)
+        {}
+        virtual void CatchImpl(char c) override {
+            if (m_symbolCount < 2) {
+                if (',' == c) {
+                    m_symbolCount++;
+                }
+            }
+            else if (m_symbolCount == 2) {
+                if (',' == c) {
+                    m_symbol = m_symbolBuffer.GetString();
+                    m_symbolBuffer.Clear();
+                    m_symbolCount++;
+                }
+                else if (' ' != c) {
+                    m_symbolBuffer.AddCharacter(c);
+                }
+            }
+            else if (m_symbolCount == 3) {
+                if (',' == c) {
+                    m_size = m_symbolBuffer.GetString();
+                    m_symbolBuffer.Clear();
+                    m_symbolCount++;
+                }
+                else if (' ' != c) {
+                    m_symbolBuffer.AddCharacter(c);
+                }
+            }
+        }
+        virtual void EndCatch() override {
+            m_outputBuffer.push_back('\n');
+            
+            xhn::string filledString = ".globl ";
+            filledString += m_symbol;
+            filledString += "\n";
+            filledString += ".space ";
+            filledString += m_size;
+            filledString += ", 0\n";
+            
+            for (auto c : filledString) {
+                m_outputBuffer.push_back(c);
+            }
+            
+            m_symbol = "";
+            m_symbolBuffer.Clear();
+            m_symbolCount = 0;
+            
+        }
+    };
+    void ConvertZerofillDirective(const char* srcPath, const char* dstPath)
+    {
+        NSFileManager* fileManager = [NSFileManager defaultManager];
+        NSData* srcData = [fileManager contentsAtPath:[NSString stringWithUTF8String:srcPath]];
+        const char* bytes = (const char*)[srcData bytes];
+        euint length = [srcData length];
+        
+        ZerofillCatcher zc;
+        zc.Catch(bytes, length);
+        
+        NSMutableData* data = [NSMutableData new];
+        [data appendBytes:zc.m_outputBuffer.get() length:zc.m_outputBuffer.size()];
+        
+        if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:dstPath]]) {
+            NSError* error = nil;
+            [fileManager removeItemAtPath:[NSString stringWithUTF8String:dstPath] error:&error];
+        }
+        [fileManager createFileAtPath:[NSString stringWithUTF8String:dstPath]
+                             contents:data attributes:nil];
+    }
     void RemoveSectionDirective(const char* srcPath, const char* dstPath)
     {
         NSFileManager* fileManager = [NSFileManager defaultManager];
@@ -342,6 +422,7 @@ namespace xhn
         [util runCommand:cmd callback:^(){
             RemoveQuotes("/Users/xhnsworks/VEngineProjects/tmp0.s", "/Users/xhnsworks/VEngineProjects/tmp0.ss");
             RemoveSectionDirective("/Users/xhnsworks/VEngineProjects/tmp0.ss", "/Users/xhnsworks/VEngineProjects/tmp0.sss");
+            ConvertZerofillDirective("/Users/xhnsworks/VEngineProjects/tmp0.sss", "/Users/xhnsworks/VEngineProjects/tmp0.ssss");
             stopFlag = YES;
         }];
         ///while (!stopFlag) {}
