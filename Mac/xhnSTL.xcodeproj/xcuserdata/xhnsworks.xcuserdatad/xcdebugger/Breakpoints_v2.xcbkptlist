@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "663"
-            endingLineNumber = "663"
+            startingLineNumber = "681"
+            endingLineNumber = "681"
             landmarkName = "RemoveQuotes(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "712"
-            endingLineNumber = "712"
+            startingLineNumber = "730"
+            endingLineNumber = "730"
             landmarkName = "RemoveQuotes(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "726"
-            endingLineNumber = "726"
+            startingLineNumber = "744"
+            endingLineNumber = "744"
             landmarkName = "RemoveQuotes(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "617"
-            endingLineNumber = "617"
+            startingLineNumber = "635"
+            endingLineNumber = "635"
             landmarkName = "RemoveQuotes(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "650"
-            endingLineNumber = "650"
+            startingLineNumber = "668"
+            endingLineNumber = "668"
             landmarkName = "RemoveQuotes(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "719"
-            endingLineNumber = "719"
+            startingLineNumber = "737"
+            endingLineNumber = "737"
             landmarkName = "RemoveQuotes(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -106,11 +106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "714"
-            endingLineNumber = "714"
+            startingLineNumber = "732"
+            endingLineNumber = "732"
             landmarkName = "RemoveQuotes(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "729"
-            endingLineNumber = "729"
+            startingLineNumber = "747"
+            endingLineNumber = "747"
             landmarkName = "RemoveQuotes(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -138,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "728"
+            endingLineNumber = "728"
             landmarkName = "RemoveQuotes(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "835"
-            endingLineNumber = "835"
+            startingLineNumber = "853"
+            endingLineNumber = "853"
             landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -282,11 +282,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "840"
-            endingLineNumber = "840"
+            startingLineNumber = "858"
+            endingLineNumber = "858"
             landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
             <Locations>
@@ -330,11 +330,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "829"
-            endingLineNumber = "829"
+            startingLineNumber = "847"
+            endingLineNumber = "847"
             landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -346,11 +346,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "832"
-            endingLineNumber = "832"
+            startingLineNumber = "850"
+            endingLineNumber = "850"
             landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -362,11 +362,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "839"
-            endingLineNumber = "839"
+            startingLineNumber = "857"
+            endingLineNumber = "857"
             landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -378,11 +378,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "826"
-            endingLineNumber = "826"
+            startingLineNumber = "844"
+            endingLineNumber = "844"
             landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -682,11 +682,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "827"
-            endingLineNumber = "827"
+            startingLineNumber = "845"
+            endingLineNumber = "845"
             landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -794,11 +794,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "846"
-            endingLineNumber = "846"
+            startingLineNumber = "864"
+            endingLineNumber = "864"
             landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
          </BreakpointContent>
@@ -810,13 +810,105 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
-            timestampString = "511618346.219377"
+            timestampString = "511624400.195763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "853"
-            endingLineNumber = "853"
+            startingLineNumber = "871"
+            endingLineNumber = "871"
             landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
             landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511624400.195763"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "965"
+            endingLineNumber = "965">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511624400.195763"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "796"
+            endingLineNumber = "796"
+            landmarkName = "RunAllDirectiveCatchers(const char* srcPath, const char* dstPath)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/objc/asm_syntax_converter.mm"
+            timestampString = "511624400.195763"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "947"
+            endingLineNumber = "947">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../xhnSTL/xstl/xhn_string_base.hpp"
+            timestampString = "511705500.626486"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "351"
+            endingLineNumber = "351"
+            landmarkName = "rfind ( const string_base &amp;str, euint pos = npos )"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::rfind(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTLTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511705587.803423"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "351"
+                  endingLineNumber = "351"
+                  offsetFromSymbolStart = "241">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt;::rfind(xhn::string_base&lt;char, xhn::FStrCmpProc, xhn::FDefaultStrProc&gt; const&amp;, unsigned long long) const"
+                  moduleName = "xhnSTL"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xhnsworks/vengine/dependencies/xhnSTL/xhnSTL/xstl/xhn_string_base.hpp"
+                  timestampString = "511705587.807519"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "351"
+                  endingLineNumber = "351"
+                  offsetFromSymbolStart = "241">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

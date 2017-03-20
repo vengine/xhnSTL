@@ -523,12 +523,28 @@ struct SinglyLinkedListNode
         printf("%s, %d\n", n.first.c_str(), n.second);
     }
 }
-
+/**
 #include <xhnSTL/llvm_parser.hpp>
 
 - (void) testLLVMParser
 {
     xhn::_TestLLVMParser();
+}
+
+#include <xhnSTL/asm_syntax_converter.hpp>
+
+- (void) testAsmSyntaxConverter
+{
+    xhn::_TestASMSyntaxConverter();
+}
+**/
+#include <xhnSTL/xhn_string.hpp>
+
+- (void) testString
+{
+    xhn::string aaa = "111222333222343443133";
+    NSAssert(aaa.rfind("222") == 9, @"error %llu", aaa.rfind("222"));
+    NSAssert(aaa.rfind("333") == 6, @"error %llu", aaa.rfind("333"));
 }
 
 - (void)testPerformanceExample {

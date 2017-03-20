@@ -333,6 +333,24 @@ namespace xhn
         }
     };
     
+    class RemoveDataRegionCatcher : public DirectiveCatcher
+    {
+    public:
+        RemoveDataRegionCatcher()
+        : DirectiveCatcher(".data_region")
+        {}
+        virtual void CatchImpl(char c) override {}
+    };
+    
+    class RemoveEndDataRegionCatcher : public DirectiveCatcher
+    {
+    public:
+        RemoveEndDataRegionCatcher()
+        : DirectiveCatcher(".end_data_region")
+        {}
+        virtual void CatchImpl(char c) override {}
+    };
+    
     class iOSVersionMinCatcher : public DirectiveCatcher
     {
     public:
@@ -863,7 +881,7 @@ namespace xhn
     
     void CompileAllIRs(const xhn::string& llcPath, const xhn::string& targetDir, const xhn::vector<xhn::string>& filenames) {
         for (auto& fn : filenames) {
-            NSString* command = [NSString stringWithFormat:@"%s %s/%s -o %s/%s_s",
+            NSString* command = [NSString stringWithFormat:@"%s -relocation-model=pic -code-model=large %s/%s -o %s/%s_s",
                                  llcPath.c_str(),
                                  targetDir.c_str(), fn.c_str(),
                                  targetDir.c_str(), fn.c_str()];
@@ -907,6 +925,7 @@ namespace xhn
         filenames.push_back("tmp0.ll");
         filenames.push_back("tmp1.ll");
         filenames.push_back("tmp2.ll");
+        ///filenames.push_back("VEngineBridgingInterface.ll");
         CompileAllIRs("/Users/xhnsworks/Projects/llvm-bin/Debug/bin/llc", "/Users/xhnsworks/VEngineProjects", filenames);
     }
     

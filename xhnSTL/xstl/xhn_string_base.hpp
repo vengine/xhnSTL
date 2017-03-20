@@ -348,9 +348,11 @@ public:
                 if ( m_str[count] != str.m_str[match_count] ) {
                     match_count = str.m_size - 1;
                     matching = false;
+                    match_pos = count - 1;
                 }
-
-                match_count--;
+                else {
+                    match_count--;
+                }
             } else {
                 if ( m_str[count] != str.m_str[str.m_size - 1] ) {
                     match_pos--;
