@@ -27,8 +27,12 @@ namespace xhn
     class hash_node
     {
     public:
-        ALIGN_FLAG ( 16 ) V second;
-        ALIGN_FLAG ( 16 ) typename TKeyValue<K>::type first;
+        typedef typename remove_const< K >::type key_type;
+        typedef typename remove_const< V >::type value_type;
+        typedef typename TKeyValue< key_type >::type hash_key_type;
+    public:
+        ALIGN_FLAG ( 16 ) value_type second;
+        ALIGN_FLAG ( 16 ) hash_key_type first;
         hash_node* m_iter_next;
         hash_node* m_iter_prev;
         euint32 m_hash_value;
@@ -37,7 +41,7 @@ namespace xhn
         euint32 m_bucket_index;
         hash_node( const K &key, const V &value )
         : second(value)
-        , first(key)
+        , first((hash_key_type)key)
         , m_hash_table(nullptr)
         , m_bucket_index(0)
         {}

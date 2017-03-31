@@ -133,6 +133,8 @@
 		68FC12DB1BC9D31A00C8A0BE /* xhnSTLTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */; };
 		B10D55A61CBE6D47003733D9 /* swift_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B10D55A41CBE6D47003733D9 /* swift_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B10D55A71CBE6D47003733D9 /* swift_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10D55A51CBE6D47003733D9 /* swift_parser.mm */; };
+		B13A04AC1E8E8B8D003C55E3 /* xhn_cache.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B13A04AA1E8E8B8D003C55E3 /* xhn_cache.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B13A04AD1E8E8B8D003C55E3 /* xhn_memory_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B13A04AB1E8E8B8D003C55E3 /* xhn_memory_pool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BBE1E7D2AC200CBBDDD /* llvm_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1607BBC1E7D2AC200CBBDDD /* llvm_parser.mm */; };
 		B1607BBF1E7D2AC200CBBDDD /* llvm_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BBD1E7D2AC200CBBDDD /* llvm_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */; };
@@ -284,6 +286,8 @@
 		68FC12DC1BC9D31A00C8A0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10D55A41CBE6D47003733D9 /* swift_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = swift_parser.hpp; sourceTree = "<group>"; };
 		B10D55A51CBE6D47003733D9 /* swift_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = swift_parser.mm; sourceTree = "<group>"; };
+		B13A04AA1E8E8B8D003C55E3 /* xhn_cache.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_cache.hpp; sourceTree = "<group>"; };
+		B13A04AB1E8E8B8D003C55E3 /* xhn_memory_pool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_memory_pool.hpp; sourceTree = "<group>"; };
 		B1607BBC1E7D2AC200CBBDDD /* llvm_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = llvm_parser.mm; sourceTree = "<group>"; };
 		B1607BBD1E7D2AC200CBBDDD /* llvm_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = llvm_parser.hpp; sourceTree = "<group>"; };
 		B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
@@ -382,6 +386,8 @@
 		68245C591BC9D8F80006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B13A04AA1E8E8B8D003C55E3 /* xhn_cache.hpp */,
+				B13A04AB1E8E8B8D003C55E3 /* xhn_memory_pool.hpp */,
 				B1C17FDF1E7A57FC007C7088 /* xhn_dictionary.hpp */,
 				68245C5A1BC9D8F80006E99D /* exception.cpp */,
 				68245C5B1BC9D8F80006E99D /* map.hpp */,
@@ -537,6 +543,7 @@
 				68245CFE1BC9D8F90006E99D /* xhn_gc_array.h in Headers */,
 				68245D071BC9D8F90006E99D /* xhn_iterator.hpp in Headers */,
 				68245CD31BC9D8F90006E99D /* prime.h in Headers */,
+				B13A04AC1E8E8B8D003C55E3 /* xhn_cache.hpp in Headers */,
 				68245D051BC9D8F90006E99D /* xhn_hash_map.hpp in Headers */,
 				68FC12CF1BC9D31A00C8A0BE /* xhnSTL.h in Headers */,
 				68245CC31BC9D8F90006E99D /* elog.h in Headers */,
@@ -551,6 +558,7 @@
 				68245CDC1BC9D8F90006E99D /* static_string.h in Headers */,
 				68245CE81BC9D8F90006E99D /* xhn_btree.hpp in Headers */,
 				68245CD11BC9D8F90006E99D /* mem.h in Headers */,
+				B13A04AD1E8E8B8D003C55E3 /* xhn_memory_pool.hpp in Headers */,
 				68245D381BC9D8F90006E99D /* xhn_utility.hpp in Headers */,
 				68245CB41BC9D8F90006E99D /* apple_file_manager.h in Headers */,
 				68245D361BC9D8F90006E99D /* xhn_thread_pool.hpp in Headers */,
