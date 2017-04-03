@@ -128,6 +128,7 @@ namespace xhn
         EQUAL_PROC m_equal_proc;
         BUCKET_ALLOCATOR m_bucket_allocator;
         NODE_ALLOCATOR m_node_allocator;
+        bool m_need_dealloc;
     public:
         typedef hash_node<K, V> node_type;
         
@@ -357,6 +358,7 @@ namespace xhn
         : m_hash_mask(0x7)
         , m_num_buckets(8)
         , m_rebuild_tolerance(2)
+        , m_need_dealloc(true)
         {
             m_buckets = m_bucket_allocator.allocate(m_num_buckets);
             for (euint32 i = 0; i < m_num_buckets; i++) {
@@ -371,11 +373,13 @@ namespace xhn
         }
         ~dictionary()
         {
-            for (euint32 i = 0; i < m_num_buckets; i++) {
-                destroy_hash_node_list(&m_buckets[i]);
-                m_bucket_allocator.destroy(&m_buckets[i]);
+            if (m_need_dealloc) {
+                for (euint32 i = 0; i < m_num_buckets; i++) {
+                    destroy_hash_node_list(&m_buckets[i]);
+                    m_bucket_allocator.destroy(&m_buckets[i]);
+                }
+                m_bucket_allocator.deallocate(m_buckets, m_num_buckets);
             }
-            m_bucket_allocator.deallocate(m_buckets, m_num_buckets);
         }
         V* find ( const K &key ) const {
             hash_node<K, V>* node = find_hash_node( key );

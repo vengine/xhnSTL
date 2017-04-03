@@ -65,6 +65,10 @@ namespace xhn
         FHashBucketAllocator<K, V>,
         FCacheHashListNodeAllocator<K, V, CACHE_SIZE> > base_type;
     public:
+        cache()
+        {
+            base_type::m_need_dealloc = false;
+        }
         ~cache()
         {}
         void clear() {
