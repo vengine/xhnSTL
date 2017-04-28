@@ -59,6 +59,50 @@ public:
 		return Instance(&m_lock);
 	}
 };
+    
+    /// \brief RecursiveMutexLock
+    ///
+    /// 递归互斥锁
+class RecursiveMutexLock : public RefObject
+{
+public:
+    mutable pthread_mutex_t m_lock;
+public:
+    class Instance
+    {
+        friend class RecursiveMutexLock;
+    private:
+        pthread_mutex_t* m_prototype;
+        inline Instance(pthread_mutex_t* lock)
+        : m_prototype(lock)
+        {}
+    public:
+        inline Instance(const Instance& inst)
+        : m_prototype(inst.m_prototype)
+        {}
+        inline ~Instance()
+        {
+            pthread_mutex_unlock(m_prototype);
+        }
+    };
+public:
+    inline RecursiveMutexLock()
+    {
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutex_init(&m_lock, &attr);
+    }
+    inline ~RecursiveMutexLock()
+    {
+        pthread_mutex_destroy(&m_lock);
+    }
+    inline Instance Lock() const
+    {
+        pthread_mutex_lock(&m_lock);
+        return Instance(&m_lock);
+    }
+};
 
     /// \brief RWLock
     ///
