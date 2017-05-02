@@ -330,6 +330,9 @@ public:
         EAssert(0, "RefObject can not perform assign operation");
         return *this;
     }
+    inline euint32 GetRefCount() const {
+        return ref_count;
+    }
 };
 /**
 namespace xhn {
