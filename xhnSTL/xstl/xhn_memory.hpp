@@ -21,7 +21,7 @@
 #include "xhn_exception.hpp"
 #include "xhn_atomic_operation.hpp"
 
-#define REFOBJECT_DEBUG 1
+#define REFOBJECT_DEBUG 0
 
 class BannedAllocObject
 {
@@ -308,6 +308,7 @@ public:
 		ref_count = 0;
 #if REFOBJECT_DEBUG
         inc_callback = nullptr;
+        debug_value = nullptr;
 #endif
         weak_count = VNEW WeakCounter(this);
         EAssert(weak_count, "weak count must be not null");
@@ -317,6 +318,7 @@ public:
         ref_count = 0;
 #if REFOBJECT_DEBUG
         inc_callback = nullptr;
+        debug_value = nullptr;
 #endif
         weak_count = VNEW WeakCounter(this);
         EAssert(weak_count, "weak count must be not null");
