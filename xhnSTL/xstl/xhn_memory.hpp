@@ -21,6 +21,8 @@
 #include "xhn_exception.hpp"
 #include "xhn_atomic_operation.hpp"
 
+#define REFOBJECT_DEBUG 1
+
 class BannedAllocObject
 {
 public:
@@ -297,15 +299,25 @@ public:
 public:
 	mutable volatile esint32 ref_count;
     mutable WeakCounter* weak_count;
+#if REFOBJECT_DEBUG
+    void (*inc_callback)(RefObject*);
+    void* debug_value;
+#endif
 	RefObject()
 	{
 		ref_count = 0;
+#if REFOBJECT_DEBUG
+        inc_callback = nullptr;
+#endif
         weak_count = VNEW WeakCounter(this);
         EAssert(weak_count, "weak count must be not null");
 	}
     RefObject(const RefObject& obj)
     {
         ref_count = 0;
+#if REFOBJECT_DEBUG
+        inc_callback = nullptr;
+#endif
         weak_count = VNEW WeakCounter(this);
         EAssert(weak_count, "weak count must be not null");
     }
@@ -330,7 +342,7 @@ public:
         EAssert(0, "RefObject can not perform assign operation");
         return *this;
     }
-    inline euint32 GetRefCount() const {
+    inline esint32 GetRefCount() const {
         return ref_count;
     }
 };

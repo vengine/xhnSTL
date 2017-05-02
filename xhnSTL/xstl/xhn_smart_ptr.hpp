@@ -163,6 +163,11 @@ public:
 		{
 			AtomicIncrement(&ptr->ref_count);
             m_inc_callback(ptr);
+#if REFOBJECT_DEBUG
+            if (ptr->inc_callback) {
+                ptr->inc_callback((RefObject*)ptr);
+            }
+#endif
 		}
 	}
 	inline void _dec(volatile T* ptr)
