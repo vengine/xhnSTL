@@ -15,6 +15,7 @@
 
 #include "common.h"
 #include "etypes.h"
+#include "eassert.h"
 #include "emem.h"
 #include "xhn_memory.hpp"
 #include <new>
@@ -49,8 +50,19 @@ namespace xhn
 		}
         inline void_vector& operator =(const void_vector& v) {
             m_ele_size = v.m_ele_size;
-            resize(v._get_size());
-            memcpy(m_begin_addr, v.m_begin_addr, m_ele_size * size());
+            if (v._get_size()) {
+                resize(v._get_size());
+                memcpy(m_begin_addr, v.m_begin_addr, m_ele_size * size());
+            }
+            else {
+                EAssert(!v.m_begin_addr, "when vector is empty then the begin addr must be null");
+                if (m_begin_addr) {
+                    Mfree(m_begin_addr);
+                }
+                m_begin_addr = nullptr;
+                m_barrier = nullptr;
+                m_totel_ele_count = 0;
+            }
             return *this;
         }
 		inline euint _get_size() const {
@@ -104,6 +116,7 @@ namespace xhn
                 m_barrier += m_ele_size * d;
             }
 			else {
+                EAssert(m_begin_addr, "you must perform convert operation before resize operation");
                 m_barrier = m_begin_addr + ( m_ele_size * n );
             }
 		}
