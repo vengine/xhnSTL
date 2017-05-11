@@ -213,7 +213,7 @@ public:
 class SpinLock : public RefObject
 {
 private:
-	ELock m_lock;
+	mutable ELock m_lock;
 	vptr m_userdata;
 public:
 	class Instance
@@ -238,7 +238,7 @@ public:
 		: m_lock(0)
 		, m_userdata(NULL)
 	{}
-	inline Instance Lock()
+	inline Instance Lock() const
 	{
         ELock_lock(&m_lock);
 		return Instance(&m_lock);
