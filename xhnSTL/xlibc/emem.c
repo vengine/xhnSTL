@@ -323,7 +323,7 @@ bool MemPoolNode_is_from(MemPoolNode _self, void* _ptr)
     return is_from(_self.self, _ptr);
 }
 
-#define MAX_MEM_POOLS      512
+#define MAX_MEM_POOLS      1024
 #define DEFAULT_CHUNK_SIZE 32
 
 #define VENGINE_PAGE_SIZE (512)
