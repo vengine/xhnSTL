@@ -111,9 +111,7 @@ namespace xhn
 		inline void resize(euint n) {
             if (n > m_totel_ele_count) {
                 reserve(n);
-                euint curt_count = _get_size();
-                euint d = n - curt_count;
-                m_barrier += m_ele_size * d;
+                m_barrier = m_begin_addr + ( m_ele_size * n );
             }
 			else {
                 EAssert(m_begin_addr, "you must perform convert operation before resize operation");
