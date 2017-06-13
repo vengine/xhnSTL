@@ -14,6 +14,7 @@
 
 #include "common.h"
 #include "etypes.h"
+#include "eassert.h"
 #include "xhn_hash_set.hpp"
 #include "xhn_string.hpp"
 #include "xhn_utility.hpp"
@@ -62,6 +63,7 @@ public:
 			for (; iter != end; iter++) {
 				if (strcmp(iter->first.c_str(),str) == 0) {
                     m_entry = &*iter;
+                    EAssert(m_entry, "entry must be nonnull");
 					return;
 				}
 			}
@@ -69,12 +71,15 @@ public:
 
 		const pair<string, string_info> &v = s_static_string_set->insert ( entry );
         m_entry = (pair<string, string_info>*)&v;
+        EAssert(m_entry, "entry must be nonnull");
     }
     static_string ( const static_string& str ) {
         m_entry = str.m_entry;
+        EAssert(m_entry, "entry must be nonnull");
     }
     static_string ( static_string&& str ) {
         m_entry = str.m_entry;
+        EAssert(m_entry, "entry must be nonnull");
     }
     static_string () {
         if (!s_static_string_set) {
@@ -84,6 +89,7 @@ public:
         string_info info = { 0, 0, };
         const pair<string, string_info> &v = s_static_string_set->insert ( make_pair(value, info) );
         m_entry = (pair<string, string_info>*)&v;
+        EAssert(m_entry, "entry must be nonnull");
     }
     static_string (int) {
         if (!s_static_string_set) {
@@ -93,35 +99,45 @@ public:
         string_info info = { 0, 0, };
         const pair<string, string_info> &v = s_static_string_set->insert ( make_pair(value, info) );
         m_entry = (pair<string, string_info>*)&v;
+        EAssert(m_entry, "entry must be nonnull");
     }
     const char *c_str() const {
+        EAssert(m_entry, "entry must be nonnull");
         return m_entry->first.c_str();
     }
     bool operator < ( const static_string &str ) const {
+        EAssert(m_entry, "entry must be nonnull");
         return m_entry < str.m_entry;
     }
     bool operator > ( const static_string &str ) const {
+        EAssert(m_entry, "entry must be nonnull");
         return m_entry > str.m_entry;
     }
     bool operator == ( const static_string &str ) const {
+        EAssert(m_entry, "entry must be nonnull");
         return m_entry == str.m_entry;
     }
     bool operator != ( const static_string &str ) const {
+        EAssert(m_entry, "entry must be nonnull");
         return m_entry != str.m_entry;
     }
     euint size() const {
+        EAssert(m_entry, "entry must be nonnull");
         return m_entry->second.m_size;
     }
     euint32 hash_value() const
     {
+        EAssert(m_entry, "entry must be nonnull");
         return m_entry->second.m_hash_value;
     }
     const static_string& operator = (const static_string& str) {
         m_entry = str.m_entry;
+        EAssert(m_entry, "entry must be nonnull");
         return *this;
     }
     const static_string& operator = (static_string&& str) {
         m_entry = str.m_entry;
+        EAssert(m_entry, "entry must be nonnull");
         return *this;
     }
     void update_hash_status( ::hash_calc_status* status ) const {
