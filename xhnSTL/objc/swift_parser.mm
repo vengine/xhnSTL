@@ -70,6 +70,17 @@ namespace xhn {
     const static_string SwiftParser::StrState("State");
     const static_string SwiftParser::StrStateInterface("StateInterface");
     
+#if USING_GUI_AGENT
+    
+    const static_string SwiftParser::StrGUIAgent("GUIAgent");
+    const static_string SwiftParser::StrNormal("Normal");
+    const static_string SwiftParser::StrHovering("Hovering");
+    const static_string SwiftParser::StrSelected("Selected");
+    const static_string SwiftParser::StrPressed("Pressed");
+    const static_string SwiftParser::StrDragging("Dragging");
+    
+#endif
+    
     const static_string SwiftParser::StrActorAgent("ActorAgent");
     const static_string SwiftParser::StrAction("Action");
     const static_string SwiftParser::StrActionInterface("ActionInterface");
