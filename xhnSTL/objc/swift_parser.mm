@@ -285,7 +285,7 @@ namespace xhn {
         bridgeFile += "static NSMutableSet* s_actorAgentSet = nil;\n";
         bridgeFile += "static NSMutableDictionary* s_createSceneNodeAgentProcDic = nil;\n";
 #if USING_GUI_AGENT
-        bridgeFile += "static NSMutableSet* s_createGUIAgentProcDic = nil;\n";
+        bridgeFile += "static NSMutableDictionary* s_createGUIAgentProcDic = nil;\n";
 #endif
         bridgeFile += "static NSMutableDictionary* s_createActorAgentProcDic = nil;\n";
         bridgeFile += "@interface CreateSceneNodeAgentProc : NSObject\n";
