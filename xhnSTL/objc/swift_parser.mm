@@ -279,8 +279,14 @@ namespace xhn {
         bridgeFile = "static xhn::SpinLock s_lock;\n";
         bridgeFile += "static void (*s_printLogProc)(int, const char*) = NULL;\n";
         bridgeFile += "static NSMutableSet* s_sceneNodeAgentSet = nil;\n";
+#if USING_GUI_AGENT
+        bridgeFile += "static NSMutableSet* s_guiAgentSet = nil;\n";
+#endif
         bridgeFile += "static NSMutableSet* s_actorAgentSet = nil;\n";
         bridgeFile += "static NSMutableDictionary* s_createSceneNodeAgentProcDic = nil;\n";
+#if USING_GUI_AGENT
+        bridgeFile += "static NSMutableSet* s_createGUIAgentProcDic = nil;\n";
+#endif
         bridgeFile += "static NSMutableDictionary* s_createActorAgentProcDic = nil;\n";
         bridgeFile += "@interface CreateSceneNodeAgentProc : NSObject\n";
         bridgeFile += "@property (strong) SceneNodeAgent* (^createAgentProc)(void*);\n";
@@ -295,6 +301,21 @@ namespace xhn {
         bridgeFile += "   return self;\n";
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
+#if USING_GUI_AGENT
+        bridgeFile += "@interface CreateGUIAgentProc : NSObject\n";
+        bridgeFile += "@property (strong) GUIAgent* (^createAgentProc)(void*);\n";
+        bridgeFile += "-(id)initWithProc:(GUIAgent*(^)(void*))proc;\n";
+        bridgeFile += "@end;\n";
+        bridgeFile += "@implementation CreateGUIAgentProc \n";
+        bridgeFile += "-(id)initWithProc:(GUIAgent*(^)(void*))proc {\n";
+        bridgeFile += "   self = [super init];\n";
+        bridgeFile += "   if (self) {\n";
+        bridgeFile += "       self.createAgentProc = proc;\n";
+        bridgeFile += "   }\n";
+        bridgeFile += "   return self;\n";
+        bridgeFile += "}\n";
+        bridgeFile += "@end\n";
+#endif
         bridgeFile += "@interface CreateActorAgentProc : NSObject\n";
         bridgeFile += "@property (strong) ActorAgent* (^createAgentProc)(void*, void*);\n";
         bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*, void*))proc;\n";
@@ -366,6 +387,10 @@ namespace xhn {
         bridgeFile += "void InitProcDic() {\n";
         bridgeFile += "    s_sceneNodeAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createSceneNodeAgentProcDic = [NSMutableDictionary new];\n";
+#if USING_GUI_AGENT
+        bridgeFile += "    s_guiAgentSet = [NSMutableSet new];\n";
+        bridgeFile += "    s_createGUIAgentProcDic = [NSMutableDictionary new];\n";
+#endif
         bridgeFile += "    s_actorAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createActorAgentProcDic = [NSMutableDictionary new];\n";
         /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
@@ -580,6 +605,31 @@ namespace xhn {
                             "        return ret;\n"
                             "    }];\n";
                         }
+#if USING_GUI_AGENT
+                        else {
+                            inheritPath.clear();
+                            if (isInheritFromClassProc(node->name, StrGUIAgent, inheritPath)) {
+                                inheritPath.insert(inheritPath.begin(), node->name);
+                                
+                                char mbuf[512];
+                                snprintf(mbuf, 511,
+                                         "    s_createGUIAgentProcDic[@%c%s%c] = [[CreateGUIAgentProc alloc] initWithProc:^(void* renderSys, void* widget)\n"
+                                         "    {\n"
+                                         "        %s* ret = [[%s alloc] initWithWidget:[[VWidget alloc] initWithVRenderSystemWidget:renderSys widget:widget]];\n",
+                                         '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
+                                m_actorAgentNameVector.push_back(node->name);
+                                
+                                bridgeFile += mbuf;
+                                ///
+                                /// 这里配置
+                                ///
+                                bridgeFile +=
+                                "        [ret start];\n"
+                                "        return ret;\n"
+                                "    }];\n";
+                            }
+                        }
+#endif
                     }
                 }
             }
@@ -612,6 +662,29 @@ namespace xhn {
         bridgeFile += "    NSString* _Nonnull strNextStateName = [NSString stringWithUTF8String:nextStateName];\n";
         bridgeFile += "    [agentID gotoState:strNextStateName];\n";
         bridgeFile += "}\n";
+#if USING_GUI_AGENT
+        bridgeFile += "void* CreateGUIAgent(const char* type, void* widget) {\n";
+        bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
+        bridgeFile += "    CreateGUIAgentProc* proc = s_createGUIAgentProcDic[strType];\n";
+        bridgeFile += "    GUIAgent* agent = proc.createAgentProc(widget);\n";
+        bridgeFile += "    {\n";
+        bridgeFile += "        auto inst = s_lock.Lock();\n";
+        bridgeFile += "        [s_guiAgentSet addObject:agent];\n";
+        bridgeFile += "        return  (__bridge void *)agent;\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "void RemoveGUIAgent(void* agent) {\n";
+        bridgeFile += "    {\n";
+        bridgeFile += "        auto inst = s_lock.Lock();\n";
+        bridgeFile += "        GUIAgent* agentID = (__bridge id)agent;\n";
+        bridgeFile += "        [s_guiAgentSet removeObject:agentID];\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "void UpdateGUIAgent(void* agent, double elapsedTime) {\n";
+        bridgeFile += "    GUIAgent* agentID = (__bridge id)agent;\n";
+        bridgeFile += "    [agentID update:elapsedTime];\n";
+        bridgeFile += "}\n";
+#endif
         bridgeFile += "void* CreateActorAgent(const char* type, void* renderSys, void* actor) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
         bridgeFile += "    CreateActorAgentProc* proc = s_createActorAgentProcDic[strType];\n";
