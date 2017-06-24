@@ -48,6 +48,7 @@ static NSMutableSet* s_SwiftCommandLineUtils = nil;
 - (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string& bridgeFile,
                                                               const xhn::string& stateActionFile,
                                                               const xhn::vector<xhn::static_string>&,
+                                                              const xhn::vector<xhn::static_string>&,
                                                               const xhn::vector<xhn::static_string>&))proc;
 @end
 
@@ -604,7 +605,7 @@ namespace xhn {
                                          "    {\n"
                                          "        %s* ret = [[%s alloc] initWithWidget:[[VWidget alloc] initWithVRenderSystemWidget:renderSys widget:widget]];\n",
                                          '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
-                                m_actorAgentNameVector.push_back(node->name);
+                                m_guiAgentNameVector.push_back(node->name);
                                 
                                 bridgeFile += mbuf;
                                 ///
@@ -1115,6 +1116,7 @@ namespace xhn {
     void SwiftParser::ParseSwifts(const string& paths, xhn::Lambda<void (const xhn::string& bridgeFile,
                                                                          const xhn::string& stateActionFile,
                                                                          const xhn::vector<xhn::static_string>&,
+                                                                         const xhn::vector<xhn::static_string>&,
                                                                          const xhn::vector<xhn::static_string>&)>& callback)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
@@ -1123,15 +1125,18 @@ namespace xhn {
         __block xhn::Lambda<void (const xhn::string& bridgeFile,
                                   const xhn::string& stateActionFile,
                                   const xhn::vector<xhn::static_string>&,
+                                  const xhn::vector<xhn::static_string>&,
                                   const xhn::vector<xhn::static_string>&)> tmpCallback = callback;
         void (^objcCallback)(const xhn::string& bridgeFile,
                              const xhn::string& stateActionFile,
                              const xhn::vector<xhn::static_string>&,
+                             const xhn::vector<xhn::static_string>&,
                              const xhn::vector<xhn::static_string>&)  = ^(const xhn::string& bridgeFile,
                                                                           const xhn::string& stateActionFile,
                                                                           const xhn::vector<xhn::static_string>& sceneNodeAgentNames,
+                                                                          const xhn::vector<xhn::static_string>& guiAgentNames,
                                                                           const xhn::vector<xhn::static_string>& actorAgentNames) {
-            tmpCallback(bridgeFile, stateActionFile, sceneNodeAgentNames, actorAgentNames);
+            tmpCallback(bridgeFile, stateActionFile, sceneNodeAgentNames, guiAgentNames, actorAgentNames);
         };
         [sclu runCommand:command callback:objcCallback];
     }
@@ -1163,6 +1168,7 @@ namespace xhn {
     void(^mCallback)(const xhn::string& bridgeFile,
                      const xhn::string& stateActionFile,
                      const xhn::vector<xhn::static_string>&,
+                     const xhn::vector<xhn::static_string>&,
                      const xhn::vector<xhn::static_string>&);
     NSTask *mTask;
     NSPipe *mPipe;
@@ -1189,6 +1195,7 @@ namespace xhn {
         xhn::string stateActionFile;
         self.parser->EndParse(bridgeFile, stateActionFile);
         xhn::vector<xhn::static_string> sceneNodeAgentNameVector = self.parser->GetSceneNodeAgentNameVector();
+        xhn::vector<xhn::static_string> guiAgentNameVector = self.parser->GetGUIAgentNameVector();
         xhn::vector<xhn::static_string> actorAgentNameVector = self.parser->GetActorAgentNameVector();
         ASTLog("%s\n", bridgeFile.c_str());
         ASTLog("%s\n", stateActionFile.c_str());
@@ -1199,12 +1206,13 @@ namespace xhn {
                 [s_SwiftCommandLineUtils removeObject:self];
             }
         }
-        mCallback(bridgeFile, stateActionFile, sceneNodeAgentNameVector, actorAgentNameVector);
+        mCallback(bridgeFile, stateActionFile, sceneNodeAgentNameVector, guiAgentNameVector, actorAgentNameVector);
     }
 }
 
 - (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string& bridgeFile,
                                                               const xhn::string& stateActionFile,
+                                                              const xhn::vector<xhn::static_string>&,
                                                               const xhn::vector<xhn::static_string>&,
                                                               const xhn::vector<xhn::static_string>&))proc
 {

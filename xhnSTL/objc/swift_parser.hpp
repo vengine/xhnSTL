@@ -88,6 +88,7 @@ private:
     bool m_isDecl;
 private:
     vector<static_string> m_sceneNodeAgentNameVector;
+    vector<static_string> m_guiAgentNameVector;
     vector<static_string> m_actorAgentNameVector;
 public:
     void BeginParse();
@@ -106,10 +107,12 @@ public:
     static void ParseSwifts(const string& paths, Lambda<void (const xhn::string& bridgeFile,
                                                               const xhn::string& stateActionFile,
                                                               const vector<static_string>&,
+                                                              const vector<static_string>&,
                                                               const vector<static_string>&)>& callback);
     SwiftParser();
     ~SwiftParser();
     inline const vector<static_string>& GetSceneNodeAgentNameVector() const { return m_sceneNodeAgentNameVector; }
+    inline const vector<static_string>& GetGUIAgentNameVector() const { return m_guiAgentNameVector; }
     inline const vector<static_string>& GetActorAgentNameVector() const { return m_actorAgentNameVector; }
 };
     
