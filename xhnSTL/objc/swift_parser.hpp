@@ -41,14 +41,12 @@ public:
     static const static_string StrState;
     static const static_string StrStateInterface;
     
-#if USING_GUI_AGENT
     static const static_string StrGUIAgent;
     static const static_string StrNormal;
     static const static_string StrHovering;
     static const static_string StrSelected;
     static const static_string StrPressed;
     static const static_string StrDragging;
-#endif
     
     static const static_string StrActorAgent;
     static const static_string StrAction;

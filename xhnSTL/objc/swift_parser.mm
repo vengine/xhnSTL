@@ -70,16 +70,12 @@ namespace xhn {
     const static_string SwiftParser::StrState("State");
     const static_string SwiftParser::StrStateInterface("StateInterface");
     
-#if USING_GUI_AGENT
-    
     const static_string SwiftParser::StrGUIAgent("GUIAgent");
     const static_string SwiftParser::StrNormal("Normal");
     const static_string SwiftParser::StrHovering("Hovering");
     const static_string SwiftParser::StrSelected("Selected");
     const static_string SwiftParser::StrPressed("Pressed");
     const static_string SwiftParser::StrDragging("Dragging");
-    
-#endif
     
     const static_string SwiftParser::StrActorAgent("ActorAgent");
     const static_string SwiftParser::StrAction("Action");
@@ -279,14 +275,10 @@ namespace xhn {
         bridgeFile = "static xhn::SpinLock s_lock;\n";
         bridgeFile += "static void (*s_printLogProc)(int, const char*) = NULL;\n";
         bridgeFile += "static NSMutableSet* s_sceneNodeAgentSet = nil;\n";
-#if USING_GUI_AGENT
         bridgeFile += "static NSMutableSet* s_guiAgentSet = nil;\n";
-#endif
         bridgeFile += "static NSMutableSet* s_actorAgentSet = nil;\n";
         bridgeFile += "static NSMutableDictionary* s_createSceneNodeAgentProcDic = nil;\n";
-#if USING_GUI_AGENT
         bridgeFile += "static NSMutableDictionary* s_createGUIAgentProcDic = nil;\n";
-#endif
         bridgeFile += "static NSMutableDictionary* s_createActorAgentProcDic = nil;\n";
         bridgeFile += "@interface CreateSceneNodeAgentProc : NSObject\n";
         bridgeFile += "@property (strong) SceneNodeAgent* (^createAgentProc)(void*);\n";
@@ -301,7 +293,6 @@ namespace xhn {
         bridgeFile += "   return self;\n";
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
-#if USING_GUI_AGENT
         bridgeFile += "@interface CreateGUIAgentProc : NSObject\n";
         bridgeFile += "@property (strong) GUIAgent* (^createAgentProc)(void*);\n";
         bridgeFile += "-(id)initWithProc:(GUIAgent*(^)(void*))proc;\n";
@@ -315,7 +306,6 @@ namespace xhn {
         bridgeFile += "   return self;\n";
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
-#endif
         bridgeFile += "@interface CreateActorAgentProc : NSObject\n";
         bridgeFile += "@property (strong) ActorAgent* (^createAgentProc)(void*, void*);\n";
         bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*, void*))proc;\n";
@@ -387,10 +377,8 @@ namespace xhn {
         bridgeFile += "void InitProcDic() {\n";
         bridgeFile += "    s_sceneNodeAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createSceneNodeAgentProcDic = [NSMutableDictionary new];\n";
-#if USING_GUI_AGENT
         bridgeFile += "    s_guiAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createGUIAgentProcDic = [NSMutableDictionary new];\n";
-#endif
         bridgeFile += "    s_actorAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createActorAgentProcDic = [NSMutableDictionary new];\n";
         /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
@@ -605,7 +593,6 @@ namespace xhn {
                             "        return ret;\n"
                             "    }];\n";
                         }
-#if USING_GUI_AGENT
                         else {
                             inheritPath.clear();
                             if (isInheritFromClassProc(node->name, StrGUIAgent, inheritPath)) {
@@ -629,7 +616,6 @@ namespace xhn {
                                 "    }];\n";
                             }
                         }
-#endif
                     }
                 }
             }
@@ -662,7 +648,6 @@ namespace xhn {
         bridgeFile += "    NSString* _Nonnull strNextStateName = [NSString stringWithUTF8String:nextStateName];\n";
         bridgeFile += "    [agentID gotoState:strNextStateName];\n";
         bridgeFile += "}\n";
-#if USING_GUI_AGENT
         bridgeFile += "void* CreateGUIAgent(const char* type, void* widget) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
         bridgeFile += "    CreateGUIAgentProc* proc = s_createGUIAgentProcDic[strType];\n";
@@ -684,7 +669,6 @@ namespace xhn {
         bridgeFile += "    GUIAgent* agentID = (__bridge id)agent;\n";
         bridgeFile += "    [agentID update:elapsedTime];\n";
         bridgeFile += "}\n";
-#endif
         bridgeFile += "void* CreateActorAgent(const char* type, void* renderSys, void* actor) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
         bridgeFile += "    CreateActorAgentProc* proc = s_createActorAgentProcDic[strType];\n";

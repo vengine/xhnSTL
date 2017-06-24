@@ -191,8 +191,6 @@ or
 #        endif
 #    endif
 
-#define USING_GUI_AGENT 1
-
 #endif
 
 /**
