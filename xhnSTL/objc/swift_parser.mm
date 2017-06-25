@@ -649,10 +649,10 @@ namespace xhn {
         bridgeFile += "    NSString* _Nonnull strNextStateName = [NSString stringWithUTF8String:nextStateName];\n";
         bridgeFile += "    [agentID gotoState:strNextStateName];\n";
         bridgeFile += "}\n";
-        bridgeFile += "void* CreateGUIAgent(const char* type, void* widget) {\n";
+        bridgeFile += "void* CreateGUIAgent(const char* type, void* renderSys, void* widget) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
         bridgeFile += "    CreateGUIAgentProc* proc = s_createGUIAgentProcDic[strType];\n";
-        bridgeFile += "    GUIAgent* agent = proc.createAgentProc(widget);\n";
+        bridgeFile += "    GUIAgent* agent = proc.createAgentProc(renderSys, widget);\n";
         bridgeFile += "    {\n";
         bridgeFile += "        auto inst = s_lock.Lock();\n";
         bridgeFile += "        [s_guiAgentSet addObject:agent];\n";
