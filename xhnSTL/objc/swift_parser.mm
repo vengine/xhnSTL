@@ -295,11 +295,11 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
         bridgeFile += "@interface CreateGUIAgentProc : NSObject\n";
-        bridgeFile += "@property (strong) GUIAgent* (^createAgentProc)(void*);\n";
-        bridgeFile += "-(id)initWithProc:(GUIAgent*(^)(void*))proc;\n";
+        bridgeFile += "@property (strong) GUIAgent* (^createAgentProc)(void*, void*);\n";
+        bridgeFile += "-(id)initWithProc:(GUIAgent*(^)(void*, void*))proc;\n";
         bridgeFile += "@end;\n";
         bridgeFile += "@implementation CreateGUIAgentProc \n";
-        bridgeFile += "-(id)initWithProc:(GUIAgent*(^)(void*))proc {\n";
+        bridgeFile += "-(id)initWithProc:(GUIAgent*(^)(void*, void*))proc {\n";
         bridgeFile += "   self = [super init];\n";
         bridgeFile += "   if (self) {\n";
         bridgeFile += "       self.createAgentProc = proc;\n";
