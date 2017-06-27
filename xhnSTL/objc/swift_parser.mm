@@ -72,11 +72,13 @@ namespace xhn {
     const static_string SwiftParser::StrStateInterface("StateInterface");
     
     const static_string SwiftParser::StrGUIAgent("GUIAgent");
-    const static_string SwiftParser::StrNormal("Normal");
-    const static_string SwiftParser::StrHovering("Hovering");
-    const static_string SwiftParser::StrSelected("Selected");
-    const static_string SwiftParser::StrPressed("Pressed");
-    const static_string SwiftParser::StrDragging("Dragging");
+    const static_string SwiftParser::StrGUIState("GUIState");
+    const static_string SwiftParser::StrGUIStateInterface("GUIStateInterface");
+    const static_string SwiftParser::StrNormalState("NormalState");
+    const static_string SwiftParser::StrHoveringState("HoveringState");
+    const static_string SwiftParser::StrSelectedState("SelectedState");
+    const static_string SwiftParser::StrPressedState("PressedState");
+    const static_string SwiftParser::StrDraggingState("DraggingState");
     
     const static_string SwiftParser::StrActorAgent("ActorAgent");
     const static_string SwiftParser::StrAction("Action");
@@ -383,8 +385,11 @@ namespace xhn {
         bridgeFile += "    s_actorAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createActorAgentProcDic = [NSMutableDictionary new];\n";
         /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
+        /// 例：RegularSceneNodeAgent 继承自 SceneNodeAgent，SceneNodeAgent 继承自 NSObject
+        /// 则 inheritPath[0] = NSObject， inheritPath[1] = SceneNodeAgent，inheritPath[2] = RegularSceneNodeAgent
         xhn::vector<xhn::static_string> inheritPath;
         
+        /// 通过这个i可以知道加入的state有多少个
         auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile](int& i) {
             xhn::vector<xhn::static_string> stateInheritPath;
             char mbuf[512];
@@ -396,20 +401,33 @@ namespace xhn {
             if (nodeIter != classMap.end()) {
                 node = nodeIter->second;
             }
-            
+            ///
+            snprintf(mbuf, 511,
+                     "        /// agentClassName = %s\n", agentClassName.c_str());
+            bridgeFile += mbuf;
+            ///
+            /// 找到所有的子类
             auto childClassIter = childrenClassMap.find(agentClassName);
             if (childClassIter != childrenClassMap.end()) {
                 auto childIter = childClassIter->second.begin();
                 auto childEnd = childClassIter->second.end();
-                for (; childIter != childEnd; childIter++, i++) {
+                /// 遍历子类
+                for (; childIter != childEnd; childIter++) {
                     xhn::static_string childClassName = *childIter;
-                    
+                    ///
+                    snprintf(mbuf, 511,
+                             "        /// childClassName = %s\n", childClassName.c_str());
+                    bridgeFile += mbuf;
+                    ///
+                    /// 找到子类名对应的ASTNode
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
+                        /// 判断该ASTNode的类型和访问状况，是否是派生类
                         if (StrClassDecl == child->type &&
                             (StrPublic == child->access || StrOpen == child->access) &&
                             child->inherits) {
+                            /// 判断是否是派生自State和StateInterface
                             bool isInheritFromState = false;
                             bool isInheritFromStateInterface = false;
                             
@@ -431,6 +449,7 @@ namespace xhn {
                             isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, stateInheritPath);
                             
                             if (isInheritFromState && isInheritFromStateInterface) {
+                                /// 真正开始添加state了
                                 snprintf(mbuf, 511,
                                          "        NSString* state%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
@@ -446,10 +465,13 @@ namespace xhn {
                                     snprintf(mbuf, 511, "state%d", i);
                                     firstState = mbuf;
                                 }
+                                
+                                i++;
                             }
                         }
                     }
                 }
+                /// 将第一个state设为默认的state
                 if (firstState.size()) {
                     snprintf(mbuf, 511,
                              "        [ret setCurrentState:%s];\n",
@@ -459,6 +481,7 @@ namespace xhn {
             }
         };
         
+        /// 通过这个i可以知道加入的action有多少个
         auto addActionsProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile](int& i) {
             xhn::vector<xhn::static_string> actionInheritPath;
             char mbuf[512];
@@ -470,14 +493,25 @@ namespace xhn {
             if (nodeIter != classMap.end()) {
                 node = nodeIter->second;
             }
-            
+            ///
+            snprintf(mbuf, 511,
+                     "        /// agentClassName = %s\n", agentClassName.c_str());
+            bridgeFile += mbuf;
+            ///
+            /// 找到所有的子类
             auto childClassIter = childrenClassMap.find(agentClassName);
             if (childClassIter != childrenClassMap.end()) {
                 auto childIter = childClassIter->second.begin();
                 auto childEnd = childClassIter->second.end();
-                for (; childIter != childEnd; childIter++, i++) {
+                /// 遍历子类
+                for (; childIter != childEnd; childIter++) {
                     xhn::static_string childClassName = *childIter;
-                    
+                    ///
+                    snprintf(mbuf, 511,
+                             "        /// childClassName = %s\n", childClassName.c_str());
+                    bridgeFile += mbuf;
+                    ///
+                    /// 找到子类名对应的ASTNode
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
@@ -520,6 +554,8 @@ namespace xhn {
                                     snprintf(mbuf, 511, "action%d", i);
                                     firstAction = mbuf;
                                 }
+                                
+                                i++;
                             }
                         }
                     }
@@ -529,6 +565,104 @@ namespace xhn {
                              "        [ret setCurrentAction:%s];\n",
                              firstAction.c_str());
                     bridgeFile += mbuf;
+                }
+            }
+        };
+        
+        auto addGUIStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile](xhn::static_string& normalState,
+                                                                                                                   xhn::static_string& hoveringState,
+                                                                                                                   xhn::static_string& selectedState,
+                                                                                                                   xhn::static_string& pressedState,
+                                                                                                                   xhn::static_string& draggingState) {
+            xhn::vector<xhn::static_string> guiStateInheritPath;
+            char mbuf[512];
+            xhn::string firstAction;
+            xhn::static_string agentClassName = inheritPath.back();
+            
+            ASTNode* node = nullptr;
+            auto nodeIter = classMap.find(agentClassName);
+            if (nodeIter != classMap.end()) {
+                node = nodeIter->second;
+            }
+            ///
+            snprintf(mbuf, 511,
+                     "        /// agentClassName = %s\n", agentClassName.c_str());
+            bridgeFile += mbuf;
+            ///
+            /// 找到所有的子类
+            auto childClassIter = childrenClassMap.find(agentClassName);
+            if (childClassIter != childrenClassMap.end()) {
+                auto childIter = childClassIter->second.begin();
+                auto childEnd = childClassIter->second.end();
+                /// 遍历子类
+                for (; childIter != childEnd; childIter++) {
+                    xhn::static_string childClassName = *childIter;
+                    ///
+                    snprintf(mbuf, 511,
+                             "        /// childClassName = %s\n", childClassName.c_str());
+                    bridgeFile += mbuf;
+                    ///
+                    /// 找到子类名对应的ASTNode
+                    auto childNodeIter = classMap.find(childClassName);
+                    if (childNodeIter != classMap.end()) {
+                        ASTNode* child = childNodeIter->second;
+                        /// 判断该ASTNode的类型和访问状况，是否是派生类
+                        if (StrClassDecl == child->type &&
+                            (StrPublic == child->access || StrOpen == child->access) &&
+                            child->inherits) {
+                            
+                            /// 判断是否是派生自GUIState和GUIStateInterface
+                            bool isInheritFromGUIState = false;
+                            bool isInheritFromGUIStateInterface = false;
+                            
+                            xhn::string fullClassName = node->name.c_str();
+                            fullClassName += ".";
+                            fullClassName += child->name.c_str();
+                            
+                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            xhn::string stateFuncName = mbuf;
+                            stateFuncName += node->name.c_str();
+                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            stateFuncName += mbuf;
+                            stateFuncName += child->name.c_str();
+                            
+                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            guiStateInheritPath.clear();
+                            isInheritFromGUIState = isInheritFromClassProc(strFullClassName, StrGUIState, guiStateInheritPath);
+                            guiStateInheritPath.clear();
+                            isInheritFromGUIStateInterface = isInheritFromClassProc(strFullClassName, StrGUIStateInterface, guiStateInheritPath);
+                            
+                            if (isInheritFromGUIState && isInheritFromGUIStateInterface) {
+                                /// 这里要判断状态的类型
+                                /// NormalState、HoveringState、SelectedState、PressedState、DraggingState
+                                xhn::string tmpFullClassName = strFullClassName.c_str();
+                                euint pos = tmpFullClassName.rfind(".");
+                                if (xhn::string::npos != pos) {
+                                    xhn::string stateName = tmpFullClassName.substr(pos + 1, tmpFullClassName.size() - pos - 1);
+                                    ///
+                                    snprintf(mbuf, 511,
+                                             "        /// stateName = %s\n", stateName.c_str());
+                                    bridgeFile += mbuf;
+                                    ///
+                                    if (stateName == StrNormalState.c_str()) {
+                                        normalState = stateFuncName.c_str();
+                                    }
+                                    else if (stateName == StrHoveringState.c_str()) {
+                                        hoveringState = stateFuncName.c_str();
+                                    }
+                                    else if (stateName == StrSelectedState.c_str()) {
+                                        selectedState = stateFuncName.c_str();
+                                    }
+                                    else if (stateName == StrPressedState.c_str()) {
+                                        pressedState = stateFuncName.c_str();
+                                    }
+                                    else if (stateName == StrDraggingState.c_str()) {
+                                        draggingState = stateFuncName.c_str();
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         };
@@ -610,6 +744,39 @@ namespace xhn {
                                 bridgeFile += mbuf;
                                 ///
                                 /// 这里配置
+                                xhn::static_string normalState = xhn::static_string::empty_string;
+                                xhn::static_string hoveringState = xhn::static_string::empty_string;
+                                xhn::static_string selectedState = xhn::static_string::empty_string;
+                                xhn::static_string pressedState = xhn::static_string::empty_string;
+                                xhn::static_string draggingState = xhn::static_string::empty_string;
+                                
+                                while (inheritPath.size()) {
+                                    addGUIStatesProc(normalState, hoveringState, selectedState, pressedState, draggingState);
+                                    inheritPath.pop_back();
+                                }
+                                
+                                EAssert(xhn::static_string::empty_string != normalState &&
+                                        xhn::static_string::empty_string != hoveringState &&
+                                        xhn::static_string::empty_string != selectedState &&
+                                        xhn::static_string::empty_string != pressedState &&
+                                        xhn::static_string::empty_string != draggingState, "gui state member are incomplete!");
+                                ///
+                                snprintf(mbuf, 511, "        id normalState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", normalState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 511, "        id hoveringState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", hoveringState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 511, "        id selectedState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", selectedState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 511, "        id pressedState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", pressedState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 511, "        id draggingState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", draggingState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 511, "        [ret setState:0 state:normalState];\n"
+                                                    "        [ret setState:1 state:normalState];\n"
+                                                    "        [ret setState:2 state:normalState];\n"
+                                                    "        [ret setState:3 state:normalState];\n"
+                                                    "        [ret setState:4 state:normalState];\n");
+                                bridgeFile += mbuf;
                                 ///
                                 bridgeFile +=
                                 "        [ret start];\n"

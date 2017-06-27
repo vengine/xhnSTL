@@ -42,11 +42,13 @@ public:
     static const static_string StrStateInterface;
     
     static const static_string StrGUIAgent;
-    static const static_string StrNormal;
-    static const static_string StrHovering;
-    static const static_string StrSelected;
-    static const static_string StrPressed;
-    static const static_string StrDragging;
+    static const static_string StrGUIState;
+    static const static_string StrGUIStateInterface;
+    static const static_string StrNormalState;
+    static const static_string StrHoveringState;
+    static const static_string StrSelectedState;
+    static const static_string StrPressedState;
+    static const static_string StrDraggingState;
     
     static const static_string StrActorAgent;
     static const static_string StrAction;
