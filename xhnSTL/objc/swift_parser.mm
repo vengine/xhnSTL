@@ -771,11 +771,11 @@ namespace xhn {
                                 bridgeFile += mbuf;
                                 snprintf(mbuf, 511, "        id draggingState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", draggingState.c_str());
                                 bridgeFile += mbuf;
-                                snprintf(mbuf, 511, "        [ret setState:0 state:normalState];\n"
-                                                    "        [ret setState:1 state:normalState];\n"
-                                                    "        [ret setState:2 state:normalState];\n"
-                                                    "        [ret setState:3 state:normalState];\n"
-                                                    "        [ret setState:4 state:normalState];\n");
+                                snprintf(mbuf, 511, "        [ret setState:@\"NormalState\" state:normalState];\n"
+                                                    "        [ret setState:@\"HoveringState\" state:hoveringState];\n"
+                                                    "        [ret setState:@\"SelectedState\" state:selectedState];\n"
+                                                    "        [ret setState:@\"PressedState\" state:pressedState];\n"
+                                                    "        [ret setState:@\"DraggingState\" state:draggingState];\n");
                                 bridgeFile += mbuf;
                                 ///
                                 bridgeFile +=
@@ -910,12 +910,14 @@ namespace xhn {
         /// func class
         map<string, string> stateFuncClassMap;
         /// func class
+        map<string, string> guiStateFuncClassMap;
+        /// func class
         map<string, string> actionFuncClassMap;
         
         /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
         vector<static_string> inheritPath;
         
-        auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &stateFuncClassMap](int& i) {
+        auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &stateFuncClassMap]() {
             xhn::vector<xhn::static_string> stateInheritPath;
             char mbuf[512];
             xhn::string firstState;
@@ -931,7 +933,7 @@ namespace xhn {
             if (childClassIter != childrenClassMap.end()) {
                 auto childIter = childClassIter->second.begin();
                 auto childEnd = childClassIter->second.end();
-                for (; childIter != childEnd; childIter++, i++) {
+                for (; childIter != childEnd; childIter++) {
                     xhn::static_string childClassName = *childIter;
                     
                     auto childNodeIter = classMap.find(childClassName);
@@ -969,7 +971,67 @@ namespace xhn {
             }
         };
         
-        auto addActionsProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &actionFuncClassMap](int& i) {
+        auto addGUIStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &guiStateFuncClassMap]() {
+            xhn::vector<xhn::static_string> guiStateInheritPath;
+            char mbuf[512];
+            xhn::string firstAction;
+            xhn::static_string agentClassName = inheritPath.back();
+            
+            ASTNode* node = nullptr;
+            auto nodeIter = classMap.find(agentClassName);
+            if (nodeIter != classMap.end()) {
+                node = nodeIter->second;
+            }
+            
+            /// 找到所有的子类
+            auto childClassIter = childrenClassMap.find(agentClassName);
+            if (childClassIter != childrenClassMap.end()) {
+                auto childIter = childClassIter->second.begin();
+                auto childEnd = childClassIter->second.end();
+                /// 遍历子类
+                for (; childIter != childEnd; childIter++) {
+                    xhn::static_string childClassName = *childIter;
+                    
+                    /// 找到子类名对应的ASTNode
+                    auto childNodeIter = classMap.find(childClassName);
+                    if (childNodeIter != classMap.end()) {
+                        ASTNode* child = childNodeIter->second;
+                        /// 判断该ASTNode的类型和访问状况，是否是派生类
+                        if (StrClassDecl == child->type &&
+                            (StrPublic == child->access || StrOpen == child->access) &&
+                            child->inherits) {
+                            
+                            /// 判断是否是派生自GUIState和GUIStateInterface
+                            bool isInheritFromGUIState = false;
+                            bool isInheritFromGUIStateInterface = false;
+                            
+                            xhn::string fullClassName = node->name.c_str();
+                            fullClassName += ".";
+                            fullClassName += child->name.c_str();
+                            
+                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            xhn::string stateFuncName = mbuf;
+                            stateFuncName += node->name.c_str();
+                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            stateFuncName += mbuf;
+                            stateFuncName += child->name.c_str();
+                            
+                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            guiStateInheritPath.clear();
+                            isInheritFromGUIState = isInheritFromClassProc(strFullClassName, StrGUIState, guiStateInheritPath);
+                            guiStateInheritPath.clear();
+                            isInheritFromGUIStateInterface = isInheritFromClassProc(strFullClassName, StrGUIStateInterface, guiStateInheritPath);
+                            
+                            if (isInheritFromGUIState && isInheritFromGUIStateInterface) {
+                                guiStateFuncClassMap.insert(make_pair(stateFuncName, fullClassName));
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        auto addActionsProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &actionFuncClassMap]() {
             vector<static_string> actionInheritPath;
             char mbuf[512];
             string firstAction;
@@ -985,7 +1047,7 @@ namespace xhn {
             if (childClassIter != childrenClassMap.end()) {
                 auto childIter = childClassIter->second.begin();
                 auto childEnd = childClassIter->second.end();
-                for (; childIter != childEnd; childIter++, i++) {
+                for (; childIter != childEnd; childIter++) {
                     xhn::static_string childClassName = *childIter;
                     
                     auto childNodeIter = classMap.find(childClassName);
@@ -1025,6 +1087,7 @@ namespace xhn {
         };
         
         m_sceneNodeAgentNameVector.clear();
+        m_guiAgentNameVector.clear();
         m_actorAgentNameVector.clear();
         
         auto rootIter = m_roots.begin();
@@ -1045,9 +1108,8 @@ namespace xhn {
                         
                         m_sceneNodeAgentNameVector.push_back(node->name);
                         
-                        int i = 0;
                         while (inheritPath.size()) {
-                            addStatesProc(i);
+                            addStatesProc();
                             inheritPath.pop_back();
                         }
                         
@@ -1060,12 +1122,25 @@ namespace xhn {
                             
                             m_actorAgentNameVector.push_back(node->name);
                             
-                            int i = 0;
                             while (inheritPath.size()) {
-                                addActionsProc(i);
+                                addActionsProc();
                                 inheritPath.pop_back();
                             }
                             
+                        }
+                        else {
+                            inheritPath.clear();
+                            if (isInheritFromClassProc(node->name, StrGUIAgent, inheritPath)) {
+                                /// 这里将创建actor代理的回调放在s_createGUIAgentProcDic里
+                                inheritPath.insert(inheritPath.begin(), node->name);
+                                
+                                m_guiAgentNameVector.push_back(node->name);
+                                
+                                while (inheritPath.size()) {
+                                    addGUIStatesProc();
+                                    inheritPath.pop_back();
+                                }
+                            }
                         }
                     }
                 }
@@ -1084,6 +1159,18 @@ namespace xhn {
             actionFile += mbuf;
         }
         
+        actionFile += "}\n";
+        
+        actionFile += "open class SwiftGUIStates : NSObject {\n";
+        for (auto& p : guiStateFuncClassMap) {
+            char mbuf[512];
+            snprintf(mbuf, 511,
+                     "    static open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
+                     "        return %s();\n"
+                     "    }\n",
+                     p.first.c_str(), p.second.c_str());
+            actionFile += mbuf;
+        }
         actionFile += "}\n";
         
         actionFile += "open class SwiftActions : NSObject {\n";
