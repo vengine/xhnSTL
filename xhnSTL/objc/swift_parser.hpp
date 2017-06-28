@@ -49,6 +49,11 @@ public:
     static const static_string StrSelectedState;
     static const static_string StrPressedState;
     static const static_string StrDraggingState;
+    static const static_string StrNormalStateBase;
+    static const static_string StrHoveringStateBase;
+    static const static_string StrSelectedStateBase;
+    static const static_string StrPressedStateBase;
+    static const static_string StrDraggingStateBase;
     
     static const static_string StrActorAgent;
     static const static_string StrAction;

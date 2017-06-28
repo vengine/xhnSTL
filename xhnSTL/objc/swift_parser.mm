@@ -79,6 +79,11 @@ namespace xhn {
     const static_string SwiftParser::StrSelectedState("SelectedState");
     const static_string SwiftParser::StrPressedState("PressedState");
     const static_string SwiftParser::StrDraggingState("DraggingState");
+    const static_string SwiftParser::StrNormalStateBase("NormalStateBase");
+    const static_string SwiftParser::StrHoveringStateBase("HoveringStateBase");
+    const static_string SwiftParser::StrSelectedStateBase("SelectedStateBase");
+    const static_string SwiftParser::StrPressedStateBase("PressedStateBase");
+    const static_string SwiftParser::StrDraggingStateBase("DraggingStateBase");
     
     const static_string SwiftParser::StrActorAgent("ActorAgent");
     const static_string SwiftParser::StrAction("Action");
@@ -386,7 +391,7 @@ namespace xhn {
         bridgeFile += "    s_createActorAgentProcDic = [NSMutableDictionary new];\n";
         /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
         /// 例：RegularSceneNodeAgent 继承自 SceneNodeAgent，SceneNodeAgent 继承自 NSObject
-        /// 则 inheritPath[0] = NSObject， inheritPath[1] = SceneNodeAgent，inheritPath[2] = RegularSceneNodeAgent
+        /// 则 inheritPath[2] = NSObject， inheritPath[1] = SceneNodeAgent，inheritPath[0] = RegularSceneNodeAgent
         xhn::vector<xhn::static_string> inheritPath;
         
         /// 通过这个i可以知道加入的state有多少个
@@ -659,6 +664,21 @@ namespace xhn {
                                     else if (stateName == StrDraggingState.c_str()) {
                                         draggingState = stateFuncName.c_str();
                                     }
+                                    else if (stateName == StrNormalStateBase.c_str()) {
+                                        normalState = stateFuncName.c_str();
+                                    }
+                                    else if (stateName == StrHoveringStateBase.c_str()) {
+                                        hoveringState = stateFuncName.c_str();
+                                    }
+                                    else if (stateName == StrSelectedStateBase.c_str()) {
+                                        selectedState = stateFuncName.c_str();
+                                    }
+                                    else if (stateName == StrPressedStateBase.c_str()) {
+                                        pressedState = stateFuncName.c_str();
+                                    }
+                                    else if (stateName == StrDraggingStateBase.c_str()) {
+                                        draggingState = stateFuncName.c_str();
+                                    }
                                 }
                             }
                         }
@@ -668,6 +688,7 @@ namespace xhn {
         };
         
         m_sceneNodeAgentNameVector.clear();
+        m_guiAgentNameVector.clear();
         m_actorAgentNameVector.clear();
         
         auto rootIter = m_roots.begin();
@@ -759,7 +780,8 @@ namespace xhn {
                                         xhn::static_string::empty_string != hoveringState &&
                                         xhn::static_string::empty_string != selectedState &&
                                         xhn::static_string::empty_string != pressedState &&
-                                        xhn::static_string::empty_string != draggingState, "gui state member are incomplete!");
+                                        xhn::static_string::empty_string != draggingState, "gui state member are incomplete!, %s, %s, %s, %s, %s",
+                                        normalState.c_str(), hoveringState.c_str(), selectedState.c_str(), pressedState.c_str(), draggingState.c_str());
                                 ///
                                 snprintf(mbuf, 511, "        id normalState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", normalState.c_str());
                                 bridgeFile += mbuf;
