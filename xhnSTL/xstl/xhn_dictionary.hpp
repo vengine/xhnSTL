@@ -424,6 +424,39 @@ namespace xhn
             } \
             return &node->second; \
 
+#define INSERT2 \
+            euint32 hash_value = m_hash_proc(key); \
+            euint32 ukey = hash_value & m_hash_mask; \
+            singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey]; \
+            hash_node<K, V>* current_node = bucket->begin(); \
+            while (current_node) { \
+                if (current_node->first == key) { \
+                    current_node->second = value; \
+                    return current_node; \
+                } \
+                current_node = current_node->m_iter_next; \
+            } \
+            \
+            euint32 count = 0; \
+            hash_node<K, V>* head = bucket->begin(); \
+            if (head) { \
+                count = head->m_count; \
+            } \
+            hash_node<K, V>* node = m_node_allocator.allocate(1); \
+            m_node_allocator.construct(node, key, value); \
+            node->m_hash_table = this; \
+            node->m_bucket_index = ukey; \
+            \
+            bucket->add(node); \
+            \
+            node->m_hash_value = hash_value; \
+            node->m_count = count + 1; \
+            \
+            if (m_hash_mask != 0xffffffff && count > m_rebuild_tolerance) { \
+                rebuild(); \
+            } \
+            return node; \
+
     public:
         
         V* insert ( const K &key, const V& value ) {
@@ -437,6 +470,19 @@ namespace xhn
         }
         V* insert ( K &&key, const V& value ) {
             INSERT
+        }
+        
+        hash_node<K, V>* insert_node ( const K &key, const V& value ) {
+            INSERT2
+        }
+        hash_node<K, V>* insert_node ( K &&key, V&& value ) {
+            INSERT2
+        }
+        hash_node<K, V>* insert_node ( const K &key, V&& value ) {
+            INSERT2
+        }
+        hash_node<K, V>* insert_node ( K &&key, const V& value ) {
+            INSERT2
         }
         void remove ( const K &key ) {
             euint32 hash_value = m_hash_proc(key);
