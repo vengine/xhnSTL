@@ -353,6 +353,18 @@ namespace xhn
             }
             return nullptr;
         }
+    private:
+        dictionary(const dictionary& d)
+        : m_hash_mask(0x7)
+        , m_num_buckets(8)
+        , m_rebuild_tolerance(2)
+        , m_need_dealloc(true)
+        {
+            m_buckets = m_bucket_allocator.allocate(m_num_buckets);
+            for (euint32 i = 0; i < m_num_buckets; i++) {
+                m_bucket_allocator.construct(&m_buckets[i]);
+            }
+        }
     public:
         dictionary()
         : m_hash_mask(0x7)
