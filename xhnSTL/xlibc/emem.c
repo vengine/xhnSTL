@@ -67,6 +67,33 @@ _INLINE_ esint64 load_mem_stamp()
 #endif
 }
 
+_INLINE_ esint64 load_ptr(volatile esint64* ptr)
+{
+#if defined (_WIN32) || defined (_WIN64)
+#include <windows.h>
+    return ReadAcquire64(ptr);
+#elif defined (__APPLE__)
+    esint64 ret;
+    __atomic_load(ptr, &ret, __ATOMIC_SEQ_CST);
+    return ret;
+#elif defined(ANDROID) || defined(__ANDROID__)
+    return __sync_fetch_and_add(ptr, 0);
+#else
+#error
+#endif
+}
+
+_INLINE_ void store_mem_stamp(volatile esint64* ptr)
+{
+#if defined (_WIN32) || defined (_WIN64)
+#include <windows.h>
+    esint64 val = ReadAcquire64(&s_mem_stamp);
+    WriteRelease64(ptr, val);
+#else
+    __atomic_store(ptr, &s_mem_stamp, __ATOMIC_SEQ_CST);
+#endif
+}
+
 typedef struct _mem_node
 {
     vptr next;
@@ -166,6 +193,7 @@ typedef struct _mem_pool_node
     mem_node* head;
 	euint num_chks;
 	euint chk_cnt;
+    volatile esint64 mem_stamp;
     struct _mem_pool_node* next;
 	struct _mem_pool_node* prev;
 } mem_pool_node;
@@ -270,6 +298,8 @@ void* alloc(mem_pool_node* _node, bool _is_safe_alloc)
 		    meminit(ret, _node->real_chk_size);
 		_node->chk_cnt--;
 	}
+    inc_mem_stamp();
+    store_mem_stamp(&_node->mem_stamp);
 	return ret;
 }
 
@@ -321,6 +351,18 @@ bool MemPoolNode_free(MemPoolNode _self, void* _ptr)
     return false;
 }
 
+bool MemPoolNode_is_actived(MemPoolNode _self)
+{
+    esint64 c = load_ptr(&_self.self->mem_stamp);
+    esint64 s = load_mem_stamp();
+    if (s - c < 100) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 bool MemPoolNode_check(MemPoolNode _self)
 {
     mem_node* node = _self.self->head;
@@ -347,6 +389,11 @@ void MemPoolNode_check2(MemPoolNode _self, void* checker, FnCheckMemory fnCheckM
 bool MemPoolNode_empty(MemPoolNode _self)
 {
     return SELF.head == NULL;
+}
+
+bool MemPoolNode_full(MemPoolNode _self)
+{
+    return SELF.chk_cnt == SELF.num_chks;
 }
 
 bool MemPoolNode_is_from(MemPoolNode _self, void* _ptr)

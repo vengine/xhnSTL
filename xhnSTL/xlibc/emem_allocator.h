@@ -56,6 +56,7 @@ struct MemPoolDef(mem_pool)* MemPoolFunc(new)(native_memory_allocator* _alloc, e
 	node = MemPoolNode_new(_alloc, _chk_size, ret->num_chunk_per_mem_block);
 
 	v.vptr_var = node.self;
+#pragma mark ResortMemPoolChain
 	List_push_back(ret->mem_pool_chain, v);
 
 	///ret->num_chunk_per_mem_block *= 2;
@@ -162,18 +163,22 @@ void* MemPoolFunc(alloc)(struct MemPoolDef(mem_pool)* _self,
 	MemPoolNode node = {(struct _mem_pool_node*)v.vptr_var};
 	void* ret = MemPoolNode_alloc(node, _is_safe_alloc);
 	*_iter = iter;
+    /// 如果当前的内存池空了，则将内存池扔到末尾去
 	if (MemPoolNode_empty(node))
 	{
+#pragma mark ResortMemPoolChain
 		List_throw_back(_self->mem_pool_chain, iter);
 		iter = List_begin(_self->mem_pool_chain);
 		v = List_get_value(iter);
 		node.self = (struct _mem_pool_node*)v.vptr_var;
+        /// 如果之后的内存池扔为空，则必须要再申请一个内存池
 		if (MemPoolNode_empty(node))
 		{
 			euint chk_size = _self->real_chk_size;
 			euint num_chks = _self->num_chunk_per_mem_block;
 			node = MemPoolNode_new(_self->native_allocator, chk_size, num_chks);
 			v.vptr_var = node.self;
+#pragma mark ResortMemPoolChain
 			List_push_front(_self->mem_pool_chain, v);
 			///_self->num_chunk_per_mem_block *= 2;
 #ifdef ALLOW_CONCURRENT
@@ -198,7 +203,21 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
 	var v = List_get_value(_iter);
 	MemPoolNode node = {(struct _mem_pool_node*)v.vptr_var};
 	MemPoolNode_free(node, _ptr);
-	List_throw_front(_self->mem_pool_chain, _iter);
+    /**
+    if (MemPoolNode_full(node) && !MemPoolNode_is_actived(node) && List_count(_self->mem_pool_chain) > 5) {
+        MemPoolNode_delete(node);
+        List_remove(_self->mem_pool_chain, _iter);
+#ifdef ALLOW_CONCURRENT
+        ELock_unlock(&_self->elock);
+#endif
+        return;
+    }
+    **/
+#pragma mark ResortMemPoolChain
+    /// 只有朝生暮死的内存池才回被扔到前面
+    if (MemPoolNode_is_actived(node)) {
+	    List_throw_front(_self->mem_pool_chain, _iter);
+    }
 #ifdef ALLOW_CONCURRENT
 	ELock_unlock(&_self->elock);
 #endif
@@ -373,9 +392,9 @@ void MemAllocatorFunc(free)(MemAllocatorDef(mem_allocator)* _self, void* _ptr)
 	}
 	else
 	{
+        euint chk_sz = MemPoolFunc(chunk_size)(info.mem_pool);
 		MemPoolFunc(free)(info.mem_pool, info.iter, ptr);
-
-		_self->alloced_mem_size -= MemPoolFunc(chunk_size)(info.mem_pool);
+		_self->alloced_mem_size -= chk_sz;
 	}
 }
 void MemAllocatorFunc(log)(MemAllocatorDef(mem_allocator)* _self)
