@@ -9,6 +9,7 @@ struct MemPoolDef(mem_pool)
 #ifdef ALLOW_CONCURRENT
 	ELock elock;
 #endif
+    volatile esint64 mem_stamp;
 };
 
 struct MemPoolListDef(mem_pool_list)
@@ -45,6 +46,7 @@ struct MemPoolDef(mem_pool)* MemPoolFunc(new)(native_memory_allocator* _alloc, e
 	ret->mem_pool_chain = List_new(Vptr,  _alloc);
 	ret->real_chk_size = calc_alloc_size(_chk_size);
 	ret->next = NULL;
+    ret->mem_stamp = 0;
 
 	while (!num_chunk_per_mem_block)
 	{
@@ -161,7 +163,7 @@ void* MemPoolFunc(alloc)(struct MemPoolDef(mem_pool)* _self,
 	Iterator iter = List_begin(_self->mem_pool_chain);
 	var v = List_get_value(iter);
 	MemPoolNode node = {(struct _mem_pool_node*)v.vptr_var};
-	void* ret = MemPoolNode_alloc(node, _is_safe_alloc);
+	void* ret = MemPoolNode_alloc(node, &_self->mem_stamp, _is_safe_alloc);
 	*_iter = iter;
     /// 如果当前的内存池空了，则将内存池扔到末尾去
 	if (MemPoolNode_empty(node))
@@ -205,10 +207,11 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
 	MemPoolNode_free(node, _ptr);
     
     if (MemPoolNode_full(node) &&
-        !MemPoolNode_is_actived(node) &&
+        !MemPoolNode_is_actived(node, &_self->mem_stamp) &&
         List_count(_self->mem_pool_chain) > 5 &&
         List_begin(_self->mem_pool_chain) != _iter) {
         MemPoolNode_delete(node);
+#pragma mark ResortMemPoolChain
         List_remove(_self->mem_pool_chain, _iter);
 #ifdef ALLOW_CONCURRENT
         ELock_unlock(&_self->elock);
@@ -218,7 +221,7 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
     
 #pragma mark ResortMemPoolChain
     /// 只有朝生暮死的内存池才回被扔到前面
-    if (MemPoolNode_is_actived(node)) {
+    if (MemPoolNode_is_actived(node, &_self->mem_stamp)) {
 	    List_throw_front(_self->mem_pool_chain, _iter);
     }
 #ifdef ALLOW_CONCURRENT

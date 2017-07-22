@@ -35,33 +35,15 @@
 #include "list.h"
 #include "spin_lock.h"
 
-static volatile esint64 s_mem_stamp = 0;
-
-_INLINE_ esint64 inc_mem_stamp()
+_INLINE_ esint64 inc_mem_stamp(volatile esint64* mem_stamp)
 {
 #if defined (_WIN32) || defined (_WIN64)
 #include <windows.h>
-    return InterlockedIncrement64(&s_mem_stamp);
+    return InterlockedIncrement64(mem_stamp);
 #elif defined (__APPLE__)
-    return __atomic_fetch_add(&s_mem_stamp, 1, __ATOMIC_SEQ_CST) + 1;
+    return __atomic_fetch_add(mem_stamp, 1, __ATOMIC_SEQ_CST) + 1;
 #elif defined(ANDROID) || defined(__ANDROID__)
-    return __sync_fetch_and_add(&s_mem_stamp, 1) + 1;
-#else
-#error
-#endif
-}
-
-_INLINE_ esint64 load_mem_stamp()
-{
-#if defined (_WIN32) || defined (_WIN64)
-#include <windows.h>
-    return ReadAcquire64(&s_mem_stamp);
-#elif defined (__APPLE__)
-    esint64 ret;
-    __atomic_load(&s_mem_stamp, &ret, __ATOMIC_SEQ_CST);
-    return ret;
-#elif defined(ANDROID) || defined(__ANDROID__)
-    return __sync_fetch_and_add(&s_mem_stamp, 0);
+    return __sync_fetch_and_add(mem_stamp, 1) + 1;
 #else
 #error
 #endif
@@ -83,14 +65,14 @@ _INLINE_ esint64 load_ptr(volatile esint64* ptr)
 #endif
 }
 
-_INLINE_ void store_mem_stamp(volatile esint64* ptr)
+_INLINE_ void store_mem_stamp(volatile esint64* mem_stamp, volatile esint64* ptr)
 {
 #if defined (_WIN32) || defined (_WIN64)
 #include <windows.h>
-    esint64 val = ReadAcquire64(&s_mem_stamp);
+    esint64 val = ReadAcquire64(mem_stamp);
     WriteRelease64(ptr, val);
 #else
-    __atomic_store(ptr, &s_mem_stamp, __ATOMIC_SEQ_CST);
+    __atomic_store(ptr, mem_stamp, __ATOMIC_SEQ_CST);
 #endif
 }
 
@@ -273,7 +255,7 @@ bool is_from(mem_pool_node* _node, void* _ptr)
     return (test0 && test1);
 }
 
-void* alloc(mem_pool_node* _node, bool _is_safe_alloc)
+void* alloc(mem_pool_node* _node, volatile esint64* _mem_stamp, bool _is_safe_alloc)
 {
 	mem_node* ret = _node->head;
 	if(ret)
@@ -298,8 +280,8 @@ void* alloc(mem_pool_node* _node, bool _is_safe_alloc)
 		    meminit(ret, _node->real_chk_size);
 		_node->chk_cnt--;
 	}
-    inc_mem_stamp();
-    store_mem_stamp(&_node->mem_stamp);
+    inc_mem_stamp(_mem_stamp);
+    store_mem_stamp(_mem_stamp, &_node->mem_stamp);
 	return ret;
 }
 
@@ -336,9 +318,9 @@ void MemPoolNode_delete(MemPoolNode _self)
     _self.self->native_allocator->free(_self.self->native_allocator, _self.self);
 }
 
-void* MemPoolNode_alloc(MemPoolNode _self, bool _is_safe_alloc)
+void* MemPoolNode_alloc(MemPoolNode _self, volatile esint64* _mem_stamp, bool _is_safe_alloc)
 {
-    return alloc(_self.self, _is_safe_alloc);
+    return alloc(_self.self, _mem_stamp, _is_safe_alloc);
 }
 
 bool MemPoolNode_free(MemPoolNode _self, void* _ptr)
@@ -351,10 +333,10 @@ bool MemPoolNode_free(MemPoolNode _self, void* _ptr)
     return false;
 }
 
-bool MemPoolNode_is_actived(MemPoolNode _self)
+bool MemPoolNode_is_actived(MemPoolNode _self, volatile esint64* _mem_stamp)
 {
     esint64 c = load_ptr(&_self.self->mem_stamp);
-    esint64 s = load_mem_stamp();
+    esint64 s = load_ptr(_mem_stamp);
     if (s - c < 100) {
         return true;
     }
