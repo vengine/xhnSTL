@@ -139,6 +139,7 @@ private:
 public:
     thread();
 	~thread();
+    void move_to_realtime_scheduling_class();
 	void run();
 	void add_task(task_ptr t);
     void add_lambda_task(Lambda<TaskStatus ()>& lambda);

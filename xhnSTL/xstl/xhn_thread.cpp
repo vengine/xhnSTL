@@ -2,6 +2,12 @@
 #ifdef __APPLE__
 #include <unistd.h>
 #include <limits.h>
+
+#include <mach/mach_init.h>
+#include <mach/thread_policy.h>
+#include <mach/mach.h>
+#include <mach/mach_time.h>
+
 #elif defined(LINUX)
 #include <sys/errno.h>
 #include <unistd.h>
@@ -322,6 +328,60 @@ void xhn::thread::stop_thread_and_join(SmartPtr<thread>& t)
         t->join();
         t = NULL;
     }
+}
+
+void xhn::thread::move_to_realtime_scheduling_class()
+{
+#ifdef __APPLE__
+    mach_timebase_info_data_t timebase_info;
+    mach_timebase_info(&timebase_info);
+    
+    const uint64_t NANOS_PER_MSEC = 1000000ULL;
+    double clock2abs = ((double)timebase_info.denom / (double)timebase_info.numer) * NANOS_PER_MSEC;
+    
+    /*
+     * THREAD_TIME_CONSTRAINT_POLICY:
+     *
+     * This scheduling mode is for threads which have real time
+     * constraints on their execution.
+     *
+     * Parameters:
+     *
+     * period: This is the nominal amount of time between separate
+     * processing arrivals, specified in absolute time units.  A
+     * value of 0 indicates that there is no inherent periodicity in
+     * the computation.
+     *
+     * computation: This is the nominal amount of computation
+     * time needed during a separate processing arrival, specified
+     * in absolute time units.
+     *
+     * constraint: This is the maximum amount of real time that
+     * may elapse from the start of a separate processing arrival
+     * to the end of computation for logically correct functioning,
+     * specified in absolute time units.  Must be (>= computation).
+     * Note that latency = (constraint - computation).
+     *
+     * preemptible: This indicates that the computation may be
+     * interrupted, subject to the constraint specified above.
+     */
+    thread_time_constraint_policy_data_t policy;
+    policy.period      = 0;
+    policy.computation = (uint32_t)(1 * clock2abs); // 1 ms of work
+    policy.constraint  = (uint32_t)(1 * clock2abs);
+    policy.preemptible = FALSE;
+
+    int kr = thread_policy_set(pthread_mach_thread_np(m_pt),
+                               THREAD_TIME_CONSTRAINT_POLICY,
+                               (thread_policy_t)&policy,
+                               THREAD_TIME_CONSTRAINT_POLICY_COUNT);
+    if (kr != KERN_SUCCESS) {
+        mach_error("thread_policy_set:", kr);
+        exit(1);
+    }
+#else
+    /// 什么也不做
+#endif
 }
 
 xhn::thread::thread()
