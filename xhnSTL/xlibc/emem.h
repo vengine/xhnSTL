@@ -33,9 +33,6 @@ extern native_memory_allocator g_DefaultMemoryAllcator;
 API_EXPORT void TestInit();
 /// 必须在启动多线程系统前完成引导
 API_EXPORT void MInit();
-    
-API_EXPORT void* MGetLocalCache();
-API_EXPORT void MSetLocalCache(const void* cache);
 
 API_EXPORT vptr _Malloc(euint _size, const char* _file, euint32 _line);
 API_EXPORT vptr _SMalloc(euint _size, const char* _file, euint32 _line);

@@ -223,6 +223,24 @@ euint MemPoolFunc(chunk_size)(struct MemPoolDef(mem_pool)* _self)
 	return _self->real_chk_size;
 }
 
+static bool MemAllocatorDef(IsLocalCacheCreated) = false;
+static pthread_key_t MemAllocatorDef(LocalCacheKey);
+void MemAllocatorFunc(MDest)(void* value)
+{
+    free(value);
+    pthread_setspecific(MemAllocatorDef(LocalCacheKey), NULL);
+}
+
+void* MemAllocatorFunc(GetLocalValue)()
+{
+    return pthread_getspecific(MemAllocatorDef(LocalCacheKey));
+}
+
+void MemAllocatorFunc(SetLocalValue)(void* value)
+{
+    pthread_setspecific(MemAllocatorDef(LocalCacheKey), value);
+}
+
 struct MemAllocatorDef(mem_allocator)
 {
     native_memory_allocator* native_allocator;
@@ -232,8 +250,6 @@ struct MemAllocatorDef(mem_allocator)
 #endif
 	euint32 test_mark;
 	euint alloced_mem_size;
-	mem_pool_node* head;
-	mem_pool_node* tail;
 };
 
 MemAllocatorDef(mem_allocator)* MemAllocatorFunc(new)(native_memory_allocator* _alloc)
@@ -255,8 +271,12 @@ MemAllocatorDef(mem_allocator)* MemAllocatorFunc(new)(native_memory_allocator* _
 #endif
     ret->test_mark = (euint32)rand();
 	ret->alloced_mem_size = 0;
-	ret->head = NULL;
-	ret->tail = NULL;
+    if (!MemAllocatorDef(IsLocalCacheCreated)) {
+        if (pthread_key_create(&MemAllocatorDef(LocalCacheKey), MemAllocatorFunc(MDest))) {
+            exit(1);
+        }
+        MemAllocatorDef(IsLocalCacheCreated) = true;
+    }
 	return ret;
 }
 void MemAllocatorFunc(delete)(MemAllocatorDef(mem_allocator)* _self)
