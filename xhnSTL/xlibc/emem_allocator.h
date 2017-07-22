@@ -203,8 +203,11 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
 	var v = List_get_value(_iter);
 	MemPoolNode node = {(struct _mem_pool_node*)v.vptr_var};
 	MemPoolNode_free(node, _ptr);
-    /**
-    if (MemPoolNode_full(node) && !MemPoolNode_is_actived(node) && List_count(_self->mem_pool_chain) > 5) {
+    
+    if (MemPoolNode_full(node) &&
+        !MemPoolNode_is_actived(node) &&
+        List_count(_self->mem_pool_chain) > 5 &&
+        List_begin(_self->mem_pool_chain) != _iter) {
         MemPoolNode_delete(node);
         List_remove(_self->mem_pool_chain, _iter);
 #ifdef ALLOW_CONCURRENT
@@ -212,7 +215,7 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
 #endif
         return;
     }
-    **/
+    
 #pragma mark ResortMemPoolChain
     /// 只有朝生暮死的内存池才回被扔到前面
     if (MemPoolNode_is_actived(node)) {
