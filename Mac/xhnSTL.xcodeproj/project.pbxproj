@@ -34,7 +34,6 @@
 		68245CCE1BC9D8F90006E99D /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 68245C461BC9D8F80006E99D /* list.c */; };
 		68245CCF1BC9D8F90006E99D /* list.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C471BC9D8F80006E99D /* list.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245CD01BC9D8F90006E99D /* list_base.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C481BC9D8F80006E99D /* list_base.h */; };
-		68245CD11BC9D8F90006E99D /* mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C491BC9D8F80006E99D /* mem.h */; };
 		68245CD21BC9D8F90006E99D /* prime.c in Sources */ = {isa = PBXBuildFile; fileRef = 68245C4A1BC9D8F80006E99D /* prime.c */; };
 		68245CD31BC9D8F90006E99D /* prime.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245C4B1BC9D8F80006E99D /* prime.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245CD41BC9D8F90006E99D /* rwbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 68245C4C1BC9D8F80006E99D /* rwbuffer.c */; };
@@ -187,7 +186,6 @@
 		68245C461BC9D8F80006E99D /* list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = list.c; sourceTree = "<group>"; };
 		68245C471BC9D8F80006E99D /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = list.h; sourceTree = "<group>"; };
 		68245C481BC9D8F80006E99D /* list_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = list_base.h; sourceTree = "<group>"; };
-		68245C491BC9D8F80006E99D /* mem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mem.h; sourceTree = "<group>"; };
 		68245C4A1BC9D8F80006E99D /* prime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = prime.c; sourceTree = "<group>"; };
 		68245C4B1BC9D8F80006E99D /* prime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = prime.h; sourceTree = "<group>"; };
 		68245C4C1BC9D8F80006E99D /* rwbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rwbuffer.c; sourceTree = "<group>"; };
@@ -369,7 +367,6 @@
 				68245C461BC9D8F80006E99D /* list.c */,
 				68245C471BC9D8F80006E99D /* list.h */,
 				68245C481BC9D8F80006E99D /* list_base.h */,
-				68245C491BC9D8F80006E99D /* mem.h */,
 				68245C4A1BC9D8F80006E99D /* prime.c */,
 				68245C4B1BC9D8F80006E99D /* prime.h */,
 				68245C4C1BC9D8F80006E99D /* rwbuffer.c */,
@@ -565,7 +562,6 @@
 				68245D341BC9D8F90006E99D /* xhn_thread_map.hpp in Headers */,
 				68245CDC1BC9D8F90006E99D /* static_string.h in Headers */,
 				68245CE81BC9D8F90006E99D /* xhn_btree.hpp in Headers */,
-				68245CD11BC9D8F90006E99D /* mem.h in Headers */,
 				68245D381BC9D8F90006E99D /* xhn_utility.hpp in Headers */,
 				68245CB41BC9D8F90006E99D /* apple_file_manager.h in Headers */,
 				B1607BB51E7D217900CBBDDD /* llvm_parser.hpp in Headers */,

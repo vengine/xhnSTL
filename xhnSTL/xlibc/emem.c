@@ -35,6 +35,38 @@
 #include "list.h"
 #include "spin_lock.h"
 
+static volatile esint64 s_mem_stamp = 0;
+
+_INLINE_ esint64 inc_mem_stamp()
+{
+#if defined (_WIN32) || defined (_WIN64)
+#include <windows.h>
+    return InterlockedIncrement64(&s_mem_stamp);
+#elif defined (__APPLE__)
+    return __atomic_fetch_add(&s_mem_stamp, 1, __ATOMIC_SEQ_CST) + 1;
+#elif defined(ANDROID) || defined(__ANDROID__)
+    return __sync_fetch_and_add(&s_mem_stamp, 1) + 1;
+#else
+#error
+#endif
+}
+
+_INLINE_ esint64 load_mem_stamp()
+{
+#if defined (_WIN32) || defined (_WIN64)
+#include <windows.h>
+    return ReadAcquire64(&s_mem_stamp);
+#elif defined (__APPLE__)
+    esint64 ret;
+    __atomic_load(&s_mem_stamp, &ret, __ATOMIC_SEQ_CST);
+    return ret;
+#elif defined(ANDROID) || defined(__ANDROID__)
+    return __sync_fetch_and_add(&s_mem_stamp, 0);
+#else
+#error
+#endif
+}
+
 typedef struct _mem_node
 {
     vptr next;
@@ -51,7 +83,6 @@ typedef struct _totel_refer_info
 #include <xmmintrin.h>
 #include <emmintrin.h>
 #include <pmmintrin.h>
-
 static char align_char[32];
 static __m128* zero_ptr = NULL;
 #endif

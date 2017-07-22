@@ -58,7 +58,7 @@ struct MemPoolDef(mem_pool)* MemPoolFunc(new)(native_memory_allocator* _alloc, e
 	v.vptr_var = node.self;
 	List_push_back(ret->mem_pool_chain, v);
 
-	ret->num_chunk_per_mem_block *= 2;
+	///ret->num_chunk_per_mem_block *= 2;
 #ifdef ALLOW_CONCURRENT
 	ELock_Init(&ret->elock);
 #endif
@@ -175,7 +175,7 @@ void* MemPoolFunc(alloc)(struct MemPoolDef(mem_pool)* _self,
 			node = MemPoolNode_new(_self->native_allocator, chk_size, num_chks);
 			v.vptr_var = node.self;
 			List_push_front(_self->mem_pool_chain, v);
-			_self->num_chunk_per_mem_block *= 2;
+			///_self->num_chunk_per_mem_block *= 2;
 #ifdef ALLOW_CONCURRENT
 			ELock_unlock(&_self->elock);
 #endif
