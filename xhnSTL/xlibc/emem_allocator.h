@@ -5,20 +5,10 @@ struct MemPoolDef(mem_pool)
 	euint real_chk_size;
 	euint num_chunk_per_mem_block;
 	List mem_pool_chain;
-	struct MemPoolDef(mem_pool)* next;
 #ifdef ALLOW_CONCURRENT
 	ELock elock;
 #endif
     volatile esint64 mem_stamp;
-};
-
-struct MemPoolListDef(mem_pool_list)
-{
-	struct MemPoolDef(mem_pool)* head;
-	struct MemPoolDef(mem_pool)* tail;
-#ifdef ALLOW_CONCURRENT
-	ELock elock;
-#endif
 };
 
 struct MemDescDef(mem_desc)
@@ -45,7 +35,6 @@ struct MemPoolDef(mem_pool)* MemPoolFunc(new)(native_memory_allocator* _alloc, e
     ret->native_allocator = _alloc;
 	ret->mem_pool_chain = List_new(Vptr,  _alloc);
 	ret->real_chk_size = calc_alloc_size(_chk_size);
-	ret->next = NULL;
     ret->mem_stamp = 0;
 
 	while (!num_chunk_per_mem_block)
@@ -232,56 +221,6 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
 euint MemPoolFunc(chunk_size)(struct MemPoolDef(mem_pool)* _self)
 {
 	return _self->real_chk_size;
-}
-
-struct MemPoolListDef(mem_pool_list)* MemPoolListFunc(new)(native_memory_allocator* _alloc)
-{
-	struct MemPoolListDef(mem_pool_list)* ret = NULL;
-	ret = (struct MemPoolListDef(mem_pool_list)*)_alloc->alloc(_alloc, sizeof(struct MemPoolListDef(mem_pool_list)));
-	ret->head = NULL;
-	ret->tail = NULL;
-#ifdef ALLOW_CONCURRENT
-	ret->elock = 0;
-#endif
-	return ret;
-}
-void MemPoolListFunc(delete)(native_memory_allocator* _alloc, struct MemPoolListDef(mem_pool_list)* _self)
-{
-	_alloc->free(_alloc, _self);
-}
-struct MemPoolDef(mem_pool)* MemPoolListFunc(pop_front)(struct MemPoolListDef(mem_pool_list)* _self)
-{
-	struct MemPoolDef(mem_pool)* ret= NULL;
-#ifdef ALLOW_CONCURRENT
-	ELock_lock(&_self->elock);
-#endif
-	if (_self->head) {
-		ret = _self->head;
-		_self->head = _self->head->next;
-		if (!_self->head)
-			_self->tail = NULL;
-	}
-#ifdef ALLOW_CONCURRENT
-	ELock_unlock(&_self->elock);
-#endif
-	return ret;
-}
-void MemPoolListFunc(push_back)(struct MemPoolListDef(mem_pool_list)* _self, struct MemPoolDef(mem_pool)* _pool)
-{
-#ifdef ALLOW_CONCURRENT
-	ELock_lock(&_self->elock);
-#endif
-	_pool->next = NULL;
-	if (_self->tail) {
-		_self->tail->next = _pool;
-		_self->tail = _pool;
-	}
-	else {
-		_self->head = _self->tail = _pool;
-	}
-#ifdef ALLOW_CONCURRENT
-	ELock_unlock(&_self->elock);
-#endif
 }
 
 struct MemAllocatorDef(mem_allocator)

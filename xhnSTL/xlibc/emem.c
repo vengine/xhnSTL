@@ -35,6 +35,8 @@
 #include "list.h"
 #include "spin_lock.h"
 
+static pthread_key_t local_cache_key;
+
 _INLINE_ esint64 inc_mem_stamp(volatile esint64* mem_stamp)
 {
 #if defined (_WIN32) || defined (_WIN64)
@@ -388,34 +390,28 @@ bool MemPoolNode_is_from(MemPoolNode _self, void* _ptr)
 
 #define VENGINE_PAGE_SIZE (512)
 #define MemPoolDef(x) x
-#define MemPoolListDef(x) x
 #define MemDescDef(x) x
 #define AllocInfoDef(x) x
 #define MemAllocatorDef(x) x
 #define MemPoolFunc(x) MemPool_##x
-#define MemPoolListFunc(x) MemPoolList_##x
 #define MemAllocatorFunc(x) MemAllocator_##x
 #define ALLOW_CONCURRENT
 
 #include "emem_allocator.h"
 
 #undef MemPoolDef
-#undef MemPoolListDef
 #undef MemDescDef
 #undef AllocInfoDef
 #undef MemAllocatorDef
 #undef MemPoolFunc
-#undef MemPoolListFunc
 #undef MemAllocatorFunc
 #undef ALLOW_CONCURRENT
 
 #define MemPoolDef(x) Unlocked_##x
-#define MemPoolListDef(x) Unlocked_##x
 #define MemDescDef(x) Unlocked_##x
 #define AllocInfoDef(x) Unlocked##x
 #define MemAllocatorDef(x) Unlocked_##x
 #define MemPoolFunc(x) UnlockedMemPool_##x
-#define MemPoolListFunc(x) UnlockedMemPoolList_##x
 #define MemAllocatorFunc(x) UnlockedMemAllocator_##x
 
 #include "emem_allocator.h"
@@ -533,8 +529,17 @@ native_memory_allocator g_DefaultMemoryAllcator =
     DefaultAlignedFree16,
 };
 
+void MDest(void* value)
+{
+    free(value);
+    pthread_setspecific(local_cache_key, NULL);
+}
+
 void MInit()
 {
+    if (pthread_key_create(&local_cache_key, MDest)) {
+        exit(1);
+    }
 #ifndef USE_C_MALLOC
 	if (!g_MemAllocator) {
         g_MemAllocator = MemAllocator_new(&g_DefaultMemoryAllcator);
@@ -543,6 +548,15 @@ void MInit()
 #if 0
 	_CrtSetAllocHook( MyAllocHook );
 #endif
+}
+
+void* MGetLocalCache()
+{
+    return pthread_getspecific(local_cache_key);
+}
+void MSetLocalCache(const void* cache)
+{
+    pthread_setspecific(local_cache_key, cache);
 }
 
 vptr _Malloc(euint _size, const char* _file, euint32 _line)

@@ -33,6 +33,9 @@ extern native_memory_allocator g_DefaultMemoryAllcator;
 API_EXPORT void TestInit();
 /// 必须在启动多线程系统前完成引导
 API_EXPORT void MInit();
+    
+API_EXPORT void* MGetLocalCache();
+API_EXPORT void MSetLocalCache(const void* cache);
 
 API_EXPORT vptr _Malloc(euint _size, const char* _file, euint32 _line);
 API_EXPORT vptr _SMalloc(euint _size, const char* _file, euint32 _line);
@@ -83,13 +86,6 @@ API_EXPORT void MemPool_free(mem_pool* _self,
                              Iterator _iter,
                              void* _ptr);
 API_EXPORT euint MemPool_chunk_size(mem_pool* _self);
-
-typedef struct mem_pool_list mem_pool_list;
-
-API_EXPORT mem_pool_list* MemPoolList_new(native_memory_allocator* _alloc);
-API_EXPORT void MemPoolList_delete(native_memory_allocator* _alloc, mem_pool_list* _self);
-API_EXPORT mem_pool* MemPoolList_pop_front(mem_pool_list* _self);
-API_EXPORT void MemPoolList_push_back(mem_pool_list* _self, mem_pool* _pool);
 
 typedef struct mem_allocator mem_allocator;
 
