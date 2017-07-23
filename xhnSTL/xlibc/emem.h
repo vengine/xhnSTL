@@ -66,10 +66,12 @@ API_EXPORT MemPoolNode MemPoolNode_new(native_memory_allocator* _alloc, euint _c
 API_EXPORT void MemPoolNode_delete(MemPoolNode _self);
 API_EXPORT void* MemPoolNode_alloc(MemPoolNode _self, volatile esint64* _mem_stamp, bool _is_safe_alloc);
 API_EXPORT bool MemPoolNode_free(MemPoolNode _self, void* _ptr);
-API_EXPORT bool MemPoolNode_is_actived(MemPoolNode _self, volatile esint64* _mem_stamp);
+API_EXPORT bool MemPoolNode_is_hotspot(MemPoolNode _self, volatile esint64* _mem_stamp);
+API_EXPORT bool MemPoolNode_is_coldspot(MemPoolNode _self, volatile esint64* _mem_stamp);
 API_EXPORT bool MemPoolNode_empty(MemPoolNode _self);
 API_EXPORT bool MemPoolNode_full(MemPoolNode _self);
 API_EXPORT bool MemPoolNode_is_from(MemPoolNode _self, void* _ptr);
+API_EXPORT euint MemPoolNode_number_of_chunks(MemPoolNode _self);
 
 typedef struct mem_pool mem_pool;
 

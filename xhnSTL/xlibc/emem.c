@@ -333,11 +333,23 @@ bool MemPoolNode_free(MemPoolNode _self, void* _ptr)
     return false;
 }
 
-bool MemPoolNode_is_actived(MemPoolNode _self, volatile esint64* _mem_stamp)
+bool MemPoolNode_is_hotspot(MemPoolNode _self, volatile esint64* _mem_stamp)
 {
     esint64 c = load_ptr(&_self.self->mem_stamp);
     esint64 s = load_ptr(_mem_stamp);
-    if (s - c < 100) {
+    if (s - c < MemPoolNode_number_of_chunks(_self) * 2) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool MemPoolNode_is_coldspot(MemPoolNode _self, volatile esint64* _mem_stamp)
+{
+    esint64 c = load_ptr(&_self.self->mem_stamp);
+    esint64 s = load_ptr(_mem_stamp);
+    if (s - c > MemPoolNode_number_of_chunks(_self) * 10) {
         return true;
     }
     else {
@@ -381,6 +393,11 @@ bool MemPoolNode_full(MemPoolNode _self)
 bool MemPoolNode_is_from(MemPoolNode _self, void* _ptr)
 {
     return is_from(_self.self, _ptr);
+}
+
+euint MemPoolNode_number_of_chunks(MemPoolNode _self)
+{
+    return SELF.num_chks;
 }
 
 #define MAX_MEM_POOLS      1024

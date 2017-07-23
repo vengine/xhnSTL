@@ -196,21 +196,22 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
 	MemPoolNode_free(node, _ptr);
     
     if (MemPoolNode_full(node) &&
-        !MemPoolNode_is_actived(node, &_self->mem_stamp) &&
+        (!MemPoolNode_is_hotspot(node, &_self->mem_stamp) &&
+         !MemPoolNode_is_coldspot(node, &_self->mem_stamp)) &&
         List_count(_self->mem_pool_chain) > 5 &&
         List_begin(_self->mem_pool_chain) != _iter) {
-        MemPoolNode_delete(node);
 #pragma mark ResortMemPoolChain
         List_remove(_self->mem_pool_chain, _iter);
 #ifdef ALLOW_CONCURRENT
         ELock_unlock(&_self->elock);
 #endif
+        MemPoolNode_delete(node);
         return;
     }
     
 #pragma mark ResortMemPoolChain
-    /// 只有朝生暮死的内存池才回被扔到前面
-    if (MemPoolNode_is_actived(node, &_self->mem_stamp)) {
+    if (MemPoolNode_is_hotspot(node, &_self->mem_stamp) ||
+        MemPoolNode_is_coldspot(node, &_self->mem_stamp)) {
 	    List_throw_front(_self->mem_pool_chain, _iter);
     }
 #ifdef ALLOW_CONCURRENT
@@ -221,24 +222,6 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
 euint MemPoolFunc(chunk_size)(struct MemPoolDef(mem_pool)* _self)
 {
 	return _self->real_chk_size;
-}
-
-static bool MemAllocatorDef(IsLocalCacheCreated) = false;
-static pthread_key_t MemAllocatorDef(LocalCacheKey);
-void MemAllocatorFunc(MDest)(void* value)
-{
-    free(value);
-    pthread_setspecific(MemAllocatorDef(LocalCacheKey), NULL);
-}
-
-void* MemAllocatorFunc(GetLocalValue)()
-{
-    return pthread_getspecific(MemAllocatorDef(LocalCacheKey));
-}
-
-void MemAllocatorFunc(SetLocalValue)(void* value)
-{
-    pthread_setspecific(MemAllocatorDef(LocalCacheKey), value);
 }
 
 struct MemAllocatorDef(mem_allocator)
@@ -271,12 +254,6 @@ MemAllocatorDef(mem_allocator)* MemAllocatorFunc(new)(native_memory_allocator* _
 #endif
     ret->test_mark = (euint32)rand();
 	ret->alloced_mem_size = 0;
-    if (!MemAllocatorDef(IsLocalCacheCreated)) {
-        if (pthread_key_create(&MemAllocatorDef(LocalCacheKey), MemAllocatorFunc(MDest))) {
-            exit(1);
-        }
-        MemAllocatorDef(IsLocalCacheCreated) = true;
-    }
 	return ret;
 }
 void MemAllocatorFunc(delete)(MemAllocatorDef(mem_allocator)* _self)
