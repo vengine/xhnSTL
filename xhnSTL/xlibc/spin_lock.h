@@ -35,27 +35,32 @@ _INLINE_ void ELock_unlock(ELock* lock) {
 	{}
 }
 #elif defined(__APPLE__)
+#ifndef OSSPINLOCK_DEPRECATED
 typedef volatile OSSpinLock ELock;
-    /**
-inline void ELock_Init(ELock* lock) {
-    *lock = 0;
-}
-     **/
 #define ELock_Init(lock) *lock = OS_SPINLOCK_INIT
-    ///OSAtomicCompareAndSwap32(oldValue, newValue, value);
 inline void ELock_lock(ELock* lock) {
-     ///while (!OSAtomicCompareAndSwap32((int32_t)0, (int32_t)1, (volatile int32_t*)lock))
-     ///{}
     OSSpinLockLock(lock);
 }
 inline void ELock_unlock(ELock* lock) {
-    ///while (!OSAtomicCompareAndSwap32((int32_t)1, (int32_t)0, (volatile int32_t*)lock))
-    ///{}
     OSSpinLockUnlock(lock);
 }
 inline bool ELock_try(ELock* lock) {
     return OSSpinLockTry(lock);
 }
+#else
+#include <os/lock.h>
+typedef os_unfair_lock ELock;
+#define ELock_Init(lock) *lock = OS_UNFAIR_LOCK_INIT
+inline void ELock_lock(ELock* lock) {
+    os_unfair_lock_lock(lock);
+}
+inline void ELock_unlock(ELock* lock) {
+    os_unfair_lock_unlock(lock);
+}
+inline bool ELock_try(ELock* lock) {
+    return os_unfair_lock_trylock(lock);
+}
+#endif
 #elif defined(LINUX) && defined(AO_ATOMIC_OPS_H)
     ///AO_compare_and_swap  takes an address, an old value and a new value and
     ///returns an int.  non-zero indicates the compare and swap succeeded.

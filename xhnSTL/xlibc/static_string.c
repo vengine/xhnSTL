@@ -39,7 +39,15 @@ static native_memory_allocator g_StringHashAllocator =
 void StringHashBucket_Init(StringHashBucket self, native_memory_allocator* alloc)
 {
     self->string_list = StringList_new(Vptr, alloc);
+#ifdef __APPLE__
+#ifndef OSSPINLOCK_DEPRECATED
     self->lock = 0;
+#else
+    self->lock = OS_UNFAIR_LOCK_INIT;
+#endif
+#else
+    self->lock = 0;
+#endif
 }
 
 void StringHashBucket_Dest(StringHashBucket self)
@@ -102,8 +110,15 @@ const char* StringHashSet_RefreshString(StringHashSet self, const char* str)
     ELock_unlock(&bucket->lock);
     return ret;
 }
-
+#ifdef __APPLE__
+#ifndef OSSPINLOCK_DEPRECATED
 static ELock s_StringHashSetLock = 0;
+#else
+static ELock s_StringHashSetLock = OS_UNFAIR_LOCK_INIT;
+#endif
+#else
+static ELock s_StringHashSetLock = 0;
+#endif
 static StringHashSet s_StringHashSet = NULL;
 
 static_string to_static_string(const char* str)

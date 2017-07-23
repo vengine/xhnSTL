@@ -12,7 +12,15 @@
 #include <unistd.h>
 
 void (*GetHomeDirectory)(char* output, int outlen) = NULL;
+#ifdef __APPLE__
+#ifndef OSSPINLOCK_DEPRECATED
 ELock g_elog_lock = 0;
+#else
+ELock g_elog_lock = OS_UNFAIR_LOCK_INIT;
+#endif
+#else
+ELock g_elog_lock = 0;
+#endif
 char g_elog_buffer[ELOG_BUFFER_SIZE];
 #ifdef USE_LOG_SYSTEM
 LOCKED_STATIC FILE* g_elog_file = NULL;

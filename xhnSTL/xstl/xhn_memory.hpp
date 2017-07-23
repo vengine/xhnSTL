@@ -120,12 +120,30 @@ private:
 	ELock m_lock;
 public:
 #ifdef DEBUG
+    #ifdef __APPLE__
+    #ifndef OSSPINLOCK_DEPRECATED
     inline void PrintDebugInfo() const {
         printf("%d\n", m_lock);
     }
     inline bool TestDebug() const {
         return m_lock == 0;
     }
+    #else
+    inline void PrintDebugInfo() const {
+        printf("%d\n", m_lock._os_unfair_lock_opaque);
+    }
+    inline bool TestDebug() const {
+        return m_lock._os_unfair_lock_opaque == 0;
+    }
+    #endif
+    #else
+    inline void PrintDebugInfo() const {
+        printf("%d\n", m_lock);
+    }
+    inline bool TestDebug() const {
+        return m_lock == 0;
+    }
+    #endif
 #endif
 	class Instance
 	{
@@ -146,7 +164,15 @@ public:
 	};
 public:
 	inline RefSpinLock()
+    #ifdef __APPLE__
+    #ifndef OSSPINLOCK_DEPRECATED
     : m_lock(0)
+    #else
+    : m_lock(OS_UNFAIR_LOCK_INIT)
+    #endif
+    #else
+    : m_lock(0)
+    #endif
 	{}
 	inline Instance Lock()
 	{
@@ -154,7 +180,15 @@ public:
 		return Instance(&m_lock);
 	}
     inline bool TryLock() const {
+#ifdef __APPLE__
+#ifndef OSSPINLOCK_DEPRECATED
         return m_lock;
+#else
+        return m_lock._os_unfair_lock_opaque;
+#endif
+#else
+        return m_lock;
+#endif
     }
 };
 

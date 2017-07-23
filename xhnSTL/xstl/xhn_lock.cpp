@@ -11,46 +11,6 @@
 #include "xhn_lock.hpp"
 #include "xhn_atomic_operation.hpp"
 
-///==========================================================================///
-///  RecursiveSpinLock                                                       ///
-///==========================================================================///
-
-xhn::RecursiveSpinLock::Instance::~Instance()
-{
-    ELock_lock(&m_prototype->m_interlock);
-    if(!AtomicDecrement(&m_prototype->m_lock)) {
-        m_prototype->m_tid = 0;
-    }
-    ELock_unlock(&m_prototype->m_interlock);
-}
-
-xhn::RecursiveSpinLock::Instance xhn::RecursiveSpinLock::Lock()
-{
-    ELock_lock(&m_interlock);
-    if (!m_tid) {
-        m_tid = pthread_self();
-    }
-    else {
-        if (m_tid != pthread_self()) {
-            /// 这里先解锁了
-            ELock_unlock(&m_interlock);
-            ///
-            while (1) {
-                ELock_lock(&m_interlock);
-                if (!m_tid) {
-                    /// break以后实际上是锁住的
-                    m_tid = pthread_self();
-                    break;
-                }
-                ELock_unlock(&m_interlock);
-            }
-        }
-    }
-    AtomicIncrement(&m_lock);
-    ELock_unlock(&m_interlock);
-    return Instance(this);
-}
-
 /**
  * Copyright (c) 2011-2013 Xu Haining
  *

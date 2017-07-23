@@ -235,8 +235,18 @@ public:
 	};
 public:
 	inline SpinLock()
-		: m_lock(0)
-		, m_userdata(NULL)
+#ifdef __APPLE__
+#ifndef OSSPINLOCK_DEPRECATED
+    : m_lock(0)
+    , m_userdata(NULL)
+#else
+    : m_lock(OS_UNFAIR_LOCK_INIT)
+    , m_userdata(NULL)
+#endif
+#else
+    : m_lock(0)
+    , m_userdata(NULL)
+#endif
 	{}
 	inline Instance Lock() const
 	{
@@ -299,12 +309,28 @@ public:
     };
 public:
     inline SpinObject()
+#ifdef __APPLE__
+#ifndef OSSPINLOCK_DEPRECATED
     : m_lock(0)
+#else
+    : m_lock(OS_UNFAIR_LOCK_INIT)
+#endif
+#else
+    : m_lock(0)
+#endif
     {}
     template <typename ...ARGS>
     SpinObject(ARGS... args)
     : m_data(args...)
+#ifdef __APPLE__
+#ifndef OSSPINLOCK_DEPRECATED
     , m_lock(0)
+#else
+    , m_lock(OS_UNFAIR_LOCK_INIT)
+#endif
+#else
+    , m_lock(0)
+#endif
     {
     }
     inline Instance Lock()
@@ -317,43 +343,6 @@ public:
         ELock_lock(&m_lock);
         return Instance(&m_lock, &m_data);
     }
-};
-
-    /// \brief RecursiveSpinLock
-    ///
-    /// 可递归的自旋锁
-
-class RecursiveSpinLock : public RefObject
-{
-    friend class Instance;
-private:
-    ELock m_interlock;
-    volatile pthread_t m_tid;
-	ELock m_lock;
-	vptr m_userdata;
-public:
-	class Instance
-	{
-		friend class RecursiveSpinLock;
-	private:
-		RecursiveSpinLock* m_prototype;
-		inline Instance(RecursiveSpinLock* prototype)
-        : m_prototype(prototype)
-		{}
-	public:
-		inline Instance(const Instance& inst)
-        : m_prototype(inst.m_prototype)
-		{}
-		~Instance();
-	};
-    RecursiveSpinLock()
-    : m_tid(0)
-    , m_userdata(NULL)
-    {
-        ELock_Init(&m_interlock);
-        ELock_Init(&m_lock);
-    }
-    Instance Lock();
 };
 
     /// \brief MutexObject
