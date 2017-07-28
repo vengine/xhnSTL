@@ -273,7 +273,8 @@ public:
 #elif defined(LINUX) && defined(AO_ATOMIC_OPS_H)
         if (AO_compare_and_swap((AO_t *)&m_ptr, (AO_t)src.m_original, (AO_t)src.m_cloned)) {
 #else
-        if (OSAtomicCompareAndSwapPtr((void*)src.m_original, (void*)src.m_cloned, (void* volatile *)&m_ptr)) {
+        ///if (OSAtomicCompareAndSwapPtr((void*)src.m_original, (void*)src.m_cloned, (void* volatile *)&m_ptr)) {
+        if (AtomicCompareExchangePtr((void*)src.m_original, (void*)src.m_cloned, (void* volatile *)&m_ptr)) {
 #endif
 			if (src.m_cloned) {
 				AtomicIncrement(&src.m_cloned->ref_count);
