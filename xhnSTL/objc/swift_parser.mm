@@ -282,9 +282,9 @@ namespace xhn {
 
         bridgeFile = "static xhn::SpinLock s_lock;\n";
         bridgeFile += "static void (*s_printLogProc)(int, const char*) = NULL;\n";
-        bridgeFile += "static NSMutableSet* s_sceneNodeAgentSet = nil;\n";
-        bridgeFile += "static NSMutableSet* s_guiAgentSet = nil;\n";
-        bridgeFile += "static NSMutableSet* s_actorAgentSet = nil;\n";
+        bridgeFile += "NSMutableSet* s_sceneNodeAgentSet = nil;\n";
+        bridgeFile += "NSMutableSet* s_guiAgentSet = nil;\n";
+        bridgeFile += "NSMutableSet* s_actorAgentSet = nil;\n";
         bridgeFile += "static NSMutableDictionary* s_createSceneNodeAgentProcDic = nil;\n";
         bridgeFile += "static NSMutableDictionary* s_createGUIAgentProcDic = nil;\n";
         bridgeFile += "static NSMutableDictionary* s_createActorAgentProcDic = nil;\n";
@@ -797,7 +797,8 @@ namespace xhn {
                                                     "        [ret setState:@\"HoveringState\" state:hoveringState];\n"
                                                     "        [ret setState:@\"SelectedState\" state:selectedState];\n"
                                                     "        [ret setState:@\"PressedState\" state:pressedState];\n"
-                                                    "        [ret setState:@\"DraggingState\" state:draggingState];\n");
+                                                    "        [ret setState:@\"DraggingState\" state:draggingState];\n"
+                                                    "        [ret setCurrentState:normalState];\n");
                                 bridgeFile += mbuf;
                                 ///
                                 bridgeFile +=
