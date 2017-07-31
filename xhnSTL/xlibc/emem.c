@@ -56,7 +56,7 @@ _INLINE_ esint64 load_ptr(volatile esint64* ptr)
     return ReadAcquire64(ptr);
 #elif defined (__APPLE__)
     esint64 ret;
-    __atomic_load(ptr, &ret, __ATOMIC_SEQ_CST);
+    __atomic_load(ptr, &ret, __ATOMIC_ACQUIRE);
     return ret;
 #elif defined(ANDROID) || defined(__ANDROID__)
     return __sync_fetch_and_add(ptr, 0);
@@ -72,7 +72,9 @@ _INLINE_ void store_mem_stamp(volatile esint64* mem_stamp, volatile esint64* ptr
     esint64 val = ReadAcquire64(mem_stamp);
     WriteRelease64(ptr, val);
 #else
-    __atomic_store(ptr, mem_stamp, __ATOMIC_SEQ_CST);
+    esint64 val;
+    __atomic_load(mem_stamp, &val, __ATOMIC_ACQUIRE);
+    __atomic_store(ptr, &val, __ATOMIC_RELEASE);
 #endif
 }
 

@@ -148,6 +148,28 @@ inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile e
 }
 #endif
 
+#if defined (_WIN32) || defined (_WIN64)
+inline esint64 AtomicLoad64(volatile esint64* ptr)
+{
+    return ReadAcquire64(ptr);
+}
+inline void AtomicStore64(esint64 value, volatile esint64* result)
+{
+    WriteRelease64(result, value);
+}
+#else
+inline esint64 AtomicLoad64(volatile esint64* ptr)
+{
+    esint64 ret;
+    __atomic_load(ptr, &ret, __ATOMIC_ACQUIRE);
+    return ret;
+}
+inline void AtomicStore64(esint64 value, volatile esint64* result)
+{
+    __atomic_store(result, &value, __ATOMIC_RELEASE);
+}
+#endif
+
 #endif
 #endif
 

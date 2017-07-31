@@ -366,12 +366,13 @@ struct SinglyLinkedListNode
         snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
-    __block xhn::dictionary<xhn::static_string, int> hash_table;
+    __block xhn::dictionary<xhn::static_string, int>* hash_table = VNEW xhn::dictionary<xhn::static_string, int>();
     [self measureBlock:^{
         for (int i = 0; i < num; i++) {
-            hash_table.insert(strs[i], i);
+            hash_table->insert(strs[i], i);
         }
     }];
+    VDELETE hash_table;
     VDELETE_ARRAY[] strs;
 }
 
@@ -384,17 +385,18 @@ struct SinglyLinkedListNode
         snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
-    __block xhn::dictionary<xhn::static_string, int> hash_table;
+    __block xhn::dictionary<xhn::static_string, int>* hash_table = VNEW xhn::dictionary<xhn::static_string, int>();
     for (int i = 0; i < num; i++) {
-        hash_table.insert(strs[i], i);
+        hash_table->insert(strs[i], i);
     }
     [self measureBlock:^{
         int value = 0;
         for (int i = 0; i < num; i++) {
-            int* v = hash_table.find(strs[i]);
+            int* v = hash_table->find(strs[i]);
             value += *v;
         }
     }];
+    VDELETE hash_table;
     VDELETE_ARRAY[] strs;
 }
 
@@ -568,6 +570,104 @@ struct SinglyLinkedListNode
     }];
 }
 
+struct ThreadData
+{
+    euint index;
+    volatile esint64 counter;
+    volatile esint64 stopped;
+    pthread_t tid;
+};
 
+#define NUM_THREADS 32
+#define NUM_COUNTS 10000
+
+static ThreadData datas[NUM_THREADS];
+
+void* ThreadProc0(void* idx) {
+    euint* ptrIdx = (euint*)idx;
+    euint index = *ptrIdx;
+    for (int i = 0; i < NUM_COUNTS; i++) {
+        esint64 c = AtomicLoad64(&datas[index].counter);
+        c++;
+        AtomicStore64(c, &datas[index].counter);
+        pthread_yield_np();
+    }
+    esint64 f = AtomicLoad64(&datas[index].stopped);
+    f = 1;
+    AtomicStore64(f, &datas[index].stopped);
+    return nullptr;
+}
+
+void TestThreads0()
+{
+    for (euint i = 0; i < NUM_THREADS; i++) {
+        datas[i].index = i;
+        datas[i].stopped = 0;
+        pthread_create(&datas[i].tid, nullptr, ThreadProc0, &datas[i].index);
+    }
+}
+
+void WaitAllThreadStopped0() {
+    for (euint i = 0; i < NUM_THREADS;) {
+        esint64 f = AtomicLoad64(&datas[i].stopped);
+        if (f) {
+            i++;
+        }
+        else {
+            pthread_yield_np();
+        }
+    }
+}
+
+void* ThreadProc1(void* idx) {
+    euint* ptrIdx = (euint*)idx;
+    euint index = *ptrIdx;
+    for (int i = 0; i < NUM_COUNTS; i++) {
+        esint64 c = AtomicLoad64(&datas[index].counter);
+        c++;
+        AtomicStore64(c, &datas[index].counter);
+    }
+    esint64 f = AtomicLoad64(&datas[index].stopped);
+    f = 1;
+    AtomicStore64(f, &datas[index].stopped);
+    return nullptr;
+}
+
+void TestThreads1()
+{
+    for (euint i = 0; i < NUM_THREADS; i++) {
+        datas[i].index = i;
+        datas[i].stopped = 0;
+        pthread_create(&datas[i].tid, nullptr, ThreadProc1, &datas[i].index);
+    }
+}
+
+void WaitAllThreadStopped1() {
+    for (euint i = 0; i < NUM_THREADS;) {
+        esint64 f = AtomicLoad64(&datas[i].stopped);
+        if (f) {
+            i++;
+        }
+        else {
+            pthread_yield_np();
+        }
+    }
+}
+
+- (void) testThreadSwitch0 {
+    
+    [self measureBlock:^{
+        TestThreads0();
+        WaitAllThreadStopped0();
+    }];
+}
+
+- (void) testThreadSwitch1 {
+    
+    [self measureBlock:^{
+        TestThreads1();
+        WaitAllThreadStopped1();
+    }];
+}
 
 @end
