@@ -582,6 +582,7 @@ struct ThreadData
 #define NUM_COUNTS 10000
 
 static ThreadData datas[NUM_THREADS];
+static euint waitCounter = 0;
 
 void* ThreadProc0(void* idx) {
     euint* ptrIdx = (euint*)idx;
@@ -600,6 +601,7 @@ void* ThreadProc0(void* idx) {
 
 void TestThreads0()
 {
+    waitCounter = 0;
     for (euint i = 0; i < NUM_THREADS; i++) {
         datas[i].index = i;
         datas[i].stopped = 0;
@@ -614,6 +616,7 @@ void WaitAllThreadStopped0() {
             i++;
         }
         else {
+            waitCounter++;
             pthread_yield_np();
         }
     }
@@ -635,6 +638,7 @@ void* ThreadProc1(void* idx) {
 
 void TestThreads1()
 {
+    waitCounter = 0;
     for (euint i = 0; i < NUM_THREADS; i++) {
         datas[i].index = i;
         datas[i].stopped = 0;
@@ -649,25 +653,49 @@ void WaitAllThreadStopped1() {
             i++;
         }
         else {
+            waitCounter++;
             pthread_yield_np();
         }
     }
 }
 
+static euint Test0WaitCounters[10];
+static euint Test1WaitCounters[10];
+static VTime Test0Times[10];
+static VTime Test1Times[10];
+static int Test0Counter = 0;
+static int Test1Counter = 0;
+
 - (void) testThreadSwitch0 {
     
     [self measureBlock:^{
+        TimeCheckpoint tp = TimeCheckpoint::Tick();
         TestThreads0();
         WaitAllThreadStopped0();
+        TimeCheckpoint::Tock(tp, Test0Times[Test0Counter]);
+        Test0WaitCounters[Test0Counter++] = waitCounter;
     }];
 }
 
 - (void) testThreadSwitch1 {
     
     [self measureBlock:^{
+        TimeCheckpoint tp = TimeCheckpoint::Tick();
         TestThreads1();
         WaitAllThreadStopped1();
+        TimeCheckpoint::Tock(tp, Test1Times[Test1Counter]);
+        Test1WaitCounters[Test0Counter++] = waitCounter;
     }];
+    for (int i = 0; i < 10; i++) {
+        euint yield0 = NUM_COUNTS * NUM_THREADS + Test0WaitCounters[i];
+        euint yield1 = Test1WaitCounters[i];
+        float time0 = Test0Times[i].GetMillisecond();
+        float time1 = Test1Times[i].GetMillisecond();
+        float deltaTime = time0 - time1;
+        euint deltaYield = yield0 - yield1;
+        float perYieldTime = deltaTime / (float)deltaYield;
+        printf("线程切换时间:%f毫秒\n", perYieldTime);
+    }
 }
 
 @end
