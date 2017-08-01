@@ -143,19 +143,19 @@ void* xhn::thread::thread_proc(void* self)
 }
 void xhn::thread::run()
 {
-    m_is_errored = false;
+    AtomicCompareExchange(1, 0, &m_is_errored);
 begin:
-    m_is_finished = false;
-    m_is_stopped = false;
+    AtomicCompareExchange(1, 0, &m_is_finished);
+    AtomicCompareExchange(1, 0, &m_is_stopped);
     {
         SpinLock::Instance taskInst = m_taskLock.Lock();
         m_tasks.clear();
-        m_is_completed = true;
+        AtomicCompareExchange(0, 1, &m_is_completed);
     }
     try {
-        m_is_running = true;
+        AtomicCompareExchange(0, 1, &m_is_running);
         while (1) {
-            if (m_is_finished)
+            if (AtomicCompareExchange(1, 1, &m_is_finished))
                 break;
             {
                 volatile bool isTaskEmpty = false;
@@ -163,21 +163,21 @@ begin:
                     SpinLock::Instance taskInst = m_taskLock.Lock();
                     isTaskEmpty = m_tasks.empty();
                 }
-                if (isTaskEmpty && !m_is_finished) {
-                    m_is_completed = true;
+                if (isTaskEmpty && !AtomicCompareExchange(1, 1, &m_is_finished)) {
+                    AtomicCompareExchange(0, 1, &m_is_completed);
 
                     pthread_mutex_lock(&m_mutex);
                     {
                         SpinLock::Instance taskInst = m_taskLock.Lock();
                         isTaskEmpty = m_tasks.empty();
                     }
-                    if (isTaskEmpty && !m_is_finished) {
+                    if (isTaskEmpty && !AtomicCompareExchange(1, 1, &m_is_finished)) {
                         pthread_cond_wait(&m_cond, &m_mutex);
                     }
                     pthread_mutex_unlock(&m_mutex);
                 }
             }
-            if (m_is_finished)
+            if (AtomicCompareExchange(1, 1, &m_is_finished))
                 break;
             task_ptr t;
             {
@@ -187,7 +187,7 @@ begin:
                     m_tasks.pop_front();
                 }
                 else {
-                    m_is_completed = true;
+                    AtomicCompareExchange(0, 1, &m_is_completed);
                 }
             }
             if (t) {
@@ -199,7 +199,7 @@ begin:
                 if (t->run()) {
                     SpinLock::Instance taskInst = m_taskLock.Lock();
                     if (m_tasks.empty()) {
-                        m_is_completed = true;
+                        AtomicCompareExchange(0, 1, &m_is_completed);
                     }
                 }
                 else {
@@ -216,20 +216,20 @@ begin:
     catch(Exception& e) {
         const char* msg = e.what();
         printf("thread exit %s\n", msg);
-        m_is_running = false;
-        m_is_errored = true;
+        AtomicCompareExchange(1, 0, &m_is_running);
+        AtomicCompareExchange(0, 1, &m_is_errored);
         goto begin;
     }
-    m_is_stopped = true;
+    AtomicCompareExchange(0, 1, &m_is_stopped);
 }
 void xhn::thread::add_task(task_ptr t)
 {
-    if (!m_is_stopped)
+    if (!AtomicCompareExchange(1, 1, &m_is_stopped))
     {
         {
             SpinLock::Instance taskInst = m_taskLock.Lock();
             m_tasks.push_back(t);
-            m_is_completed = false;
+            AtomicCompareExchange(1, 0, &m_is_completed);
         }
         {
             pthread_mutex_lock(&m_mutex);
@@ -245,7 +245,7 @@ void xhn::thread::add_lambda_task(Lambda<TaskStatus ()>& lambda)
     add_task(task);
 }
 void xhn::thread::stop() {
-    m_is_finished = true;
+    AtomicCompareExchange(0, 1, &m_is_finished);
     {
         /// 需要发送消息唤醒线程
         pthread_mutex_lock(&m_mutex);
@@ -254,7 +254,7 @@ void xhn::thread::stop() {
     }
 }
 void xhn::thread::reset() {
-    m_is_errored = false;
+    AtomicCompareExchange(1, 0, &m_is_errored);
 }
 void xhn::thread::force_stop()
 {
@@ -268,7 +268,7 @@ void xhn::thread::force_restart()
         SpinLock::Instance taskInst = m_taskLock.Lock();
         m_tasks.clear();
     }
-    while (!m_is_completed) {
+    while (!AtomicCompareExchange(1, 1, &m_is_completed)) {
         {
             SpinLock::Instance taskInst = m_taskLock.Lock();
             m_tasks.clear();
@@ -283,7 +283,7 @@ void xhn::thread::force_restart()
 }
 void xhn::thread::wait_completed()
 {
-    while (!m_is_completed) {}
+    while (!AtomicCompareExchange(1, 1, &m_is_completed)) {}
 }
 void xhn::thread::join()
 {
@@ -294,7 +294,7 @@ void xhn::thread::clear()
 {
     SpinLock::Instance taskInst = m_taskLock.Lock();
     m_tasks.clear();
-    m_is_completed = true;
+    AtomicCompareExchange(0, 1, &m_is_completed);
 }
 
 bool xhn::thread::I_am_this_thread()
@@ -385,11 +385,11 @@ void xhn::thread::move_to_realtime_scheduling_class()
 }
 
 xhn::thread::thread()
-: m_is_completed(false)
-, m_is_finished(false)
-, m_is_running(false)
-, m_is_stopped(false)
-, m_is_errored(false)
+: m_is_completed(0)
+, m_is_finished(0)
+, m_is_running(0)
+, m_is_stopped(0)
+, m_is_errored(0)
 {
     pthread_attr_t thread_attr;
     size_t stack_size;
@@ -443,15 +443,15 @@ xhn::thread::thread()
 }
 xhn::thread::~thread()
 {
-    m_is_finished = true;
+    AtomicCompareExchange(0, 1, &m_is_finished);
     {
         /// 需要发送消息唤醒线程
         pthread_mutex_lock(&m_mutex);
         pthread_cond_signal(&m_cond);
         pthread_mutex_unlock(&m_mutex);
     }
-	while (!m_is_stopped) {
-        m_is_finished = true;
+	while (!AtomicCompareExchange(1, 1, &m_is_stopped)) {
+        AtomicCompareExchange(0, 1, &m_is_finished);
         pthread_mutex_lock(&m_mutex);
         pthread_cond_signal(&m_cond);
         pthread_mutex_unlock(&m_mutex);

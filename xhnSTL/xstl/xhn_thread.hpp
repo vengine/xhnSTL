@@ -125,14 +125,14 @@ public:
     stack_range m_stack_range;
     /// 这是一组的
 	list<task_ptr, ThreadAllocator> m_tasks;
-    volatile bool m_is_completed;
+    volatile esint32 m_is_completed;
     
-    volatile bool m_is_finished;
-    volatile bool m_is_running;
+    volatile esint32 m_is_finished;
+    volatile esint32 m_is_running;
 	
-	volatile bool m_is_stopped;
+	volatile esint32 m_is_stopped;
 	
-    volatile bool m_is_errored;
+    volatile esint32 m_is_errored;
     xhn::string m_error_message;
 private:
 	static void* thread_proc(void* self);
@@ -144,18 +144,18 @@ public:
 	void add_task(task_ptr t);
     void add_lambda_task(Lambda<TaskStatus ()>& lambda);
 	bool is_complete() {
-		return m_is_completed;
+		return AtomicCompareExchange(1, 1, &m_is_completed);
 	}
     bool is_errored() {
-        return m_is_errored;
+        return AtomicCompareExchange(1, 1, &m_is_errored);
     }
     void stop();
     void reset();
     bool is_stopped() {
-        return m_is_stopped;
+        return AtomicCompareExchange(1, 1, &m_is_stopped);
     }
     bool is_running() {
-        return m_is_running;
+        return AtomicCompareExchange(1, 1, &m_is_running);
     }
     euint num_tasks() {
         return m_tasks.size();
