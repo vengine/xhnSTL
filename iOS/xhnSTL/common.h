@@ -103,7 +103,9 @@ or
 #        define FORCE_ALIGN_ARG_POINTER
 #    endif
 
-#    define USING_NEON
+#    ifndef USING_NEON
+#        define USING_NEON
+#    endif
 #    define USAGE_UCS2
 #    undef  USAGE_UCS4
 
@@ -165,7 +167,11 @@ or
 
 #    include <pthread.h>
 
-#    define BIT_WIDTH 64
+#    ifdef __LP64__
+#        define BIT_WIDTH 64
+#    else
+#        define BIT_WIDTH 32
+#    endif
 
 #endif
 
