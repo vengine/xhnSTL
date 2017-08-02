@@ -15,6 +15,7 @@
 #include "etypes.h"
 #if defined (_WIN32) || defined (_WIN64)
 #include <windows.h>
+#include <xatomic.h>
 inline esint32 AtomicIncrement(volatile esint32* i)
 {
 	return InterlockedIncrement((volatile LONG*)i);
@@ -149,6 +150,32 @@ inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile e
 #endif
 
 #if defined (_WIN32) || defined (_WIN64)
+inline esint32 AtomicLoad32(volatile esint32* ptr)
+{
+    esint32 _Value;
+    
+#if defined(_M_ARM) || defined(_M_ARM64)
+    _Value = __iso_volatile_load32(ptr);
+    _Memory_barrier();
+    
+#else
+    _Value = *ptr;
+    _Compiler_barrier();
+#endif
+    
+    return (_Value);
+}
+inline void AtomicStore32(esint32 value, volatile esint32 *result)
+{
+#if defined(_M_ARM) || defined(_M_ARM64)
+    _Memory_barrier();
+    __iso_volatile_store32(result, value);
+    
+#else
+    _Compiler_barrier();
+    *result = value;
+#endif
+}
 inline esint64 AtomicLoad64(volatile esint64* ptr)
 {
     return ReadAcquire64(ptr);
@@ -158,6 +185,16 @@ inline void AtomicStore64(esint64 value, volatile esint64* result)
     WriteRelease64(result, value);
 }
 #else
+inline esint32 AtomicLoad32(volatile esint32* ptr)
+{
+    esint32 ret;
+    __atomic_load(ptr, &ret, __ATOMIC_ACQUIRE);
+    return ret;
+}
+inline void AtomicStore32(esint32 value, volatile esint32* result)
+{
+    __atomic_store(result, &value, __ATOMIC_RELEASE);
+}
 inline esint64 AtomicLoad64(volatile esint64* ptr)
 {
     esint64 ret;

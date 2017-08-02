@@ -15,6 +15,7 @@
 #include <xhnSTL/cpu.h>
 #include <map>
 #include <unordered_map>
+#include <string>
 
 @interface xhnSTLTests : XCTestCase
 
@@ -724,12 +725,12 @@ void* AffinitProc(void*)
     CPU_SET(2, &cpuset);
     pthread_setaffinity_np(s_affinitTestTid, 8, &cpuset);
     **/
-    
     euint64 counter = 0;
-    while (counter < 1024 * 1024) {
-        if (AtomicCompareExchange(1, 1, &s_hasData)) {
+    while (counter < 1024 * 1024 * 128) {
+        esint32 ret = AtomicLoad32(&s_hasData);
+        if (ret) {
             s_sum = s_a + s_b;
-            AtomicCompareExchange(1, 0, &s_hasData);
+            AtomicStore32(0, &s_hasData);
         }
         counter++;
     }
@@ -740,6 +741,7 @@ void* AffinitProc(void*)
 - (void) testAffinit
 {
     [self measureBlock:^{
+        euint microDelayCounter = 0;
         euint smallDelayCounter = 0;
         euint mediumDelayCounter = 0;
         euint mediumHighDelayCounter = 0;
@@ -752,7 +754,8 @@ void* AffinitProc(void*)
         VTime t;
         pthread_create(&s_affinitTestTid, nullptr, AffinitProc, nullptr);
         while (!AtomicCompareExchange(1, 0, &s_exitFlag)) {
-            if (AtomicCompareExchange(0, 0, &s_hasData)) {
+            esint32 ret = AtomicLoad32(&s_hasData);
+            if (0 == ret) {
                 TimeCheckpoint::Tock(tp, t);
                 float ns = t.GetNanosecond();
                 if (ns < nsMin) {
@@ -761,10 +764,13 @@ void* AffinitProc(void*)
                 if (ns > nsMax) {
                     nsMax = ns;
                 }
-                if (ns < 500.0f) {
+                if (ns < 150.0f) {
+                    microDelayCounter++;
+                }
+                else if (ns >= 150.0f && ns < 200.0f) {
                     smallDelayCounter++;
                 }
-                else if (ns >= 500.0f && ns < 10000.0f) {
+                else if (ns >= 200.0f && ns < 10000.0f) {
                     mediumDelayCounter++;
                 }
                 else if (ns >= 10000.0f && ns < 100000.0f) {
@@ -782,17 +788,22 @@ void* AffinitProc(void*)
                         }
                     }
                 }
+                EAssert(s_sum == s_a + s_b, "error");
                 s_a = rand();
                 s_b = rand();
                 tp = TimeCheckpoint::Tick();
-                AtomicCompareExchange(0, 1, &s_hasData);
+                AtomicStore32(1, &s_hasData);
             }
         }
         pthread_join(s_affinitTestTid, NULL);
-        NSLog(@"最小延迟为%f纳秒, 最大延迟为%f纳秒, 小延迟记数:%lld, 中等延迟记数:%lld, 中高延迟记数:%lld, 高延迟记数:%lld",
-              nsMin, nsMax, smallDelayCounter, mediumDelayCounter, mediumHighDelayCounter, highDelayCounter);
-        double smallPercent = double(smallDelayCounter) / double(smallDelayCounter + mediumDelayCounter + mediumHighDelayCounter + highDelayCounter);
+        NSLog(@"最小延迟为%f纳秒, 最大延迟为%f纳秒, 微延迟数:%lld, 小延迟记数:%lld, 中等延迟记数:%lld, 中高延迟记数:%lld, 高延迟记数:%lld",
+              nsMin, nsMax, microDelayCounter, smallDelayCounter, mediumDelayCounter, mediumHighDelayCounter, highDelayCounter);
+        double microPercent = double(microDelayCounter) / double(microDelayCounter + smallDelayCounter + mediumDelayCounter + mediumHighDelayCounter + highDelayCounter);
+        double smallPercent = double(smallDelayCounter) / double(microDelayCounter + smallDelayCounter + mediumDelayCounter + mediumHighDelayCounter + highDelayCounter);
+        double microSmallPercent = double(microDelayCounter + smallDelayCounter) / double(microDelayCounter + smallDelayCounter + mediumDelayCounter + mediumHighDelayCounter + highDelayCounter);
+        NSLog(@"微延迟出现机率:百分之%f", microPercent * 100.0);
         NSLog(@"小延迟出现机率:百分之%f", smallPercent * 100.0);
+        NSLog(@"小微延迟出现机率:百分之%f", microSmallPercent * 100.0);
         /**
         for (euint i = 0; i < counter; i++) {
             NSLog(@"延迟时间:%f", s_delayTimes[i]);
