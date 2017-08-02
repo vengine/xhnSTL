@@ -718,13 +718,15 @@ static float s_delayTimes[512];
 
 void* AffinitProc(void*)
 {
+    /**
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
     CPU_SET(2, &cpuset);
     pthread_setaffinity_np(s_affinitTestTid, 8, &cpuset);
+    **/
     
     euint64 counter = 0;
-    while (counter < 1024) {
+    while (counter < 1024 * 1024 * 512) {
         if (AtomicCompareExchange(1, 1, &s_hasData)) {
             s_sum = s_a + s_b;
             AtomicCompareExchange(1, 0, &s_hasData);
@@ -738,7 +740,12 @@ void* AffinitProc(void*)
 - (void) testAffinit
 {
     [self measureBlock:^{
+        euint smallDelayCounter = 0;
+        euint mediumDelayCounter = 0;
+        euint mediumHighDelayCounter = 0;
+        euint highDelayCounter = 0;
         euint counter = 0;
+        euint subcounter = 0;
         float nsMin = 1000000000.0f;
         float nsMax = 0.0f;
         TimeCheckpoint tp = TimeCheckpoint::Tick();
@@ -754,10 +761,25 @@ void* AffinitProc(void*)
                 if (ns > nsMax) {
                     nsMax = ns;
                 }
-                if (counter <= 511) {
-                    s_delayTimes[counter] = ns;
-                    if (counter < 512) {
-                        counter++;
+                if (ns < 500.0f) {
+                    smallDelayCounter++;
+                }
+                else if (ns >= 500.0f && ns < 10000.0f) {
+                    mediumDelayCounter++;
+                }
+                else if (ns >= 10000.0f && ns < 100000.0f) {
+                    mediumHighDelayCounter++;
+                }
+                else {
+                    highDelayCounter++;
+                }
+                subcounter++;
+                if (subcounter % (1024 * 1024) == 0) {
+                    if (counter <= 511) {
+                        s_delayTimes[counter] = ns;
+                        if (counter < 512) {
+                            counter++;
+                        }
                     }
                 }
                 s_a = rand();
@@ -767,10 +789,15 @@ void* AffinitProc(void*)
             }
         }
         pthread_join(s_affinitTestTid, NULL);
-        NSLog(@"最小延迟为%f纳秒, 最大延迟为%f纳秒", nsMin, nsMax);
+        NSLog(@"最小延迟为%f纳秒, 最大延迟为%f纳秒, 小延迟记数:%lld, 中等延迟记数:%lld, 中高延迟记数:%lld, 高延迟记数:%lld",
+              nsMin, nsMax, smallDelayCounter, mediumDelayCounter, mediumHighDelayCounter, highDelayCounter);
+        double smallPercent = double(smallDelayCounter) / double(smallDelayCounter + mediumDelayCounter + mediumHighDelayCounter + highDelayCounter);
+        NSLog(@"小延迟出现机率:百分之%f", smallPercent * 100.0);
+        /**
         for (euint i = 0; i < counter; i++) {
             NSLog(@"延迟时间:%f", s_delayTimes[i]);
         }
+         **/
     }];
 }
 
