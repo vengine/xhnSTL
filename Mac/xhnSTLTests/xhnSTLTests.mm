@@ -12,6 +12,7 @@
 #include <xhnSTL/timer.h>
 #include <xhnSTL/xhn_smart_ptr.hpp>
 #include <xhnSTL/xhn_vector.hpp>
+#include <xhnSTL/cpu.h>
 #include <map>
 #include <unordered_map>
 
@@ -696,6 +697,81 @@ static int Test1Counter = 0;
         float perYieldTime = deltaTime / (float)deltaYield;
         printf("线程切换时间:%f毫秒\n", perYieldTime);
     }
+}
+
+- (void) testCPU
+{
+    euint32 numcpus = number_of_physicalcores();
+    NSLog(@"%d个物理CPU", numcpus);
+    NSAssert(1, @"");
+}
+
+pthread_t s_affinitTestTid;
+
+static volatile esint32 s_exitFlag = 0;
+static volatile esint s_a;
+static volatile esint s_b;
+static volatile esint s_sum;
+static volatile esint32 s_hasData = 0;
+
+static float s_delayTimes[512];
+
+void* AffinitProc(void*)
+{
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(2, &cpuset);
+    pthread_setaffinity_np(s_affinitTestTid, 8, &cpuset);
+    
+    euint64 counter = 0;
+    while (counter < 1024) {
+        if (AtomicCompareExchange(1, 1, &s_hasData)) {
+            s_sum = s_a + s_b;
+            AtomicCompareExchange(1, 0, &s_hasData);
+        }
+        counter++;
+    }
+    AtomicCompareExchange(0, 1, &s_exitFlag);
+    return nullptr;
+}
+
+- (void) testAffinit
+{
+    [self measureBlock:^{
+        euint counter = 0;
+        float nsMin = 1000000000.0f;
+        float nsMax = 0.0f;
+        TimeCheckpoint tp = TimeCheckpoint::Tick();
+        VTime t;
+        pthread_create(&s_affinitTestTid, nullptr, AffinitProc, nullptr);
+        while (!AtomicCompareExchange(1, 0, &s_exitFlag)) {
+            if (AtomicCompareExchange(0, 0, &s_hasData)) {
+                TimeCheckpoint::Tock(tp, t);
+                float ns = t.GetNanosecond();
+                if (ns < nsMin) {
+                    nsMin = ns;
+                }
+                if (ns > nsMax) {
+                    nsMax = ns;
+                }
+                if (counter <= 511) {
+                    s_delayTimes[counter] = ns;
+                    if (counter < 512) {
+                        counter++;
+                    }
+                }
+                s_a = rand();
+                s_b = rand();
+                tp = TimeCheckpoint::Tick();
+                AtomicCompareExchange(0, 1, &s_hasData);
+            }
+        }
+        pthread_join(s_affinitTestTid, NULL);
+        NSLog(@"最小延迟为%f纳秒, 最大延迟为%f纳秒", nsMin, nsMax);
+        for (euint i = 0; i < counter; i++) {
+            NSLog(@"延迟时间:%f", s_delayTimes[i]);
+        }
+    }];
 }
 
 @end

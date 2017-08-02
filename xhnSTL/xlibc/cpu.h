@@ -17,7 +17,28 @@
 extern "C"
 {
 #endif
+    
+/// 这段代码来自 http://yyshen.github.io/2015/01/18/binding_threads_to_cores_osx.html
+    
+typedef struct cpu_set {
+    uint32_t    count;
+} cpu_set_t;
+    
+static inline void
+CPU_ZERO(cpu_set_t *cs) { cs->count = 0; }
+    
+static inline void
+CPU_SET(int num, cpu_set_t *cs) { cs->count |= (1 << num); }
+    
+static inline int
+CPU_ISSET(int num, cpu_set_t *cs) { return (cs->count & (1 << num)); }
+    
+API_EXPORT int sched_getaffinity(pid_t pid, size_t cpu_size, cpu_set_t *cpu_set);
+API_EXPORT int pthread_setaffinity_np(pthread_t thread, size_t cpu_size,
+                                      cpu_set_t *cpu_set);
+    
 API_EXPORT euint32 number_of_cores();
+API_EXPORT euint32 number_of_physicalcores();
 #ifdef __cplusplus
 }
 #endif
