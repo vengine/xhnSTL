@@ -726,7 +726,7 @@ void* AffinitProc(void*)
     **/
     
     euint64 counter = 0;
-    while (counter < 1024 * 1024 * 512) {
+    while (counter < 1024 * 1024) {
         if (AtomicCompareExchange(1, 1, &s_hasData)) {
             s_sum = s_a + s_b;
             AtomicCompareExchange(1, 0, &s_hasData);
@@ -774,7 +774,7 @@ void* AffinitProc(void*)
                     highDelayCounter++;
                 }
                 subcounter++;
-                if (subcounter % (1024 * 1024) == 0) {
+                if (subcounter % (1024 * 2) == 0) {
                     if (counter <= 511) {
                         s_delayTimes[counter] = ns;
                         if (counter < 512) {
@@ -798,6 +798,19 @@ void* AffinitProc(void*)
             NSLog(@"延迟时间:%f", s_delayTimes[i]);
         }
          **/
+    }];
+}
+
+
+
+- (void) testNop
+{
+    [self measureBlock:^{
+        TimeCheckpoint tp = TimeCheckpoint::Tick();
+        nanopause(1000);
+        VTime t;
+        TimeCheckpoint::Tock(tp, t);
+        NSLog(@"pause指令%f纳秒", t.GetNanosecond());
     }];
 }
 

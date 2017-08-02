@@ -132,7 +132,7 @@
 		68FC12DB1BC9D31A00C8A0BE /* xhnSTLTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */; };
 		B10D55A61CBE6D47003733D9 /* swift_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B10D55A41CBE6D47003733D9 /* swift_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B10D55A71CBE6D47003733D9 /* swift_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10D55A51CBE6D47003733D9 /* swift_parser.mm */; };
-		B11892701E6BE7AF00AD5279 /* cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = B118926E1E6BE7AF00AD5279 /* cpu.c */; };
+		B11892701E6BE7AF00AD5279 /* cpu_x86_64.c in Sources */ = {isa = PBXBuildFile; fileRef = B118926E1E6BE7AF00AD5279 /* cpu_x86_64.c */; };
 		B11892711E6BE7AF00AD5279 /* cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = B118926F1E6BE7AF00AD5279 /* cpu.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BB41E7D217900CBBDDD /* llvm_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1607BB21E7D217900CBBDDD /* llvm_parser.mm */; };
 		B1607BB51E7D217900CBBDDD /* llvm_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -146,6 +146,7 @@
 		B19C547F1E7BD6C3009FC8A8 /* xhn_cache.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19C547E1E7BD696009FC8A8 /* xhn_cache.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1A89DB31CAF9B7000358DD4 /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB11CAF9B7000358DD4 /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1A89DB71CAF9F2700358DD4 /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1CED0711F32268F00FCA4D7 /* cpu_common.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED0701F32268F00FCA4D7 /* cpu_common.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -287,7 +288,7 @@
 		68FC12DC1BC9D31A00C8A0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10D55A41CBE6D47003733D9 /* swift_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = swift_parser.hpp; sourceTree = "<group>"; };
 		B10D55A51CBE6D47003733D9 /* swift_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = swift_parser.mm; sourceTree = "<group>"; };
-		B118926E1E6BE7AF00AD5279 /* cpu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu.c; sourceTree = "<group>"; };
+		B118926E1E6BE7AF00AD5279 /* cpu_x86_64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_x86_64.c; sourceTree = "<group>"; };
 		B118926F1E6BE7AF00AD5279 /* cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpu.h; sourceTree = "<group>"; };
 		B1607BB21E7D217900CBBDDD /* llvm_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = llvm_parser.mm; sourceTree = "<group>"; };
 		B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = llvm_parser.hpp; sourceTree = "<group>"; };
@@ -301,6 +302,7 @@
 		B19C547E1E7BD696009FC8A8 /* xhn_cache.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_cache.hpp; sourceTree = "<group>"; };
 		B1A89DB11CAF9B7000358DD4 /* xhn_dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_dictionary.hpp; sourceTree = "<group>"; };
 		B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_singly_linked_list.hpp; sourceTree = "<group>"; };
+		B1CED0701F32268F00FCA4D7 /* cpu_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_common.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -382,7 +384,8 @@
 				68245C561BC9D8F80006E99D /* tree.h */,
 				68245C571BC9D8F80006E99D /* utility.c */,
 				68245C581BC9D8F80006E99D /* utility.h */,
-				B118926E1E6BE7AF00AD5279 /* cpu.c */,
+				B1CED0701F32268F00FCA4D7 /* cpu_common.c */,
+				B118926E1E6BE7AF00AD5279 /* cpu_x86_64.c */,
 				B118926F1E6BE7AF00AD5279 /* cpu.h */,
 			);
 			name = xlibc;
@@ -745,7 +748,7 @@
 				B1607BB41E7D217900CBBDDD /* llvm_parser.mm in Sources */,
 				68245CD21BC9D8F90006E99D /* prime.c in Sources */,
 				68245D1F1BC9D8F90006E99D /* xhn_path_tree.cpp in Sources */,
-				B11892701E6BE7AF00AD5279 /* cpu.c in Sources */,
+				B11892701E6BE7AF00AD5279 /* cpu_x86_64.c in Sources */,
 				68245D251BC9D8F90006E99D /* xhn_routine_pool.cpp in Sources */,
 				68245D331BC9D8F90006E99D /* xhn_thread_map.cpp in Sources */,
 				68245CB91BC9D8F90006E99D /* ObjCString.mm in Sources */,
@@ -757,6 +760,7 @@
 				68245CC41BC9D8F90006E99D /* emem.c in Sources */,
 				68245D161BC9D8F90006E99D /* xhn_memory.cpp in Sources */,
 				68245D011BC9D8F90006E99D /* xhn_gc_string.cpp in Sources */,
+				B1CED0711F32268F00FCA4D7 /* cpu_common.c in Sources */,
 				68245D1A1BC9D8F90006E99D /* xhn_operation.cpp in Sources */,
 				68245D101BC9D8F90006E99D /* xhn_list2.cpp in Sources */,
 				68245CF51BC9D8F90006E99D /* xhn_file_stream.cpp in Sources */,

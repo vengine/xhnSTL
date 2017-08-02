@@ -69,6 +69,7 @@ euint32 number_of_physicalcores()
     
     return ncores;
 }
+
 /**
  * Copyright (c) 2011-2013 Xu Haining
  *
