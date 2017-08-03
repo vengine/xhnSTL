@@ -24,8 +24,8 @@ namespace xhn
 {
 void itowa(wchar_t* wbuf, euint i);
 
-typedef string_base<char, FStrCmpProc, FDefaultStrProc> string;
-typedef string_base<wchar_t, FWStrCmpProc, FDefaultWStrProc> wstring;
+typedef string_base<char, FStrLenProc, FStrCmpProc, FDefaultStrProc> string;
+typedef string_base<wchar_t, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc> wstring;
 
 class Utf8
 {

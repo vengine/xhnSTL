@@ -865,6 +865,12 @@ struct FCharFormat
         }
     };
     
+    struct FStrLenProc {
+        size_t operator() (const char* str) const {
+            return strlen(str);
+        }
+    };
+    
     struct FStrCmpProc {
         int operator() (const char* str0, const char* str1) const {
             return strcmp(str0, str1);
@@ -873,6 +879,16 @@ struct FCharFormat
     struct FDefaultStrProc {
         const char* operator() () const {
             return "";
+        }
+    };
+    
+    struct FWStrLenProc {
+        size_t operator() (const wchar_t* str) const {
+            size_t ret = 0;
+            while (str[ret]) {
+                ++ret;
+            }
+            return ret;
         }
     };
     
@@ -899,15 +915,15 @@ struct FCharFormat
         }
     };
     
-    template <typename T, typename STR_CMP_PROC, typename DEFAULT_STR_PROC> class string_base;
+    template <typename T, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC> class string_base;
     
     template <typename T>
     struct TKeyValue
     {
         typedef
         typename conditional<is_pointer<T>::value,
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base<char, FStrCmpProc, FDefaultStrProc>,
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base<wchar_t, FWStrCmpProc, FDefaultWStrProc>, void*>::type
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base<char, FStrLenProc, FStrCmpProc, FDefaultStrProc>,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base<wchar_t, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc>, void*>::type
         >::type,
         T
         >::type type;

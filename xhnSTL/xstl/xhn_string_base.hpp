@@ -38,7 +38,7 @@ struct string_data1
     C m_flag;
 };
 
-template <typename C, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
+template <typename C, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
 class string_base
 {
 private:
@@ -47,6 +47,7 @@ private:
         string_data0<C> data0;
         string_data1<C> data1;
     } m_data;
+    STR_LEN_PROC m_str_len_proc;
     STR_CMP_PROC m_str_cmp_proc;
     DEFAULT_STR_PROC m_default_str_proc;
 public:
@@ -86,12 +87,8 @@ public:
             set_data1_size( 0 );
             return;
         }
-
-        int count = 0;
-
-        while ( str[count] ) {
-            count++;
-        }
+        
+        euint count = m_str_len_proc(str);
         
         if (own_str) {
             if (count + 1 > DATA1_SIZE) {
@@ -773,8 +770,8 @@ public:
 	}
 };
 
-template <typename C, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
-inline euint32 _hash ( const string_base<C, STR_CMP_PROC, DEFAULT_STR_PROC> &key )
+template <typename C, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
+inline euint32 _hash ( const string_base<C, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> &key )
 {
     return key.get_hash();
 }
