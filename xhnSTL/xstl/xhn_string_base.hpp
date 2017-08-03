@@ -45,27 +45,27 @@ private:
     } m_data;
     STR_CMP_PROC m_str_cmp_proc;
     DEFAULT_STR_PROC m_default_str_proc;
-    bool _own_str;
-    bool _using_data1;
-    euint8 _data1_size;
+    C m_flag;
 public:
     inline void set_own_str(bool flag) {
-        _own_str = flag;
+        if (flag) { m_flag |= 0x80; }
+        else      { m_flag &= 0x7f; }
     }
     inline bool get_own_str() const {
-        return _own_str;
+        return m_flag & 0x80;
     }
     inline void set_using_data1(bool flag) {
-        _using_data1 = flag;
+        if (flag) { m_flag |= 0x40; }
+        else      { m_flag &= 0xbf; }
     }
     inline bool get_using_data1() const {
-        return _using_data1;
+        return m_flag & 0x40;
     }
     inline void set_data1_size(euint8 size) {
-        _data1_size = size;
+        m_flag = (m_flag & 0xc0) | (size & 0x3f);
     }
     inline euint8 get_data1_size() const {
-        return _data1_size;
+        return m_flag & 0x3f;
     }
 public:
     const static euint npos = ( euint )-1;
