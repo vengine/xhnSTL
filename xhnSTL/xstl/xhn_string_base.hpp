@@ -45,21 +45,28 @@ private:
     } m_data;
     STR_CMP_PROC m_str_cmp_proc;
     DEFAULT_STR_PROC m_default_str_proc;
-    bool m_own_str;
+    bool _own_str;
     bool m_using_data1;
     euint8 m_data1_size;
+public:
+    inline void set_own_str(bool flag) {
+        _own_str = flag;
+    }
+    inline bool get_own_str() const {
+        return _own_str;
+    }
 public:
     const static euint npos = ( euint )-1;
     typedef C* iterator;
     typedef const C* const_iterator;
     string_base() {
-        m_own_str = true;
+        set_own_str( true );
         m_using_data1 = true;
         m_data1_size = 0;
     }
     string_base ( const C *str, bool own_str = true ) {
         if (!str) {
-            m_own_str = true;
+            set_own_str( true );
             m_using_data1 = true;
             m_data1_size = 0;
             return;
@@ -89,10 +96,10 @@ public:
             m_data.data0.m_size = count;
             m_using_data1 = false;
         }
-        m_own_str = own_str;
+        set_own_str( own_str );
     }
     string_base ( const C *str, euint size ) {
-        m_own_str = true;
+        set_own_str( true );
         if (!str) {
             m_using_data1 = true;
             m_data1_size = 0;
@@ -115,7 +122,7 @@ public:
     }
 	string_base ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
         euint size = str.size();
-        m_own_str = true;
+        set_own_str( true );
         if ( size + 1 > sizeof(string_data0<C>) / sizeof(C) ) {
             m_data.data0.m_str = ( C * ) NMalloc ( (size + 1) * sizeof(C) );
             memcpy ( m_data.data0.m_str, str.get(), size * sizeof(C) );
@@ -131,7 +138,7 @@ public:
         }
     }
     string_base ( const string_base &str ) {
-        if (str.m_own_str) {
+        if (str.get_own_str()) {
             if (str.m_using_data1) {
                 memcpy( m_data.data1.m_str, str.m_data.data1.m_str, (str.m_data1_size + 1) * sizeof(C) );
                 m_using_data1 = true;
@@ -148,10 +155,10 @@ public:
             m_data.data0.m_str = str.m_data.data0.m_str;
             m_data.data0.m_size = str.m_data.data0.m_size;
         }
-        m_own_str = str.m_own_str;
+        set_own_str( str.get_own_str() );
     }
     string_base ( string_base &&str ) {
-        if (str.m_own_str) {
+        if (str.get_own_str()) {
             if (str.m_using_data1) {
                 memcpy( m_data.data1.m_str, str.m_data.data1.m_str, (str.m_data1_size + 1) * sizeof(C) );
                 m_using_data1 = true;
@@ -168,11 +175,11 @@ public:
             m_data.data0.m_str = str.m_data.data0.m_str;
             m_data.data0.m_size = str.m_data.data0.m_size;
         }
-        m_own_str = str.m_own_str;
-        str.m_own_str = false;
+        set_own_str( str.get_own_str() );
+        str.set_own_str( false );
     }
     ~string_base() {
-        if (m_own_str && !m_using_data1) {
+        if (get_own_str() && !m_using_data1) {
             Mfree ( m_data.data0.m_str );
         }
     }
@@ -275,10 +282,10 @@ public:
         }
     }
     string_base &operator = ( const string_base &str ) {
-        if (m_own_str && !m_using_data1) {
+        if (get_own_str() && !m_using_data1) {
             Mfree ( m_data.data0.m_str );
         }
-        if (str.m_own_str) {
+        if (str.get_own_str()) {
             if (str.m_using_data1) {
                 memcpy ( &m_data, &str.m_data, sizeof(m_data) );
                 m_data1_size = str.m_data1_size;
@@ -295,14 +302,14 @@ public:
             m_data.data0.m_size = str.m_data.data0.m_size;
             m_using_data1 = false;
         }
-        m_own_str = str.m_own_str;
+        set_own_str( str.get_own_str() );
         return *this;
     }
     string_base &operator = ( string_base &&str ) {
-        if (m_own_str && !m_using_data1) {
+        if (get_own_str() && !m_using_data1) {
             Mfree ( m_data.data0.m_str );
         }
-        if (str.m_own_str) {
+        if (str.get_own_str()) {
             if (str.m_using_data1) {
                 memcpy ( &m_data, &str.m_data, sizeof(m_data) );
                 m_data1_size = str.m_data1_size;
@@ -318,8 +325,8 @@ public:
             m_data.data0.m_size = str.m_data.data0.m_size;
             m_using_data1 = false;
         }
-        m_own_str = str.m_own_str;
-        str.m_own_str = false;
+        set_own_str( str.get_own_str() );
+        str.set_own_str( false );
         return *this;
     }
     string_base &operator = ( const C *str ) {
@@ -328,7 +335,7 @@ public:
         while ( str[count] ) {
             count++;
         }
-        if (m_own_str && !m_using_data1) {
+        if (get_own_str() && !m_using_data1) {
             Mfree ( m_data.data0.m_str );
         }
         if ( count + 1 > sizeof(string_data0<C>) / sizeof(C) ) {
@@ -342,12 +349,12 @@ public:
             m_using_data1 = true;
             m_data1_size = count;
         }
-        m_own_str = true;
+        set_own_str( true );
         return *this;
     }
 	string_base &operator = ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
         euint count = str.size();
-        if (m_own_str && !m_using_data1) {
+        if (get_own_str() && !m_using_data1) {
             Mfree ( m_data.data0.m_str );
         }
         if ( count + 1 > sizeof(string_data0<C>) / sizeof(C) ) {
@@ -363,12 +370,12 @@ public:
             m_using_data1 = true;
             m_data1_size = count;
         }
-        m_own_str = true;
+        set_own_str( true );
         return *this;
     }
     string_base operator + ( const string_base &str ) const {
         string_base ret;
-        ret.m_own_str = true;
+        ret.set_own_str( true );
         if (m_using_data1 && str.m_using_data1) {
             euint new_size = m_data1_size + str.m_data1_size;
             if ( new_size + 1 > sizeof(string_data0<C>) / sizeof(C) ) {
@@ -419,7 +426,7 @@ public:
         }
 
         string_base ret;
-        ret.m_own_str = true;
+        ret.set_own_str( true );
         if (m_using_data1) {
             euint new_size = m_data1_size + count;
             if ( new_size + 1 > sizeof(string_data0<C>) / sizeof(C) ) {
@@ -478,7 +485,7 @@ public:
             C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
             memcpy ( new_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &new_str[m_data.data0.m_size], str.m_data.data1.m_str, (str.m_data1_size + 1) * sizeof(C) );
-            if (m_own_str) {
+            if (get_own_str()) {
                 Mfree(m_data.data0.m_str);
             }
             m_data.data0.m_str = new_str;
@@ -490,7 +497,7 @@ public:
             C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
             memcpy ( new_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &new_str[m_data.data0.m_size], str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
-            if (m_own_str) {
+            if (get_own_str()) {
                 Mfree(m_data.data0.m_str);
             }
             m_data.data0.m_str = new_str;
@@ -527,7 +534,7 @@ public:
             C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
             memcpy ( new_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &new_str[m_data.data0.m_size], str, (count + 1) * sizeof(C) );
-            if (m_own_str) {
+            if (get_own_str()) {
                 Mfree(m_data.data0.m_str);
             }
             m_data.data0.m_str = new_str;
@@ -727,10 +734,10 @@ public:
         return _str[pos];
     }
 	void clear() {
-        if (m_own_str && !m_using_data1) {
+        if (get_own_str() && !m_using_data1) {
             Mfree(m_data.data0.m_str);
         }
-        m_own_str = true;
+        set_own_str( true );
         m_using_data1 = true;
         m_data1_size = 0;
 	}
@@ -742,7 +749,7 @@ public:
         if (_size) {
             memcpy(tmp, _str, _size * sizeof(C));
         }
-        if (m_own_str && !m_using_data1) {
+        if (get_own_str() && !m_using_data1) {
             Mfree(m_data.data0.m_str);
         }
         m_using_data1 = false;
