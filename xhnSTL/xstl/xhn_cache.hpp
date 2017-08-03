@@ -49,6 +49,7 @@ namespace xhn
 
     template <typename K, typename V, unsigned CACHE_SIZE>
     class cache : public dictionary<K, V,
+    2,
     FHashProc<K>,
     FEqualProc<K>,
     FHashBucketAllocator<K, V>,
@@ -60,6 +61,7 @@ namespace xhn
         
         typedef
         dictionary<K, V,
+        2,
         FHashProc<K>,
         FEqualProc<K>,
         FHashBucketAllocator<K, V>,

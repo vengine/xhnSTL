@@ -405,7 +405,7 @@ euint MemPoolNode_number_of_chunks(MemPoolNode _self)
 #define MAX_MEM_POOLS      1024
 #define DEFAULT_CHUNK_SIZE 32
 
-#define VENGINE_PAGE_SIZE (512)
+#define VENGINE_PAGE_SIZE (4 * 1024)
 #define MemPoolDef(x) x
 #define MemDescDef(x) x
 #define AllocInfoDef(x) x

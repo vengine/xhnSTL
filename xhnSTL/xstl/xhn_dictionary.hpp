@@ -113,6 +113,7 @@ namespace xhn
     
     template< typename K,
               typename V,
+              unsigned INITIAL_REBUILD_TOLERANCE = 2,
               typename HASH_PROC = FHashProc<K>,
               typename EQUAL_PROC = FEqualProc<K>,
               typename BUCKET_ALLOCATOR = FHashBucketAllocator<K, V>,
@@ -357,7 +358,7 @@ namespace xhn
         dictionary(const dictionary& d)
         : m_hash_mask(0x7)
         , m_num_buckets(8)
-        , m_rebuild_tolerance(2)
+        , m_rebuild_tolerance(INITIAL_REBUILD_TOLERANCE)
         , m_need_dealloc(true)
         {
             m_buckets = m_bucket_allocator.allocate(m_num_buckets);
@@ -369,7 +370,7 @@ namespace xhn
         dictionary()
         : m_hash_mask(0x7)
         , m_num_buckets(8)
-        , m_rebuild_tolerance(2)
+        , m_rebuild_tolerance(INITIAL_REBUILD_TOLERANCE)
         , m_need_dealloc(true)
         {
             m_buckets = m_bucket_allocator.allocate(m_num_buckets);
