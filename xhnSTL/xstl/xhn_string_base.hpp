@@ -22,30 +22,30 @@
 #include <string.h>
 namespace xhn
 {
-template <typename C>
+template <typename C, unsigned NUM_EXTENDED_WORDS>
 struct string_data0
 {
     euint m_size;
     C *m_str;
-    euint m_reserved;
+    euint m_extendedWords[NUM_EXTENDED_WORDS];
 };
     
-#define DATA1_SIZE (sizeof(string_data0<C>) / sizeof(C) - 1)
-template <typename C>
+#define DATA1_SIZE (sizeof(string_data0<C, NUM_EXTENDED_WORDS>) / sizeof(C) - 1)
+template <typename C, unsigned NUM_EXTENDED_WORDS>
 struct string_data1
 {
     C m_str[DATA1_SIZE];
     C m_flag;
 };
 
-template <typename C, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
+template <typename C, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
 class string_base
 {
 private:
     union
     {
-        string_data0<C> data0;
-        string_data1<C> data1;
+        string_data0<C, NUM_EXTENDED_WORDS> data0;
+        string_data1<C, NUM_EXTENDED_WORDS> data1;
     } m_data;
     STR_LEN_PROC m_str_len_proc;
     STR_CMP_PROC m_str_cmp_proc;
@@ -770,8 +770,8 @@ public:
 	}
 };
 
-template <typename C, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
-inline euint32 _hash ( const string_base<C, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> &key )
+template <typename C, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
+inline euint32 _hash ( const string_base<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> &key )
 {
     return key.get_hash();
 }

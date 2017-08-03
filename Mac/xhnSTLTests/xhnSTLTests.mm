@@ -825,6 +825,16 @@ void* AffinitProc(void*)
     }];
 }
 
+- (void) testString0
+{
+    std::string aaa = "aabbddccddssaaggsgsjjh";
+    xhn::string128 bbb = aaa.c_str();
+    size_t pos0 = aaa.find("dds");
+    euint pos1 = bbb.find("dds");
+    printf("sizeof(tstring)=%ld\n", sizeof(bbb));
+    XCTAssert(pos0 == pos1, @"error");
+}
+
 - (void) testStringPerformance0
 {
     printf("std::string size %ld\n", sizeof(std::string));
@@ -840,6 +850,7 @@ void* AffinitProc(void*)
         for (int i = 0; i < 1024 * 1024; i++) {
             std::string s(strs[i]);
             t += s.size();
+            t += s.find("000");
         }
     }];
     for (int i = 0; i < 1024 * 1024; i++) {
@@ -862,6 +873,7 @@ void* AffinitProc(void*)
         for (int i = 0; i < 1024 * 1024; i++) {
             xhn::string s(strs[i]);
             t += s.size();
+            t += s.find("000");
         }
     }];
     for (int i = 0; i < 1024 * 1024; i++) {

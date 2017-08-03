@@ -24,8 +24,13 @@ namespace xhn
 {
 void itowa(wchar_t* wbuf, euint i);
 
-typedef string_base<char, FStrLenProc, FStrCmpProc, FDefaultStrProc> string;
-typedef string_base<wchar_t, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc> wstring;
+typedef string_base<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc> string;
+typedef string_base<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc> wstring;
+#if BIT_WIDTH == 32
+typedef string_base<char, 28, FStrLenProc, FStrCmpProc, FDefaultStrProc> string128;
+#else
+typedef string_base<char, 13, FStrLenProc, FStrCmpProc, FDefaultStrProc> string128;
+#endif
 
 class Utf8
 {
