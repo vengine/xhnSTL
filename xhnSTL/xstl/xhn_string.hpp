@@ -36,10 +36,10 @@ private:
 public:
 	Utf8(const wchar_t* wsz);
     Utf8(const string& s, const char* filename, int line)
-    : m_utf8(s, filename, line)
+    : m_utf8(s)
     {}
     Utf8(const Utf8& s, const char* filename, int line)
-    : m_utf8(s.m_utf8, filename, line)
+    : m_utf8(s.m_utf8)
     {}
 public:
 	inline operator const string&() const { return m_utf8; }

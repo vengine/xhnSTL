@@ -105,11 +105,11 @@ void xhn::wpath_node::search(const wchar_t* path)
     wstring search_path = path_name;
 #if defined(_WIN32) || defined(_WIN64)
 	if (search_path.size() && search_path[search_path.size() - 1] != L'\\') {
-		search_path += L'\\';
+		search_path += L"\\";
 	}
 #elif defined(__APPLE__)
     if (search_path.size() && search_path[search_path.size() - 1] != L'/') {
-		search_path += L'/';
+		search_path += L"/";
 	}
 #else
 #    error
@@ -237,11 +237,11 @@ void xhn::path_node::search(const char* path)
     string search_path = path_name;
 #if defined(_WIN32) || defined(_WIN64)
 	if (search_path.size() && search_path[search_path.size() - 1] != '\\') {
-		search_path += '\\';
+		search_path += "\\";
 	}
 #elif defined(__APPLE__)
     if (search_path.size() && search_path[search_path.size() - 1] != '/') {
-		search_path += '/';
+		search_path += "/";
 	}
 #else
 #    error
