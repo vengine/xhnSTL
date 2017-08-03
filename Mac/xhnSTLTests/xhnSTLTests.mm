@@ -825,4 +825,49 @@ void* AffinitProc(void*)
     }];
 }
 
+- (void) testStringPerformance0
+{
+    printf("std::string size %ld\n", sizeof(std::string));
+    static char* strs[1024 * 1024];
+    for (int i = 0; i < 1024 * 1024; i++) {
+        char mbuf[256];
+        int size = snprintf(mbuf, 255, "%d00000000000", i);
+        strs[i] = (char*)malloc(size + 1);
+        memcpy(strs[i], mbuf, size + 1);
+    }
+    [self measureBlock:^{
+        size_t t = 0;
+        for (int i = 0; i < 1024 * 1024; i++) {
+            std::string s(strs[i]);
+            t += s.size();
+        }
+    }];
+    for (int i = 0; i < 1024 * 1024; i++) {
+        free(strs[i]);
+    }
+}
+
+- (void) testStringPerformance1
+{
+    printf("xhn::string size %ld\n", sizeof(std::string));
+    static char* strs[1024 * 1024];
+    for (int i = 0; i < 1024 * 1024; i++) {
+        char mbuf[256];
+        int size = snprintf(mbuf, 255, "%d", i);
+        strs[i] = (char*)malloc(size + 1);
+        memcpy(strs[i], mbuf, size + 1);
+    }
+    [self measureBlock:^{
+        euint t = 0;
+        for (int i = 0; i < 1024 * 1024; i++) {
+            xhn::string s(strs[i]);
+            t += s.size();
+        }
+    }];
+    for (int i = 0; i < 1024 * 1024; i++) {
+        free(strs[i]);
+    }
+}
+
+
 @end
