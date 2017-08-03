@@ -853,7 +853,7 @@ void* AffinitProc(void*)
     static char* strs[1024 * 1024];
     for (int i = 0; i < 1024 * 1024; i++) {
         char mbuf[256];
-        int size = snprintf(mbuf, 255, "%d", i);
+        int size = snprintf(mbuf, 255, "%d00000000000", i);
         strs[i] = (char*)malloc(size + 1);
         memcpy(strs[i], mbuf, size + 1);
     }
