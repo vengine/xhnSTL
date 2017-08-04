@@ -79,12 +79,14 @@ public:
         set_own_str( true );
         set_using_data1( true );
         set_data1_size( 0 );
+        m_data.data1.m_str[0] = 0;
     }
     string_base ( const C *str, bool own_str = true ) {
         if (!str) {
             set_own_str( true );
             set_using_data1( true );
             set_data1_size( 0 );
+            m_data.data1.m_str[0] = 0;
             return;
         }
         
@@ -115,6 +117,7 @@ public:
         if (!str) {
             set_using_data1( true );
             set_data1_size( 0 );
+            m_data.data1.m_str[0] = 0;
             return;
         }
         
@@ -752,6 +755,7 @@ public:
         set_own_str( true );
         set_using_data1( true );
         set_data1_size( 0 );
+        m_data.data1.m_str[0] = 0;
 	}
     
 	void resize(euint newSize) {

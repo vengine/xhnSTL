@@ -52,7 +52,7 @@ public:
         }
         
         euint32 size = (euint32)strlen(str);
-		euint32 hash_value = calc_hashnr ( str, size );
+		euint32 hash_value = calc_cityhash32 ( str, size );
         string_info info = { hash_value, size };
         pair< string, string_info > entry = make_pair(string(str), info);
 		hash_set<pair<string, string_info>>::bucket& b = s_static_string_set->get_bucket(_hash(entry));
@@ -141,7 +141,7 @@ public:
         return *this;
     }
     void update_hash_status( ::hash_calc_status* status ) const {
-        ::update_hash_status(status, (const char*)m_entry->first.c_str(), m_entry->second.m_size );
+        ::update_hash_status(status, (const char*)m_entry, sizeof(m_entry) );
     }
 };
     

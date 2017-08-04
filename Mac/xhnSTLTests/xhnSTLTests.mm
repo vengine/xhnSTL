@@ -881,5 +881,144 @@ void* AffinitProc(void*)
     }
 }
 
+- (void) testStringPerformance2
+{
+    static char* strs[1024 * 1024];
+    for (int i = 0; i < 1024 * 1024; i++) {
+        char mbuf[256];
+        int size = snprintf(mbuf, 255, "%dabcdefxyzwwww%d", i, i);
+        strs[i] = (char*)malloc(size + 1);
+        memcpy(strs[i], mbuf, size + 1);
+    }
+    [self measureBlock:^{
+        size_t t = 0;
+        for (int i = 0; i < 1024 * 1024; i++) {
+            std::string a(strs[i]);
+            std::string b(strs[i]);
+            std::string c = a + b;
+            std::string d = c + c;
+            t += d.size();
+        }
+    }];
+    for (int i = 0; i < 1024 * 1024; i++) {
+        free(strs[i]);
+    }
+}
+
+- (void) testStringPerformance3
+{
+    static char* strs[1024 * 1024];
+    for (int i = 0; i < 1024 * 1024; i++) {
+        char mbuf[256];
+        int size = snprintf(mbuf, 255, "%dabcdefxyzwwww%d", i, i);
+        strs[i] = (char*)malloc(size + 1);
+        memcpy(strs[i], mbuf, size + 1);
+    }
+    [self measureBlock:^{
+        euint t = 0;
+        for (int i = 0; i < 1024 * 1024; i++) {
+            xhn::string128 a(strs[i]);
+            xhn::string128 b(strs[i]);
+            xhn::string128 c = a + b;
+            xhn::string128 d = c + c;
+            t += d.size();
+        }
+    }];
+    for (int i = 0; i < 1024 * 1024; i++) {
+        free(strs[i]);
+    }
+}
+/**
+- (void) testMmap
+{
+    void* ptr = mmap((void*)0x0000000100000000, 0x00000000ffffffff, PROT_NONE, MAP_FIXED, 0, 0);
+    XCTAssert(ptr, @"error");
+}
+**/
+
+- (void) testCachePerformance0
+{
+    static xhn::static_string strs[1024];
+    for (int i = 0; i < 1024; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "%d", i);
+        strs[i] = mbuf;
+    }
+    __block xhn::cache<xhn::static_string, int, 1024>* testcache = VNEW xhn::cache<xhn::static_string, int, 1024>();
+    
+    [self measureBlock:^{
+        euint t = 0;
+        for (int j = 0; j < 256; j++) {
+            for (int i = 0; i < 1024; i++) {
+                testcache->insert(strs[i], i);
+            }
+            for (int i = 0; i < 1024; i++) {
+                int* v = testcache->find(strs[i]);
+                t += *v;
+            }
+            auto iter = testcache->begin();
+            auto end = testcache->end();
+            for (; iter != end; iter++) {
+                t += iter->second;
+            }
+            testcache->clear();
+        }
+    }];
+    VDELETE testcache;
+}
+
+- (void) testStdUnorderedMapPerformance0
+{
+    static std::string strs[1024];
+    for (int i = 0; i < 1024; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "%d", i);
+        strs[i] = mbuf;
+    }
+    __block std::unordered_map<std::string, int> std_map;
+    
+    [self measureBlock:^{
+        euint t = 0;
+        for (int j = 0; j < 256; j++) {
+            for (int i = 0; i < 1024; i++) {
+                std_map.insert(std::make_pair(strs[i], i));
+            }
+            for (int i = 0; i < 1024; i++) {
+                int v = std_map[strs[i]];
+                t += v;
+            }
+            auto iter = std_map.begin();
+            auto end = std_map.end();
+            for (; iter != end; iter++) {
+                t += iter->second;
+            }
+            std_map.clear();
+        }
+    }];
+}
+
+- (void) testCityHash
+{
+    [self measureBlock:^{
+        euint64 value = 0;
+        const char* s = "https://github.com/google/cityhash/blob/master/src/city.cchttps://github.com/google/cityhash/blob/master/src/city.cchttps://github.com/google/cityhash/blob/master/src/city.cc";
+        euint32 len = (euint32)strlen(s);
+        for (euint i = 0; i < 1024 * 1024; i++) {
+            value += calc_cityhash32(s, len);
+        }
+    }];
+}
+
+- (void) testHashnr
+{
+    [self measureBlock:^{
+        euint64 value = 0;
+        const char* s = "https://github.com/google/cityhash/blob/master/src/city.cchttps://github.com/google/cityhash/blob/master/src/city.cchttps://github.com/google/cityhash/blob/master/src/city.cc";
+        euint len = strlen(s);
+        for (euint i = 0; i < 1024 * 1024; i++) {
+            value += calc_hashnr(s, len);
+        }
+    }];
+}
 
 @end

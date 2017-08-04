@@ -428,7 +428,7 @@ euint _real_size()
 
 inline euint32 _hash ( char *&key )
 {
-    return calc_hashnr ( key, _strlen ( key ) );
+    return calc_hashnr ( key, strlen ( key ) );
 }
 
 inline euint32 _hash ( wchar_t *&key )
