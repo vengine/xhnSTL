@@ -828,7 +828,7 @@ void* AffinitProc(void*)
 - (void) testString0
 {
     std::string aaa = "aabbddccddssaaggsgsjjh";
-    xhn::string128 bbb = aaa.c_str();
+    xhn::string bbb = aaa.c_str();
     size_t pos0 = aaa.find("dds");
     euint pos1 = bbb.find("dds");
     printf("sizeof(tstring)=%ld\n", sizeof(bbb));
@@ -917,10 +917,10 @@ void* AffinitProc(void*)
     [self measureBlock:^{
         euint t = 0;
         for (int i = 0; i < 1024 * 1024; i++) {
-            xhn::string128 a(strs[i]);
-            xhn::string128 b(strs[i]);
-            xhn::string128 c = a + b;
-            xhn::string128 d = c + c;
+            xhn::string a(strs[i]);
+            xhn::string b(strs[i]);
+            xhn::string c = a + b;
+            xhn::string d = c + c;
             t += d.size();
         }
     }];

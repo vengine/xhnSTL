@@ -867,11 +867,8 @@ public:
         return *this;
     }
     string_base &operator = ( const C *str ) {
-        euint count = 0;
-
-        while ( str[count] ) {
-            count++;
-        }
+        euint count = m_str_len_proc(str);
+        
         if (get_own_str() && !get_using_data1()) {
             Mfree ( m_data.data0.m_str );
         }
@@ -970,11 +967,7 @@ public:
         return ret;
     }
     string_base operator + ( const C *str ) const {
-        euint count = 0;
-
-        while ( str[count] ) {
-            count++;
-        }
+        euint count = m_str_len_proc(str);
 
         string_base ret;
         ret.set_own_str( true );
@@ -1067,11 +1060,7 @@ public:
         return *this;
     }
     string_base &operator += ( const C *str ) {
-        euint count = 0;
-
-        while ( str[count] ) {
-            count++;
-        }
+        euint count = m_str_len_proc(str);
 
         if (get_using_data1()) {
             euint new_size = get_data1_size() + count;
