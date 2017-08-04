@@ -191,6 +191,8 @@ or
 #        endif
 #    endif
 
+#    define USING_STRING_OLD 1
+
 #endif
 
 /**

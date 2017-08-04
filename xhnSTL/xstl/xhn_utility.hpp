@@ -915,15 +915,24 @@ struct FCharFormat
         }
     };
     
+#if USING_STRING_OLD
+    template <typename T, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC> class string_base_old;
+#else
     template <typename T, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC> class string_base;
+#endif
     
     template <typename T>
     struct TKeyValue
     {
         typedef
         typename conditional<is_pointer<T>::value,
+#if USING_STRING_OLD
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base_old<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc>,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base_old<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc>, void*>::type
+#else
         typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc>,
         typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc>, void*>::type
+#endif
         >::type,
         T
         >::type type;
