@@ -546,7 +546,12 @@ public:
 #if TESTING_STRING_NEW
     void test_string()
     {
-        EAssert(m_str_cmp_proc(c_str(), m_old_string.c_str()) == 0, "error");
+        if (m_str_cmp_proc(c_str(), m_old_string.c_str()) != 0) {
+            printf("own_str:%s\n", get_own_str() ? "true" : "false");
+            printf("using_data1:%s\n", get_using_data1() ? "true" : "false");
+        }
+        EAssert(m_str_cmp_proc(c_str(), m_old_string.c_str()) == 0,
+                "%s != %s", (char*)c_str(), (char*)m_old_string.c_str());
     }
 #endif
 public:
@@ -960,6 +965,7 @@ public:
         string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> tmp =
         m_old_string + str.c_str();
         EAssert(m_str_cmp_proc(tmp.c_str(), ret.c_str()) == 0, "%s != %s, this: %s, %s", tmp.c_str(), ret.c_str(), m_old_string.c_str(), c_str());
+        ret.m_old_string = tmp;
 #endif
         return ret;
     }
@@ -1000,6 +1006,7 @@ public:
         string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> tmp =
         m_old_string + str;
         EAssert(m_str_cmp_proc(tmp.c_str(), ret.c_str()) == 0, "error");
+        ret.m_old_string = tmp;
 #endif
         return ret;
     }
