@@ -191,7 +191,8 @@ or
 #        endif
 #    endif
 
-#    define USING_STRING_OLD 1
+#    define USING_STRING_OLD 0
+#    define TESTING_STRING_NEW 1
 
 #endif
 

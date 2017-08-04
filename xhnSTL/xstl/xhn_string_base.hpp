@@ -519,6 +519,9 @@ private:
     STR_LEN_PROC m_str_len_proc;
     STR_CMP_PROC m_str_cmp_proc;
     DEFAULT_STR_PROC m_default_str_proc;
+#if TESTING_STRING_NEW
+    string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> m_old_string;
+#endif
 public:
     inline void set_own_str(bool flag) {
         if (flag) { m_data.data1.m_flag |= 0x80; }
@@ -540,6 +543,12 @@ public:
     inline euint8 get_data1_size() const {
         return m_data.data1.m_flag & 0x3f;
     }
+#if TESTING_STRING_NEW
+    void test_string()
+    {
+        EAssert(m_str_cmp_proc(c_str(), m_old_string.c_str()) == 0, "error");
+    }
+#endif
 public:
     const static euint npos = ( euint )-1;
     typedef C* iterator;
@@ -549,6 +558,9 @@ public:
         set_using_data1( true );
         set_data1_size( 0 );
         m_data.data1.m_str[0] = 0;
+#if TESTING_STRING_NEW
+        test_string();
+#endif
     }
     string_base ( const C *str, bool own_str = true ) {
         if (!str) {
@@ -556,6 +568,10 @@ public:
             set_using_data1( true );
             set_data1_size( 0 );
             m_data.data1.m_str[0] = 0;
+#if TESTING_STRING_NEW
+            m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str, own_str);
+            test_string();
+#endif
             return;
         }
         
@@ -580,6 +596,10 @@ public:
             set_using_data1( false );
         }
         set_own_str( own_str );
+#if TESTING_STRING_NEW
+        m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str, own_str);
+        test_string();
+#endif
     }
     string_base ( const C *str, euint size ) {
         set_own_str( true );
@@ -587,6 +607,10 @@ public:
             set_using_data1( true );
             set_data1_size( 0 );
             m_data.data1.m_str[0] = 0;
+#if TESTING_STRING_NEW
+            m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str, size);
+            test_string();
+#endif
             return;
         }
         
@@ -603,6 +627,10 @@ public:
             set_using_data1( true );
             set_data1_size( size );
         }
+#if TESTING_STRING_NEW
+        m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str, size);
+        test_string();
+#endif
     }
 	string_base ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
         euint size = str.size();
@@ -620,6 +648,10 @@ public:
             set_using_data1( true );
             set_data1_size( size );
         }
+#if TESTING_STRING_NEW
+        m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str);
+        test_string();
+#endif
     }
     string_base ( const string_base &str ) {
         if (str.get_own_str()) {
@@ -640,6 +672,10 @@ public:
             m_data.data0.m_size = str.m_data.data0.m_size;
         }
         set_own_str( str.get_own_str() );
+#if TESTING_STRING_NEW
+        m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str.c_str());
+        test_string();
+#endif
     }
     string_base ( string_base &&str ) {
         if (str.get_own_str()) {
@@ -661,6 +697,10 @@ public:
         }
         set_own_str( str.get_own_str() );
         str.set_own_str( false );
+#if TESTING_STRING_NEW
+        m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str.c_str());
+        test_string();
+#endif
     }
     ~string_base() {
         if (get_own_str() && !get_using_data1()) {
@@ -787,6 +827,10 @@ public:
             set_using_data1( false );
         }
         set_own_str( str.get_own_str() );
+#if TESTING_STRING_NEW
+        m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str.c_str());
+        test_string();
+#endif
         return *this;
     }
     string_base &operator = ( string_base &&str ) {
@@ -811,6 +855,10 @@ public:
         }
         set_own_str( str.get_own_str() );
         str.set_own_str( false );
+#if TESTING_STRING_NEW
+        m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str.c_str());
+        test_string();
+#endif
         return *this;
     }
     string_base &operator = ( const C *str ) {
@@ -834,6 +882,10 @@ public:
             set_data1_size( count );
         }
         set_own_str( true );
+#if TESTING_STRING_NEW
+        m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str);
+        test_string();
+#endif
         return *this;
     }
 	string_base &operator = ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
@@ -855,6 +907,10 @@ public:
             set_data1_size( count );
         }
         set_own_str( true );
+#if TESTING_STRING_NEW
+        m_old_string = string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC>(str);
+        test_string();
+#endif
         return *this;
     }
     string_base operator + ( const string_base &str ) const {
@@ -900,6 +956,11 @@ public:
             memcpy ( &ret.m_data.data0.m_str[m_data.data0.m_size], str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             ret.m_data.data0.m_size = new_size;
         }
+#if TESTING_STRING_NEW
+        string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> tmp =
+        m_old_string + str.c_str();
+        EAssert(m_str_cmp_proc(tmp.c_str(), ret.c_str()) == 0, "%s != %s, this: %s, %s", tmp.c_str(), ret.c_str(), m_old_string.c_str(), c_str());
+#endif
         return ret;
     }
     string_base operator + ( const C *str ) const {
@@ -935,6 +996,11 @@ public:
             memcpy ( &ret.m_data.data0.m_str[m_data.data0.m_size], str, (count + 1) * sizeof(C) );
             ret.m_data.data0.m_size = new_size;
         }
+#if TESTING_STRING_NEW
+        string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> tmp =
+        m_old_string + str;
+        EAssert(m_str_cmp_proc(tmp.c_str(), ret.c_str()) == 0, "error");
+#endif
         return ret;
     }
     string_base &operator += ( const string_base &str ) {
@@ -987,6 +1053,10 @@ public:
             m_data.data0.m_str = new_str;
             m_data.data0.m_size = new_size;
         }
+#if TESTING_STRING_NEW
+        m_old_string += str.c_str();
+        test_string();
+#endif
         return *this;
     }
     string_base &operator += ( const C *str ) {
@@ -1024,6 +1094,10 @@ public:
             m_data.data0.m_str = new_str;
             m_data.data0.m_size = new_size;
         }
+#if TESTING_STRING_NEW
+        m_old_string += str;
+        test_string();
+#endif
         return *this;
     }
     string_base &operator += ( C c ) {
@@ -1164,6 +1238,10 @@ public:
         }
         
         string_base ret(&_str[pos], len);
+#if TESTING_STRING_NEW
+        string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> tmp = m_old_string.substr(pos, len);
+        EAssert(m_str_cmp_proc(tmp.c_str(), ret.c_str()) == 0, "error");
+#endif
         return ret;
     }
     vector< string_base > split( C ch ) const {
@@ -1225,6 +1303,9 @@ public:
         set_using_data1( true );
         set_data1_size( 0 );
         m_data.data1.m_str[0] = 0;
+#if TESTING_STRING_NEW
+        m_old_string.clear();
+#endif
 	}
     
 	void resize(euint newSize) {
@@ -1240,6 +1321,9 @@ public:
         set_using_data1( false );
         m_data.data0.m_str = tmp;
         m_data.data0.m_size = newSize;
+#if TESTING_STRING_NEW
+        m_old_string.resize(newSize);
+#endif
 	}
 };
     
