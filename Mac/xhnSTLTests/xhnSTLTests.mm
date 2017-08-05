@@ -12,6 +12,7 @@
 #include <xhnSTL/timer.h>
 #include <xhnSTL/xhn_smart_ptr.hpp>
 #include <xhnSTL/xhn_vector.hpp>
+#include <xhnSTL/xhn_group.hpp>
 #include <xhnSTL/cpu.h>
 #include <map>
 #include <unordered_map>
@@ -1019,6 +1020,48 @@ void* AffinitProc(void*)
             value += calc_hashnr(s, len);
         }
     }];
+}
+
+- (void) testGroup0
+{
+    xhn::group<int> group;
+    for (int i = 0; i < 24; i++) {
+        group.add(i);
+    }
+    printf("count %lld\n", group.size());
+    auto iter = group.begin();
+    auto end = group.end();
+    euint iterCount = 0;
+    for (; iter != end; iter++, iterCount++) {
+        if (*iter == 12) {
+            group.remove(iter);
+            break;
+        }
+    }
+    iterCount = 0;
+    iter = group.begin();
+    end = group.end();
+    for (; iter != end; iter++, iterCount++) {
+        printf("%d\n", *iter);
+    }
+    printf("here\n");
+    XCTAssert(iterCount == 23, @"error");
+}
+
+- (void) testGroup1
+{
+    xhn::group<int> group;
+    for (int i = 0; i < 24; i++) {
+        group.add(i);
+    }
+    euint removeCount = 0;
+    while (group.size()) {
+        auto iter = group.begin();
+        printf("remove:%d\n", *iter);
+        group.remove(iter);
+        removeCount++;
+    }
+    XCTAssert(removeCount == 24, @"error");
 }
 
 @end

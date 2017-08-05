@@ -1,10 +1,3 @@
-//
-//  xhn_unique_identifier.cpp
-//  xhnSTL
-//
-//  Created by 徐海宁 on 16/3/4.
-//  Copyright © 2016年 徐 海宁. All rights reserved.
-//
 
 #include "xhn_unique_identifier.hpp"
 #include "xhn_list.hpp"
