@@ -1064,4 +1064,15 @@ void* AffinitProc(void*)
     XCTAssert(removeCount == 24, @"error");
 }
 
+- (void) testAtomicOperator
+{
+    [self measureBlock:^{
+        volatile esint64 a = 3;
+        esint64 sum = 0;
+        for (euint i = 0; i < 1024 * 1024 * 32; i++) {
+            sum += AtomicLoad64(&a);
+        }
+    }];
+}
+
 @end
