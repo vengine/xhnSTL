@@ -1106,7 +1106,7 @@ public:
         const C* _str = get_using_data1() ? m_data.data1.m_str : m_data.data0.m_str;
         euint _size = get_using_data1() ? get_data1_size() : m_data.data0.m_size;
         const C* str_str = str.get_using_data1() ? str.m_data.data1.m_str : str.m_data.data0.m_str;
-        euint str_size = str.get_using_data1() ? str.get_data1_size() : m_data.data0.m_size;
+        euint str_size = str.get_using_data1() ? str.get_data1_size() : str.m_data.data0.m_size;
         if ( _size <= pos || !_size || !str_size ) {
             return npos;
         }
@@ -1153,7 +1153,7 @@ public:
         const C* _str = get_using_data1() ? m_data.data1.m_str : m_data.data0.m_str;
         euint _size = get_using_data1() ? get_data1_size() : m_data.data0.m_size;
         const C* str_str = str.get_using_data1() ? str.m_data.data1.m_str : str.m_data.data0.m_str;
-        euint str_size = str.get_using_data1() ? str.get_data1_size() : m_data.data0.m_size;
+        euint str_size = str.get_using_data1() ? str.get_data1_size() : str.m_data.data0.m_size;
         if ( pos == npos ) {
             pos = _size - 1;
         }
