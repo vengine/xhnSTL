@@ -1075,4 +1075,102 @@ void* AffinitProc(void*)
     }];
 }
 
+- (void) testStringRFind
+{
+    {
+        const char* key = "unavailable_icon.png";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.rfind(key);
+        size_t pos1 = s1.rfind(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+    {
+        const char* key = ".png";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.rfind(key);
+        size_t pos1 = s1.rfind(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+    {
+        const char* key = "vaila";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.rfind(key);
+        size_t pos1 = s1.rfind(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+    {
+        const char* key = "aabbcc";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.rfind(key);
+        size_t pos1 = s1.rfind(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+    {
+        const char* key = "una";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.rfind(key);
+        size_t pos1 = s1.rfind(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+}
+
+- (void) testStringFind
+{
+    {
+        const char* key = "unavailable_icon.png";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.find(key);
+        size_t pos1 = s1.find(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+    {
+        const char* key = ".png";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.find(key);
+        size_t pos1 = s1.find(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+    {
+        const char* key = "vaila";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.find(key);
+        size_t pos1 = s1.find(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+    {
+        const char* key = "aabbcc";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.find(key);
+        size_t pos1 = s1.find(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+    {
+        const char* key = "una";
+        xhn::string s0("unavailable_icon.png");
+        std::string s1("unavailable_icon.png");
+        euint pos0 = s0.find(key);
+        size_t pos1 = s1.find(key);
+        NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
+        XCTAssert(pos0 == pos1, @"error");
+    }
+}
+
 @end

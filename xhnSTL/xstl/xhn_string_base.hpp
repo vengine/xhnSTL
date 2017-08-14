@@ -1154,6 +1154,7 @@ public:
         euint _size = get_using_data1() ? get_data1_size() : m_data.data0.m_size;
         const C* str_str = str.get_using_data1() ? str.m_data.data1.m_str : str.m_data.data0.m_str;
         euint str_size = str.get_using_data1() ? str.get_data1_size() : str.m_data.data0.m_size;
+        
         if ( pos == npos ) {
             pos = _size - 1;
         }
@@ -1170,7 +1171,7 @@ public:
         while ( count >= 0 ) {
             if ( matching ) {
                 if ( match_count < 0 ) {
-                    return ( euint ) match_pos - str_size + 1;
+                    return ( euint ) match_pos;
                 }
 
                 if ( _str[count] != str_str[match_count] ) {
@@ -1179,11 +1180,13 @@ public:
                     match_pos = count - 1;
                 }
                 else {
+                    match_pos--;
                     match_count--;
                 }
             } else {
                 if ( _str[count] != str_str[str_size - 1] ) {
-                    match_pos--;
+                    matching = false;
+                    match_pos = count - 1;
                 } else {
                     matching = true;
                     match_count = str_size - 2;
