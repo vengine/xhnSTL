@@ -578,12 +578,14 @@ namespace xhn {
                             
                             if (isInheritFromAction && isInheritFromActionInterface) {
                                 snprintf(mbuf, 511,
-                                         "        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
+                                         ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        id action%d = [SwiftActions _TtCC12VEngineLogic%s];\n"
                                          ///"        id action%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
-                                         "        [ret setActionWithResName:[action%d getResourceName] action:action%d];\n",
-                                         i, '"', fullClassName.c_str(), '"',
+                                         "        NSString* action%dResName = [action%d performSelector:@selector(resourceName)];"
+                                         "        [ret setActionWithResName:action%dResName action:action%d];\n",
+                                         ///i, '"', fullClassName.c_str(), '"',
                                          i, actionFuncName.c_str(),
+                                         i, i,
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, i);
                                 bridgeFile += mbuf;
