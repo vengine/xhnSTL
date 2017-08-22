@@ -585,7 +585,7 @@ namespace xhn {
                                          "#pragma clang diagnostic ignored \"-Wundeclared-selector\"\n"
                                          "        if ([action%d respondsToSelector:@selector(resourceName)]) {\n"
                                          "            NSString* action%dResName = [action%d performSelector:@selector(resourceName)];\n"
-                                         "            [ret setActionWithResName:action%dResName action:action%d];\n"
+                                         "            [ret setAction:action%dResName action:action%d];\n"
                                          "        }\n"
                                          "#pragma clang diagnostic pop\n",
                                          ///i, '"', fullClassName.c_str(), '"',
