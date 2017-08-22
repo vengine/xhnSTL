@@ -1397,7 +1397,7 @@ namespace xhn {
                     if (m_isName && !m_isQuotationBlock) {
                         m_isName = false;
                     }
-                    if (m_isApostropheBlock &&
+                    if (m_isApostropheBlock ||
                         m_isQuotationBlock) {
                         m_symbolBuffer.AddCharacter(c);
                     }
@@ -1410,7 +1410,7 @@ namespace xhn {
                     if (m_isName && !m_isQuotationBlock) {
                         m_isName = false;
                     }
-                    if (m_isApostropheBlock &&
+                    if (m_isApostropheBlock ||
                         m_isQuotationBlock) {
                         m_symbolBuffer.AddCharacter(c);
                     }
