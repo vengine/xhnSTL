@@ -548,7 +548,7 @@ namespace xhn {
                                          "        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        id action%d = [SwiftActions _TtCC12VEngineLogic%s];\n"
                                          ///"        id action%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
-                                         "        [ret setAction:action%dName action:action%d];\n",
+                                         "        [ret setActionWithResName:[action%d getResourceName] action:action%d];\n",
                                          i, '"', fullClassName.c_str(), '"',
                                          i, actionFuncName.c_str(),
                                          ///i, '"', fullClassName.c_str(), '"',
