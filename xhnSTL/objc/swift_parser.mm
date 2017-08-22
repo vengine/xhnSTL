@@ -98,14 +98,38 @@ namespace xhn {
     }
     void SwiftParser::EndParse(string& bridgeFile, string& stateActionFile)
     {
+        map<static_string, static_string> aliasMap;
         map<static_string, vector<static_string>> inheritMap;
         map<static_string, vector<static_string>> childrenClassMap;
         map<static_string, ASTNode*> classMap;
         
+        Lambda<void (ASTNode*)> makeAliasMap;
         Lambda<void (const string&, ASTNode*)> makeInheritMapProc;
         Lambda<void (const string&, ASTNode*)> makeChildrenClassMapProc;
         Lambda<void (const string&, ASTNode*)> makeClassMapProc;
         Lambda<bool (static_string, static_string, vector<static_string>&)> isInheritFromClassProc;
+        
+        const string dotType(".Type");
+        makeAliasMap = [&makeAliasMap, &aliasMap, &dotType](ASTNode* node) -> void {
+            if (StrTypealias == node->nodetype) {
+                xhn::string strIntType = node->interfacetype.c_str();
+                euint pos = strIntType.rfind(dotType);
+                if (xhn::string::npos != pos &&
+                    pos + dotType.size() == strIntType.size()) {
+                    strIntType = strIntType.substr(0, pos);
+                    aliasMap[strIntType.c_str()] = node->type;
+                    ASTLog("++:%s -> %s\n", strIntType.c_str(), node->type.c_str());
+                }
+            }
+            if (node->children) {
+                auto childIter = node->children->begin();
+                auto childEnd = node->children->end();
+                for (; childIter != childEnd; childIter++) {
+                    ASTNode* child = *childIter;
+                    makeAliasMap(child);
+                }
+            }
+        };
         
         makeInheritMapProc = [&makeInheritMapProc, &inheritMap](const string& parentPath, ASTNode* node) -> void {
             if (StrClassDecl == node->nodetype) {
@@ -216,11 +240,13 @@ namespace xhn {
             auto rootChildEnd = root->children->end();
             for (; rootChildIter != rootChildEnd; rootChildIter++) {
                 ASTNode* node = *rootChildIter;
+                makeAliasMap(node);
                 makeInheritMapProc(emptyPath, node);
                 makeChildrenClassMapProc(emptyPath, node);
                 makeClassMapProc(emptyPath, node);
             }
         }
+        
         ///
         auto inhMapIter = inheritMap.begin();
         auto inhMapEnd = inheritMap.end();
@@ -229,6 +255,10 @@ namespace xhn {
             auto inhIter = inhMapIter->second.begin();
             auto inhEnd = inhMapIter->second.end();
             for (; inhIter != inhEnd; inhIter++) {
+                auto aliasiter = aliasMap.find(*inhIter);
+                if (aliasiter != aliasMap.end()) {
+                    *inhIter = aliasiter->second;
+                }
                 ASTLog("%s ", (*inhIter).c_str());
             }
             ASTLog("\n");
