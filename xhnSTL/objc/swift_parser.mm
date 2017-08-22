@@ -66,6 +66,9 @@ namespace xhn {
     const static_string SwiftParser::StrPublic("public");
     const static_string SwiftParser::StrOpen("open");
     const static_string SwiftParser::StrDecl("decl");
+    const static_string SwiftParser::StrTypealias("typealias");
+    const static_string SwiftParser::StrType("type");
+    const static_string SwiftParser::StrInterface("interface");
     
     const static_string SwiftParser::StrSceneNodeAgent("SceneNodeAgent");
     const static_string SwiftParser::StrState("State");
@@ -105,7 +108,7 @@ namespace xhn {
         Lambda<bool (static_string, static_string, vector<static_string>&)> isInheritFromClassProc;
         
         makeInheritMapProc = [&makeInheritMapProc, &inheritMap](const string& parentPath, ASTNode* node) -> void {
-            if (StrClassDecl == node->type) {
+            if (StrClassDecl == node->nodetype) {
                 string nodePath = parentPath;
                 if (parentPath.size()) {
                     nodePath += ".";
@@ -141,7 +144,7 @@ namespace xhn {
         };
         
         makeChildrenClassMapProc = [&makeChildrenClassMapProc, &childrenClassMap](const string& parentPath, ASTNode* node) -> void {
-            if (StrClassDecl == node->type) {
+            if (StrClassDecl == node->nodetype) {
                 string nodePath = parentPath;
                 if (parentPath.size()) {
                     nodePath += ".";
@@ -161,7 +164,7 @@ namespace xhn {
         };
         
         makeClassMapProc = [&makeClassMapProc, &classMap](const string& parentPath, ASTNode* node) -> void {
-            if (StrClassDecl == node->type) {
+            if (StrClassDecl == node->nodetype) {
                 string nodePath = parentPath;
                 if (parentPath.size()) {
                     nodePath += ".";
@@ -429,7 +432,7 @@ namespace xhn {
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
                         /// 判断该ASTNode的类型和访问状况，是否是派生类
-                        if (StrClassDecl == child->type &&
+                        if (StrClassDecl == child->nodetype &&
                             (StrPublic == child->access || StrOpen == child->access) &&
                             child->inherits) {
                             /// 判断是否是派生自State和StateInterface
@@ -520,7 +523,7 @@ namespace xhn {
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
-                        if (StrClassDecl == child->type &&
+                        if (StrClassDecl == child->nodetype &&
                             (StrPublic == child->access || StrOpen == child->access) &&
                             child->inherits) {
                             bool isInheritFromAction = false;
@@ -612,7 +615,7 @@ namespace xhn {
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
                         /// 判断该ASTNode的类型和访问状况，是否是派生类
-                        if (StrClassDecl == child->type &&
+                        if (StrClassDecl == child->nodetype &&
                             (StrPublic == child->access || StrOpen == child->access) &&
                             child->inherits) {
                             
@@ -701,7 +704,7 @@ namespace xhn {
             auto rootChildEnd = root->children->end();
             for (; rootChildIter != rootChildEnd; rootChildIter++) {
                 ASTNode* node = *rootChildIter;
-                if (StrClassDecl == node->type &&
+                if (StrClassDecl == node->nodetype &&
                     (StrPublic == node->access || StrOpen == node->access)) {
                     if (isInheritFromClassProc(node->name, StrSceneNodeAgent, inheritPath)) {
                         /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
@@ -978,7 +981,7 @@ namespace xhn {
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
-                        if (StrClassDecl == child->type &&
+                        if (StrClassDecl == child->nodetype &&
                             (StrPublic == child->access || StrOpen == child->access) &&
                             child->inherits) {
                             bool isInheritFromState = false;
@@ -1036,7 +1039,7 @@ namespace xhn {
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
                         /// 判断该ASTNode的类型和访问状况，是否是派生类
-                        if (StrClassDecl == child->type &&
+                        if (StrClassDecl == child->nodetype &&
                             (StrPublic == child->access || StrOpen == child->access) &&
                             child->inherits) {
                             
@@ -1092,7 +1095,7 @@ namespace xhn {
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
-                        if (StrClassDecl == child->type &&
+                        if (StrClassDecl == child->nodetype &&
                             (StrPublic == child->access || StrOpen == child->access) &&
                             child->inherits) {
                             bool isInheritFromAction = false;
@@ -1139,7 +1142,7 @@ namespace xhn {
             auto rootChildEnd = root->children->end();
             for (; rootChildIter != rootChildEnd; rootChildIter++) {
                 ASTNode* node = *rootChildIter;
-                if (StrClassDecl == node->type &&
+                if (StrClassDecl == node->nodetype &&
                     (StrPublic == node->access || StrOpen == node->access)) {
                     if (isInheritFromClassProc(node->name, StrSceneNodeAgent, inheritPath)) {
                         /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
@@ -1240,7 +1243,10 @@ namespace xhn {
                     m_roots.push_back(m_nodeStack.back());
                 }
                 if (m_nodeStack.size()) {
-                    m_nodeStack.back()->type = symbol;
+                    m_nodeStack.back()->nodetype = symbol;
+                    if (StrTypealias == symbol) {
+                        ASTLog("TYPEALIAS\n");
+                    }
                 }
                 m_isNodeType = false;
                 m_isName = true;
@@ -1261,6 +1267,20 @@ namespace xhn {
                 }
                 m_isDecl = false;
             }
+            else if (m_isType) {
+                xhn::static_string symbol = m_symbolBuffer.GetSymbol();
+                m_symbolBuffer.bufferTop = 0;
+                if (m_nodeStack.size()) {
+                    if (!m_isInterface) {
+                        m_nodeStack.back()->type = symbol;
+                    }
+                    else {
+                        m_nodeStack.back()->interfacetype = symbol;
+                        m_isInterface = false;
+                    }
+                }
+                m_isType = false;
+            }
             else {
                 xhn::static_string symbol = m_symbolBuffer.GetSymbol();
                 if (StrInherits == symbol) {
@@ -1271,6 +1291,15 @@ namespace xhn {
                 }
                 else if (StrDecl == symbol) {
                     m_isDecl = true;
+                }
+                else if (StrType == symbol) {
+                    m_isType = true;
+                }
+                else if (StrInterface == symbol) {
+                    m_isInterface = true;
+                }
+                else {
+                    ASTLog("SYMBOL=%s\n", symbol.c_str());
                 }
             }
         };
@@ -1287,8 +1316,8 @@ namespace xhn {
         };
         while (count < length) {
             char c = strBuffer[count];
-            ASTLog("%c, m_isNodeType %d, m_isName %d, m_isApostropheBlock %d, m_isQuotationBlock %d\n",
-                   c,   m_isNodeType,    m_isName,    m_isApostropheBlock,    m_isQuotationBlock);
+            ASTLog("%c, m_isNodeType %d, m_isName %d, m_isInterface %d, m_isApostropheBlock %d, m_isQuotationBlock %d\n",
+                   c,   m_isNodeType,    m_isName,    m_isInterface,    m_isApostropheBlock,    m_isQuotationBlock);
             switch (c)
             {
                 case '\0':
@@ -1316,7 +1345,14 @@ namespace xhn {
                         m_nodeStack.pop_back();
                         if (m_nodeStack.size()) {
                             ASTNode* parentNode = m_nodeStack.back();
-                            ASTLog("%s <- %s\n", parentNode->type.c_str(), currentNode->type.c_str());
+                            ASTLog("NODETYPE=%s, NAME=%s, ACCESS=%s, DECL=%s, TYPE=%s, INTERFACETYPE=%s\n",
+                                   currentNode->nodetype.c_str(),
+                                   currentNode->name.c_str(),
+                                   currentNode->access.c_str(),
+                                   currentNode->decl.c_str(),
+                                   currentNode->type.c_str(),
+                                   currentNode->interfacetype.c_str());
+                            ASTLog("%s <- %s\n", parentNode->nodetype.c_str(), currentNode->nodetype.c_str());
                             if (!parentNode->children) {
                                 parentNode->children = VNEW xhn::vector<ASTNode*>();
                             }
@@ -1337,6 +1373,8 @@ namespace xhn {
                             xhn::static_string symbol = m_symbolBuffer.GetSymbol();
                             if (m_nodeStack.size()) {
                                 m_nodeStack.back()->name = symbol;
+                                ASTLog("NODETYPE=%s NAME=%s\n",
+                                       m_nodeStack.back()->nodetype.c_str(), m_nodeStack.back()->name.c_str());
                             }
                             m_isName = false;
                         }
@@ -1441,9 +1479,11 @@ namespace xhn {
     , m_isQuotationBlock(false)
     , m_isNodeType(false)
     , m_isName(false)
+    , m_isInterface(false)
     , m_isInherits(false)
     , m_isAccess(false)
     , m_isDecl(false)
+    , m_isType(false)
     {
 #if USING_AST_LOG
         s_ASTLogFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/main2.txt", "wb");

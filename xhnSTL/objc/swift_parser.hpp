@@ -36,6 +36,9 @@ public:
     static const static_string StrPublic;
     static const static_string StrOpen;
     static const static_string StrDecl;
+    static const static_string StrTypealias;
+    static const static_string StrType;
+    static const static_string StrInterface;
     
     static const static_string StrSceneNodeAgent;
     static const static_string StrState;
@@ -68,10 +71,12 @@ public:
     };
     struct ASTNode : public MemObject
     {
-        static_string type;
+        static_string nodetype;
         static_string name;
         static_string access;
         static_string decl;
+        static_string type;
+        static_string interfacetype;
         SmartPtr<vector<static_string>> inherits;
         SmartPtr<vector<ASTNode*>> children;
         ASTNode()
@@ -90,9 +95,11 @@ private:
     bool m_isQuotationBlock;
     bool m_isNodeType;
     bool m_isName;
+    bool m_isInterface;
     bool m_isInherits;
     bool m_isAccess;
     bool m_isDecl;
+    bool m_isType;
 private:
     vector<static_string> m_sceneNodeAgentNameVector;
     vector<static_string> m_guiAgentNameVector;
