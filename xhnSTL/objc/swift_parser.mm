@@ -581,10 +581,16 @@ namespace xhn {
                                          ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        id action%d = [SwiftActions _TtCC12VEngineLogic%s];\n"
                                          ///"        id action%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
-                                         "        NSString* action%dResName = [action%d performSelector:@selector(resourceName)];"
-                                         "        [ret setActionWithResName:action%dResName action:action%d];\n",
+                                         "#pragma clang diagnostic push\n"
+                                         "#pragma clang diagnostic ignored \"-Wundeclared-selector\"\n"
+                                         "        if ([action%d respondsToSelector:@selector(resourceName)]) {\n"
+                                         "            NSString* action%dResName = [action%d performSelector:@selector(resourceName)];\n"
+                                         "            [ret setActionWithResName:action%dResName action:action%d];\n"
+                                         "        }\n"
+                                         "#pragma clang diagnostic pop\n",
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, actionFuncName.c_str(),
+                                         i,
                                          i, i,
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, i);
