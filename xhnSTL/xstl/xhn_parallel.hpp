@@ -80,6 +80,40 @@ public:
             func(start, end);
         }
     }
+    template <typename FUNC>
+    void parallel_for_async(euint start, euint end, FUNC func)
+    {
+        if (start >= end)
+            return;
+        euint works = end - start;
+        euint num_threads = m_threads.size() + 1;
+        euint works_per_thread = works / num_threads;
+        euint remainder_works = works % num_threads;
+        if (works_per_thread > 0) {
+            euint a = start;
+            euint b = start + works_per_thread;
+            for (auto& t : m_threads) {
+                Lambda<thread::TaskStatus ()>
+                proc([a, b, &func]() -> thread::TaskStatus {
+                    func(a, b);
+                    return thread::Completed;
+                });
+                t->add_lambda_task(proc);
+                
+                a += works_per_thread;
+                b = a + works_per_thread;
+            }
+            func(a, b);
+            if (remainder_works) {
+                a += works_per_thread;
+                b = a + remainder_works;
+                func(a, b);
+            }
+        }
+        else {
+            func(start, end);
+        }
+    }
 };
     
 }

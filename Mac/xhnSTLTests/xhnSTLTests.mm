@@ -1216,18 +1216,18 @@ void* AffinitProc(void*)
 {
     xhn::parallel* p = VNEW xhn::parallel(4);
     [self measureBlock:^{
-        volatile esint32 sum = 0;
+        volatile esint64 sum = 0;
         xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
         xhn::string b(" OPQ ");
         auto func =
         [&sum, a, b](euint start, euint end){
             for (euint i = start; i < end; i++) {
                 euint pos = a.find(b);
-                esint32 s = 0;
-                esint32 n = 0;
+                esint64 s = 0;
+                esint64 n = 0;
                 do {
-                    s = AtomicLoad32(&sum);
-                    n = s + (esint32)pos;
+                    s = AtomicLoad64(&sum);
+                    n = s + (esint64)pos;
                 } while(!AtomicCompareExchange(s, n, &sum));
             }
         };
@@ -1250,6 +1250,13 @@ void* AffinitProc(void*)
             }
         };
         func(0, 1024 * 1024);
+        func(0, 1024 * 1024);
+        func(0, 1024 * 1024);
+        func(0, 1024 * 1024);
+        func(0, 1024 * 1024);
+        func(0, 1024 * 1024);
+        func(0, 1024 * 1024);
+        func(0, 1024 * 1024);
     }];
 }
 
@@ -1266,22 +1273,84 @@ void* AffinitProc(void*)
             }
         };
         p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
     }];
     VDELETE p;
 }
 
 - (void) testParallel5
 {
-    xhn::parallel* p = VNEW xhn::parallel(3);
+    xhn::parallel* p = VNEW xhn::parallel(7);
     [self measureBlock:^{
-        xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
-        xhn::string b(" OPQ ");
         auto func =
-        [a, b](euint start, euint end){
+        [](euint start, euint end){
+            xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
+            xhn::string b(" OPQ ");
             for (euint i = start; i < end; i++) {
                 a.find(b);
             }
         };
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+    }];
+    VDELETE p;
+}
+
+- (void) testParallel6
+{
+    xhn::parallel* p = VNEW xhn::parallel(3);
+    [self measureBlock:^{
+        auto func =
+        [](euint start, euint end){
+            xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
+            xhn::string b(" OPQ ");
+            for (euint i = start; i < end; i++) {
+                a.find(b);
+            }
+        };
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for(0, 1024 * 1024, func);
+    }];
+    VDELETE p;
+}
+
+- (void) testParallel7
+{
+    xhn::parallel* p = VNEW xhn::parallel(7);
+    [self measureBlock:^{
+        auto func =
+        [](euint start, euint end){
+            xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
+            xhn::string b(" OPQ ");
+            for (euint i = start; i < end; i++) {
+                a.find(b);
+            }
+        };
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
         p->parallel_for(0, 1024 * 1024, func);
     }];
     VDELETE p;

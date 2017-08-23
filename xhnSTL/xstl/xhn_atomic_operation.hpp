@@ -97,6 +97,22 @@ inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile e
     return ret;
 #endif
 }
+inline bool AtomicCompareExchange(esint64 oldValue, esint64 newValue, volatile esint64* theValue)
+{
+#if !USING_BUILTIN_ATOMIC
+    return OSAtomicCompareAndSwap64Barrier(oldValue, newValue, theValue);
+#else
+    int succ = __ATOMIC_ACQ_REL;
+    int fail = __ATOMIC_RELAXED;
+    ///int succ = __ATOMIC_SEQ_CST;
+    ///int fail = __ATOMIC_SEQ_CST;
+    bool ret = __atomic_compare_exchange(theValue, &oldValue, &newValue,
+                                         false,
+                                         succ,
+                                         fail);
+    return ret;
+#endif
+}
 inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * volatile * theValue)
 {
 #if !USING_BUILTIN_ATOMIC
@@ -129,6 +145,10 @@ inline esint32 AtomicDecrement(volatile esint32* i)
     return __sync_fetch_and_sub(i, 1) - 1;
 }
 inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
+{
+    return __sync_val_compare_and_swap(theValue, oldValue, newValue);
+}
+inline bool AtomicCompareExchange(esint64 oldValue, esint64 newValue, volatile esint64* theValue)
 {
     return __sync_val_compare_and_swap(theValue, oldValue, newValue);
 }
