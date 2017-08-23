@@ -148,6 +148,8 @@
 		B1A89DB31CAF9B7000358DD4 /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB11CAF9B7000358DD4 /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1A89DB71CAF9F2700358DD4 /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1CED0711F32268F00FCA4D7 /* cpu_common.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED0701F32268F00FCA4D7 /* cpu_common.c */; };
+		B1D6ADEA1F4D4B1C00AB8F2F /* xhn_parallel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1D6ADE81F4D4B1C00AB8F2F /* xhn_parallel.cpp */; };
+		B1D6ADEB1F4D4B1C00AB8F2F /* xhn_parallel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */; settings = {ATTRIBUTES = (Private, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -305,6 +307,8 @@
 		B1A89DB11CAF9B7000358DD4 /* xhn_dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_dictionary.hpp; sourceTree = "<group>"; };
 		B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_singly_linked_list.hpp; sourceTree = "<group>"; };
 		B1CED0701F32268F00FCA4D7 /* cpu_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_common.c; sourceTree = "<group>"; };
+		B1D6ADE81F4D4B1C00AB8F2F /* xhn_parallel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_parallel.cpp; sourceTree = "<group>"; };
+		B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_parallel.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -481,6 +485,8 @@
 				B17CCE6D1E683A5F002B1946 /* xhn_memory_pool.hpp */,
 				B19C547E1E7BD696009FC8A8 /* xhn_cache.hpp */,
 				B1229DC31F3557ED0082FB3E /* xhn_group.hpp */,
+				B1D6ADE81F4D4B1C00AB8F2F /* xhn_parallel.cpp */,
+				B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */,
 			);
 			name = xstl;
 			path = ../../xhnSTL/xstl;
@@ -621,6 +627,7 @@
 				68245D201BC9D8F90006E99D /* xhn_path_tree.hpp in Headers */,
 				68245CD71BC9D8F90006E99D /* sha256.h in Headers */,
 				68245CF91BC9D8F90006E99D /* xhn_fixed_queue.hpp in Headers */,
+				B1D6ADEB1F4D4B1C00AB8F2F /* xhn_parallel.hpp in Headers */,
 				68245CE91BC9D8F90006E99D /* xhn_cloned_ptr.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -728,6 +735,7 @@
 				68245CC21BC9D8F90006E99D /* elog.c in Sources */,
 				68245D311BC9D8F90006E99D /* xhn_thread.cpp in Sources */,
 				68245D281BC9D8F90006E99D /* xhn_smart_ptr.cpp in Sources */,
+				B1D6ADEA1F4D4B1C00AB8F2F /* xhn_parallel.cpp in Sources */,
 				68245CD61BC9D8F90006E99D /* sha256.c in Sources */,
 				B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */,
 				68245CD91BC9D8F90006E99D /* stack.c in Sources */,

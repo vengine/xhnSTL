@@ -13,6 +13,7 @@
 #include <xhnSTL/xhn_smart_ptr.hpp>
 #include <xhnSTL/xhn_vector.hpp>
 #include <xhnSTL/xhn_group.hpp>
+#include <xhnSTL/xhn_parallel.hpp>
 #include <xhnSTL/cpu.h>
 #include <map>
 #include <unordered_map>
@@ -1171,6 +1172,102 @@ void* AffinitProc(void*)
         NSLog(@"pos0 = %lld, pos1 = %ld", pos0, pos1);
         XCTAssert(pos0 == pos1, @"error");
     }
+}
+
+- (void) testParallel0
+{
+    xhn::parallel p(3);
+    volatile esint32 count = 0;
+    p.parallel_for(0, 128, [&count](euint start, euint end){
+        esint32 c = (esint32)(end - start);
+        printf("start %lld, end %lld, c %d\n", start, end, c);
+        esint32 s = 0;
+        esint32 n = 0;
+        do {
+            s = AtomicLoad32(&count);
+            n = s + c;
+        }
+        while (!AtomicCompareExchange(s, n, &count));
+    });
+    printf("count %d\n", count);
+}
+
+- (void) testParallel1
+{
+    ///xhn::parallel* p = VNEW xhn::parallel(3);
+    [self measureBlock:^{
+        volatile esint64 sum = 0;
+        xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
+        xhn::string b(" OPQ ");
+        auto func =
+        [&sum, a, b](euint start, euint end){
+            for (euint i = start; i < end; i++) {
+                sum += a.find(b);
+            }
+        };
+        func(0, 33119);
+        printf("sum:%lld\n", sum);
+        XCTAssert(sum == 496785, @"error");
+    }];
+    ///VDELETE p;
+}
+
+- (void) testParallel2
+{
+    xhn::parallel* p = VNEW xhn::parallel(4);
+    [self measureBlock:^{
+        volatile esint32 sum = 0;
+        xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
+        xhn::string b(" OPQ ");
+        auto func =
+        [&sum, a, b](euint start, euint end){
+            for (euint i = start; i < end; i++) {
+                euint pos = a.find(b);
+                esint32 s = 0;
+                esint32 n = 0;
+                do {
+                    s = AtomicLoad32(&sum);
+                    n = s + (esint32)pos;
+                } while(!AtomicCompareExchange(s, n, &sum));
+            }
+        };
+        p->parallel_for(0, 33119, func);
+        ///printf("sum:%d\n", sum);
+        XCTAssert(sum == 496785, @"error");
+    }];
+    VDELETE p;
+}
+
+- (void) testParallel3
+{
+    [self measureBlock:^{
+        auto func =
+        [](euint start, euint end){
+            xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
+            xhn::string b(" OPQ ");
+            for (euint i = start; i < end; i++) {
+                a.find(b);
+            }
+        };
+        func(0, 1024 * 1024);
+    }];
+}
+
+- (void) testParallel4
+{
+    xhn::parallel* p = VNEW xhn::parallel(3);
+    [self measureBlock:^{
+        auto func =
+        [](euint start, euint end){
+            xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
+            xhn::string b(" OPQ ");
+            for (euint i = start; i < end; i++) {
+                a.find(b);
+            }
+        };
+        p->parallel_for_async(0, 1024 * 1024, func);
+    }];
+    VDELETE p;
 }
 
 @end
