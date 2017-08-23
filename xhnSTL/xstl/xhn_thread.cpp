@@ -1,4 +1,5 @@
 #include "xhn_thread.hpp"
+#include "cpu.h"
 #ifdef __APPLE__
 #include <unistd.h>
 #include <limits.h>
@@ -283,7 +284,9 @@ void xhn::thread::force_restart()
 }
 void xhn::thread::wait_completed()
 {
-    while (!AtomicCompareExchange(1, 1, &m_is_completed)) {}
+    while (!AtomicCompareExchange(1, 1, &m_is_completed)) {
+        nanopause(1);
+    }
 }
 void xhn::thread::join()
 {

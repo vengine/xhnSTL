@@ -73,43 +73,7 @@ public:
                 func(a, b);
             }
             while (AtomicLoad64(&worked_thread_count)) {
-                nanopause(100);
-            }
-        }
-        else {
-            func(start, end);
-        }
-    }
-    template <typename FUNC>
-    void parallel_for_async(euint start, euint end, FUNC func)
-    {
-        if (start >= end)
-            return;
-        euint works = end - start;
-        volatile esint64 worked_thread_count = m_threads.size();
-        euint num_threads = m_threads.size() + 1;
-        euint works_per_thread = works / num_threads;
-        euint remainder_works = works % num_threads;
-        if (works_per_thread > 0) {
-            euint a = start;
-            euint b = start + works_per_thread;
-            for (auto& t : m_threads) {
-                Lambda<thread::TaskStatus ()>
-                proc([a, b, &func, &worked_thread_count]() -> thread::TaskStatus {
-                    func(a, b);
-                    AtomicDecrement(&worked_thread_count);
-                    return thread::Completed;
-                });
-                t->add_lambda_task(proc);
-                
-                a += works_per_thread;
-                b = a + works_per_thread;
-            }
-            func(a, b);
-            if (remainder_works) {
-                a += works_per_thread;
-                b = a + remainder_works;
-                func(a, b);
+                nanopause(1000);
             }
         }
         else {
