@@ -143,7 +143,7 @@ public:
 	void run();
 	void add_task(task_ptr t);
     void add_lambda_task(Lambda<TaskStatus ()>& lambda);
-	bool is_complete() {
+	bool is_completed() {
 		return AtomicCompareExchange(1, 1, &m_is_completed);
 	}
     bool is_errored() {

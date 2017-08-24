@@ -114,6 +114,14 @@ public:
             func(start, end);
         }
     }
+    bool is_completed() {
+        for (auto& t : m_threads) {
+            if (!t->is_completed()) {
+                return false;
+            }
+        }
+        return true;
+    }
 };
     
 }

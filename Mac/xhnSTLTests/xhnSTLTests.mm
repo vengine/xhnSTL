@@ -1356,4 +1356,28 @@ void* AffinitProc(void*)
     VDELETE p;
 }
 
+- (void) testParallel8
+{
+    xhn::parallel* p = VNEW xhn::parallel(7);
+    [self measureBlock:^{
+        auto func =
+        [](euint start, euint end){
+            xhn::string a("ABC DEF HIJ XMN OPQ RST UVW XYZ");
+            xhn::string b(" OPQ ");
+            for (euint i = start; i < end; i++) {
+                a.find(b);
+            }
+        };
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+        p->parallel_for_async(0, 1024 * 1024, func);
+    }];
+    VDELETE p;
+}
+
 @end
