@@ -1017,6 +1017,38 @@ void sort ( RandomAccessIterator first, RandomAccessIterator last, Compare comp 
     last--;
     sort_impl(first, last, comp);
 }
+    
+    
+template <typename RandomAccessIterator, typename T>
+void nth_element_impl(RandomAccessIterator first, RandomAccessIterator nth,
+                      RandomAccessIterator last) {
+    if (first != nth)
+    {
+        T tmp = *nth;
+        *nth = *first;
+        *first = tmp;
+    }
+    RandomAccessIterator i = first;
+    RandomAccessIterator j = last - 1;
+    T x = *first;
+    while (i < j)
+    {
+        while(i < j && *j >= x)
+            j--;
+        if(i < j) {
+            *i = *j;
+            i++;
+        }
+        while(i < j && *i < x)
+            i++;
+        if(i < j) {
+            *j = *i;
+            j--;
+        }
+    }
+    *i = x;
+}
+    
 }
 
 #endif

@@ -1457,5 +1457,49 @@ class TestObject : public RefObject
     }];
 }
 
+- (void) testNthElement0
+{
+    int a[256];
+    for (int i = 0; i < 256; i++) {
+        a[i] = rand();
+    }
+    int x = a[128];
+    xhn::nth_element_impl<int*, int>(a, a + 128, a + 256);
+    for (int i = 0; i < 256; i++) {
+        if (a[i] < x)
+            printf("%012d < %012d\n", a[i], x);
+        else if (a[i] > x)
+            printf("%012d > %012d\n", a[i], x);
+        else
+            printf("%012d == %012d\n", a[i], x);
+    }
+    printf("here\n");
+}
+
+- (void) testNthElement1
+{
+    [self measureBlock:^{
+        int a[1024];
+        for (int i = 0; i < 1024; i++) {
+            a[i] = rand();
+        }
+        for (int i = 0; i < 128 * 1024; i++) {
+            xhn::nth_element_impl<int*, int>(a, a + 512, a + 1024);
+        }
+    }];
+}
+
+- (void) testNthElement2
+{
+    [self measureBlock:^{
+        int a[1024];
+        for (int i = 0; i < 1024; i++) {
+            a[i] = rand();
+        }
+        for (int i = 0; i < 128 * 1024; i++) {
+            std::nth_element(a, a + 512, a + 1024);
+        }
+    }];
+}
 
 @end
