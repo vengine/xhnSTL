@@ -15,6 +15,7 @@
 #include <xhnSTL/xhn_group.hpp>
 #include <xhnSTL/xhn_parallel.hpp>
 #include <xhnSTL/cpu.h>
+#include <vector>
 #include <map>
 #include <unordered_map>
 #include <string>
@@ -1478,18 +1479,41 @@ class TestObject : public RefObject
 
 - (void) testNthElement1
 {
+    std::vector<int> a;
+    for (int i = 0; i < 256; i++) {
+        a.push_back(rand());
+    }
+    int x = a[128];
+    auto first = a.begin();
+    auto nth = a.begin() + 128;
+    auto last = a.end();
+    std::nth_element(first, nth,last);
+    for (int i = 0; i < 256; i++) {
+        if (a[i] < x)
+            printf("%012d < %012d\n", a[i], x);
+        else if (a[i] > x)
+            printf("%012d > %012d\n", a[i], x);
+        else
+            printf("%012d == %012d\n", a[i], x);
+    }
+    printf("::::%012d\n", *nth);
+    printf("here\n");
+}
+
+- (void) testNthElement2
+{
     [self measureBlock:^{
         int a[1024];
         for (int i = 0; i < 1024; i++) {
             a[i] = rand();
         }
         for (int i = 0; i < 128 * 1024; i++) {
-            xhn::nth_element_impl<int*, int>(a, a + 512, a + 1024);
+            xhn::nth_element<int*>(a, a + 512, a + 1024);
         }
     }];
 }
 
-- (void) testNthElement2
+- (void) testNthElement3
 {
     [self measureBlock:^{
         int a[1024];

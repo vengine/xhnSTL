@@ -18,6 +18,7 @@
 #include "hash.h"
 #include "emem.h"
 #include "xhn_atomic_operation.hpp"
+#include <algorithm>
 
 inline euint _strlen(const char* s)
 {
@@ -1047,6 +1048,18 @@ void nth_element_impl(RandomAccessIterator first, RandomAccessIterator nth,
         }
     }
     *i = x;
+}
+    
+template <typename RandomAccessIterator>
+void nth_element(RandomAccessIterator first, RandomAccessIterator nth,
+                 RandomAccessIterator last) {
+    std::nth_element<RandomAccessIterator>(first, nth, last);
+}
+    
+template <typename RandomAccessIterator, typename Compare>
+void nth_element(RandomAccessIterator first, RandomAccessIterator nth,
+                 RandomAccessIterator last) {
+    std::nth_element<RandomAccessIterator, Compare>(first, nth, last);
 }
     
 }
