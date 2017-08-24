@@ -1391,13 +1391,30 @@ class TestObject : public RefObject
         {
             std::shared_ptr<TestObject> a(VNEW TestObject);
             w = a;
-            for (int i = 0; i < 1024 * 1024; i++) {
+            for (int _ = 0; _ < 1024 * 1024; _++) {
                 std::shared_ptr<TestObject> b(a);
                 std::shared_ptr<TestObject> c(a);
+                std::shared_ptr<TestObject> d(a);
+                std::shared_ptr<TestObject> e(a);
+                
+                std::shared_ptr<TestObject> f(a);
+                std::shared_ptr<TestObject> i(a);
+                std::shared_ptr<TestObject> j(a);
+                std::shared_ptr<TestObject> k(a);
+                
+                std::shared_ptr<TestObject> l(a);
+                std::shared_ptr<TestObject> m(a);
+                std::shared_ptr<TestObject> n(a);
+                std::shared_ptr<TestObject> o(a);
+                
+                std::shared_ptr<TestObject> p(a);
+                std::shared_ptr<TestObject> q(a);
+                std::shared_ptr<TestObject> r(a);
+                std::shared_ptr<TestObject> s(a);
                 /**
                 /// 这样写直接崩溃
                 TestObject* ptr = c.get();
-                std::shared_ptr<TestObject> d(ptr);
+                std::shared_ptr<TestObject> z(ptr);
                 **/
             }
         }
@@ -1413,9 +1430,26 @@ class TestObject : public RefObject
         {
             xhn::SmartPtr<TestObject> a(VNEW TestObject);
             a.ToWeakPtr(w);
-            for (int i = 0; i < 1024 * 1024; i++) {
+            for (int _ = 0; _ < 1024 * 1024; _++) {
                 xhn::SmartPtr<TestObject> b(a);
                 xhn::SmartPtr<TestObject> c(a);
+                xhn::SmartPtr<TestObject> d(a);
+                xhn::SmartPtr<TestObject> e(a);
+                
+                xhn::SmartPtr<TestObject> f(a);
+                xhn::SmartPtr<TestObject> i(a);
+                xhn::SmartPtr<TestObject> j(a);
+                xhn::SmartPtr<TestObject> k(a);
+                
+                xhn::SmartPtr<TestObject> l(a);
+                xhn::SmartPtr<TestObject> m(a);
+                xhn::SmartPtr<TestObject> n(a);
+                xhn::SmartPtr<TestObject> o(a);
+                
+                xhn::SmartPtr<TestObject> p(a);
+                xhn::SmartPtr<TestObject> q(a);
+                xhn::SmartPtr<TestObject> r(a);
+                xhn::SmartPtr<TestObject> s(a);
             }
         }
         xhn::SmartPtr<TestObject> s = w.ToStrongPtr();
