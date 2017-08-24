@@ -1380,4 +1380,48 @@ void* AffinitProc(void*)
     VDELETE p;
 }
 
+class TestObject : public RefObject
+{
+};
+
+- (void) testSharedPtr
+{
+    [self measureBlock:^{
+        std::weak_ptr<TestObject> w;
+        {
+            std::shared_ptr<TestObject> a(VNEW TestObject);
+            w = a;
+            for (int i = 0; i < 1024 * 1024; i++) {
+                std::shared_ptr<TestObject> b(a);
+                std::shared_ptr<TestObject> c(a);
+                /**
+                /// 这样写直接崩溃
+                TestObject* ptr = c.get();
+                std::shared_ptr<TestObject> d(ptr);
+                **/
+            }
+        }
+        std::shared_ptr<TestObject> s = w.lock();
+        XCTAssert(!s.get(), @"error");
+    }];
+}
+
+- (void) testSmartPtr
+{
+    [self measureBlock:^{
+        xhn::WeakPtr<TestObject> w;
+        {
+            xhn::SmartPtr<TestObject> a(VNEW TestObject);
+            a.ToWeakPtr(w);
+            for (int i = 0; i < 1024 * 1024; i++) {
+                xhn::SmartPtr<TestObject> b(a);
+                xhn::SmartPtr<TestObject> c(a);
+            }
+        }
+        xhn::SmartPtr<TestObject> s = w.ToStrongPtr();
+        XCTAssert(!s.get(), @"error");
+    }];
+}
+
+
 @end
