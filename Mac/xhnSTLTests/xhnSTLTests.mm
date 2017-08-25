@@ -1526,4 +1526,35 @@ class TestObject : public RefObject
     }];
 }
 
+- (void) testCachePerformance1
+{
+    static xhn::static_string* testStrs = (xhn::static_string*)NMalloc(sizeof(xhn::static_string) * 1024 * 128);
+    for (int i = 0; i < 1024 * 128; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "%d", i);
+        testStrs[i] = mbuf;
+    }
+    __block xhn::cache<xhn::static_string, int, 1024 * 128>* testcache =
+    VNEW xhn::cache<xhn::static_string, int, 128 * 1024>();
+    for (int i = 0; i < 1024 * 128; i++) {
+        testcache->insert(testStrs[i], i);
+    }
+    testcache->clear();
+    [self measureBlock:^{
+        TimeCheckpoint tp = TimeCheckpoint::Tick();
+        VTime t;
+        for (int i = 0; i < 1024 * 128; i++) {
+            testcache->insert(testStrs[i], i);
+        }
+        TimeCheckpoint::Tock(tp, t);
+        printf("INSERT TIME:%f US\n", t.GetMicrosecond());
+        tp = TimeCheckpoint::Tick();
+        testcache->clear();
+        TimeCheckpoint::Tock(tp, t);
+        printf("CLEAR TIME:%f US\n", t.GetMicrosecond());
+    }];
+    VDELETE testcache;
+    Mfree(testStrs);
+}
+
 @end
