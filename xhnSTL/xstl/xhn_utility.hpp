@@ -1019,6 +1019,29 @@ void sort ( RandomAccessIterator first, RandomAccessIterator last, Compare comp 
     sort_impl(first, last, comp);
 }
     
+template <typename T>
+void swap(T& x, T& y) noexcept
+{
+    T t(move(x));
+    x = move(y);
+    y = move(t);
+}
+    
+inline int med3(int x[], int a, int b, int c) {
+    return x[a] < x[b] ? (x[b] < x[c] ? b : x[a] < x[c] ? c : a)
+    : x[b] > x[c] ? b : x[a] > x[c] ? c : a;
+}
+    
+inline void swap(int* a, int i, int j) {
+    int temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+}
+    
+inline void vecswap(int x[], int a, int b, int n) {
+    for (int i = 0; i < n; i++, a++, b++)
+        swap(x, a, b);
+}
     
 template <typename RandomAccessIterator, typename T>
 void nth_element_impl(RandomAccessIterator first, RandomAccessIterator nth,

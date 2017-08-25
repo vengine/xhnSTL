@@ -1508,7 +1508,7 @@ class TestObject : public RefObject
             a[i] = rand();
         }
         for (int i = 0; i < 128 * 1024; i++) {
-            xhn::nth_element<int*>(a, a + 512, a + 1024);
+            xhn::nth_element_impl<int*, int>(a, a + 512, a + 1024);
         }
     }];
 }
