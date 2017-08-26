@@ -505,14 +505,12 @@ namespace xhn
             while (current_node) {
                 if (current_node->first == key) {
                     bucket->remove(current_node);
-                    
-                    euint32 count = 0;
                     hash_node<K, V>* head = bucket->begin();
                     if (head) {
-                        count = head->m_count;
-                        count--;
-                        head->m_count = count;
+                        head->m_count--;
                     }
+                    m_node_allocator.destroy(current_node);
+                    m_node_allocator.deallocate(current_node, 1);
                     return;
                 }
                 current_node = current_node->m_iter_next;
