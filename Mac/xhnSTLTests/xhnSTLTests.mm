@@ -992,11 +992,6 @@ void* AffinitProc(void*)
                     int* v = _t->find(strs[i]);
                     t += *v;
                 }
-                auto _iter = _t->begin();
-                auto _end = _t->end();
-                for (; _iter != _end; _iter++) {
-                    t += _iter->second;
-                }
             }
         };
         p->parallel_for(0, 1024 * 16, proc);
@@ -1026,11 +1021,6 @@ void* AffinitProc(void*)
                 for (int i = 0; i < 1024; i++) {
                     int* v = _t->find(strs[i]);
                     t += *v;
-                }
-                auto _iter = _t->begin();
-                auto _end = _t->end();
-                for (; _iter != _end; _iter++) {
-                    t += _iter->second;
                 }
             }
         };
