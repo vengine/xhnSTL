@@ -970,6 +970,76 @@ void* AffinitProc(void*)
     VDELETE testcache;
 }
 
+- (void) testCachePerformance1P
+{
+    static xhn::static_string strs[1024];
+    for (int i = 0; i < 1024; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "%d", i);
+        strs[i] = mbuf;
+    }
+    __block xhn::cache<xhn::static_string, int, 1024>* testcache = VNEW xhn::cache<xhn::static_string, int, 1024>();
+    for (int i = 0; i < 1024; i++) {
+        testcache->insert(strs[i], i);
+    }
+    __block xhn::parallel* p = VNEW xhn::parallel(7);
+    [self measureBlock:^{
+        euint t = 0;
+        xhn::cache<xhn::static_string, int, 1024>* _t = testcache;
+        auto proc = [_t, &t](euint begin, euint end) {
+            for (euint j = begin; j < end; j++) {
+                for (int i = 0; i < 1024; i++) {
+                    int* v = _t->find(strs[i]);
+                    t += *v;
+                }
+                auto _iter = _t->begin();
+                auto _end = _t->end();
+                for (; _iter != _end; _iter++) {
+                    t += _iter->second;
+                }
+            }
+        };
+        p->parallel_for(0, 1024 * 16, proc);
+    }];
+    VDELETE p;
+    VDELETE testcache;
+}
+
+- (void) testCachePerformance1NP
+{
+    static xhn::static_string strs[1024];
+    for (int i = 0; i < 1024; i++) {
+        char mbuf[256];
+        snprintf(mbuf, 255, "%d", i);
+        strs[i] = mbuf;
+    }
+    __block xhn::cache<xhn::static_string, int, 1024>* testcache = VNEW xhn::cache<xhn::static_string, int, 1024>();
+    for (int i = 0; i < 1024; i++) {
+        testcache->insert(strs[i], i);
+    }
+    __block xhn::parallel* p = VNEW xhn::parallel(7);
+    [self measureBlock:^{
+        euint t = 0;
+        xhn::cache<xhn::static_string, int, 1024>* _t = testcache;
+        auto proc = [_t, &t](euint begin, euint end) {
+            for (euint j = begin; j < end; j++) {
+                for (int i = 0; i < 1024; i++) {
+                    int* v = _t->find(strs[i]);
+                    t += *v;
+                }
+                auto _iter = _t->begin();
+                auto _end = _t->end();
+                for (; _iter != _end; _iter++) {
+                    t += _iter->second;
+                }
+            }
+        };
+        proc(0, 1024 * 16);
+    }];
+    VDELETE p;
+    VDELETE testcache;
+}
+
 - (void) testStdUnorderedMapPerformance0
 {
     static std::string strs[1024];
@@ -1526,7 +1596,7 @@ class TestObject : public RefObject
     }];
 }
 
-- (void) testCachePerformance1
+- (void) testCachePerformance2
 {
     static xhn::static_string* testStrs = (xhn::static_string*)NMalloc(sizeof(xhn::static_string) * 1024 * 128);
     for (int i = 0; i < 1024 * 128; i++) {
@@ -1535,7 +1605,7 @@ class TestObject : public RefObject
         testStrs[i] = mbuf;
     }
     __block xhn::cache<xhn::static_string, int, 1024 * 128>* testcache =
-    VNEW xhn::cache<xhn::static_string, int, 128 * 1024>();
+    VNEW xhn::cache<xhn::static_string, int, 1024 * 128>();
     for (int i = 0; i < 1024 * 128; i++) {
         testcache->insert(testStrs[i], i);
     }
