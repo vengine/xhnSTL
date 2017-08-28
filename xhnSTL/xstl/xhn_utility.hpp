@@ -1129,7 +1129,7 @@ void calc_limit(const VARRAY& array,
         if (counter >= 2) {
             VALUE curt_mid = calc_mid(min, max);
             VALUE curt_dist = abs(t - curt_mid);
-            euint curt_index = i;
+            INDEX curt_index = i;
             less_than_set2(curt_dist, mid_dist,
                            t, curt_dist, curt_index,
                            mid, mid_dist, mid_index,
