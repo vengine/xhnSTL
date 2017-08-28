@@ -984,17 +984,24 @@ void* AffinitProc(void*)
     }
     __block xhn::parallel* p = VNEW xhn::parallel(7);
     [self measureBlock:^{
-        euint t = 0;
+        volatile esint64 result = 0;
         xhn::cache<xhn::static_string, int, 1024>* _t = testcache;
-        auto proc = [_t, &t](euint begin, euint end) {
+        auto proc = [_t, &result](euint begin, euint end) {
+            euint t = 0;
             for (euint j = begin; j < end; j++) {
                 for (int i = 0; i < 1024; i++) {
                     int* v = _t->find(strs[i]);
                     t += *v;
                 }
             }
+            esint64 r = AtomicLoad64(&result);
+            while (!AtomicCompareExchange(r, r + t, &result)) {
+                nanopause(1);
+                r = AtomicLoad64(&result);
+            }
         };
         p->parallel_for(0, 1024 * 16, proc);
+        printf("P:result = %lld\n", result);
     }];
     VDELETE p;
     VDELETE testcache;
@@ -1016,7 +1023,7 @@ void* AffinitProc(void*)
     [self measureBlock:^{
         euint t = 0;
         xhn::cache<xhn::static_string, int, 1024>* _t = testcache;
-        auto proc = [_t, &t](euint begin, euint end) {
+        auto proc = [&t, _t](euint begin, euint end) {
             for (euint j = begin; j < end; j++) {
                 for (int i = 0; i < 1024; i++) {
                     int* v = _t->find(strs[i]);
@@ -1025,6 +1032,7 @@ void* AffinitProc(void*)
             }
         };
         proc(0, 1024 * 16);
+        printf("NP:result = %lld\n", t);
     }];
     VDELETE p;
     VDELETE testcache;
