@@ -18,6 +18,7 @@
 #include "hash.h"
 #include "emem.h"
 #include "xhn_atomic_operation.hpp"
+#include <math.h>
 #include <algorithm>
 
 inline euint _strlen(const char* s)
@@ -1084,6 +1085,150 @@ void nth_element(RandomAccessIterator first, RandomAccessIterator nth,
                  RandomAccessIterator last) {
     std::nth_element<RandomAccessIterator, Compare>(first, nth, last);
 }
+    
+/// CALC_MID_PROC(min, max)
+/// GREATER_THAN_SET(a, b, c, d) return a > b ? c : d
+/// LESS_THAN_SET(a, b, c, d)    return a < b ? c : d
+/// LESS_THAN_SET2(a, b, c0, c1, c2, d0, d1, d2, r0, r1, r2)
+/// r0 = a < b ? c0 : d0
+/// r1 = a < b ? c1 : d1
+/// r2 = a < b ? c2 : d2
+    
+template <typename VARRAY, typename VALUE, typename INDEX,
+          typename INIT_MAX_PROC, typename INIT_MIN_PROC, typename INIT_MID_INDEX_PROC,
+          typename ABS_PROC, typename CALC_MID_PROC,
+          typename GREATER_THAN_SET_PROC, typename LESS_THAN_SET_PROC,
+          typename LESS_PROC, typename INC_PROC,
+          typename LESS_THAN_SET2_PROC>
+void calc_limit(const VARRAY& array,
+                VALUE& min, VALUE& max, VALUE& mid,
+                INDEX& mid_index,
+                INDEX first, INDEX last)
+{
+    INIT_MAX_PROC init_max;
+    INIT_MIN_PROC init_min;
+    INIT_MID_INDEX_PROC init_mid_index;
+    ABS_PROC abs;
+    CALC_MID_PROC calc_mid;
+    GREATER_THAN_SET_PROC greater_than_set;
+    LESS_THAN_SET_PROC less_than_set;
+    LESS_PROC less;
+    INC_PROC inc;
+    LESS_THAN_SET2_PROC less_than_set2;
+    
+    min = init_min();
+    max = init_max();
+    mid = init_min();
+    VALUE mid_dist = init_min();
+    mid_index = init_mid_index();
+    euint counter = 0;
+    for (INDEX i = first; less(i, last); inc(i), counter++) {
+        VALUE t = array[i];
+        max = greater_than_set(t, max, t, max);
+        min = less_than_set(t, min, t, min);
+        if (counter >= 2) {
+            VALUE curt_mid = calc_mid(min, max);
+            VALUE curt_dist = abs(t - curt_mid);
+            euint curt_index = i;
+            less_than_set2(curt_dist, mid_dist,
+                           t, curt_dist, curt_index,
+                           mid, mid_dist, mid_index,
+                           mid, mid_dist, mid_index);
+        }
+    }
+}
+    
+struct FInitMaxFloat
+{
+    float operator () () const {
+        return -FLT_MAX;
+    }
+};
+    
+struct FInitMinFloat
+{
+    float operator () () const {
+        return FLT_MAX;
+    }
+};
+    
+struct FInitMidIndexEUint
+{
+    euint operator () () const {
+        return 0;
+    }
+};
+    
+struct FAbsFloat
+{
+    float operator() (float a) const {
+        return fabsf(a);
+    }
+};
+    
+struct FCalcMidFloat
+{
+    float operator () (float min, float max) const {
+        return 0.5f * (max + min);
+    }
+};
+    
+struct FGreaterThanSetFloat
+{
+    float operator () (float a, float b, float c, float d) const {
+        if (a > b) {
+            return c;
+        }
+        else {
+            return d;
+        }
+    }
+};
+    
+struct FLessThanSetFloat
+{
+    float operator () (float a, float b, float c, float d) const {
+        if (a < b) {
+            return c;
+        }
+        else {
+            return d;
+        }
+    }
+};
+    
+struct FLessProcEUint
+{
+    bool operator () (euint a, euint b) const {
+        return a < b;
+    }
+};
+    
+struct FIncProcEUint
+{
+    void operator () (euint& a) const {
+        a++;
+    }
+};
+    
+struct FLessThanSet2FloatEUint
+{
+    void operator () (float a, float b,
+                      float c0, float c1, euint c2,
+                      float d0, float d1, euint d2,
+                      float& r0, float& r1, euint& r2) const {
+        if (a < b) {
+            r0 = c0;
+            r1 = c1;
+            r2 = c2;
+        }
+        else {
+            r0 = d0;
+            r1 = d1;
+            r2 = d2;
+        }
+    }
+};
     
 }
 

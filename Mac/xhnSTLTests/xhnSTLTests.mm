@@ -1625,4 +1625,26 @@ class TestObject : public RefObject
     Mfree(testStrs);
 }
 
+- (void) testCalcLimit0
+{
+    __block xhn::vector<float>* t = VNEW xhn::vector<float>();
+    for (euint i = 0; i < 1024 * 1024; i++) {
+        t->push_back(float(rand() - rand()));
+    }
+    [self measureBlock:^{
+        float min, max, mid;
+        euint mid_index;
+        
+        xhn::calc_limit<xhn::vector<float>, float, euint,
+        xhn::FInitMaxFloat, xhn::FInitMinFloat, xhn::FInitMidIndexEUint,
+        xhn::FAbsFloat, xhn::FCalcMidFloat,
+        xhn::FGreaterThanSetFloat, xhn::FLessThanSetFloat,
+        xhn::FLessProcEUint, xhn::FIncProcEUint,
+        xhn::FLessThanSet2FloatEUint>(*t, min, max, mid, mid_index, 0, t->size());
+        
+        printf("min:%f, max:%f, mid:%f, mid_index:%lld, %f\n", min, max, mid, mid_index, (*t)[mid_index]);
+    }];
+    VDELETE t;
+}
+
 @end
