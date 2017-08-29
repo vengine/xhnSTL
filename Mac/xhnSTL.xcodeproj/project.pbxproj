@@ -135,6 +135,8 @@
 		B11892701E6BE7AF00AD5279 /* cpu_x86_64.c in Sources */ = {isa = PBXBuildFile; fileRef = B118926E1E6BE7AF00AD5279 /* cpu_x86_64.c */; };
 		B11892711E6BE7AF00AD5279 /* cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = B118926F1E6BE7AF00AD5279 /* cpu.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1229DC51F3557ED0082FB3E /* xhn_group.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1229DC31F3557ED0082FB3E /* xhn_group.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B153770D1F55A1F7005F1741 /* xhn_concurrent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B153770B1F55A1F7005F1741 /* xhn_concurrent.cpp */; };
+		B153770E1F55A1F7005F1741 /* xhn_concurrent.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B153770C1F55A1F7005F1741 /* xhn_concurrent.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BB41E7D217900CBBDDD /* llvm_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1607BB21E7D217900CBBDDD /* llvm_parser.mm */; };
 		B1607BB51E7D217900CBBDDD /* llvm_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BD21E7D31CA00CBBDDD /* symbol_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -294,6 +296,8 @@
 		B118926E1E6BE7AF00AD5279 /* cpu_x86_64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_x86_64.c; sourceTree = "<group>"; };
 		B118926F1E6BE7AF00AD5279 /* cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpu.h; sourceTree = "<group>"; };
 		B1229DC31F3557ED0082FB3E /* xhn_group.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_group.hpp; sourceTree = "<group>"; };
+		B153770B1F55A1F7005F1741 /* xhn_concurrent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_concurrent.cpp; sourceTree = "<group>"; };
+		B153770C1F55A1F7005F1741 /* xhn_concurrent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_concurrent.hpp; sourceTree = "<group>"; };
 		B1607BB21E7D217900CBBDDD /* llvm_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = llvm_parser.mm; sourceTree = "<group>"; };
 		B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = llvm_parser.hpp; sourceTree = "<group>"; };
 		B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = symbol_buffer.hpp; sourceTree = "<group>"; };
@@ -487,6 +491,8 @@
 				B1229DC31F3557ED0082FB3E /* xhn_group.hpp */,
 				B1D6ADE81F4D4B1C00AB8F2F /* xhn_parallel.cpp */,
 				B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */,
+				B153770B1F55A1F7005F1741 /* xhn_concurrent.cpp */,
+				B153770C1F55A1F7005F1741 /* xhn_concurrent.hpp */,
 			);
 			name = xstl;
 			path = ../../xhnSTL/xstl;
@@ -554,6 +560,7 @@
 				68245CD51BC9D8F90006E99D /* rwbuffer.h in Headers */,
 				68245CE41BC9D8F90006E99D /* rtti.hpp in Headers */,
 				68245D411BC9E8F60006E99D /* common.h in Headers */,
+				B153770E1F55A1F7005F1741 /* xhn_concurrent.hpp in Headers */,
 				68245CB61BC9D8F90006E99D /* ObjCPropertys.h in Headers */,
 				68245CE21BC9D8F90006E99D /* map.hpp in Headers */,
 				68245CE01BC9D8F90006E99D /* utility.h in Headers */,
@@ -763,6 +770,7 @@
 				B11892701E6BE7AF00AD5279 /* cpu_x86_64.c in Sources */,
 				68245D251BC9D8F90006E99D /* xhn_routine_pool.cpp in Sources */,
 				68245D331BC9D8F90006E99D /* xhn_thread_map.cpp in Sources */,
+				B153770D1F55A1F7005F1741 /* xhn_concurrent.cpp in Sources */,
 				68245CB91BC9D8F90006E99D /* ObjCString.mm in Sources */,
 				68245CE31BC9D8F90006E99D /* rtti.cpp in Sources */,
 				68245CC81BC9D8F90006E99D /* estring.c in Sources */,

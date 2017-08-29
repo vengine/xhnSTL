@@ -14,6 +14,7 @@
 #include <xhnSTL/xhn_vector.hpp>
 #include <xhnSTL/xhn_group.hpp>
 #include <xhnSTL/xhn_parallel.hpp>
+#include <xhnSTL/xhn_concurrent.hpp>
 #include <xhnSTL/cpu.h>
 #include <vector>
 #include <map>
@@ -1708,6 +1709,54 @@ struct FLessThanProcInt
     for (int* i = a2_; i < a2 + 9; i++) {
         XCTAssert(*i >= 5, @"error");
     }
+}
+
+class ThreadLocalVector : public xhn::concurrent_variable
+{
+    DeclareRTTI;
+public:
+    xhn::vector<int> m_vector;
+};
+
+ImplementRTTI(ThreadLocalVector, xhn::concurrent_variable);
+
+- (void) testConcurrent
+{
+    xhn::concurrent concurrent(8);
+    
+    xhn::Lambda<void (xhn::thread_local_variables&)>
+    createVariables([](xhn::thread_local_variables& variables){
+        variables.insert("ThreadLocalVector", VNEW ThreadLocalVector);
+    });
+    concurrent.execute(createVariables);
+    concurrent.execute(createVariables);
+    concurrent.execute(createVariables);
+    concurrent.execute(createVariables);
+    concurrent.execute(createVariables);
+    concurrent.execute(createVariables);
+    concurrent.execute(createVariables);
+    concurrent.execute(createVariables);
+    xhn::thread::micro_sleep(100);
+    xhn::Lambda<void (xhn::thread_local_variables&)>
+    testVariables([](xhn::thread_local_variables& variables){
+        xhn::concurrent_variable_ptr* tlv = variables.find("ThreadLocalVector");
+        if (tlv) {
+            printf("ThreadLocalVector existed!\n");
+        }
+        else {
+            printf("ThreadLocalVector not existed???\n");
+        }
+    });
+    concurrent.execute(testVariables);
+    concurrent.execute(testVariables);
+    concurrent.execute(testVariables);
+    concurrent.execute(testVariables);
+    concurrent.execute(testVariables);
+    concurrent.execute(testVariables);
+    concurrent.execute(testVariables);
+    concurrent.execute(testVariables);
+    
+    concurrent.waiting_for_completed();
 }
 
 @end
