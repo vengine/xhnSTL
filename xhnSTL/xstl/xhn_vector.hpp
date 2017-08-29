@@ -132,6 +132,10 @@ public:
             this->redirect( -offs );
             return *this;
         }
+        inline euint operator - ( iterator iter ) const {
+            ref_ptr offs = (ref_ptr)base_type::m_ptr - (ref_ptr)iter.base_type::m_ptr;
+            return offs / base_type::m_ele_real_size;
+        }
     };
     class const_iterator : public const_random_readwrite_iterator<
     T,
@@ -185,6 +189,10 @@ public:
             const_iterator tmp = *this;
             tmp.redirect ( -offs );
             return tmp;
+        }
+        inline euint operator - ( const_iterator iter ) const {
+            ref_ptr offs = (ref_ptr)base_type::m_ptr - (ref_ptr)iter.base_type::m_ptr;
+            return offs / base_type::m_ele_real_size;
         }
     };
     

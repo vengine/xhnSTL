@@ -84,6 +84,11 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
     for (auto i : intArray) {
         printf("for %d\n", i);
     }
+    
+    auto iter = intArray.begin();
+    iter += 3;
+    euint offs = iter - intArray.begin();
+    printf("offs %lld\n", offs);
 }
 
 - (void) testVector2 {
@@ -1594,6 +1599,35 @@ class TestObject : public RefObject
     }];
 }
 
+struct FLessThanProcInt
+{
+    bool operator () (int a, int b) const {
+        return a < b;
+    }
+};
+- (void) testFilter0
+{
+    [self measureBlock:^{
+        int min = INT_MAX;
+        int max = -INT_MAX;
+        int mid = 0;
+        int a[1024];
+        for (int i = 0; i < 1024; i++) {
+            a[i] = rand();
+            if (a[i] > max) {
+                max = a[i];
+            }
+            if (a[i] < min) {
+                min = a[i];
+            }
+        }
+        mid = (max - min) / 2;
+        for (int i = 0; i < 128 * 1024; i++) {
+            xhn::filter<int*, int, FLessThanProcInt>(a, a + 1024, mid);
+        }
+    }];
+}
+
 - (void) testCachePerformance2
 {
     static xhn::static_string* testStrs = (xhn::static_string*)NMalloc(sizeof(xhn::static_string) * 1024 * 128);
@@ -1645,6 +1679,35 @@ class TestObject : public RefObject
         printf("min:%f, max:%f, mid:%f, mid_index:%lld, %f\n", min, max, mid, mid_index, (*t)[mid_index]);
     }];
     VDELETE t;
+}
+
+- (void) testFilter1
+{
+    int a0[] = {6, 8, 3, 7, 5, 1, 4, 2, 9};
+    int a1[] = {8, 2, 4, 3, 9, 6, 7, 1, 5};
+    int a2[] = {2, 1, 4, 3, 6, 5, 9, 8, 7};
+    int* a0_ = xhn::filter<int*, int, FLessThanProcInt>(a0, a0 + 9, 5);
+    int* a1_ = xhn::filter<int*, int, FLessThanProcInt>(a1, a1 + 9, 5);
+    int* a2_ = xhn::filter<int*, int, FLessThanProcInt>(a2, a2 + 9, 5);
+    
+    for (int* i = a0; i < a0_; i++) {
+        XCTAssert(*i < 5, @"error");
+    }
+    for (int* i = a0_; i < a0 + 9; i++) {
+        XCTAssert(*i >= 5, @"error");
+    }
+    for (int* i = a1; i < a1_; i++) {
+        XCTAssert(*i < 5, @"error");
+    }
+    for (int* i = a1_; i < a1 + 9; i++) {
+        XCTAssert(*i >= 5, @"error");
+    }
+    for (int* i = a2; i < a2_; i++) {
+        XCTAssert(*i < 5, @"error");
+    }
+    for (int* i = a2_; i < a2 + 9; i++) {
+        XCTAssert(*i >= 5, @"error");
+    }
 }
 
 @end

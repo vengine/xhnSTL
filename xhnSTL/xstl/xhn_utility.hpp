@@ -1230,6 +1230,23 @@ struct FLessThanSet2FloatEUint
     }
 };
     
+template <typename RandomAccessIterator, typename T, typename LessThanProc>
+RandomAccessIterator filter(RandomAccessIterator first, RandomAccessIterator last, T sifter)
+{
+    LessThanProc lessThan;
+    last--;
+    while (first < last) {
+        while (first < last && !lessThan(*last, sifter))
+            last--;
+        while (first < last && lessThan(*first, sifter))
+            first++;
+        swap(*first, *last);
+        first++;
+        last--;
+    }
+    return first;
+}
+    
 }
 
 #endif
