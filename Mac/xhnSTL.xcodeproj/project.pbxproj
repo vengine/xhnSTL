@@ -149,7 +149,7 @@
 		B1A89DB71CAF9F2700358DD4 /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1CED0711F32268F00FCA4D7 /* cpu_common.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED0701F32268F00FCA4D7 /* cpu_common.c */; };
 		B1D6ADEA1F4D4B1C00AB8F2F /* xhn_parallel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1D6ADE81F4D4B1C00AB8F2F /* xhn_parallel.cpp */; };
-		B1D6ADEB1F4D4B1C00AB8F2F /* xhn_parallel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */; settings = {ATTRIBUTES = (Private, ); }; };
+		B1D6ADEB1F4D4B1C00AB8F2F /* xhn_parallel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
