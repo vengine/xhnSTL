@@ -118,7 +118,7 @@ public:
         }
     };
 public:
-	SpinLock m_taskLock;
+	///SpinLock m_taskLock;
     pthread_mutex_t m_mutex;
     pthread_cond_t m_cond;
     pthread_t m_pt;

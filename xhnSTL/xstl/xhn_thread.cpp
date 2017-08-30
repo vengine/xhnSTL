@@ -149,47 +149,37 @@ begin:
     AtomicCompareExchange(1, 0, &m_is_finished);
     AtomicCompareExchange(1, 0, &m_is_stopped);
     {
-        SpinLock::Instance taskInst = m_taskLock.Lock();
+        pthread_mutex_lock(&m_mutex);
         m_tasks.clear();
         AtomicCompareExchange(0, 1, &m_is_completed);
+        pthread_mutex_unlock(&m_mutex);
     }
     try {
         AtomicCompareExchange(0, 1, &m_is_running);
         while (1) {
-            if (AtomicCompareExchange(1, 1, &m_is_finished))
+            if (AtomicLoad32(&m_is_finished))
                 break;
             {
-                volatile bool isTaskEmpty = false;
-                {
-                    SpinLock::Instance taskInst = m_taskLock.Lock();
-                    isTaskEmpty = m_tasks.empty();
-                }
-                if (isTaskEmpty && !AtomicCompareExchange(1, 1, &m_is_finished)) {
+                pthread_mutex_lock(&m_mutex);
+                while (m_tasks.empty() && !AtomicLoad32(&m_is_finished)) {
                     AtomicCompareExchange(0, 1, &m_is_completed);
-
-                    pthread_mutex_lock(&m_mutex);
-                    {
-                        SpinLock::Instance taskInst = m_taskLock.Lock();
-                        isTaskEmpty = m_tasks.empty();
-                    }
-                    if (isTaskEmpty && !AtomicCompareExchange(1, 1, &m_is_finished)) {
-                        pthread_cond_wait(&m_cond, &m_mutex);
-                    }
-                    pthread_mutex_unlock(&m_mutex);
+                    pthread_cond_wait(&m_cond, &m_mutex);
                 }
+                pthread_mutex_unlock(&m_mutex);
             }
-            if (AtomicCompareExchange(1, 1, &m_is_finished))
+            if (AtomicLoad32(&m_is_finished))
                 break;
             task_ptr t;
             {
-                SpinLock::Instance taskInst = m_taskLock.Lock();
-                if (m_tasks.size()) {
+                pthread_mutex_lock(&m_mutex);
+                if (!m_tasks.empty()) {
                     t = m_tasks.front();
                     m_tasks.pop_front();
                 }
                 else {
                     AtomicCompareExchange(0, 1, &m_is_completed);
                 }
+                pthread_mutex_unlock(&m_mutex);
             }
             if (t) {
 #if DEBUG_THREAD
@@ -198,15 +188,17 @@ begin:
 #endif
                 /// 返回真表示执行结束
                 if (t->run()) {
-                    SpinLock::Instance taskInst = m_taskLock.Lock();
+                    pthread_mutex_lock(&m_mutex);
                     if (m_tasks.empty()) {
                         AtomicCompareExchange(0, 1, &m_is_completed);
                     }
+                    pthread_mutex_unlock(&m_mutex);
                 }
                 else {
-                    SpinLock::Instance taskInst = m_taskLock.Lock();
+                    pthread_mutex_lock(&m_mutex);
                     /// 必须要push到队列前
                     m_tasks.push_front(t);
+                    pthread_mutex_unlock(&m_mutex);
                 }
 #if DEBUG_THREAD
                 printf("@@end task %s\n", task_type.c_str());
@@ -225,19 +217,11 @@ begin:
 }
 void xhn::thread::add_task(task_ptr t)
 {
-    if (!AtomicCompareExchange(1, 1, &m_is_stopped))
-    {
-        {
-            SpinLock::Instance taskInst = m_taskLock.Lock();
-            m_tasks.push_back(t);
-            AtomicCompareExchange(1, 0, &m_is_completed);
-        }
-        {
-            pthread_mutex_lock(&m_mutex);
-            pthread_cond_signal(&m_cond);
-            pthread_mutex_unlock(&m_mutex);
-        }
-    }
+    pthread_mutex_lock(&m_mutex);
+    m_tasks.push_back(t);
+    AtomicCompareExchange(1, 0, &m_is_completed);
+    pthread_cond_signal(&m_cond);
+    pthread_mutex_unlock(&m_mutex);
 }
 void xhn::thread::add_lambda_task(Lambda<TaskStatus ()>& lambda)
 {
@@ -246,13 +230,11 @@ void xhn::thread::add_lambda_task(Lambda<TaskStatus ()>& lambda)
     add_task(task);
 }
 void xhn::thread::stop() {
+    /// 需要发送消息唤醒线程
+    pthread_mutex_lock(&m_mutex);
     AtomicCompareExchange(0, 1, &m_is_finished);
-    {
-        /// 需要发送消息唤醒线程
-        pthread_mutex_lock(&m_mutex);
-        pthread_cond_signal(&m_cond);
-        pthread_mutex_unlock(&m_mutex);
-    }
+    pthread_cond_signal(&m_cond);
+    pthread_mutex_unlock(&m_mutex);
 }
 void xhn::thread::reset() {
     AtomicCompareExchange(1, 0, &m_is_errored);
@@ -265,26 +247,18 @@ void xhn::thread::force_stop()
 }
 void xhn::thread::force_restart()
 {
-    {
-        SpinLock::Instance taskInst = m_taskLock.Lock();
+    /// 如果没执行完，则强制清空tasks，并while等待，知道执行完为止
+    while (!AtomicLoad32(&m_is_completed)) {
+        pthread_mutex_lock(&m_mutex);
         m_tasks.clear();
-    }
-    while (!AtomicCompareExchange(1, 1, &m_is_completed)) {
-        {
-            SpinLock::Instance taskInst = m_taskLock.Lock();
-            m_tasks.clear();
-        }
-        {
-            pthread_mutex_lock(&m_mutex);
-            pthread_cond_signal(&m_cond);
-            pthread_mutex_unlock(&m_mutex);
-        }
+        pthread_cond_signal(&m_cond);
+        pthread_mutex_unlock(&m_mutex);
     }
     reset();
 }
 void xhn::thread::wait_completed()
 {
-    while (!AtomicCompareExchange(1, 1, &m_is_completed)) {
+    while (!AtomicLoad32(&m_is_completed)) {
         nanopause(1);
     }
 }
@@ -295,9 +269,10 @@ void xhn::thread::join()
 
 void xhn::thread::clear()
 {
-    SpinLock::Instance taskInst = m_taskLock.Lock();
+    pthread_mutex_lock(&m_mutex);
     m_tasks.clear();
     AtomicCompareExchange(0, 1, &m_is_completed);
+    pthread_mutex_unlock(&m_mutex);
 }
 
 bool xhn::thread::I_am_this_thread()
@@ -308,7 +283,7 @@ bool xhn::thread::I_am_this_thread()
 
 bool xhn::thread::has_tasks(const set<static_string>& task_types)
 {
-    SpinLock::Instance taskInst = m_taskLock.Lock();
+    pthread_mutex_lock(&m_mutex);
     list<task_ptr, ThreadAllocator>::iterator iter = m_tasks.begin();
     list<task_ptr, ThreadAllocator>::iterator end = m_tasks.end();
     for (; iter != end; iter++) {
@@ -316,9 +291,12 @@ bool xhn::thread::has_tasks(const set<static_string>& task_types)
         const static_string type = t->type();
         set<static_string>::const_iterator ci = task_types.find(type);
         set<static_string>::const_iterator ce = task_types.end();
-        if (ci == ce)
+        if (ci == ce) {
+            pthread_mutex_unlock(&m_mutex);
             return true;
+        }
     }
+    pthread_mutex_unlock(&m_mutex);
     return false;
 }
 
