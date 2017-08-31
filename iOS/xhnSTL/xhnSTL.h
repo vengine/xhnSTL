@@ -36,6 +36,7 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTL/static_string.h>
 #import <xhnSTL/tree.h>
 #import <xhnSTL/utility.h>
+#import <xhnSTL/cpu.h>
 
 #import <xhnSTL/rtti.hpp>
 #import <xhnSTL/map.hpp>
@@ -94,6 +95,9 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTL/xhn_group.hpp>
 #import <xhnSTL/xhn_parallel.hpp>
 #import <xhnSTL/xhn_concurrent.hpp>
+#import <xhnSTL/asm_syntax_converter.hpp>
+#import <xhnSTL/llvm_parser.hpp>
+#import <xhnSTL/symbol_buffer.hpp>
 
 #import <xhnSTL/Singleton.h>
 #import <xhnSTL/apple_file_manager.h>
