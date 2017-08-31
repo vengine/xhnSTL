@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef ___z__xhn_btree__
-#define ___z__xhn_btree__
+#ifndef XHN_BTREE_HPP
+#define XHN_BTREE_HPP
 
 #ifdef __cplusplus
 #include "common.h"
@@ -503,7 +503,7 @@ namespace xhn
 }
 
 #endif
-#endif /* defined(___z__xhn_btree__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef XHN_LIST_TEMPLATE_H
-#define XHN_LIST_TEMPLATE_H
+#ifndef XHN_LIST_TEMPLATE_HPP
+#define XHN_LIST_TEMPLATE_HPP
 
 #ifdef __cplusplus
 

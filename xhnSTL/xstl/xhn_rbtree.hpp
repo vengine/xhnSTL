@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef XHN_RBTREE_H
-#define XHN_RBTREE_H
+#ifndef XHN_RBTREE_HPP
+#define XHN_RBTREE_HPP
 
 #ifdef __cplusplus
 

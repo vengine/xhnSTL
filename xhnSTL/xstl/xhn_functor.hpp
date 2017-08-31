@@ -7,8 +7,8 @@
  * This library is distributed under the MIT License. See notice at the end
  * of this file.
  */
-#ifndef FUNCTOR_H
-#define FUNCTOR_H
+#ifndef XHN_FUNCTOR_H
+#define XHN_FUNCTOR_H
 
 #ifdef __cplusplus
 

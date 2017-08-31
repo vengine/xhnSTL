@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __xhnSTL__xhn_gc_string__
-#define __xhnSTL__xhn_gc_string__
+#ifndef XHN_GC_STRING_H
+#define XHN_GC_STRING_H
 
 #ifdef __cplusplus
 
@@ -35,7 +35,7 @@ namespace xhn
 
 #endif
 
-#endif /* defined(__xhnSTL__xhn_gc_string__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

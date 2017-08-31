@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef VEngine_xhn_recursive_hpp
-#define VEngine_xhn_recursive_hpp
+#ifndef XHN_RESURSIVE_HPP
+#define XHN_RESURSIVE_HPP
 
 #ifdef __cplusplus
 

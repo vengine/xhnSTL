@@ -7,8 +7,8 @@
  * This library is distributed under the MIT License. See notice at the end
  * of this file.
  */
-#ifndef LAMBDA_H
-#define LAMBDA_H
+#ifndef XHN_LAMBDA_HPP
+#define XHN_LAMBDA_HPP
 
 #ifdef __cplusplus
 

@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __xhn_operation__
-#define __xhn_operation__
+#ifndef XHN_OPERATION_HPP
+#define XHN_OPERATION_HPP
 
 #ifdef __cplusplus
 

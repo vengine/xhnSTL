@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef EMEM_HPP
-#define EMEM_HPP
+#ifndef XHN_MEMORY_HPP
+#define XHN_MEMORY_HPP
 
 #ifdef __cplusplus
 

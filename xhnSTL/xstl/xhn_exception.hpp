@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef ecg_xhn_exception_hpp
-#define ecg_xhn_exception_hpp
+#ifndef XHN_EXCEPTION_HPP
+#define XHN_EXCEPTION_HPP
 
 #ifdef __cplusplus
 

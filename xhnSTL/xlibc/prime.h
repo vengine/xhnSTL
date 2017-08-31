@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __ecg__prime__
-#define __ecg__prime__
+#ifndef PRIME_H
+#define PRIME_H
 #include "common.h"
 #include "etypes.h"
 extern euint64 s_primes[500];

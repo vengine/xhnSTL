@@ -7,8 +7,8 @@
  * This library is distributed under the MIT License. See notice at the end
  * of this file.
  */
-#ifndef XHN_STATIC_STRING_H
-#define XHN_STATIC_STRING_H
+#ifndef XHN_STATIC_STRING_HPP
+#define XHN_STATIC_STRING_HPP
 
 #ifdef __cplusplus
 

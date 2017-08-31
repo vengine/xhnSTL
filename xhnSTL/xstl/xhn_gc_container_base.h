@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __xhnSTL__xhn_gc_container_base__
-#define __xhnSTL__xhn_gc_container_base__
+#ifndef XHN_GC_CONTAINER_BASE_H
+#define XHN_GC_CONTAINER_BASE_H
 
 #ifdef __cplusplus
 
@@ -26,7 +26,7 @@ namespace xhn
 
 #endif
 
-#endif /* defined(__xhnSTL__xhn_gc_container_base__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

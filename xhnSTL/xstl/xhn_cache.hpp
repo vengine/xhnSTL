@@ -8,8 +8,10 @@
  * of this file.
  */
 
-#ifndef xhn_cache_hpp
-#define xhn_cache_hpp
+#ifndef XHN_CACHE_HPP
+#define XHN_CACHE_HPP
+
+#ifdef __cplusplus
 
 #include "xhn_dictionary.hpp"
 #include "xhn_vector.hpp"
@@ -95,7 +97,9 @@ namespace xhn
     };
 }
 
-#endif /* xhn_cache_hpp */
+#endif
+
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

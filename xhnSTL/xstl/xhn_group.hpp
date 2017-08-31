@@ -8,8 +8,10 @@
  * of this file.
  */
 
-#ifndef xhn_group_hpp
-#define xhn_group_hpp
+#ifndef XHN_GROUP_HPP
+#define XHN_GROUP_HPP
+
+#ifdef __cplusplus
 
 #include "common.h"
 #include "etypes.h"
@@ -312,6 +314,8 @@ public:
 };
     
 }
+
+#endif
 
 #endif 
 

@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __CRYPTO_SHA256_H
-#define __CRYPTO_SHA256_H
+#ifndef SHA256_H
+#define SHA256_H
 
 #include "common.h"
 #include "etypes.h"

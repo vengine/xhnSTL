@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __Xgc__xhn_filesystem_node__
-#define __Xgc__xhn_filesystem_node__
+#ifndef XHN_FILESYSTEM_NODE_H
+#define XHN_FILESYSTEM_NODE_H
 
 #ifdef __cplusplus
 
@@ -42,7 +42,7 @@ namespace xhn
 
 #endif
 
-#endif /* defined(__Xgc__xhn_filesystem_node__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

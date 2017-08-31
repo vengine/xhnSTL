@@ -7,8 +7,8 @@
  * This library is distributed under the MIT License. See notice at the end
  * of this file.
  */
-#ifndef SMART_PTR_H
-#define SMART_PTR_H
+#ifndef SMART_PTR_HPP
+#define SMART_PTR_HPP
 
 #ifdef __cplusplus
 

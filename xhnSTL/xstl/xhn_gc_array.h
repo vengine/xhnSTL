@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __xhnSTL__xhn_gc_array__
-#define __xhnSTL__xhn_gc_array__
+#ifndef XHN_GC_ARRAY_H
+#define XHN_GC_ARRAY_H
 
 #ifdef __cplusplus
 
@@ -38,7 +38,7 @@ namespace xhn
 
 #endif
 
-#endif /* defined(__xhnSTL__xhn_gc_array__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

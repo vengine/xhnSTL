@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __xhnSTL__xhn_list2__
-#define __xhnSTL__xhn_list2__
+#ifndef XHN_LIST2_H
+#define XHN_LIST2_H
 
 #ifdef __cplusplus
 
@@ -146,7 +146,7 @@ public:
 
 #endif
 
-#endif /* defined(__xhnSTL__xhn_list2__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __xhn_operation_manager__
-#define __xhn_operation_manager__
+#ifndef XHN_OPERATION_MANAGER_HPP
+#define XHN_OPERATION_MANAGER_HPP
 
 #ifdef __cplusplus
 
@@ -116,7 +116,7 @@ public:
 
 #endif
 
-#endif /* defined(__xhn_operation_manager__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

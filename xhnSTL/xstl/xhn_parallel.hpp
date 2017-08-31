@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef xhn_parallel_hpp
-#define xhn_parallel_hpp
+#ifndef XHN_PARALLEL_HPP
+#define XHN_PARALLEL_HPP
 
 #ifdef __cplusplus
 

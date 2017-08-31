@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __x_duplicate_cleaner__xhn_duplicate_finder__
-#define __x_duplicate_cleaner__xhn_duplicate_finder__
+#ifndef XHN_DUPLICATE_FINDER_H
+#define XHN_DUPLICATE_FINDER_H
 
 #ifdef __cplusplus
 
@@ -154,7 +154,7 @@ namespace xhn
 
 #endif
 
-#endif /* defined(__x_duplicate_cleaner__xhn_duplicate_finder__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

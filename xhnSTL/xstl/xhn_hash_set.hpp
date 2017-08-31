@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef XHN_HASH_SET_H
-#define XHN_HASH_SET_H
+#ifndef XHN_HASH_SET_HPP
+#define XHN_HASH_SET_HPP
 
 #ifdef __cplusplus
 

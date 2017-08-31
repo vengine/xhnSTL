@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef xhn_concurrent_hpp
-#define xhn_concurrent_hpp
+#ifndef XHN_CONCURRENT_HPP
+#define XHN_CONCURRENT_HPP
 
 #ifdef __cplusplus
 #include "common.h"

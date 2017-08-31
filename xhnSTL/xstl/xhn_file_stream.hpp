@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef ___z__xhn_file_stream__
-#define ___z__xhn_file_stream__
+#ifndef XHN_FILE_STREAM_HPP
+#define XHN_FILE_STREAM_HPP
 
 #ifdef __cplusplus
 
@@ -335,7 +335,7 @@ namespace xhn
 
 #endif
 
-#endif /* defined(___z__xhn_file_stream__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

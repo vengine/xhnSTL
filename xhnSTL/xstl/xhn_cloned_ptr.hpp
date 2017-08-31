@@ -7,8 +7,8 @@
  * This library is distributed under the MIT License. See notice at the end
  * of this file.
  */
-#ifndef CLONED_PTR_H
-#define CLONED_PTR_H
+#ifndef XHN_CLONED_PTR_HPP
+#define XHN_CLONED_PTR_HPP
 
 #ifdef __cplusplus
 #include "common.h"

@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef cpu_h
-#define cpu_h
+#ifndef CPU_H
+#define CPU_H
 
 #include "common.h"
 #include "etypes.h"
@@ -44,7 +44,7 @@ API_EXPORT void nanopause(euint n);
 #ifdef __cplusplus
 }
 #endif
-#endif /* cpu_h */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

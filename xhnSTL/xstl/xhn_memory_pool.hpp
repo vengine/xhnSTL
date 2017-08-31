@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef xhn_memory_pool_hpp
-#define xhn_memory_pool_hpp
+#ifndef XHN_MEMORY_POOL_HPP
+#define XHN_MEMORY_POOL_HPP
 
 #ifdef __cplusplus
 

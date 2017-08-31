@@ -7,8 +7,8 @@
  * This library is distributed under the MIT License. See notice at the end
  * of this file.
  */
-#ifndef xhn_tuple_hpp
-#define xhn_tuple_hpp
+#ifndef XHN_TUPLE_HPP
+#define XHN_TUPLE_HPP
 
 #ifdef __cplusplus
 

@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef xhn_unique_identifier_hpp
-#define xhn_unique_identifier_hpp
+#ifndef XHN_UNIQUE_IDENTIFIER_HPP
+#define XHN_UNIQUE_IDENTIFIER_HPP
 
 #include "common.h"
 #include "etypes.h"

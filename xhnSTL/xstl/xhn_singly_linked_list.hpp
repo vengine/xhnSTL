@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef xhn_singly_linked_list_hpp
-#define xhn_singly_linked_list_hpp
+#ifndef XHN_SINGLY_LINKED_LIST_HPP
+#define XHN_SINGLY_LINKED_LIST_HPP
 
 #ifdef __cplusplus
 

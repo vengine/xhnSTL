@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __Xgc__xhn_garbage_collector__
-#define __Xgc__xhn_garbage_collector__
+#ifndef XHN_GARBAGE_COLLECTOR_HPP
+#define XHN_GARBAGE_COLLECTOR_HPP
 
 #ifdef __cplusplus
 
@@ -691,7 +691,7 @@ public:
 
 #endif
 
-#endif /* defined(__Xgc__xhn_garbage_collector__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef xhn_dictionary_hpp
-#define xhn_dictionary_hpp
+#ifndef XHN_DICTIONARY_HPP
+#define XHN_DICTIONARY_HPP
 
 #ifdef __cplusplus
 

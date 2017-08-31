@@ -8,8 +8,8 @@
  * of this file.
  */
 
-#ifndef __VEngine__xhn_crypto__
-#define __VEngine__xhn_crypto__
+#ifndef XHN_CRYPTO_HPP
+#define XHN_CRYPTO_HPP
 
 #ifdef __cplusplus
 
@@ -35,7 +35,7 @@ public:
 
 #endif
 
-#endif /* defined(__VEngine__xhn_crypto__) */
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining
