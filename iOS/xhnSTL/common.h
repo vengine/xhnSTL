@@ -173,6 +173,9 @@ or
 #        define BIT_WIDTH 32
 #    endif
 
+#    define USING_STRING_OLD 0
+#    define TESTING_STRING_NEW 0
+
 #endif
 
 /**
