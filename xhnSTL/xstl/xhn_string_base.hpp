@@ -149,44 +149,32 @@ public:
         }
     }
     string_base ( const string_base &str ) {
-        if (str.get_own_str()) {
-            if (str.get_using_data1()) {
-                memcpy( m_data.data1.m_str, str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
-                set_using_data1( true );
-                set_data1_size( str.get_data1_size() );
-            }
-            else {
-                m_data.data0.m_str = ( C * ) NMalloc ( (str.m_data.data0.m_size + 1) * sizeof(C) );
-                memcpy ( m_data.data0.m_str, str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
-                m_data.data0.m_size = str.m_data.data0.m_size;
-                set_using_data1( false );
-            }
+        if (str.get_using_data1()) {
+            memcpy( m_data.data1.m_str, str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
+            set_using_data1( true );
+            set_data1_size( str.get_data1_size() );
         }
         else {
-            m_data.data0.m_str = str.m_data.data0.m_str;
+            m_data.data0.m_str = ( C * ) NMalloc ( (str.m_data.data0.m_size + 1) * sizeof(C) );
+            memcpy ( m_data.data0.m_str, str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             m_data.data0.m_size = str.m_data.data0.m_size;
+            set_using_data1( false );
         }
-        set_own_str( str.get_own_str() );
+        set_own_str( true );
     }
     string_base ( string_base &&str ) {
-        if (str.get_own_str()) {
-            if (str.get_using_data1()) {
-                memcpy( m_data.data1.m_str, str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
-                set_using_data1( true );
-                set_data1_size( str.get_data1_size() );
-            }
-            else {
-                m_data.data0.m_str = ( C * ) NMalloc ( (str.m_data.data0.m_size + 1) * sizeof(C) );
-                memcpy ( m_data.data0.m_str, str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
-                m_data.data0.m_size = str.m_data.data0.m_size;
-                set_using_data1( false );
-            }
+        if (str.get_using_data1()) {
+            memcpy( m_data.data1.m_str, str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
+            set_using_data1( true );
+            set_data1_size( str.get_data1_size() );
         }
         else {
-            m_data.data0.m_str = str.m_data.data0.m_str;
+            m_data.data0.m_str = ( C * ) NMalloc ( (str.m_data.data0.m_size + 1) * sizeof(C) );
+            memcpy ( m_data.data0.m_str, str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             m_data.data0.m_size = str.m_data.data0.m_size;
+            set_using_data1( false );
         }
-        set_own_str( str.get_own_str() );
+        set_own_str( true );
         str.set_own_str( false );
     }
     ~string_base() {
@@ -293,57 +281,41 @@ public:
         }
     }
     string_base &operator = ( const string_base &str ) {
-        if (get_own_str() && !get_using_data1()) {
+        if (!get_using_data1()) {
             Mfree ( m_data.data0.m_str );
         }
-        if (str.get_own_str()) {
-            if (str.get_using_data1()) {
-                memcpy ( &m_data, &str.m_data, sizeof(m_data) );
-                set_data1_size( str.get_data1_size() );
-            }
-            else {
-                m_data.data0.m_str = ( C * ) NMalloc ( (str.m_data.data0.m_size + 1) * sizeof(C) );
-                memcpy ( m_data.data0.m_str, str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
-                m_data.data0.m_size = str.m_data.data0.m_size;
-            }
-            set_using_data1( str.get_using_data1() );
+        if (str.get_using_data1()) {
+            memcpy ( &m_data, &str.m_data, sizeof(m_data) );
+            set_data1_size( str.get_data1_size() );
         }
         else {
-            m_data.data0.m_str = str.m_data.data0.m_str;
+            m_data.data0.m_str = ( C * ) NMalloc ( (str.m_data.data0.m_size + 1) * sizeof(C) );
+            memcpy ( m_data.data0.m_str, str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             m_data.data0.m_size = str.m_data.data0.m_size;
-            set_using_data1( false );
         }
-        set_own_str( str.get_own_str() );
+        set_using_data1( str.get_using_data1() );
         return *this;
     }
     string_base &operator = ( string_base &&str ) {
-        if (get_own_str() && !get_using_data1()) {
+        if (!get_using_data1()) {
             Mfree ( m_data.data0.m_str );
         }
-        if (str.get_own_str()) {
-            if (str.get_using_data1()) {
-                memcpy ( &m_data, &str.m_data, sizeof(m_data) );
-                set_data1_size( str.get_data1_size() );
-            }
-            else {
-                m_data.data0.m_str = str.m_data.data0.m_str;
-                m_data.data0.m_size = str.m_data.data0.m_size;
-            }
-            set_using_data1( str.get_using_data1() );
+        if (str.get_using_data1()) {
+            memcpy ( &m_data, &str.m_data, sizeof(m_data) );
+            set_data1_size( str.get_data1_size() );
         }
         else {
             m_data.data0.m_str = str.m_data.data0.m_str;
             m_data.data0.m_size = str.m_data.data0.m_size;
-            set_using_data1( false );
         }
-        set_own_str( str.get_own_str() );
+        set_using_data1( str.get_using_data1() );
         str.set_own_str( false );
         return *this;
     }
     string_base &operator = ( const C *str ) {
         euint count = m_str_len_proc(str);
         
-        if (get_own_str() && !get_using_data1()) {
+        if (!get_using_data1()) {
             Mfree ( m_data.data0.m_str );
         }
         if ( count + 1 > DATA1_SIZE ) {
@@ -357,12 +329,11 @@ public:
             set_using_data1( true );
             set_data1_size( count );
         }
-        set_own_str( true );
         return *this;
     }
 	string_base &operator = ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
         euint count = str.size();
-        if (get_own_str() && !get_using_data1()) {
+        if (!get_using_data1()) {
             Mfree ( m_data.data0.m_str );
         }
         if ( count + 1 > DATA1_SIZE ) {
@@ -378,7 +349,6 @@ public:
             set_using_data1( true );
             set_data1_size( count );
         }
-        set_own_str( true );
         return *this;
     }
     string_base operator + ( const string_base &str ) const {
@@ -489,9 +459,7 @@ public:
             C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
             memcpy ( new_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &new_str[m_data.data0.m_size], str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
-            if (get_own_str()) {
-                Mfree(m_data.data0.m_str);
-            }
+            Mfree(m_data.data0.m_str);
             m_data.data0.m_str = new_str;
             m_data.data0.m_size = new_size;
         }
@@ -501,9 +469,7 @@ public:
             C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
             memcpy ( new_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &new_str[m_data.data0.m_size], str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
-            if (get_own_str()) {
-                Mfree(m_data.data0.m_str);
-            }
+            Mfree(m_data.data0.m_str);
             m_data.data0.m_str = new_str;
             m_data.data0.m_size = new_size;
         }
@@ -534,9 +500,7 @@ public:
             C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
             memcpy ( new_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &new_str[m_data.data0.m_size], str, (count + 1) * sizeof(C) );
-            if (get_own_str()) {
-                Mfree(m_data.data0.m_str);
-            }
+            Mfree(m_data.data0.m_str);
             m_data.data0.m_str = new_str;
             m_data.data0.m_size = new_size;
         }
@@ -737,10 +701,9 @@ public:
         return _str[pos];
     }
 	void clear() {
-        if (get_own_str() && !get_using_data1()) {
+        if (!get_using_data1()) {
             Mfree(m_data.data0.m_str);
         }
-        set_own_str( true );
         set_using_data1( true );
         set_data1_size( 0 );
         m_data.data1.m_str[0] = 0;
@@ -753,7 +716,7 @@ public:
         if (_size) {
             memcpy(tmp, _str, _size * sizeof(C));
         }
-        if (get_own_str() && !get_using_data1()) {
+        if (!get_using_data1()) {
             Mfree(m_data.data0.m_str);
         }
         set_using_data1( false );
@@ -762,24 +725,11 @@ public:
 	}
 };
     
-
-#if USING_STRING_OLD
-    
-    template <typename C, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
-    inline euint32 _hash ( const string_base_old<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> &key )
-    {
-        return key.get_hash();
-    }
-    
-#else
-
 template <typename C, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
 inline euint32 _hash ( const string_base<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> &key )
 {
     return key.get_hash();
 }
-    
-#endif
 
 }
 
