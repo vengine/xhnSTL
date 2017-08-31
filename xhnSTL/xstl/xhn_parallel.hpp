@@ -25,7 +25,7 @@ namespace xhn
 class parallel : public MemObject
 {
 public:
-    vector<thread_ptr> m_threads;
+    mutable vector<thread_ptr> m_threads;
 public:
     parallel()
     {
@@ -42,7 +42,7 @@ public:
         }
     }
     template <typename FUNC>
-    void parallel_for(euint start, euint end, FUNC func)
+    void parallel_for(euint start, euint end, FUNC func) const
     {
         if (start >= end)
             return;
@@ -81,7 +81,7 @@ public:
         }
     }
     template <typename FUNC>
-    void parallel_for_async(euint start, euint end, FUNC func)
+    void parallel_for_async(euint start, euint end, FUNC func) const
     {
         if (start >= end)
             return;
@@ -114,7 +114,7 @@ public:
             func(start, end);
         }
     }
-    bool is_completed() {
+    bool is_completed() const {
         for (auto& t : m_threads) {
             if (!t->is_completed()) {
                 return false;
