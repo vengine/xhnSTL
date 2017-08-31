@@ -136,6 +136,11 @@
 		B10884C71DBEE96E00126C43 /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B116FACD1E68244F0064C17C /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B116FACC1E68244F0064C17C /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B11892761E6BEA8900AD5279 /* cpu.h in Headers */ = {isa = PBXBuildFile; fileRef = B11892741E6BEA8900AD5279 /* cpu.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B11DBD981F586A2C006D89AD /* xhn_concurrent.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B11DBD931F586A2C006D89AD /* xhn_concurrent.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B11DBD991F586A2C006D89AD /* xhn_group.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B11DBD941F586A2C006D89AD /* xhn_group.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B11DBD9A1F586A2C006D89AD /* xhn_parallel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B11DBD951F586A2C006D89AD /* xhn_parallel.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B11DBD9B1F586A2C006D89AD /* xhn_concurrent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B11DBD961F586A2C006D89AD /* xhn_concurrent.cpp */; };
+		B11DBD9C1F586A2C006D89AD /* xhn_parallel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B11DBD971F586A2C006D89AD /* xhn_parallel.cpp */; };
 		B1607BF61E7EBD5A00CBBDDD /* xhn_cache.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF21E7EBD5A00CBBDDD /* xhn_cache.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF71E7EBD5A00CBBDDD /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF81E7EBD5A00CBBDDD /* xhn_memory_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -287,6 +292,11 @@
 		B10884C51DBEE96E00126C43 /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B116FACC1E68244F0064C17C /* xhn_singly_linked_list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_singly_linked_list.hpp; sourceTree = "<group>"; };
 		B11892741E6BEA8900AD5279 /* cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpu.h; sourceTree = "<group>"; };
+		B11DBD931F586A2C006D89AD /* xhn_concurrent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_concurrent.hpp; sourceTree = "<group>"; };
+		B11DBD941F586A2C006D89AD /* xhn_group.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_group.hpp; sourceTree = "<group>"; };
+		B11DBD951F586A2C006D89AD /* xhn_parallel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_parallel.hpp; sourceTree = "<group>"; };
+		B11DBD961F586A2C006D89AD /* xhn_concurrent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_concurrent.cpp; sourceTree = "<group>"; };
+		B11DBD971F586A2C006D89AD /* xhn_parallel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_parallel.cpp; sourceTree = "<group>"; };
 		B1607BF21E7EBD5A00CBBDDD /* xhn_cache.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_cache.hpp; sourceTree = "<group>"; };
 		B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_dictionary.hpp; sourceTree = "<group>"; };
 		B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_memory_pool.hpp; sourceTree = "<group>"; };
@@ -378,6 +388,11 @@
 		68245B481BC9D7680006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B11DBD931F586A2C006D89AD /* xhn_concurrent.hpp */,
+				B11DBD941F586A2C006D89AD /* xhn_group.hpp */,
+				B11DBD951F586A2C006D89AD /* xhn_parallel.hpp */,
+				B11DBD961F586A2C006D89AD /* xhn_concurrent.cpp */,
+				B11DBD971F586A2C006D89AD /* xhn_parallel.cpp */,
 				B1607BF21E7EBD5A00CBBDDD /* xhn_cache.hpp */,
 				B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */,
 				B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */,
@@ -541,6 +556,7 @@
 				68245C151BC9D7680006E99D /* xhn_routine_pool.hpp in Headers */,
 				68245BEB1BC9D7680006E99D /* xhn_garbage_collector.hpp in Headers */,
 				68245BE31BC9D7680006E99D /* xhn_exception.hpp in Headers */,
+				B11DBD981F586A2C006D89AD /* xhn_concurrent.hpp in Headers */,
 				B116FACD1E68244F0064C17C /* xhn_singly_linked_list.hpp in Headers */,
 				68245BC41BC9D7680006E99D /* rwbuffer.h in Headers */,
 				68245BD31BC9D7680006E99D /* rtti.hpp in Headers */,
@@ -572,6 +588,7 @@
 				68245BC91BC9D7680006E99D /* stack.h in Headers */,
 				68245C1C1BC9D7680006E99D /* xhn_static_string.hpp in Headers */,
 				68245C041BC9D7680006E99D /* xhn_map.hpp in Headers */,
+				B11DBD991F586A2C006D89AD /* xhn_group.hpp in Headers */,
 				68245C211BC9D7680006E99D /* xhn_thread.hpp in Headers */,
 				68245C1A1BC9D7680006E99D /* xhn_state_machine.hpp in Headers */,
 				68245BBC1BC9D7680006E99D /* hash.h in Headers */,
@@ -607,6 +624,7 @@
 				B1607BF81E7EBD5A00CBBDDD /* xhn_memory_pool.hpp in Headers */,
 				68245BFB1BC9D7680006E99D /* xhn_lambda.hpp in Headers */,
 				68245C161BC9D7680006E99D /* xhn_set.hpp in Headers */,
+				B11DBD9A1F586A2C006D89AD /* xhn_parallel.hpp in Headers */,
 				68245C281BC9D7680006E99D /* xhn_vector.hpp in Headers */,
 				68245BA91BC9D7680006E99D /* Singleton.h in Headers */,
 				68245C1E1BC9D7680006E99D /* xhn_string.hpp in Headers */,
@@ -737,8 +755,10 @@
 				68245C261BC9D7680006E99D /* xhn_utility.cpp in Sources */,
 				68245BC31BC9D7680006E99D /* rwbuffer.c in Sources */,
 				68245BEC1BC9D7680006E99D /* xhn_gc_array.cpp in Sources */,
+				B11DBD9B1F586A2C006D89AD /* xhn_concurrent.cpp in Sources */,
 				68245C1D1BC9D7680006E99D /* xhn_string.cpp in Sources */,
 				68245BCE1BC9D7680006E99D /* utility.c in Sources */,
+				B11DBD9C1F586A2C006D89AD /* xhn_parallel.cpp in Sources */,
 				68245BDC1BC9D7680006E99D /* xhn_crypto.cpp in Sources */,
 				68245BEE1BC9D7680006E99D /* xhn_gc_container_base.cpp in Sources */,
 				68245C241BC9D7680006E99D /* xhn_thread_pool.cpp in Sources */,
