@@ -81,7 +81,8 @@ public:
         set_data1_size( 0 );
         m_data.data1.m_str[0] = 0;
     }
-    string_base ( const C *str, bool own_str = true ) {
+    
+    string_base ( const C *str ) {
         if (!str) {
             set_own_str( true );
             set_using_data1( true );
@@ -91,27 +92,21 @@ public:
         }
         
         euint count = m_str_len_proc(str);
-        
-        if (own_str) {
-            if (count + 1 > DATA1_SIZE) {
-                m_data.data0.m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
-                memcpy ( m_data.data0.m_str, str, (count + 1) * sizeof(C) );
-                m_data.data0.m_size = count;
-                set_using_data1( false );
-            }
-            else {
-                memcpy( m_data.data1.m_str, str, (count + 1) * sizeof(C) );
-                set_using_data1( true );
-                set_data1_size( count );
-            }
-        }
-        else {
-            m_data.data0.m_str = ( C * )str;
+
+        if (count + 1 > DATA1_SIZE) {
+            m_data.data0.m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
+            memcpy ( m_data.data0.m_str, str, (count + 1) * sizeof(C) );
             m_data.data0.m_size = count;
             set_using_data1( false );
         }
-        set_own_str( own_str );
+        else {
+            memcpy( m_data.data1.m_str, str, (count + 1) * sizeof(C) );
+            set_using_data1( true );
+            set_data1_size( count );
+        }
+        set_own_str( true );
     }
+private:
     string_base ( const C *str, euint size ) {
         set_own_str( true );
         if (!str) {
@@ -135,6 +130,7 @@ public:
             set_data1_size( size );
         }
     }
+public:
 	string_base ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
         euint size = str.size();
         set_own_str( true );
