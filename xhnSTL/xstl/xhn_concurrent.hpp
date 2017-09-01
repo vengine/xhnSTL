@@ -115,7 +115,7 @@ public:
                 auto inst = m_lock.Lock();
                 if (m_used_threads.empty()) return;
             }
-            nanopause(1000);
+            pthread_yield_np();
         }
     }
 };

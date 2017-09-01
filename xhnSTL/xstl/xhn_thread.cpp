@@ -259,7 +259,7 @@ void xhn::thread::force_restart()
 void xhn::thread::wait_completed()
 {
     while (!AtomicLoad32(&m_is_completed)) {
-        nanopause(1);
+        pthread_yield_np();
     }
 }
 void xhn::thread::join()

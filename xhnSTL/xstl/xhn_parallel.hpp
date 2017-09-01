@@ -72,8 +72,9 @@ public:
                 b = a + remainder_works;
                 func(a, b);
             }
+
             while (AtomicLoad64(&worked_thread_count)) {
-                nanopause(1000);
+                pthread_yield_np();
             }
         }
         else {
