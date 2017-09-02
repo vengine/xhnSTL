@@ -1759,4 +1759,108 @@ ImplementRTTI(ThreadLocalVector, xhn::concurrent_variable);
     concurrent.waiting_for_completed();
 }
 
+- (void) testVectorErase
+{
+    xhn::vector<int> vec;
+    for (int i = 0; i < 16; i++) {
+        vec.push_back(i);
+    }
+    auto iter = vec.begin() + 5;
+    XCTAssert(*iter == 5, @"error");
+    vec.erase(iter);
+    XCTAssert(vec.size() == 15, @"error");
+    iter = vec.begin();
+    auto end = vec.end();
+    for (; iter != end; iter++) {
+        printf("%d\n", *iter);
+    }
+}
+
+- (void) testVectorRemove
+{
+    xhn::vector<int> vec;
+    for (int i = 0; i < 16; i++) {
+        vec.push_back(i);
+    }
+    auto iter = vec.begin() + 5;
+    XCTAssert(*iter == 5, @"error");
+    vec.remove(iter);
+    XCTAssert(vec.size() == 15, @"error");
+    iter = vec.begin();
+    auto end = vec.end();
+    for (; iter != end; iter++) {
+        printf("%d\n", *iter);
+    }
+}
+
+- (void) testVectorPerformance0
+{
+    [self measureBlock:^{
+        xhn::vector<euint> vec;
+        vec.reserve(1024 * 1024);
+        for (euint i = 0; i < 1024 * 1024; i++) {
+            vec.push_back(i);
+        }
+    }];
+}
+
+- (void) testVectorPerformance1
+{
+    [self measureBlock:^{
+        std::vector<euint> vec;
+        vec.reserve(1024 * 1024);
+        for (euint i = 0; i < 1024 * 1024; i++) {
+            vec.push_back(i);
+        }
+    }];
+}
+
+- (void) testVectorPerformance2
+{
+    __block xhn::vector<euint>* vec = VNEW xhn::vector<euint>();
+    vec->reserve(1024 * 16);
+    for (euint i = 0; i < 1024 * 16; i++) {
+        vec->push_back(i);
+    }
+    [self measureBlock:^{
+        euint i = 0;
+        while (!vec->empty()) {
+            auto iter = vec->begin();
+            auto end = vec->end();
+            for (; iter != end; iter++) {
+                if (*iter == i) {
+                    vec->erase(iter);
+                    i++;
+                    break;
+                }
+            }
+        }
+    }];
+    VDELETE vec;
+}
+
+- (void) testVectorPerformance3
+{
+    __block std::vector<euint>* vec = new std::vector<euint>();
+    vec->reserve(1024 * 16);
+    for (euint i = 0; i < 1024 * 16; i++) {
+        vec->push_back(i);
+    }
+    [self measureBlock:^{
+        euint i = 0;
+        while (!vec->empty()) {
+            auto iter = vec->begin();
+            auto end = vec->end();
+            for (; iter != end; iter++) {
+                if (*iter == i) {
+                    vec->erase(iter);
+                    i++;
+                    break;
+                }
+            }
+        }
+    }];
+    delete vec;
+}
+
 @end
