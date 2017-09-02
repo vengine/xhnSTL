@@ -487,6 +487,7 @@ public:
             iterator ret = i;
             m_dest(i.m_ptr);
 			iterator prev_iter = i;
+            i++;
             euint num = end() - i;
             memmove((void*)prev_iter.m_ptr, (void*)i.m_ptr, num * m_ele_real_size);
 			m_end_addr -= m_ele_real_size;
