@@ -93,13 +93,52 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
 }
 
 - (void) testVector2 {
-    xhn::vector< xhn::vector<int>, xhn::FGetElementRealSizeProc<xhn::vector<int>> > intArray;
+    xhn::vector< xhn::vector<int>,
+                 xhn::FGetElementRealSizeProc<xhn::vector<int>>,
+                 xhn::FVectorNextProc<xhn::vector<int>>,
+                 xhn::FVectorPrevProc<xhn::vector<int>> > intArray;
     intArray.push_back( xhn::vector<int>() );
     intArray.push_back( xhn::vector<int>() );
     xhn::Lambda<void(xhn::vector<int>&, bool*)> proc([](xhn::vector<int>& i, bool* stop){
         *stop = true;
     });
     intArray.for_each(proc);
+}
+
+- (void) testVector3 {
+    xhn::vector<int> ia;
+    std::vector<int> sia;
+    ia.push_back(0);
+    ia.push_back(1);
+    ia.push_back(2);
+    ia.push_back(3);
+    ia.push_back(4);
+    ia.push_back(5);
+    sia.push_back(0);
+    sia.push_back(1);
+    sia.push_back(2);
+    sia.push_back(3);
+    sia.push_back(4);
+    sia.push_back(5);
+    {
+        auto iter = ia.rbegin();
+        auto end = ia.rend();
+        auto siter = sia.rbegin();
+        ///auto send = sia.rend();
+        for (; iter != end; iter++, siter++) {
+            XCTAssert(*iter == *siter, @"error");
+        }
+    }
+    {
+        const auto& cia = ia;
+        const auto& csia = sia;
+        auto iter = cia.rbegin();
+        auto end = cia.rend();
+        auto siter = csia.rbegin();
+        for (; iter != end; iter++, siter++) {
+            XCTAssert(*iter == *siter, @"error");
+        }
+    }
 }
 
 #include <xhnSTL/xhn_hash_map.hpp>

@@ -24,8 +24,34 @@
 #include "xhn_lambda.hpp"
 namespace xhn
 {
+    template < typename T >
+    struct FVectorNextProc {
+        void operator() ( T *from, T *&to, euint ele_real_size ) {
+            to = ( T * ) ( ( char * ) from + ele_real_size );
+        }
+    };
+    template < typename T >
+    struct FVectorPrevProc {
+        void operator() ( T *from, T *&to, euint ele_real_size ) {
+            to = ( T * ) ( ( char * ) from - ele_real_size );
+        }
+    };
+    template < typename T >
+    struct FVectorNextProcUnaligned {
+        void operator() ( T *from, T *&to, euint ele_real_size ) {
+            to = from + 1;
+        }
+    };
+    template < typename T >
+    struct FVectorPrevProcUnaligned {
+        void operator() ( T *from, T *&to, euint ele_real_size ) {
+            to = from - 1;
+        }
+    };
 template < typename T,
            typename GET_ELEM_REAL_SIZE = FGetElementRealSizeProcUnaligned<T>,
+           typename NEXT = FVectorNextProcUnaligned<T>,
+           typename PREV = FVectorPrevProcUnaligned<T>,
            typename CTOR = FCtorProc<T>,
            typename DEST = FDestProc<T> >
 class vector : public RefObject
@@ -41,16 +67,7 @@ public:
             *to = from;
         }
     };
-    struct FNextProc {
-        void operator() ( T *from, T *&to, euint ele_real_size ) {
-            to = ( T * ) ( ( char * ) from + ele_real_size );
-        }
-    };
-    struct FPrevProc {
-        void operator() ( T *from, T *&to, euint ele_real_size ) {
-            to = ( T * ) ( ( char * ) from - ele_real_size );
-        }
-    };
+    
     template <typename Owner>
     struct FRedirectProc {
         void operator() ( Owner *owner, T *from, T *&to, euint ele_real_size, esint offset ) {
@@ -75,8 +92,8 @@ public:
     T,
     FReadProc,
     FWriteProc,
-    FNextProc,
-    FPrevProc,
+    NEXT,
+    PREV,
     FRedirectProc<vector>,
     vector>
     {
@@ -85,16 +102,16 @@ public:
         T,
         FReadProc,
         FWriteProc,
-        FNextProc,
-        FPrevProc,
+        NEXT,
+        PREV,
         FRedirectProc<vector>,
         vector> base_type;
         typedef T value_type;
         typedef T *pointer;
         typedef T &reference;
-        iterator ( vector<T, GET_ELEM_REAL_SIZE> *owner, char *a, euint ele_real_size )
+        iterator ( vector<T, GET_ELEM_REAL_SIZE, NEXT, PREV> *owner, char *a, euint ele_real_size )
             : base_type
-            ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), FNextProc(), FPrevProc(), FRedirectProc<vector>(), owner )
+            ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), NEXT(), PREV(), FRedirectProc<vector>(), owner )
         {}
         inline iterator &operator++() {
             base_type::next();
@@ -141,8 +158,8 @@ public:
     T,
     FReadProc,
     FWriteProc,
-    FNextProc,
-    FPrevProc,
+    NEXT,
+    PREV,
     FRedirectProc<vector>,
     vector>
     {
@@ -151,16 +168,16 @@ public:
         T,
         FReadProc,
         FWriteProc,
-        FNextProc,
-        FPrevProc,
+        NEXT,
+        PREV,
         FRedirectProc<vector>,
         vector> base_type;
         typedef T value_type;
         typedef T *pointer;
         typedef T &reference;
-        const_iterator ( vector<T, GET_ELEM_REAL_SIZE> *owner, char *a, euint ele_real_size )
+        const_iterator ( vector<T, GET_ELEM_REAL_SIZE, NEXT, PREV> *owner, char *a, euint ele_real_size )
             : base_type
-            ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), FNextProc(), FPrevProc(), FRedirectProc<vector>(), owner )
+            ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), NEXT(), PREV(), FRedirectProc<vector>(), owner )
         {}
         inline const_iterator &operator++() {
             base_type::next();
@@ -200,8 +217,8 @@ public:
     T,
     FReadProc,
     FWriteProc,
-    FPrevProc,
-    FNextProc,
+    PREV,
+    NEXT,
     FRedirectProc<vector>,
     vector>
     {
@@ -210,16 +227,16 @@ public:
         T,
         FReadProc,
         FWriteProc,
-        FPrevProc,
-        FNextProc,
+        PREV,
+        NEXT,
         FRedirectProc<vector>,
         vector> base_type;
         typedef T value_type;
         typedef T *pointer;
         typedef T &reference;
-        reverse_iterator ( vector<T, GET_ELEM_REAL_SIZE> *owner, char *a, euint ele_real_size )
+        reverse_iterator ( vector<T, GET_ELEM_REAL_SIZE, NEXT, PREV> *owner, char *a, euint ele_real_size )
         : base_type
-        ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), FPrevProc(), FNextProc(), FRedirectProc<vector>(), owner )
+        ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), PREV(), NEXT(), FRedirectProc<vector>(), owner )
         {}
         inline reverse_iterator &operator++() {
             base_type::next();
@@ -254,8 +271,8 @@ public:
     T,
     FReadProc,
     FWriteProc,
-    FPrevProc,
-    FNextProc,
+    PREV,
+    NEXT,
     FRedirectProc<vector>,
     vector>
     {
@@ -264,16 +281,16 @@ public:
         T,
         FReadProc,
         FWriteProc,
-        FPrevProc,
-        FNextProc,
+        PREV,
+        NEXT,
         FRedirectProc<vector>,
         vector> base_type;
         typedef T value_type;
         typedef T *pointer;
         typedef T &reference;
-        const_reverse_iterator ( vector<T, GET_ELEM_REAL_SIZE> *owner, char *a, euint ele_real_size )
+        const_reverse_iterator ( vector<T, GET_ELEM_REAL_SIZE, NEXT, PREV> *owner, char *a, euint ele_real_size )
         : base_type
-        ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), FPrevProc(), FNextProc(), FRedirectProc<vector>(), owner )
+        ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), PREV(), NEXT(), FRedirectProc<vector>(), owner )
         {}
         inline const_reverse_iterator &operator++() {
             base_type::next();

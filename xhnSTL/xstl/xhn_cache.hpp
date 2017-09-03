@@ -22,7 +22,10 @@ namespace xhn
     class FCacheHashListNodeAllocator
     {
     public:
-        vector< hash_node<K, V>, FGetElementRealSizeProc< hash_node<K, V> > > m_node_buffer;
+        vector< hash_node<K, V>,
+                FGetElementRealSizeProc< hash_node<K, V> >,
+                FVectorNextProc< hash_node<K, V> >,
+                FVectorPrevProc< hash_node<K, V> > > m_node_buffer;
         euint m_top_pointer;
     public:
         typedef euint size_type;
@@ -58,8 +61,14 @@ namespace xhn
     FCacheHashListNodeAllocator<K, V, CACHE_SIZE> >
     {
     public:
-        typedef typename vector< hash_node<K, V>, FGetElementRealSizeProc< hash_node<K, V> > >::iterator iterator;
-        typedef typename vector< hash_node<K, V>, FGetElementRealSizeProc< hash_node<K, V> > >::const_iterator const_iterator;
+        typedef typename vector< hash_node<K, V>,
+                                 FGetElementRealSizeProc< hash_node<K, V> >,
+                                 FVectorNextProc< hash_node<K, V> >,
+                                 FVectorPrevProc< hash_node<K, V> > >::iterator iterator;
+        typedef typename vector< hash_node<K, V>,
+                                 FGetElementRealSizeProc< hash_node<K, V> >,
+                                 FVectorNextProc< hash_node<K, V> >,
+                                 FVectorPrevProc< hash_node<K, V> > >::const_iterator const_iterator;
         
         typedef
         dictionary<K, V,
