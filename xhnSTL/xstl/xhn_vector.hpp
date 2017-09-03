@@ -401,7 +401,6 @@ public:
         return _get_size();
     }
     inline euint _get_size() const {
-        ///return ( m_barrier - m_begin_addr ) / m_ele_real_size;
         return m_curt_ele_count;
     }
     inline void clear() {
@@ -503,14 +502,12 @@ public:
 			ref_ptr offset = (ref_ptr)i.m_ptr - (ref_ptr)m_begin_addr;
 			reserve(_get_size() + 1);
 			i = iterator(this, m_begin_addr + offset, m_ele_real_size);
-			iterator src(this, m_end_addr, m_ele_real_size);
 			m_end_addr += m_ele_real_size;
             m_curt_ele_count++;
-			iterator dst(this, m_end_addr, m_ele_real_size);
-			for (; src != i; src--, dst--) {
-                memcpy(dst.m_ptr, src.m_ptr, m_ele_real_size);
-            }
-			dst = i;
+            iterator n = i + 1;
+            euint num = end() - i - 1;
+            memmove(n.m_ptr, i.m_ptr, num * m_ele_real_size);
+			iterator dst = i;
 			dst++;
             memcpy(dst.m_ptr, i.m_ptr, m_ele_real_size);
             m_ctor((T*)i.m_ptr);
@@ -532,14 +529,12 @@ public:
                 ref_ptr offset = (ref_ptr)i.m_ptr - (ref_ptr)m_begin_addr;
                 reserve(_get_size() + 1);
                 i = iterator(this, m_begin_addr + offset, m_ele_real_size);
-                iterator src(this, m_end_addr, m_ele_real_size);
                 m_end_addr += m_ele_real_size;
                 m_curt_ele_count++;
-                iterator dst(this, m_end_addr, m_ele_real_size);
-                for (; src != i; src--, dst--) {
-                    memcpy(dst.m_ptr, src.m_ptr, m_ele_real_size);
-                }
-                dst = i;
+                iterator n = i + 1;
+                euint num = end() - i - 1;
+                memmove(n.m_ptr, i.m_ptr, num * m_ele_real_size);
+                iterator dst = i;
                 dst++;
                 memcpy(dst.m_ptr, i.m_ptr, m_ele_real_size);
                 m_ctor((T*)i.m_ptr);

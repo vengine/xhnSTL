@@ -1793,6 +1793,95 @@ ImplementRTTI(ThreadLocalVector, xhn::concurrent_variable);
     }
 }
 
+- (void) testVectorFor
+{
+    xhn::vector<int> vec;
+    std::vector<int> svec;
+    for (int i = 0; i < 16; i++) {
+        vec.push_back(i);
+        svec.push_back(i);
+    }
+    {
+        TimeCheckpoint tp = TimeCheckpoint::Tick();
+        int sum = 0;
+        auto iter = vec.begin();
+        auto end = vec.end();
+        for (; iter != end; iter++) {
+            sum += *iter;
+        }
+        VTime t;
+        TimeCheckpoint::Tock(tp, t);
+        printf("xhn for time:%f\n", t.GetNanosecond());
+    }
+    {
+        TimeCheckpoint tp = TimeCheckpoint::Tick();
+        int sum = 0;
+        auto iter = svec.begin();
+        auto end = svec.end();
+        for (; iter != end; iter++) {
+            sum += *iter;
+        }
+        VTime t;
+        TimeCheckpoint::Tock(tp, t);
+        printf("std for time:%f\n", t.GetNanosecond());
+    }
+}
+
+- (void) testVectorInsert
+{
+    xhn::vector<int> vec;
+    std::vector<int> svec;
+    for (int i = 0; i < 16; i++) {
+        vec.push_back(i);
+        svec.push_back(i);
+    }
+    {
+        auto iter = vec.begin() + 5;
+        vec.insert(iter, 100);
+    }
+    {
+        auto iter = svec.begin() + 5;
+        svec.insert(iter, 100);
+    }
+    {
+        XCTAssert(vec.size() == svec.size(), @"error");
+        for (euint i = 0; i < vec.size(); i++) {
+            XCTAssert(vec[i] == svec[i], @"error: %d != %d", vec[i], svec[i]);
+        }
+    }
+}
+- (void) testVectorRangeInsert
+{
+    xhn::vector<int> vec;
+    xhn::vector<int> rv;
+    std::vector<int> svec;
+    std::vector<int> srv;
+    rv.push_back(100);
+    rv.push_back(200);
+    rv.push_back(300);
+    srv.push_back(100);
+    srv.push_back(200);
+    srv.push_back(300);
+    for (int i = 0; i < 16; i++) {
+        vec.push_back(i);
+        svec.push_back(i);
+    }
+    {
+        auto iter = vec.begin() + 5;
+        vec.insert(iter, rv.begin(), rv.end());
+    }
+    {
+        auto iter = svec.begin() + 5;
+        svec.insert(iter, srv.begin(), srv.end());
+    }
+    {
+        XCTAssert(vec.size() == svec.size(), @"error");
+        for (euint i = 0; i < vec.size(); i++) {
+            XCTAssert(vec[i] == svec[i], @"error: %d != %d", vec[i], svec[i]);
+        }
+    }
+}
+
 - (void) testVectorPerformance0
 {
     [self measureBlock:^{
