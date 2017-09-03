@@ -93,7 +93,7 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
 }
 
 - (void) testVector2 {
-    xhn::vector< xhn::vector<int> > intArray;
+    xhn::vector< xhn::vector<int>, xhn::FGetElementRealSizeProc<xhn::vector<int>> > intArray;
     intArray.push_back( xhn::vector<int>() );
     intArray.push_back( xhn::vector<int>() );
     xhn::Lambda<void(xhn::vector<int>&, bool*)> proc([](xhn::vector<int>& i, bool* stop){

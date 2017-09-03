@@ -313,7 +313,7 @@ public:
     //////////////////////////////////////////////////////////////////////////
 	void* operator new( size_t nSize, void* ptr )
 	{
-		EAssert(((ref_ptr)ptr % 16) == 0, "new object error");
+		EAssert(((ref_ptr)ptr % 16) == 0, "new object error, ptr == %p", ptr);
 		return ptr;
 	}
     
