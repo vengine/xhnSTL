@@ -146,6 +146,8 @@
 		B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B17CCE6E1E683CA0002B1946 /* xhn_memory_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B17CCE6D1E683A5F002B1946 /* xhn_memory_pool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B19A722A1F60D044008208C5 /* xhn_stacktrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B19A72281F60D044008208C5 /* xhn_stacktrace.cpp */; };
+		B19A722B1F60D044008208C5 /* xhn_stacktrace.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19A72291F60D044008208C5 /* xhn_stacktrace.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B19C547F1E7BD6C3009FC8A8 /* xhn_cache.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19C547E1E7BD696009FC8A8 /* xhn_cache.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1A89DB31CAF9B7000358DD4 /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB11CAF9B7000358DD4 /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1A89DB71CAF9F2700358DD4 /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -307,6 +309,8 @@
 		B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
 		B17CCE6D1E683A5F002B1946 /* xhn_memory_pool.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_memory_pool.hpp; sourceTree = "<group>"; };
+		B19A72281F60D044008208C5 /* xhn_stacktrace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_stacktrace.cpp; sourceTree = "<group>"; };
+		B19A72291F60D044008208C5 /* xhn_stacktrace.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_stacktrace.hpp; sourceTree = "<group>"; };
 		B19C547E1E7BD696009FC8A8 /* xhn_cache.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_cache.hpp; sourceTree = "<group>"; };
 		B1A89DB11CAF9B7000358DD4 /* xhn_dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_dictionary.hpp; sourceTree = "<group>"; };
 		B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_singly_linked_list.hpp; sourceTree = "<group>"; };
@@ -493,6 +497,8 @@
 				B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */,
 				B153770B1F55A1F7005F1741 /* xhn_concurrent.cpp */,
 				B153770C1F55A1F7005F1741 /* xhn_concurrent.hpp */,
+				B19A72281F60D044008208C5 /* xhn_stacktrace.cpp */,
+				B19A72291F60D044008208C5 /* xhn_stacktrace.hpp */,
 			);
 			name = xstl;
 			path = ../../xhnSTL/xstl;
@@ -620,6 +626,7 @@
 				68245D301BC9D8F90006E99D /* xhn_string_base.hpp in Headers */,
 				68245CE61BC9D8F90006E99D /* xhn_atomic_operation.hpp in Headers */,
 				68245D121BC9D8F90006E99D /* xhn_list_template.hpp in Headers */,
+				B19A722B1F60D044008208C5 /* xhn_stacktrace.hpp in Headers */,
 				68245D3A1BC9D8F90006E99D /* xhn_void_vector.hpp in Headers */,
 				68245D1E1BC9D8F90006E99D /* xhn_pair.hpp in Headers */,
 				68245D021BC9D8F90006E99D /* xhn_gc_string.h in Headers */,
@@ -787,6 +794,7 @@
 				68245CE71BC9D8F90006E99D /* xhn_btree.cpp in Sources */,
 				68245CDB1BC9D8F90006E99D /* static_string.c in Sources */,
 				68245D1C1BC9D8F90006E99D /* xhn_operation_manager.cpp in Sources */,
+				B19A722A1F60D044008208C5 /* xhn_stacktrace.cpp in Sources */,
 				68245CE11BC9D8F90006E99D /* exception.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -904,7 +912,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = USE_LOG_SYSTEM;
 				INFOPLIST_FILE = xhnSTL/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

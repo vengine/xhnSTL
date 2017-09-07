@@ -15,6 +15,7 @@
 #include <xhnSTL/xhn_group.hpp>
 #include <xhnSTL/xhn_parallel.hpp>
 #include <xhnSTL/xhn_concurrent.hpp>
+#include <xhnSTL/xhn_stacktrace.hpp>
 #include <xhnSTL/cpu.h>
 #include <vector>
 #include <map>
@@ -1989,6 +1990,11 @@ ImplementRTTI(ThreadLocalVector, xhn::concurrent_variable);
         }
     }];
     delete vec;
+}
+
+- (void) testStacktrace
+{
+    xhn::test_stacktrace();
 }
 
 @end
