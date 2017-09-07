@@ -15,6 +15,7 @@
 #include "common.h"
 #include "etypes.h"
 #include "xhn_vector.hpp"
+#include "xhn_string.hpp"
 #include "xhn_atomic_operation.hpp"
 #include "xhn_lock.hpp"
 #include "xhn_memory.hpp"
@@ -156,6 +157,10 @@ private:
 	volatile T* m_ptr;
 	DEST_CALLBACK m_dest_callback;
     INC_CALLBACK m_inc_callback;
+#if DEBUG_REFOBJECT
+public:
+    string stackframe;
+#endif
 public:
 	inline void _inc(volatile T* ptr)
 	{
@@ -165,7 +170,7 @@ public:
             m_inc_callback(ptr);
 #if DEBUG_REFOBJECT
             if (ptr->inc_callback) {
-                ptr->inc_callback((RefObject*)ptr);
+                ptr->inc_callback((RefObject*)ptr, this);
             }
 #endif
 		}
@@ -177,7 +182,7 @@ public:
                 m_dest_callback(ptr);
 #if DEBUG_REFOBJECT
                 if (ptr->dec_callback) {
-                    ptr->dec_callback((RefObject*)ptr);
+                    ptr->dec_callback((RefObject*)ptr, this);
                 }
 #endif
                 delete ptr;
@@ -185,7 +190,7 @@ public:
 #if DEBUG_REFOBJECT
             else {
                 if (ptr->dec_callback) {
-                    ptr->dec_callback((RefObject*)ptr);
+                    ptr->dec_callback((RefObject*)ptr, this);
                 }
             }
 #endif
