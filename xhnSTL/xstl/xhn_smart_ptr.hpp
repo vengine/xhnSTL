@@ -163,7 +163,7 @@ public:
 		{
 			AtomicIncrement(&ptr->ref_count);
             m_inc_callback(ptr);
-#if REFOBJECT_DEBUG
+#if DEBUG_REFOBJECT
             if (ptr->inc_callback) {
                 ptr->inc_callback((RefObject*)ptr);
             }

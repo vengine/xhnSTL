@@ -21,7 +21,7 @@
 #include "xhn_exception.hpp"
 #include "xhn_atomic_operation.hpp"
 
-#define REFOBJECT_DEBUG 0
+#define DEBUG_REFOBJECT 0
 
 class BannedAllocObject
 {
@@ -333,14 +333,14 @@ public:
 public:
 	mutable volatile esint32 ref_count;
     mutable WeakCounter* weak_count;
-#if REFOBJECT_DEBUG
+#if DEBUG_REFOBJECT
     void (*inc_callback)(RefObject*);
     void* debug_value;
 #endif
 	RefObject()
 	{
 		ref_count = 0;
-#if REFOBJECT_DEBUG
+#if DEBUG_REFOBJECT
         inc_callback = nullptr;
         debug_value = nullptr;
 #endif
@@ -350,7 +350,7 @@ public:
     RefObject(const RefObject& obj)
     {
         ref_count = 0;
-#if REFOBJECT_DEBUG
+#if DEBUG_REFOBJECT
         inc_callback = nullptr;
         debug_value = nullptr;
 #endif
