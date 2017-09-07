@@ -29,10 +29,9 @@
 namespace xhn
 {
 
-inline void get_stacktrace(vector<string>& result)
+inline void get_stacktrace(vector<string>& result, int max_frames = 127)
 {
     result.clear();
-    int max_frames = 127;
     
     void* addrs_buf[ max_frames + 1 ];
     int num_addrs = backtrace(addrs_buf, int(sizeof(addrs_buf) / sizeof(void*)));
@@ -49,10 +48,9 @@ inline void get_stacktrace(vector<string>& result)
     }
 }
     
-inline void get_stacktrace(string& result)
+inline void get_stacktrace(string& result, int max_frames = 127)
 {
     result.clear();
-    int max_frames = 127;
     
     void* addrs_buf[ max_frames + 1 ];
     int num_addrs = backtrace(addrs_buf, int(sizeof(addrs_buf) / sizeof(void*)));

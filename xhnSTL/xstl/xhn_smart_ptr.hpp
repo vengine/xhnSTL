@@ -175,8 +175,20 @@ public:
 		if (ptr) {
 			if (!AtomicDecrement(&ptr->ref_count)) {
                 m_dest_callback(ptr);
+#if DEBUG_REFOBJECT
+                if (ptr->dec_callback) {
+                    ptr->dec_callback((RefObject*)ptr);
+                }
+#endif
                 delete ptr;
             }
+#if DEBUG_REFOBJECT
+            else {
+                if (ptr->dec_callback) {
+                    ptr->dec_callback((RefObject*)ptr);
+                }
+            }
+#endif
 		}
 	}
 	SmartPtr()

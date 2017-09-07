@@ -335,6 +335,7 @@ public:
     mutable WeakCounter* weak_count;
 #if DEBUG_REFOBJECT
     void (*inc_callback)(RefObject*);
+    void (*dec_callback)(RefObject*);
     void* debug_value;
 #endif
 	RefObject()
@@ -342,6 +343,7 @@ public:
 		ref_count = 0;
 #if DEBUG_REFOBJECT
         inc_callback = nullptr;
+        dec_callback = nullptr;
         debug_value = nullptr;
 #endif
         weak_count = VNEW WeakCounter(this);
