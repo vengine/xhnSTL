@@ -21,6 +21,7 @@
 #include <map>
 #include <unordered_map>
 #include <string>
+#include <cxxabi.h>
 
 @interface xhnSTLTests : XCTestCase
 

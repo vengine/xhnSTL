@@ -28,6 +28,8 @@
 
 namespace xhn
 {
+    
+string to_function_call(const char* str);
 
 inline void get_stacktrace(vector<string>& result, int max_frames = 127)
 {
@@ -44,7 +46,7 @@ inline void get_stacktrace(vector<string>& result, int max_frames = 127)
     
     for (int i = 1; i < num_addrs; i++)
     {
-        result.push_back(symbol_list[i]);
+        result.push_back(to_function_call(symbol_list[i]));
     }
 }
     
@@ -63,7 +65,7 @@ inline void get_stacktrace(string& result, int max_frames = 127)
     
     for (int i = 1; i < num_addrs; i++)
     {
-        result += symbol_list[i];
+        result += to_function_call(symbol_list[i]);
         result += ";";
     }
 }
