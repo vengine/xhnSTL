@@ -7,19 +7,21 @@ namespace xhn {
 string to_function_call(const char* str)
 {
     string tmp0(str);
-    euint pos = tmp0.find("_ZN");
+    euint pos = tmp0.find("_Z");
     if (string::npos != pos) {
         string func = tmp0.substr(pos, tmp0.size() - pos);
         euint spos = func.find(" ");
         if (string::npos != spos) {
             string tmp1 = func.substr(0, spos);
             string tmp2 = func.substr(spos, func.size() - spos);
-            char mbuf[4096];
-            size_t len = 4095;
+            char* mbuf = (char*)NMalloc(1024 * 512);
+            size_t len = 1024 * 512 - 1;
             int status = 0;
             abi::__cxa_demangle(tmp1.c_str(), mbuf, &len, &status);
             string tmp3 = tmp0.substr(0, pos);
-            return tmp3 + mbuf + tmp2;
+            string ret = tmp3 + mbuf + tmp2;
+            Mfree(mbuf);
+            return ret;
         }
     }
     return tmp0;
