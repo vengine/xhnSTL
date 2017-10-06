@@ -1524,8 +1524,8 @@ namespace xhn {
     , m_isType(false)
     {
 #if USING_AST_LOG
-        s_ASTLogFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/main2.txt", "wb");
-        s_ASTFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/main3.txt", "wb");
+        s_ASTLogFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/log.txt", "wb");
+        s_ASTFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/ast.txt", "wb");
 #endif
     }
     SwiftParser::~SwiftParser()
