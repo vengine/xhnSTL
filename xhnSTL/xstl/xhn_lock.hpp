@@ -17,6 +17,7 @@
 #include "etypes.h"
 #include "xhn_memory.hpp"
 #include "spin_lock.h"
+#include "cpu.h"
 namespace xhn
 {
     /// \brief MutexLock
@@ -204,6 +205,72 @@ public:
 		pthread_rwlock_rdlock(&m_lock);
 		return Instance(&m_lock);
 	}
+};
+    
+class RWLock3 : public RefObject
+{
+private:
+    volatile esint32 m_read_lock_count;
+    volatile esint32 m_write_lock;
+public:
+    class Instance
+    {
+        friend class RWLock3;
+    private:
+        RWLock3* m_prototype;
+        const bool m_is_read_lock;
+        inline Instance(RWLock3* lock, bool is_read_lock)
+        : m_prototype(lock)
+        , m_is_read_lock(is_read_lock)
+        {}
+    public:
+        inline Instance(const Instance& inst)
+        : m_prototype(inst.m_prototype)
+        , m_is_read_lock(inst.m_is_read_lock)
+        {}
+        inline ~Instance()
+        {
+            if (m_is_read_lock) {
+                AtomicDecrement(&m_prototype->m_read_lock_count);
+            }
+            else {
+                AtomicStore32(0, &m_prototype->m_write_lock);
+            }
+        }
+    };
+public:
+    inline RWLock3()
+    : m_read_lock_count(0)
+    , m_write_lock(0)
+    {}
+    inline Instance GetReadLock()
+    {
+        euint pause_count = 100;
+        while (!AtomicCompareExchange(0, 1, &m_write_lock)) {
+            nanopause(pause_count);
+            pause_count += 100;
+            if (pause_count > 1000) {
+                pthread_yield_np();
+                pause_count = 100;
+            }
+        }
+        AtomicIncrement(&m_read_lock_count);
+        AtomicStore32(0, &m_write_lock);
+        return Instance(this, true);
+    }
+    inline Instance GetWriteLock()
+    {
+        euint pause_count = 100;
+        while (!AtomicCompareExchange(0, 1, &m_write_lock)) {
+            nanopause(pause_count);
+            pause_count += 100;
+            if (pause_count > 1000) {
+                pthread_yield_np();
+                pause_count = 100;
+            }
+        }
+        return Instance(this, false);
+    }
 };
 
     /// \brief SpinLock
