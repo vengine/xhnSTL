@@ -71,7 +71,7 @@ namespace xhn {
     const static_string SwiftParser::StrInterface("interface");
     
     const static_string SwiftParser::StrSceneNodeAgent("SceneNodeAgent");
-    const static_string SwiftParser::StrState("State");
+    const static_string SwiftParser::StrSceneNodeState("SceneNodeState");
     const static_string SwiftParser::StrStateInterface("StateInterface");
     
     const static_string SwiftParser::StrGUIAgent("GUIAgent");
@@ -482,7 +482,7 @@ namespace xhn {
                             
                             xhn::static_string strFullClassName = fullClassName.c_str();
                             stateInheritPath.clear();
-                            isInheritFromState = isInheritFromClassProc(strFullClassName, StrState, stateInheritPath);
+                            isInheritFromState = isInheritFromClassProc(strFullClassName, StrSceneNodeState, stateInheritPath);
                             stateInheritPath.clear();
                             isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, stateInheritPath);
                             
@@ -1054,7 +1054,7 @@ namespace xhn {
                             
                             xhn::static_string strFullClassName = fullClassName.c_str();
                             stateInheritPath.clear();
-                            isInheritFromState = isInheritFromClassProc(strFullClassName, StrState, stateInheritPath);
+                            isInheritFromState = isInheritFromClassProc(strFullClassName, StrSceneNodeState, stateInheritPath);
                             stateInheritPath.clear();
                             isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, stateInheritPath);
                             
