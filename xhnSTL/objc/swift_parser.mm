@@ -72,7 +72,7 @@ namespace xhn {
     
     const static_string SwiftParser::StrSceneNodeAgent("SceneNodeAgent");
     const static_string SwiftParser::StrSceneNodeState("SceneNodeState");
-    const static_string SwiftParser::StrStateInterface("StateInterface");
+    const static_string SwiftParser::StrSceneNodeStateInterface("SceneNodeStateInterface");
     
     const static_string SwiftParser::StrGUIAgent("GUIAgent");
     const static_string SwiftParser::StrGUIState("GUIState");
@@ -484,7 +484,7 @@ namespace xhn {
                             stateInheritPath.clear();
                             isInheritFromState = isInheritFromClassProc(strFullClassName, StrSceneNodeState, stateInheritPath);
                             stateInheritPath.clear();
-                            isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, stateInheritPath);
+                            isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrSceneNodeStateInterface, stateInheritPath);
                             
                             if (isInheritFromState && isInheritFromStateInterface) {
                                 /// 真正开始添加state了
@@ -1056,7 +1056,7 @@ namespace xhn {
                             stateInheritPath.clear();
                             isInheritFromState = isInheritFromClassProc(strFullClassName, StrSceneNodeState, stateInheritPath);
                             stateInheritPath.clear();
-                            isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrStateInterface, stateInheritPath);
+                            isInheritFromStateInterface = isInheritFromClassProc(strFullClassName, StrSceneNodeStateInterface, stateInheritPath);
                             
                             if (isInheritFromState && isInheritFromStateInterface) {
                                 stateFuncClassMap.insert(make_pair(stateFuncName, fullClassName));

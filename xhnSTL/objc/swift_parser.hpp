@@ -42,7 +42,7 @@ public:
     
     static const static_string StrSceneNodeAgent;
     static const static_string StrSceneNodeState;
-    static const static_string StrStateInterface;
+    static const static_string StrSceneNodeStateInterface;
     
     static const static_string StrGUIAgent;
     static const static_string StrGUIState;
