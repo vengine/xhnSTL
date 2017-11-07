@@ -57,6 +57,13 @@ template < typename T,
 class vector : public RefObject
 {
 public:
+    enum for_each_status
+    {
+        RemoveAndContinue,
+        KeepAndContinue,
+        Stop,
+    };
+public:
     struct FReadProc {
         void operator() ( T *from, T &to ) {
             to = *from;
@@ -724,6 +731,79 @@ public:
             proc(*i, &stop);
             if (stop == true)
                 break;
+        }
+    }
+    
+    /// has_removed        = hr
+    /// prev_removed_index = pri
+    /// element_count      = ec
+    /// i                  = i
+    /// 0 1 2 3 4 5 6 7 8 9
+    /// E X E E X E X E E E
+    ///
+    /// E                   : hr = false, pri = 0, ec = 1, i = 0
+    /// E X                 : hr = true,  pri = 1, ec = 1, i = 1
+    /// E X E               : hr = true,  pri = 1, ec = 1, i = 2
+    /// E X E E             : hr = true,  pri = 1, ec = 1, i = 3
+    /// E X E E X           : hr = true,  pri = 4, ec = 3, i = 4 (REMOVE, [2 ~ 3] -> [1 ~ 2])
+    /// E X E E X E         : hr = true,  pri = 4, ec = 3, i = 5
+    /// E X E E X E X       : hr = true,  pri = 6, ec = 4, i = 6 (REMOVE, 5 -> 3)
+    /// E X E E X E X E     : hr = true,  pri = 6, ec = 4, i = 7
+    /// E X E E X E X E E   : hr = true,  pri = 6, ec = 4, i = 8
+    /// E X E E X E X E E E : hr = true,  pri = 6, ec = 4, i = 9
+    /// E X E E X E X E E E : hr = true,  pri = 6, ec = 7, i = 9 (REMOVE, [7 ~ 9] -> [4 ~ 6])
+    
+    template <typename PROC>
+    void for_each(PROC& proc) {
+        euint ele_size = m_get_elem_real_size();
+        euint count = (m_end_addr - m_begin_addr) / ele_size;
+        bool has_removed = false;
+        euint prev_removed_index = 0;
+        euint element_count = 0;
+        euint i = 0;
+        for (; i < count; i++) {
+            for_each_status s = proc(*reinterpret_cast<T*>((m_begin_addr + ele_size * i)));
+            if (KeepAndContinue == s) {
+                if (!has_removed) {
+                    element_count++;
+                }
+                else {
+                    /// do nothing
+                }
+            }
+            else if (RemoveAndContinue == s) {
+                if (has_removed) {
+                    m_dest(reinterpret_cast<T*>(m_begin_addr + ele_size * i));
+                    
+                    euint moved_count = i - prev_removed_index - 1;
+                    if (moved_count) {
+                        memmove(m_begin_addr + ele_size * element_count,
+                                m_begin_addr + ele_size * (prev_removed_index + 1),
+                                moved_count * ele_size);
+                        element_count += moved_count;
+                    }
+                    prev_removed_index = i;
+                }
+                else {
+                    m_dest(reinterpret_cast<T*>(m_begin_addr + ele_size * i));
+                    
+                    has_removed = true;
+                    prev_removed_index = i;
+                }
+            }
+            else if (Stop == s) {
+                break;
+            }
+        }
+        if (has_removed) {
+            euint moved_count = count - prev_removed_index - 1;
+            if (moved_count) {
+                memmove(m_begin_addr + ele_size * element_count,
+                        m_begin_addr + ele_size * (prev_removed_index + 1),
+                        moved_count * ele_size);
+            }
+            m_end_addr = m_begin_addr + ele_size * (element_count + moved_count);
+            m_curt_ele_count = element_count + moved_count;
         }
     }
     void reset() {

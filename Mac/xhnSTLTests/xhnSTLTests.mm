@@ -1993,6 +1993,172 @@ ImplementRTTI(ThreadLocalVector, xhn::concurrent_variable);
     delete vec;
 }
 
+/// 0 1 2 3 4 5 6 7 8 9
+/// E X E E X E X E E E
+struct IntProc0
+{
+    xhn::vector<int>::for_each_status operator() (int i) {
+        if (1 == i || 4 == i || 6 == i) {
+            return xhn::vector<int>::RemoveAndContinue;
+        }
+        else {
+            return xhn::vector<int>::KeepAndContinue;
+        }
+    }
+};
+
+/// 0 1 2 3 4 5 6 7 8 9
+/// E X E E X E X X E E
+struct IntProc1
+{
+    xhn::vector<int>::for_each_status operator() (int i) {
+        if (1 == i || 4 == i || 6 == i || 7 == i) {
+            return xhn::vector<int>::RemoveAndContinue;
+        }
+        else {
+            return xhn::vector<int>::KeepAndContinue;
+        }
+    }
+};
+
+/// 0 1 2 3 4 5 6 7 8 9
+/// X X E E E E E E E E
+struct IntProc2
+{
+    xhn::vector<int>::for_each_status operator() (int i) {
+        if (0 == i || 1 == i) {
+            return xhn::vector<int>::RemoveAndContinue;
+        }
+        else {
+            return xhn::vector<int>::KeepAndContinue;
+        }
+    }
+};
+
+/// 0 1 2 3 4 5 6 7 8 9
+/// E E X X X E E E E E
+
+struct IntProc3
+{
+    xhn::vector<int>::for_each_status operator() (int i) {
+        if (i >= 2 && i <= 4) {
+            return xhn::vector<int>::RemoveAndContinue;
+        }
+        else {
+            return xhn::vector<int>::KeepAndContinue;
+        }
+    }
+};
+
+/// 0 1 2 3 4 5 6 7 8 9
+/// E E E E E E E E X X
+struct IntProc4
+{
+    xhn::vector<int>::for_each_status operator() (int i) {
+        if (i >= 8) {
+            return xhn::vector<int>::RemoveAndContinue;
+        }
+        else {
+            return xhn::vector<int>::KeepAndContinue;
+        }
+    }
+};
+- (void) testVectorForEach
+{
+    {
+        /// 0 1 2 3 4 5 6 7 8 9
+        /// E X E E X E X E E E
+        xhn::vector<int> testVec;
+        for (int i = 0; i < 10; i++) {
+            testVec.push_back(i);
+        }
+        XCTAssert(testVec.size() == 10, @"error");
+        IntProc0 proc;
+        testVec.for_each(proc);
+        for (auto i : testVec) {
+            printf("%d\n", i);
+            XCTAssert((1 != i && 4 != i && 6 != i), @"error");
+        }
+        printf("size == %lld\n", testVec.size());
+        XCTAssert(testVec.size() == 7, @"error");
+        printf("here\n");
+    }
+    {
+        /// 0 1 2 3 4 5 6 7 8 9
+        /// E X E E X E X X E E
+        xhn::vector<int> testVec;
+        for (int i = 0; i < 10; i++) {
+            testVec.push_back(i);
+        }
+        XCTAssert(testVec.size() == 10, @"error");
+        IntProc1 proc;
+        testVec.for_each(proc);
+        for (auto i : testVec) {
+            printf("%d\n", i);
+            XCTAssert((1 != i && 4 != i && 6 != i && 7 != i), @"error");
+        }
+        printf("size == %lld\n", testVec.size());
+        XCTAssert(testVec.size() == 6, @"error");
+        printf("here\n");
+    }
+    {
+        /// 0 1 2 3 4 5 6 7 8 9
+        /// X X E E E E E E E E
+        xhn::vector<int> testVec;
+        for (int i = 0; i < 10; i++) {
+            testVec.push_back(i);
+        }
+        XCTAssert(testVec.size() == 10, @"error");
+        IntProc2 proc;
+        testVec.for_each(proc);
+        for (auto i : testVec) {
+            printf("%d\n", i);
+            XCTAssert((0 != i && 1 != i), @"error");
+        }
+        printf("size == %lld\n", testVec.size());
+        XCTAssert(testVec.size() == 8, @"error");
+        printf("here\n");
+    }
+    {
+        /// 0 1 2 3 4 5 6 7 8 9
+        /// E E X X X E E E E E
+        xhn::vector<int> testVec;
+        for (int i = 0; i < 10; i++) {
+            testVec.push_back(i);
+        }
+        XCTAssert(testVec.size() == 10, @"error");
+        IntProc3 proc;
+        testVec.for_each(proc);
+        for (auto i : testVec) {
+            printf("%d\n", i);
+            XCTAssert((i < 2 || i > 4), @"error");
+        }
+        printf("size == %lld\n", testVec.size());
+        XCTAssert(testVec.size() == 7, @"error");
+        printf("here\n");
+    }
+    {
+        /// 0 1 2 3 4 5 6 7 8 9
+        /// E E E E E E E E X X
+        xhn::vector<int> testVec;
+        for (int i = 0; i < 10; i++) {
+            testVec.push_back(i);
+        }
+        XCTAssert(testVec.size() == 10, @"error");
+        IntProc4 proc;
+        testVec.for_each(proc);
+        for (auto i : testVec) {
+            printf("%d\n", i);
+            XCTAssert((i < 8), @"error");
+        }
+        printf("size == %lld\n", testVec.size());
+        XCTAssert(testVec.size() == 8, @"error");
+        printf("here\n");
+    }
+}
+
+
+
 - (void) testStacktrace
 {
     xhn::test_stacktrace();
