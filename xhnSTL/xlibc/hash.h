@@ -26,6 +26,9 @@ void update_hash_status(struct hash_calc_status* status, const char* mem, euint 
 euint32 get_hash_value(struct hash_calc_status* status);
 euint32 calc_hashnr(const char *key, euint length);
 euint32 calc_cityhash32(const char *s, euint32 len);
+    
+#define CALC_REAL_SIZE(type, last) (euint)&((type*)(nullptr))->last + sizeof(type::last)
+
 #ifdef __cplusplus
 }
 #endif
