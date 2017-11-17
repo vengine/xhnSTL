@@ -1001,7 +1001,7 @@ namespace xhn {
                                               Lambda<bool (static_string, static_string,
                                                            vector<static_string>&)>& isInheritFromClassProc)
     {
-        string actionFile;
+        string actionFile = "import Foundation\n";
         
         /// func class
         map<string, string> stateFuncClassMap;
