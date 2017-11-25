@@ -36,7 +36,7 @@ void ELog_Init()
         char homeDir[256];
         GetHomeDirectory(homeDir, 255);
         char logFilename[256];
-        snprintf(logFilename, 255, "%s/Documents/log.txt", homeDir);
+        snprintf(logFilename, 256, "%s/Documents/log.txt", homeDir);
         g_elog_file = SafeFOpen(logFilename, "w+");
 #endif
     }
@@ -50,7 +50,7 @@ void ELog_write()
 {
 #ifdef USE_LOG_SYSTEM
     if (g_elog_file) {
-        snprintf(g_elog_buffer, ELOG_BUFFER_SIZE - 1, "%s\n", g_elog_buffer);
+        snprintf(g_elog_buffer, ELOG_BUFFER_SIZE, "%s\n", g_elog_buffer);
         fwrite(g_elog_buffer, strlen(g_elog_buffer), 1, g_elog_file);
         fflush(g_elog_file);
     }
@@ -69,10 +69,10 @@ void ELog2_Init(struct elogger* logger)
     GetHomeDirectory(homeDir, 255);
     char logFilename[256];
     int logCount = 0;
-    snprintf(logFilename, 255, "%s/Documents/log%d.txt", homeDir, logCount);
+    snprintf(logFilename, 256, "%s/Documents/log%d.txt", homeDir, logCount);
     while (access(logFilename, 0) == 0) {
         logCount++;
-        snprintf(logFilename, 255, "%s/Documents/log%d.txt", homeDir, logCount);
+        snprintf(logFilename, 256, "%s/Documents/log%d.txt", homeDir, logCount);
     }
     logger->logFile = SafeFOpen(logFilename, "w+");
 #endif
@@ -81,7 +81,7 @@ void ELog2_Init(struct elogger* logger)
 
 void ELog2_write(struct elogger* logger)
 {
-    snprintf(g_elog_buffer, ELOG_BUFFER_SIZE - 1, "%s\n", g_elog_buffer);
+    snprintf(g_elog_buffer, ELOG_BUFFER_SIZE, "%s\n", g_elog_buffer);
     fwrite(g_elog_buffer, strlen(g_elog_buffer), 1, logger->logFile);
     fflush(logger->logFile);
 }

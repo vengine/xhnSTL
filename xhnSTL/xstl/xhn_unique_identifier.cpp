@@ -60,7 +60,7 @@ xhn::string xhn::create_uuid_string()
 {
     char mbuf[256];
     char* strbuf = mbuf;
-    int remainder = 255;
+    int remainder = 256;
     uuid_t uuid;
     uuid_generate(uuid);
 

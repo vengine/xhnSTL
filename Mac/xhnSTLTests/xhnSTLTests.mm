@@ -297,13 +297,13 @@ struct SinglyLinkedListNode
     xhn::dictionary<xhn::string, int> hash_table;
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         hash_table.insert(mbuf, i);
     }
     
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         int* v = hash_table.find(mbuf);
         printf("#1:%d\n", *v);
     }
@@ -314,13 +314,13 @@ struct SinglyLinkedListNode
     xhn::dictionary<const char*, int> hash_table;
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         hash_table.insert(mbuf, i);
     }
     
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         int* v = hash_table.find(mbuf);
         printf("#2:%d\n", *v);
     }
@@ -331,13 +331,13 @@ struct SinglyLinkedListNode
     xhn::dictionary<xhn::static_string, int> hash_table;
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         hash_table.insert(mbuf, i);
     }
     
     for (int i = 0; i < 100; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         int* v = hash_table.find(mbuf);
         printf("#2:%d\n", *v);
     }
@@ -347,7 +347,7 @@ struct SinglyLinkedListNode
 {
     char mbufs[100][256];
     for (int i = 0; i < 100; i++) {
-        snprintf(&mbufs[i][0], 255, "abc%dde%dfgh", i, i);
+        snprintf(&mbufs[i][0], 256, "abc%dde%dfgh", i, i);
     }
     int totalValue = 0;
     
@@ -374,7 +374,7 @@ struct SinglyLinkedListNode
     __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
     for (int i = 0; i < num; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
     __block std::map<xhn::static_string, int> std_map;
@@ -392,7 +392,7 @@ struct SinglyLinkedListNode
     __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
     for (int i = 0; i < num; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
     __block std::map<xhn::static_string, int> std_map;
@@ -415,7 +415,7 @@ struct SinglyLinkedListNode
     __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
     for (int i = 0; i < num; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
     __block xhn::dictionary<xhn::static_string, int>* hash_table = VNEW xhn::dictionary<xhn::static_string, int>();
@@ -434,7 +434,7 @@ struct SinglyLinkedListNode
     __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
     for (int i = 0; i < num; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
     __block xhn::dictionary<xhn::static_string, int>* hash_table = VNEW xhn::dictionary<xhn::static_string, int>();
@@ -458,7 +458,7 @@ struct SinglyLinkedListNode
     __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
     for (int i = 0; i < num; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
     __block xhn::map<xhn::static_string, int> xhn_map;
@@ -476,7 +476,7 @@ struct SinglyLinkedListNode
     __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
     for (int i = 0; i < num; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
     __block xhn::map<xhn::static_string, int> xhn_map;
@@ -498,7 +498,7 @@ struct SinglyLinkedListNode
     __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
     for (int i = 0; i < num; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
     __block std::unordered_map<const char*, int> std_map;
@@ -516,7 +516,7 @@ struct SinglyLinkedListNode
     __block xhn::static_string* strs = VNEW_ARRAY xhn::static_string[num];
     for (int i = 0; i < num; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "abc%dde%dfgh", i, i);
+        snprintf(mbuf, 256, "abc%dde%dfgh", i, i);
         strs[i] = mbuf;
     }
     __block std::unordered_map<const char*, int> std_map;
@@ -891,7 +891,7 @@ void* AffinitProc(void*)
     static char* strs[1024 * 1024];
     for (int i = 0; i < 1024 * 1024; i++) {
         char mbuf[256];
-        int size = snprintf(mbuf, 255, "%d00000000000", i);
+        int size = snprintf(mbuf, 256, "%d00000000000", i);
         strs[i] = (char*)malloc(size + 1);
         memcpy(strs[i], mbuf, size + 1);
     }
@@ -914,7 +914,7 @@ void* AffinitProc(void*)
     static char* strs[1024 * 1024];
     for (int i = 0; i < 1024 * 1024; i++) {
         char mbuf[256];
-        int size = snprintf(mbuf, 255, "%d00000000000", i);
+        int size = snprintf(mbuf, 256, "%d00000000000", i);
         strs[i] = (char*)malloc(size + 1);
         memcpy(strs[i], mbuf, size + 1);
     }
@@ -936,7 +936,7 @@ void* AffinitProc(void*)
     static char* strs[1024 * 1024];
     for (int i = 0; i < 1024 * 1024; i++) {
         char mbuf[256];
-        int size = snprintf(mbuf, 255, "%dabcdefxyzwwww%d", i, i);
+        int size = snprintf(mbuf, 256, "%dabcdefxyzwwww%d", i, i);
         strs[i] = (char*)malloc(size + 1);
         memcpy(strs[i], mbuf, size + 1);
     }
@@ -960,7 +960,7 @@ void* AffinitProc(void*)
     static char* strs[1024 * 1024];
     for (int i = 0; i < 1024 * 1024; i++) {
         char mbuf[256];
-        int size = snprintf(mbuf, 255, "%dabcdefxyzwwww%d", i, i);
+        int size = snprintf(mbuf, 256, "%dabcdefxyzwwww%d", i, i);
         strs[i] = (char*)malloc(size + 1);
         memcpy(strs[i], mbuf, size + 1);
     }
@@ -991,7 +991,7 @@ void* AffinitProc(void*)
     static xhn::static_string strs[1024];
     for (int i = 0; i < 1024; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "%d", i);
+        snprintf(mbuf, 256, "%d", i);
         strs[i] = mbuf;
     }
     __block xhn::cache<xhn::static_string, int, 1024>* testcache = VNEW xhn::cache<xhn::static_string, int, 1024>();
@@ -1022,7 +1022,7 @@ void* AffinitProc(void*)
     static xhn::static_string strs[1024];
     for (int i = 0; i < 1024; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "%d", i);
+        snprintf(mbuf, 256, "%d", i);
         strs[i] = mbuf;
     }
     __block xhn::cache<xhn::static_string, int, 1024>* testcache = VNEW xhn::cache<xhn::static_string, int, 1024>();
@@ -1059,7 +1059,7 @@ void* AffinitProc(void*)
     static xhn::static_string strs[1024];
     for (int i = 0; i < 1024; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "%d", i);
+        snprintf(mbuf, 256, "%d", i);
         strs[i] = mbuf;
     }
     __block xhn::cache<xhn::static_string, int, 1024>* testcache = VNEW xhn::cache<xhn::static_string, int, 1024>();
@@ -1090,7 +1090,7 @@ void* AffinitProc(void*)
     static std::string strs[1024];
     for (int i = 0; i < 1024; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "%d", i);
+        snprintf(mbuf, 256, "%d", i);
         strs[i] = mbuf;
     }
     __block std::unordered_map<std::string, int> std_map;
@@ -1675,7 +1675,7 @@ struct FLessThanProcInt
     static xhn::static_string* testStrs = (xhn::static_string*)NMalloc(sizeof(xhn::static_string) * 1024 * 128);
     for (int i = 0; i < 1024 * 128; i++) {
         char mbuf[256];
-        snprintf(mbuf, 255, "%d", i);
+        snprintf(mbuf, 256, "%d", i);
         testStrs[i] = mbuf;
     }
     __block xhn::cache<xhn::static_string, int, 1024 * 128>* testcache =

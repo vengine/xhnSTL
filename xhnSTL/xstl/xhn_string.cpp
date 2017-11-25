@@ -86,26 +86,26 @@ xhn::Unicode::Unicode(euint number)
     euint strlen = 0;
 #if   BIT_WIDTH == 32
     if (number <= 999)
-        strlen = snprintf(mbuf, 255, "%03d", number);
+        strlen = snprintf(mbuf, 256, "%03d", number);
     else if (number > 999 && number <= 9999)
-        strlen = snprintf(mbuf, 255, "%04d", number);
+        strlen = snprintf(mbuf, 256, "%04d", number);
     else if (number > 9999 && number <= 99999)
-        strlen = snprintf(mbuf, 255, "%05d", number);
+        strlen = snprintf(mbuf, 256, "%05d", number);
     else if (number > 99999 && number <= 999999)
-        strlen = snprintf(mbuf, 255, "%06d", number);
+        strlen = snprintf(mbuf, 256, "%06d", number);
     else
-        strlen = snprintf(mbuf, 255, "%d", number);
+        strlen = snprintf(mbuf, 256, "%d", number);
 #elif BIT_WIDTH == 64
     if (number <= 999)
-        strlen = snprintf(mbuf, 255, "%03lld", number);
+        strlen = snprintf(mbuf, 256, "%03lld", number);
     else if (number > 999 && number <= 9999)
-        strlen = snprintf(mbuf, 255, "%04lld", number);
+        strlen = snprintf(mbuf, 256, "%04lld", number);
     else if (number > 9999 && number <= 99999)
-        strlen = snprintf(mbuf, 255, "%05lld", number);
+        strlen = snprintf(mbuf, 256, "%05lld", number);
     else if (number > 99999 && number <= 999999)
-        strlen = snprintf(mbuf, 255, "%06lld", number);
+        strlen = snprintf(mbuf, 256, "%06lld", number);
     else
-        strlen = snprintf(mbuf, 255, "%lld", number);
+        strlen = snprintf(mbuf, 256, "%lld", number);
 #else
 #    error
 #endif

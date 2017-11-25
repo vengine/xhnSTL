@@ -19,12 +19,12 @@
 #define COMMAND_BUFFER_SIZE (1024)
 #define ASTLog(fmt,...) { \
 int size = \
-snprintf(s_ASTBuffer,AST_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
+snprintf(s_ASTBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
 fwrite(s_ASTBuffer, 1, size, s_ASTLogFile); }
 
 #define COMMANDLog(fmt,...) { \
 int size = \
-snprintf(s_COMMANDBuffer,COMMAND_BUFFER_SIZE - 2,fmt,##__VA_ARGS__); \
+snprintf(s_COMMANDBuffer,COMMAND_BUFFER_SIZE,fmt,##__VA_ARGS__); \
 fwrite(s_COMMANDBuffer, 1, size, s_COMMANDFile); }
 
 static char s_ASTBuffer[AST_BUFFER_SIZE];
@@ -361,7 +361,7 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
         
-        snprintf(mbuf, 1023,
+        snprintf(mbuf, 1024,
                  "NSString* swiftClassString(NSString *nameSpace, NSString *className) {\n"
                  "    NSString *appName = @%cVEngineLogic%c;\n"
                  "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%cld%c@%cld%c@%c, \n"
@@ -372,7 +372,7 @@ namespace xhn {
                  '"', '%', '%', '%', '%', '%', '%', '"');
         bridgeFile += mbuf;
         
-        snprintf(mbuf, 1023,
+        snprintf(mbuf, 1024,
         "Class swiftClassFromString(NSString *nameSpace, NSString *className) {\n"
         "    NSString *appName = @%cVEngineLogic%c;\n"
         "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%cld%c@%cld%c@%c, \n"
@@ -383,7 +383,7 @@ namespace xhn {
         '"', '%', '%', '%', '%', '%', '%', '"');
         bridgeFile += mbuf;
         
-        snprintf(mbuf, 1023,
+        snprintf(mbuf, 1024,
                  "NSString* swiftClassStringFromPath(NSString *path) {\n"
                  "    NSString *appName = @%cVEngineLogic%c;\n"
                  "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%c, appName.length, appName];\n"
@@ -399,7 +399,7 @@ namespace xhn {
                  '"', '%', '%', '"');
         bridgeFile += mbuf;
         
-        snprintf(mbuf, 1023,
+        snprintf(mbuf, 1024,
         "Class swiftClassFromPath(NSString *path) {\n"
         "    NSString *appName = @%cVEngineLogic%c;\n"
         "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%c, appName.length, appName];\n"
@@ -440,7 +440,7 @@ namespace xhn {
                 node = nodeIter->second;
             }
             ///
-            snprintf(mbuf, 511,
+            snprintf(mbuf, 512,
                      "        /// agentClassName = %s\n", agentClassName.c_str());
             bridgeFile += mbuf;
             ///
@@ -453,7 +453,7 @@ namespace xhn {
                 for (; childIter != childEnd; childIter++) {
                     xhn::static_string childClassName = *childIter;
                     ///
-                    snprintf(mbuf, 511,
+                    snprintf(mbuf, 512,
                              "        /// childClassName = %s\n", childClassName.c_str());
                     bridgeFile += mbuf;
                     ///
@@ -473,10 +473,10 @@ namespace xhn {
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
-                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            snprintf(mbuf, 512, "%lld", node->name.size());
                             xhn::string stateFuncName = mbuf;
                             stateFuncName += node->name.c_str();
-                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            snprintf(mbuf, 512, "%lld", child->name.size());
                             stateFuncName += mbuf;
                             stateFuncName += child->name.c_str();
                             
@@ -488,7 +488,7 @@ namespace xhn {
                             
                             if (isInheritFromState && isInheritFromStateInterface) {
                                 /// 真正开始添加state了
-                                snprintf(mbuf, 511,
+                                snprintf(mbuf, 512,
                                          "        NSString* state%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
                                          "        id state%d = [SwiftStates _TtCC12VEngineLogic%s];\n"
@@ -500,7 +500,7 @@ namespace xhn {
                                 bridgeFile += mbuf;
                                 
                                 if (!firstState.size()) {
-                                    snprintf(mbuf, 511, "state%d", i);
+                                    snprintf(mbuf, 512, "state%d", i);
                                     firstState = mbuf;
                                 }
                                 
@@ -511,7 +511,7 @@ namespace xhn {
                 }
                 /// 将第一个state设为默认的state
                 if (firstState.size()) {
-                    snprintf(mbuf, 511,
+                    snprintf(mbuf, 512,
                              "        [ret setCurrentState:%s];\n",
                              firstState.c_str());
                     bridgeFile += mbuf;
@@ -532,7 +532,7 @@ namespace xhn {
                 node = nodeIter->second;
             }
             ///
-            snprintf(mbuf, 511,
+            snprintf(mbuf, 512,
                      "        /// agentClassName = %s\n", agentClassName.c_str());
             bridgeFile += mbuf;
             ///
@@ -545,7 +545,7 @@ namespace xhn {
                 for (; childIter != childEnd; childIter++) {
                     xhn::static_string childClassName = *childIter;
                     ///
-                    snprintf(mbuf, 511,
+                    snprintf(mbuf, 512,
                              "        /// childClassName = %s\n", childClassName.c_str());
                     bridgeFile += mbuf;
                     ///
@@ -563,10 +563,10 @@ namespace xhn {
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
-                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            snprintf(mbuf, 512, "%lld", node->name.size());
                             xhn::string actionFuncName = mbuf;
                             actionFuncName += node->name.c_str();
-                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            snprintf(mbuf, 512, "%lld", child->name.size());
                             actionFuncName += mbuf;
                             actionFuncName += child->name.c_str();
                             
@@ -577,7 +577,7 @@ namespace xhn {
                             isInheritFromActionInterface = isInheritFromClassProc(strFullClassName, StrActionInterface, actionInheritPath);
                             
                             if (isInheritFromAction && isInheritFromActionInterface) {
-                                snprintf(mbuf, 511,
+                                snprintf(mbuf, 512,
                                          ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        id action%d = [SwiftActions _TtCC12VEngineLogic%s];\n"
                                          ///"        id action%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
@@ -597,7 +597,7 @@ namespace xhn {
                                 bridgeFile += mbuf;
                                 
                                 if (!firstAction.size()) {
-                                    snprintf(mbuf, 511, "action%d", i);
+                                    snprintf(mbuf, 512, "action%d", i);
                                     firstAction = mbuf;
                                 }
                                 
@@ -607,7 +607,7 @@ namespace xhn {
                     }
                 }
                 if (firstAction.size()) {
-                    snprintf(mbuf, 511,
+                    snprintf(mbuf, 512,
                              "        [ret setCurrentAction:%s];\n",
                              firstAction.c_str());
                     bridgeFile += mbuf;
@@ -631,7 +631,7 @@ namespace xhn {
                 node = nodeIter->second;
             }
             ///
-            snprintf(mbuf, 511,
+            snprintf(mbuf, 512,
                      "        /// agentClassName = %s\n", agentClassName.c_str());
             bridgeFile += mbuf;
             ///
@@ -644,7 +644,7 @@ namespace xhn {
                 for (; childIter != childEnd; childIter++) {
                     xhn::static_string childClassName = *childIter;
                     ///
-                    snprintf(mbuf, 511,
+                    snprintf(mbuf, 512,
                              "        /// childClassName = %s\n", childClassName.c_str());
                     bridgeFile += mbuf;
                     ///
@@ -665,10 +665,10 @@ namespace xhn {
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
-                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            snprintf(mbuf, 512, "%lld", node->name.size());
                             xhn::string stateFuncName = mbuf;
                             stateFuncName += node->name.c_str();
-                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            snprintf(mbuf, 512, "%lld", child->name.size());
                             stateFuncName += mbuf;
                             stateFuncName += child->name.c_str();
                             
@@ -686,7 +686,7 @@ namespace xhn {
                                 if (xhn::string::npos != pos) {
                                     xhn::string stateName = tmpFullClassName.substr(pos + 1, tmpFullClassName.size() - pos - 1);
                                     ///
-                                    snprintf(mbuf, 511,
+                                    snprintf(mbuf, 512,
                                              "        /// stateName = %s\n", stateName.c_str());
                                     bridgeFile += mbuf;
                                     ///
@@ -748,7 +748,7 @@ namespace xhn {
                         /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
                         inheritPath.insert(inheritPath.begin(), node->name);
                         char mbuf[512];
-                        snprintf(mbuf, 511,
+                        snprintf(mbuf, 512,
                                  "    s_createSceneNodeAgentProcDic[@%c%s%c] = [[CreateSceneNodeAgentProc alloc] initWithProc:^(void* sceneNode)\n"
                                  "    {\n"
                                  "        %s* ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n",
@@ -772,7 +772,7 @@ namespace xhn {
                             /// 这里将创建actor代理的回调放在s_createActorAgentProcDic里
                             inheritPath.insert(inheritPath.begin(), node->name);
                             char mbuf[512];
-                            snprintf(mbuf, 511,
+                            snprintf(mbuf, 512,
                                      "    s_createActorAgentProcDic[@%c%s%c] = [[CreateActorAgentProc alloc] initWithProc:^(void* renderSys, void* actor)\n"
                                      "    {\n"
                                      "        %s* ret = [[%s alloc] initWithActor:[[VActor alloc] initWithVRenderSystemActor:renderSys actor:actor]];\n",
@@ -796,7 +796,7 @@ namespace xhn {
                                 inheritPath.insert(inheritPath.begin(), node->name);
                                 
                                 char mbuf[512];
-                                snprintf(mbuf, 511,
+                                snprintf(mbuf, 512,
                                          "    s_createGUIAgentProcDic[@%c%s%c] = [[CreateGUIAgentProc alloc] initWithProc:^(void* renderSys, void* widget)\n"
                                          "    {\n"
                                          "        %s* ret = [[%s alloc] initWithWidget:[[VWidget alloc] initWithVRenderSystemWidget:renderSys widget:widget]];\n",
@@ -824,17 +824,17 @@ namespace xhn {
                                         xhn::static_string::empty_string != draggingState, "gui state member are incomplete!, %s, %s, %s, %s, %s",
                                         normalState.c_str(), hoveringState.c_str(), selectedState.c_str(), pressedState.c_str(), draggingState.c_str());
                                 ///
-                                snprintf(mbuf, 511, "        id normalState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", normalState.c_str());
+                                snprintf(mbuf, 512, "        id normalState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", normalState.c_str());
                                 bridgeFile += mbuf;
-                                snprintf(mbuf, 511, "        id hoveringState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", hoveringState.c_str());
+                                snprintf(mbuf, 512, "        id hoveringState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", hoveringState.c_str());
                                 bridgeFile += mbuf;
-                                snprintf(mbuf, 511, "        id selectedState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", selectedState.c_str());
+                                snprintf(mbuf, 512, "        id selectedState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", selectedState.c_str());
                                 bridgeFile += mbuf;
-                                snprintf(mbuf, 511, "        id pressedState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", pressedState.c_str());
+                                snprintf(mbuf, 512, "        id pressedState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", pressedState.c_str());
                                 bridgeFile += mbuf;
-                                snprintf(mbuf, 511, "        id draggingState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", draggingState.c_str());
+                                snprintf(mbuf, 512, "        id draggingState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", draggingState.c_str());
                                 bridgeFile += mbuf;
-                                snprintf(mbuf, 511, "        [ret setState:@\"NormalState\" state:normalState];\n"
+                                snprintf(mbuf, 512, "        [ret setState:@\"NormalState\" state:normalState];\n"
                                                     "        [ret setState:@\"HoveringState\" state:hoveringState];\n"
                                                     "        [ret setState:@\"SelectedState\" state:selectedState];\n"
                                                     "        [ret setState:@\"PressedState\" state:pressedState];\n"
@@ -1045,10 +1045,10 @@ namespace xhn {
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
-                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            snprintf(mbuf, 512, "%lld", node->name.size());
                             xhn::string stateFuncName = mbuf;
                             stateFuncName += node->name.c_str();
-                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            snprintf(mbuf, 512, "%lld", child->name.size());
                             stateFuncName += mbuf;
                             stateFuncName += child->name.c_str();
                             
@@ -1105,10 +1105,10 @@ namespace xhn {
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
-                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            snprintf(mbuf, 512, "%lld", node->name.size());
                             xhn::string stateFuncName = mbuf;
                             stateFuncName += node->name.c_str();
-                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            snprintf(mbuf, 512, "%lld", child->name.size());
                             stateFuncName += mbuf;
                             stateFuncName += child->name.c_str();
                             
@@ -1159,10 +1159,10 @@ namespace xhn {
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
-                            snprintf(mbuf, 511, "%lld", node->name.size());
+                            snprintf(mbuf, 512, "%lld", node->name.size());
                             xhn::string actionFuncName = mbuf;
                             actionFuncName += node->name.c_str();
-                            snprintf(mbuf, 511, "%lld", child->name.size());
+                            snprintf(mbuf, 512, "%lld", child->name.size());
                             actionFuncName += mbuf;
                             actionFuncName += child->name.c_str();
                             
@@ -1247,7 +1247,7 @@ namespace xhn {
         
         for (auto& p : stateFuncClassMap) {
             char mbuf[512];
-            snprintf(mbuf, 511,
+            snprintf(mbuf, 512,
                      "    static open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
                      "        return %s();\n"
                      "    }\n",
@@ -1260,7 +1260,7 @@ namespace xhn {
         actionFile += "open class SwiftGUIStates : NSObject {\n";
         for (auto& p : guiStateFuncClassMap) {
             char mbuf[512];
-            snprintf(mbuf, 511,
+            snprintf(mbuf, 512,
                      "    static open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
                      "        return %s();\n"
                      "    }\n",
@@ -1273,7 +1273,7 @@ namespace xhn {
         
         for (auto& p : actionFuncClassMap) {
             char mbuf[512];
-            snprintf(mbuf, 511,
+            snprintf(mbuf, 512,
                      "    static open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
                      "        return %s();\n"
                      "    }\n",

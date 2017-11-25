@@ -38,7 +38,7 @@ Exception::~Exception() {
 const char* Exception::what() {
 	const RTTI* rtti = GetRTTI();
     char mbuf[256];
-    snprintf(mbuf, 255, "%d", m_body->m_line);
+    snprintf(mbuf, 256, "%d", m_body->m_line);
 	m_body->m_what = "Error;";
     m_body->m_what += m_body->m_file;
     m_body->m_what += ";";

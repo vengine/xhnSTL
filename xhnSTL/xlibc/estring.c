@@ -80,9 +80,9 @@ EString _EString_add_sint(EString _str, esint _si, const char* _file_name, euint
 {
     char mbuf[STRING_BUFFER_SIZE];
 #if BIT_WIDTH == 32
-    snprintf(mbuf, STRING_BUFFER_SIZE - 1, "%d", _si);
+    snprintf(mbuf, STRING_BUFFER_SIZE, "%d", _si);
 #elif BIT_WIDTH == 64
-    snprintf(mbuf, STRING_BUFFER_SIZE - 1, "%lld", _si);
+    snprintf(mbuf, STRING_BUFFER_SIZE, "%lld", _si);
 #endif
     return EString_add(_str, mbuf);
 }
@@ -91,9 +91,9 @@ EString _EString_add_uint(EString _str, euint _ui, const char* _file_name, euint
 {
     char mbuf[STRING_BUFFER_SIZE];
 #if BIT_WIDTH == 32
-    snprintf(mbuf, STRING_BUFFER_SIZE - 1, "%d", _ui);
+    snprintf(mbuf, STRING_BUFFER_SIZE, "%d", _ui);
 #elif BIT_WIDTH == 64
-    snprintf(mbuf, STRING_BUFFER_SIZE - 1, "%lld", _ui);
+    snprintf(mbuf, STRING_BUFFER_SIZE, "%lld", _ui);
 #endif
     return EString_add(_str, mbuf);
 }
@@ -101,7 +101,7 @@ EString _EString_add_uint(EString _str, euint _ui, const char* _file_name, euint
 EString _EString_add_float(EString _str, float _f, const char* _file_name, euint32 _file_line)
 {
     char mbuf[STRING_BUFFER_SIZE];
-    snprintf(mbuf, STRING_BUFFER_SIZE - 1, "%f", _f);
+    snprintf(mbuf, STRING_BUFFER_SIZE, "%f", _f);
     return EString_add(_str, mbuf);
 }
 

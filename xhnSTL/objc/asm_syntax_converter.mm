@@ -844,7 +844,7 @@ namespace xhn
                 euint pos = inputStringBuffer->find(p.first);
                 while (xhn::string::npos != pos) {
                     char mbuf[256];
-                    snprintf(mbuf, 255, "=0x%llx", p.second);
+                    snprintf(mbuf, 256, "=0x%llx", p.second);
                     
                     (*outputStringBuffer) = inputStringBuffer->substr(0, pos);
                     (*outputStringBuffer) += mbuf;
