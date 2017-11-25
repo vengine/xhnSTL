@@ -37,8 +37,8 @@ API_EXPORT int sched_getaffinity(pid_t pid, size_t cpu_size, cpu_set_t *cpu_set)
 API_EXPORT int pthread_setaffinity_np(pthread_t thread, size_t cpu_size,
                                       cpu_set_t *cpu_set);
     
-API_EXPORT euint32 number_of_cores();
-API_EXPORT euint32 number_of_physicalcores();
+API_EXPORT euint32 number_of_cores(void);
+API_EXPORT euint32 number_of_physicalcores(void);
     
 API_EXPORT void nanopause(euint n);
 #ifdef __cplusplus

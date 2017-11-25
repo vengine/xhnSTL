@@ -45,7 +45,7 @@ API_EXPORT void FixedStack_resize(FixedStack _stk, euint _size);
 API_EXPORT euint FixedStack_count(FixedStack _stk);
 API_EXPORT void* FixedStack_find(FixedStack _stk, euint _i);
 
-API_EXPORT void FixedStack_test();
+API_EXPORT void FixedStack_test(void);
 #ifdef __cplusplus
 }
 #endif

@@ -30,9 +30,9 @@ extern "C"
 extern native_memory_allocator g_DefaultMemoryAllcator;
 
 /// 必须确保所有分配出来的内存都是经过初始化的
-API_EXPORT void TestInit();
+API_EXPORT void TestInit(void);
 /// 必须在启动多线程系统前完成引导
-API_EXPORT void MInit();
+API_EXPORT void MInit(void);
 
 API_EXPORT vptr _Malloc(euint _size, const char* _file, euint32 _line);
 API_EXPORT vptr _SMalloc(euint _size, const char* _file, euint32 _line);
@@ -45,12 +45,12 @@ void TestFree(void* _ptr);
 #define SMalloc(s) _SMalloc(s, __FILE__, __LINE__)
 #define Mfree(p) _Mfree(p, __FILE__, __LINE__)
 
-API_EXPORT void Mlog();
-API_EXPORT void Mprint();
-API_EXPORT bool MCheck();
+API_EXPORT void Mlog(void);
+API_EXPORT void Mprint(void);
+API_EXPORT bool MCheck(void);
 API_EXPORT void MCheck2(void* checker, FnCheckMemory fnCheckMem);
 
-API_EXPORT euint32 ETestMark();
+API_EXPORT euint32 ETestMark(void);
 API_EXPORT bool ETest(vptr ptr);
 API_EXPORT vptr Ealloc(euint _size);
 API_EXPORT vptr SEalloc(euint _size);

@@ -16,7 +16,7 @@
 extern "C"
 {
 #endif
-API_EXPORT void assert_break();
+API_EXPORT void assert_break(void);
 #if 1
 #define EAssert(e, fmt,...) if (!(e)) { snprintf(g_elog_buffer,4096,fmt,##__VA_ARGS__); assert_break(); ELog_write(); assert(e); }
 #else

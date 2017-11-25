@@ -20,10 +20,10 @@ extern "C"
 extern void (*GetHomeDirectory)(char* output, int outlen);
 extern ELock g_elog_lock;
 #define ELOG_BUFFER_SIZE 4096 * 2
-API_EXPORT void ELog_Init();
-API_EXPORT void ELog_Release();
+API_EXPORT void ELog_Init(void);
+API_EXPORT void ELog_Release(void);
 extern char g_elog_buffer[ELOG_BUFFER_SIZE];
-API_EXPORT void ELog_write();
+API_EXPORT void ELog_write(void);
 
 #define elog(fmt,...) { ELock_lock(&g_elog_lock); \
     snprintf(g_elog_buffer,ELOG_BUFFER_SIZE,fmt,##__VA_ARGS__); \
