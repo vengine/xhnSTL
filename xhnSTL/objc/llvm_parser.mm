@@ -35,7 +35,7 @@ static NSMutableSet* s_LLVMCommandLineUtils = nil;
     if ([mWriteBuffer length] == 0)
         return;
     char mbuf[256];
-    snprintf(mbuf, 255, "%s%d.ll", mFilePath.c_str(), mFileCount++);
+    snprintf(mbuf, 256, "%s%d.ll", mFilePath.c_str(), mFileCount++);
     NSFileManager* fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[NSString stringWithUTF8String:mbuf]]) {
         NSError* error = nil;
