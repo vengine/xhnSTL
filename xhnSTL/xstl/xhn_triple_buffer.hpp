@@ -115,10 +115,11 @@ public:
     , m_current_buffer(buffer2)
     , m_has_next_buffer(0)
     {}
-    inline prepare_instance prepare_lock()
+    prepare_instance prepare_lock()
     {
         m_prepare_lock.lock();
         void* old_next_buffer = nullptr;
+        begin_swap:
 #if BIT_WIDTH == 64
         old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
 #else
@@ -128,21 +129,18 @@ public:
                                       reinterpret_cast<void*>(m_prepare_buffer),
                                       (void * volatile *)(&m_next_buffer)
                                       )) {
-#if BIT_WIDTH == 64
-            old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
-#else
-            old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
-#endif
+            goto begin_swap;
         }
         m_prepare_buffer = reinterpret_cast<T*>(old_next_buffer);
         AtomicStore32(1, &m_has_next_buffer);
         return prepare_instance(this);
     }
-    inline current_instance current_lock()
+    current_instance current_lock()
     {
         m_current_lock.lock();
         if (AtomicLoad32(&m_has_next_buffer)) {
             void* old_next_buffer = nullptr;
+            begin_swap:
 #if BIT_WIDTH == 64
             old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
 #else
@@ -152,11 +150,7 @@ public:
                                           reinterpret_cast<void*>(m_current_buffer),
                                           (void * volatile *)(&m_next_buffer)
                                           )) {
-#if BIT_WIDTH == 64
-                old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
-#else
-                old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
-#endif
+                goto begin_swap;
             }
             m_current_buffer = reinterpret_cast<T*>(old_next_buffer);
             AtomicStore32(0, &m_has_next_buffer);
@@ -169,8 +163,9 @@ public:
     inline T* current_buffer() {
         return m_current_buffer;
     }
-    inline void commit_prepare_buffer_not_lock() {
+    void commit_prepare_buffer_not_lock() {
         void* old_next_buffer = nullptr;
+        begin_swap:
 #if BIT_WIDTH == 64
         old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
 #else
@@ -180,19 +175,16 @@ public:
                                       reinterpret_cast<void*>(m_prepare_buffer),
                                       (void * volatile *)(&m_next_buffer)
                                       )) {
-#if BIT_WIDTH == 64
-            old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
-#else
-            old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
-#endif
+            goto begin_swap;
         }
         m_prepare_buffer = reinterpret_cast<T*>(old_next_buffer);
         AtomicStore32(1, &m_has_next_buffer);
     }
-    inline void test_and_swap_current_buffer_not_lock()
+    void test_and_swap_current_buffer_not_lock()
     {
         if (AtomicLoad32(&m_has_next_buffer)) {
             void* old_next_buffer = nullptr;
+            begin_swap:
 #if BIT_WIDTH == 64
             old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
 #else
@@ -202,11 +194,7 @@ public:
                                           reinterpret_cast<void*>(m_current_buffer),
                                           (void * volatile *)(&m_next_buffer)
                                           )) {
-#if BIT_WIDTH == 64
-                old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
-#else
-                old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
-#endif
+                goto begin_swap;
             }
             m_current_buffer = reinterpret_cast<T*>(old_next_buffer);
             AtomicStore32(0, &m_has_next_buffer);
