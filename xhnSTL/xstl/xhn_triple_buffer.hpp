@@ -18,8 +18,26 @@
 
 namespace xhn
 {
+class triple_buffer_lock
+{
+public:
+    ELock m_lock;
+public:
+    triple_buffer_lock()
+    {
+        ELock_Init(&m_lock);
+    }
+    void lock()
+    {
+        ELock_lock(&m_lock);
+    }
+    void unlock()
+    {
+        ELock_unlock(&m_lock);
+    }
+};
 
-template <typename T>
+template <typename T, typename LOCK = triple_buffer_lock>
 class triple_buffer : public MemObject
 {
 public:
@@ -37,7 +55,7 @@ public:
         {}
         inline ~prepare_instance()
         {
-            ELock_unlock(&m_prototype->m_prepare_lock);
+            m_prototype->m_prepare_lock.unlock();
         }
         inline T* operator->() {
             return m_prototype->m_prepare_buffer;
@@ -66,7 +84,7 @@ public:
         {}
         inline ~current_instance()
         {
-            ELock_unlock(&m_prototype->m_current_lock);
+            m_prototype->m_current_lock.unlock();
         }
         inline T* operator->() {
             return m_prototype->m_current_buffer;
@@ -82,8 +100,8 @@ public:
         }
     };
 private:
-    ELock m_prepare_lock;
-    ELock m_current_lock;
+    LOCK m_prepare_lock;
+    LOCK m_current_lock;
     T* m_prepare_buffer;
     volatile T* m_next_buffer;
     T* m_current_buffer;
@@ -96,13 +114,10 @@ public:
     , m_next_buffer(buffer1)
     , m_current_buffer(buffer2)
     , m_has_next_buffer(0)
-    {
-        ELock_Init(&m_prepare_lock);
-        ELock_Init(&m_current_lock);
-    }
+    {}
     inline prepare_instance prepare_lock()
     {
-        ELock_lock(&m_prepare_lock);
+        m_prepare_lock.lock();
         void* old_next_buffer = nullptr;
 #if BIT_WIDTH == 64
         old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
@@ -125,7 +140,7 @@ public:
     }
     inline current_instance current_lock()
     {
-        ELock_lock(&m_current_lock);
+        m_current_lock.lock();
         if (AtomicLoad32(&m_has_next_buffer)) {
             void* old_next_buffer = nullptr;
 #if BIT_WIDTH == 64
