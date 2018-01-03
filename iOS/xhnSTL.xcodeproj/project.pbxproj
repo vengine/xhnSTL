@@ -141,6 +141,10 @@
 		B11DBD9A1F586A2C006D89AD /* xhn_parallel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B11DBD951F586A2C006D89AD /* xhn_parallel.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B11DBD9B1F586A2C006D89AD /* xhn_concurrent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B11DBD961F586A2C006D89AD /* xhn_concurrent.cpp */; };
 		B11DBD9C1F586A2C006D89AD /* xhn_parallel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B11DBD971F586A2C006D89AD /* xhn_parallel.cpp */; };
+		B1276EAE1FFD73DE0073914A /* xhn_stacktrace.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1276EAA1FFD73DD0073914A /* xhn_stacktrace.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1276EAF1FFD73DE0073914A /* xhn_stacktrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1276EAB1FFD73DD0073914A /* xhn_stacktrace.cpp */; };
+		B1276EB01FFD73DE0073914A /* xhn_triple_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1276EAC1FFD73DD0073914A /* xhn_triple_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1276EB11FFD73DE0073914A /* xhn_triple_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1276EAD1FFD73DD0073914A /* xhn_triple_buffer.cpp */; };
 		B1607BF61E7EBD5A00CBBDDD /* xhn_cache.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF21E7EBD5A00CBBDDD /* xhn_cache.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF71E7EBD5A00CBBDDD /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF81E7EBD5A00CBBDDD /* xhn_memory_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -297,6 +301,10 @@
 		B11DBD951F586A2C006D89AD /* xhn_parallel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_parallel.hpp; sourceTree = "<group>"; };
 		B11DBD961F586A2C006D89AD /* xhn_concurrent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_concurrent.cpp; sourceTree = "<group>"; };
 		B11DBD971F586A2C006D89AD /* xhn_parallel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_parallel.cpp; sourceTree = "<group>"; };
+		B1276EAA1FFD73DD0073914A /* xhn_stacktrace.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_stacktrace.hpp; sourceTree = "<group>"; };
+		B1276EAB1FFD73DD0073914A /* xhn_stacktrace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_stacktrace.cpp; sourceTree = "<group>"; };
+		B1276EAC1FFD73DD0073914A /* xhn_triple_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_triple_buffer.hpp; sourceTree = "<group>"; };
+		B1276EAD1FFD73DD0073914A /* xhn_triple_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_triple_buffer.cpp; sourceTree = "<group>"; };
 		B1607BF21E7EBD5A00CBBDDD /* xhn_cache.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_cache.hpp; sourceTree = "<group>"; };
 		B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_dictionary.hpp; sourceTree = "<group>"; };
 		B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_memory_pool.hpp; sourceTree = "<group>"; };
@@ -388,6 +396,10 @@
 		68245B481BC9D7680006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B1276EAB1FFD73DD0073914A /* xhn_stacktrace.cpp */,
+				B1276EAA1FFD73DD0073914A /* xhn_stacktrace.hpp */,
+				B1276EAD1FFD73DD0073914A /* xhn_triple_buffer.cpp */,
+				B1276EAC1FFD73DD0073914A /* xhn_triple_buffer.hpp */,
 				B11DBD931F586A2C006D89AD /* xhn_concurrent.hpp */,
 				B11DBD941F586A2C006D89AD /* xhn_group.hpp */,
 				B11DBD951F586A2C006D89AD /* xhn_parallel.hpp */,
@@ -559,6 +571,7 @@
 				B11DBD981F586A2C006D89AD /* xhn_concurrent.hpp in Headers */,
 				B116FACD1E68244F0064C17C /* xhn_singly_linked_list.hpp in Headers */,
 				68245BC41BC9D7680006E99D /* rwbuffer.h in Headers */,
+				B1276EB01FFD73DE0073914A /* xhn_triple_buffer.hpp in Headers */,
 				68245BD31BC9D7680006E99D /* rtti.hpp in Headers */,
 				B1607BF91E7EBD5A00CBBDDD /* xhn_tuple.hpp in Headers */,
 				68245BA51BC9D7680006E99D /* ObjCPropertys.h in Headers */,
@@ -597,6 +610,7 @@
 				68245BE91BC9D7680006E99D /* xhn_functor.hpp in Headers */,
 				68245BFD1BC9D7680006E99D /* xhn_library.h in Headers */,
 				68245BAD1BC9D7680006E99D /* comparison_algorithm.h in Headers */,
+				B1276EAE1FFD73DE0073914A /* xhn_stacktrace.hpp in Headers */,
 				68245D3E1BC9E8CF0006E99D /* etypes.h in Headers */,
 				68245BDD1BC9D7680006E99D /* xhn_crypto.hpp in Headers */,
 				68245C131BC9D7680006E99D /* xhn_recursive.hpp in Headers */,
@@ -737,6 +751,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68245BA61BC9D7680006E99D /* ObjCPropertys.m in Sources */,
+				B1276EAF1FFD73DE0073914A /* xhn_stacktrace.cpp in Sources */,
 				68245BFC1BC9D7680006E99D /* xhn_library.cpp in Sources */,
 				68245C191BC9D7680006E99D /* xhn_state_machine.cpp in Sources */,
 				68245C1B1BC9D7680006E99D /* xhn_static_string.cpp in Sources */,
@@ -773,6 +788,7 @@
 				68245BA81BC9D7680006E99D /* ObjCString.mm in Sources */,
 				68245BD21BC9D7680006E99D /* rtti.cpp in Sources */,
 				68245BB71BC9D7680006E99D /* estring.c in Sources */,
+				B1276EB11FFD73DE0073914A /* xhn_triple_buffer.cpp in Sources */,
 				68245BE01BC9D7680006E99D /* xhn_duplicate_finder.cpp in Sources */,
 				68245BBB1BC9D7680006E99D /* hash.c in Sources */,
 				68245BB31BC9D7680006E99D /* emem.c in Sources */,

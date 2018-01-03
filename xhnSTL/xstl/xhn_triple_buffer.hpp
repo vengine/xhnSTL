@@ -123,7 +123,7 @@ public:
 #if BIT_WIDTH == 64
         old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
 #else
-        old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
+        old_next_buffer = reinterpret_cast<void*>(AtomicLoad32(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
 #endif
         if (!AtomicCompareExchangePtr(old_next_buffer,
                                       reinterpret_cast<void*>(m_prepare_buffer),
@@ -144,7 +144,7 @@ public:
 #if BIT_WIDTH == 64
             old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
 #else
-            old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
+            old_next_buffer = reinterpret_cast<void*>(AtomicLoad32(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
 #endif
             if (!AtomicCompareExchangePtr(old_next_buffer,
                                           reinterpret_cast<void*>(m_current_buffer),
@@ -169,7 +169,7 @@ public:
 #if BIT_WIDTH == 64
         old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
 #else
-        old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
+        old_next_buffer = reinterpret_cast<void*>(AtomicLoad32(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
 #endif
         if (!AtomicCompareExchangePtr(old_next_buffer,
                                       reinterpret_cast<void*>(m_prepare_buffer),
@@ -188,7 +188,7 @@ public:
 #if BIT_WIDTH == 64
             old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint64*>(&m_next_buffer)));
 #else
-            old_next_buffer = reinterpret_cast<void*>(AtomicLoad64(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
+            old_next_buffer = reinterpret_cast<void*>(AtomicLoad32(reinterpret_cast<volatile esint32*>(&m_next_buffer)));
 #endif
             if (!AtomicCompareExchangePtr(old_next_buffer,
                                           reinterpret_cast<void*>(m_current_buffer),
