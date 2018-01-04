@@ -155,7 +155,7 @@ struct TimeCheckpoint
 #include "TargetConditionals.h"
 #    if TARGET_OS_IPHONE
 #    include <MobileCoreServices/MobileCoreServices.h>
-#    elif TARGET_OS_MAC
+#    elif TARGET_OS_OSX
 #    include <CoreServices/CoreServices.h>
 #    endif
 #include <mach/mach.h>
@@ -209,7 +209,7 @@ struct TimeCheckpoint
         result.m_nanoTime = CalcElapsedTimeInNano(prevCheckpoint, curtCheckpoint);
     }
 };
-#    elif TARGET_OS_MAC
+#    elif TARGET_OS_OSX
 struct TimeCheckpoint
 {
 	uint64 timeStamp;

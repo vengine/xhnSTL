@@ -19,7 +19,7 @@
 /**
 #ifdef __APPLE__
 #include "TargetConditionals.h"
-#if TARGET_OS_MAC
+#if TARGET_OS_OSX
 #include "osx_dialog.h"
 #endif
 #endif

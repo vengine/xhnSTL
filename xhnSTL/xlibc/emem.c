@@ -23,7 +23,7 @@
 #include <TargetConditionals.h>
 ///#include <Availability.h>
 
-#if   TARGET_OS_MAC    && (TARGET_CPU_X86 || TARGET_CPU_X86_64)
+#if   TARGET_OS_OSX    && (TARGET_CPU_X86 || TARGET_CPU_X86_64)
 #include <sys/malloc.h>
 #elif TARGET_OS_IPHONE && (TARGET_CPU_ARM || TARGET_CPU_ARM64)
 
