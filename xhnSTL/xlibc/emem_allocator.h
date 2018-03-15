@@ -319,11 +319,11 @@ void MemAllocatorFunc(free)(MemAllocatorDef(mem_allocator)* _self, void* _ptr)
 
 	ip = ((refer_info*)((char*)_ptr - REFER_INFO_RESERVED));
     
-    EAssert( ip->test_mark == _self->test_mark,
-             "mem error, %s, %d, %d",
-             ip->file_name,
-             ip->line,
-             ip->test_mark );
+    EDebugAssert( ip->test_mark == _self->test_mark,
+                  "mem error, %s, %d, %d",
+                  ip->file_name,
+                  ip->line,
+                  ip->test_mark );
 	ip->file_name = NULL;
 	ip->line = 0;
 	ip->test_mark = 0;

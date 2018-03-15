@@ -25,7 +25,7 @@ void SIGSEGV_handle(int s)
 }
 void throw_exception(int id, const char* what)
 {
-    EAssert(id != 0, "exception id is zero!");
+    EDebugAssert(id != 0, "exception id is zero!");
     s_exce_info = what;
     s_exce_id = id;
     longjmp(s_jmp_buf, id);

@@ -262,10 +262,10 @@ void* alloc(mem_pool_node* _node, volatile esint64* _mem_stamp, bool _is_safe_al
 	mem_node* ret = _node->head;
 	if(ret)
 	{
-		EAssert(is_from(_node, ret), "invalid memory node!");
+		EDebugAssert(is_from(_node, ret), "invalid memory node!");
 		if (_node->head->next)
 		{
-			EAssert(is_from(_node, ret->next), "invalid memory node!");
+			EDebugAssert(is_from(_node, ret->next), "invalid memory node!");
 			_node->head = (mem_node*)ret->next;
 		}
 		else
@@ -275,7 +275,7 @@ void* alloc(mem_pool_node* _node, volatile esint64* _mem_stamp, bool _is_safe_al
 #if TEST_MEMORY_NODE_WHEN_THE_ALLOCATE
         char* test_ptr = (char*)ret + sizeof(mem_node);
         for (euint i = 0; i < (_node->real_chk_size - sizeof(mem_node)); i++) {
-            EAssert(!test_ptr[i], "memory dirty!");
+            EDebugAssert(!test_ptr[i], "memory dirty!");
         }
 #endif
 		if (_is_safe_alloc)
@@ -290,14 +290,14 @@ void* alloc(mem_pool_node* _node, volatile esint64* _mem_stamp, bool _is_safe_al
 void dealloc(mem_pool_node* _node, void* _ptr)
 {
     mem_node* n = NULL;
-    EAssert(is_from(_node, _ptr), "invalid memory node!");
+    EDebugAssert(is_from(_node, _ptr), "invalid memory node!");
 #if CLEAR_MEMORY_NODE_WHEN_THE_DEALLOCATE
 	meminit(_ptr, _node->real_chk_size);
 #endif
     n = (mem_node*)_ptr;
     if (_node->head)
     {
-        EAssert(is_from(_node, _node->head), "invalid memory node!");
+        EDebugAssert(is_from(_node, _node->head), "invalid memory node!");
         n->next = _node->head;
     }
     else

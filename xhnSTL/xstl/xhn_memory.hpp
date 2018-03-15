@@ -48,7 +48,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	void* operator new( size_t nSize, void* ptr )
 	{
-		EAssert(((ref_ptr)ptr % 16) == 0, "new object error");
+		EDebugAssert(((ref_ptr)ptr % 16) == 0, "new object error");
 		return ptr;
 	}
 
@@ -94,7 +94,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 	void* operator new( size_t nSize, void* ptr )
 	{
-		EAssert(((ref_ptr)ptr % 16) == 0, "new object error");
+		EDebugAssert(((ref_ptr)ptr % 16) == 0, "new object error");
 		return ptr;
 	}
 
@@ -313,7 +313,7 @@ public:
     //////////////////////////////////////////////////////////////////////////
 	void* operator new( size_t nSize, void* ptr )
 	{
-		EAssert(((ref_ptr)ptr % 16) == 0, "new object error, ptr == %p", ptr);
+		EDebugAssert(((ref_ptr)ptr % 16) == 0, "new object error, ptr == %p", ptr);
 		return ptr;
 	}
     
@@ -347,7 +347,7 @@ public:
         debug_value = nullptr;
 #endif
         weak_count = VNEW WeakCounter(this);
-        EAssert(weak_count, "weak count must be not null");
+        EDebugAssert(weak_count, "weak count must be not null");
 	}
     RefObject(const RefObject& obj)
     {
@@ -358,11 +358,11 @@ public:
         debug_value = nullptr;
 #endif
         weak_count = VNEW WeakCounter(this);
-        EAssert(weak_count, "weak count must be not null");
+        EDebugAssert(weak_count, "weak count must be not null");
     }
 	virtual ~RefObject()
 	{
-        EAssert(weak_count, "weak count must be not null");
+        EDebugAssert(weak_count, "weak count must be not null");
         volatile bool must_delete_count = false;
         {
             RefSpinLock::Instance inst = weak_count->lock.Lock();
@@ -378,7 +378,7 @@ public:
         }
 	}
     inline const RefObject& operator = (RefObject& obj) {
-        EAssert(0, "RefObject can not perform assign operation");
+        EDebugAssert(0, "RefObject can not perform assign operation");
         return *this;
     }
     inline esint32 GetRefCount() const {

@@ -687,7 +687,7 @@ euint Tree_count(Tree _tree)
 
 void Tree_set_key_compare_proc(Tree _tree, KEY_COMPARE _proc)
 {
-    EAssert(_tree->key_type == Vptr, "Tree_set_key_compare_proc fail");
+    EDebugAssert(_tree->key_type == Vptr, "Tree_set_key_compare_proc fail");
     _tree->key_compare_proc = _proc;
 }
 #ifdef _MSC_VER

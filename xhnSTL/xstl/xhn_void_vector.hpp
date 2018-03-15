@@ -55,7 +55,7 @@ namespace xhn
                 memcpy(m_begin_addr, v.m_begin_addr, m_ele_size * size());
             }
             else {
-                EAssert(!v.m_begin_addr, "when vector is empty then the begin addr must be null");
+                EDebugAssert(!v.m_begin_addr, "when vector is empty then the begin addr must be null");
                 if (m_begin_addr) {
                     Mfree(m_begin_addr);
                 }
@@ -114,7 +114,7 @@ namespace xhn
                 m_barrier = m_begin_addr + ( m_ele_size * n );
             }
 			else {
-                EAssert(m_begin_addr, "you must perform convert operation before resize operation");
+                EDebugAssert(m_begin_addr, "you must perform convert operation before resize operation");
                 m_barrier = m_begin_addr + ( m_ele_size * n );
             }
 		}

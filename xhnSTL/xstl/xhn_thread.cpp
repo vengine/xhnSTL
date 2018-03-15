@@ -377,12 +377,12 @@ xhn::thread::thread()
     int status;
 
     status = pthread_attr_init (&thread_attr);
-    EAssert(!status, "Create attr");
+    EDebugAssert(!status, "Create attr");
     status = pthread_attr_setdetachstate (&thread_attr, PTHREAD_CREATE_DETACHED);
-    EAssert(!status, "Set detach");
+    EDebugAssert(!status, "Set detach");
 #ifdef _POSIX_THREAD_ATTR_STACKSIZE
     status = pthread_attr_getstacksize (&thread_attr, &stack_size);
-    EAssert (!status, "Get stack size");
+    EDebugAssert (!status, "Get stack size");
 #if BIT_WIDTH == 32
     printf ("Default stack size is %u; minimum is %u\n",
             stack_size, PTHREAD_STACK_MIN);
@@ -392,9 +392,9 @@ xhn::thread::thread()
 #endif
     vptr base = (void *) malloc(1024 * 1024);
     status = pthread_attr_setstack(&thread_attr, base, 1024 * 1024);
-    EAssert (!status, "Set stack");
+    EDebugAssert (!status, "Set stack");
     status = pthread_attr_getstacksize (&thread_attr, &stack_size);
-    EAssert (!status, "Get stack size");
+    EDebugAssert (!status, "Get stack size");
 #if BIT_WIDTH == 32
     printf ("Default stack size is %u; minimum is %u\n",
             stack_size, PTHREAD_STACK_MIN);

@@ -33,7 +33,7 @@ namespace xhn
     public:
         Out operator()(In ... in) const
         {
-            EAssert(lambda != nullptr, "lambda is nullptr");
+            EDebugAssert(lambda != nullptr, "lambda is nullptr");
             return executeLambda(lambda, in...);
         }
         
@@ -65,7 +65,7 @@ namespace xhn
     public:
         void operator()(In ... in) const
         {
-            EAssert(lambda != nullptr, "lambda is nullptr");
+            EDebugAssert(lambda != nullptr, "lambda is nullptr");
             executeLambda(lambda, in...);
         }
         

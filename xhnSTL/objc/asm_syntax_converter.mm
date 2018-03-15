@@ -319,8 +319,8 @@ namespace xhn
             }
         }
         virtual void EndCatch() override {
-            EAssert(m_tag.size() > 0, "error");
-            EAssert(m_uintBuffer.size() == 2, "error");
+            EDebugAssert(m_tag.size() > 0, "error");
+            EDebugAssert(m_uintBuffer.size() == 2, "error");
             euint64 data;
             euint32* dataPointer = (euint32*)&data;
             dataPointer[0] = m_uintBuffer[0];
@@ -328,7 +328,7 @@ namespace xhn
             m_dataMap[m_tag] = data;
             m_uintBuffer.clear();
             m_symbolBuffer.Clear();
-            EAssert(!m_isWaitingInteger, "error");
+            EDebugAssert(!m_isWaitingInteger, "error");
             DirectiveCatcher::EndCatch();
         }
     };
@@ -533,10 +533,10 @@ namespace xhn
                 if (!isMatchingSelectorString && !isMatchingSelectorDataString &&
                     !isWaitingCompletedForSelector && !isWaitingCompletedForSelectorData) {
                     if ('(' == bytes[i]) {
-                        EAssert(matchBuffer.size() == 0, "error %lld", matchBuffer.size());
+                        EDebugAssert(matchBuffer.size() == 0, "error %lld", matchBuffer.size());
                     }
                     if (selectorInfixingString[matchBuffer.size()] == bytes[i]) {
-                        EAssert(matchBuffer.size() == 0, "error");
+                        EDebugAssert(matchBuffer.size() == 0, "error");
                         isWaitingCompletedForSelector = true;
                         matchBuffer.clear();
                     }
@@ -707,10 +707,10 @@ namespace xhn
                 if (!isMatchingSelectorString && !isMatchingSelectorDataString &&
                     !isWaitingCompletedForSelector && !isWaitingCompletedForSelectorData) {
                     if ('(' == bytes[i]) {
-                        EAssert(matchBuffer.size() == 0, "error %lld", matchBuffer.size());
+                        EDebugAssert(matchBuffer.size() == 0, "error %lld", matchBuffer.size());
                     }
                     if (selectorInfixingString[matchBuffer.size()] == bytes[i]) {
-                        EAssert(matchBuffer.size() == 0, "error");
+                        EDebugAssert(matchBuffer.size() == 0, "error");
                         isWaitingCompletedForSelector = true;
                         matchBuffer.clear();
                     }
