@@ -992,6 +992,8 @@ namespace xhn {
         bridgeFile += "        s_printLogProc(type, log);\n";
         bridgeFile += "    }\n";
         bridgeFile += "}\n";
+        bridgeFile += "void LoadScene(const char* sceneName, void* renderSys, void* sceneNodeFilter) {\n";
+        bridgeFile += "}\n";
         ///printf("%s\n", bridgeFile.c_str());
         return bridgeFile;
     }
