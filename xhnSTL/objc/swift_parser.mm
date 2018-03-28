@@ -312,12 +312,11 @@ namespace xhn {
     {
         xhn::string bridgeFile;
         char mbuf[1024];
-
         bridgeFile = "static xhn::SpinLock s_lock;\n";
         bridgeFile += "class SwiftSceneNodeFilter : public VEngine::VSceneNodeFilter\n";
         bridgeFile += "{\n";
         bridgeFile += "public:\n";
-        bridgeFile += "    VSceneNodeFilter* m_swiftSceneNodeFilter;\n";
+        bridgeFile += "    id<VSceneNodeFilter> m_swiftSceneNodeFilter;\n";
         bridgeFile += "public:\n";
         bridgeFile += "    virtual bool IsFiltered(VEngine::VSceneNodeNamePtr name, VEngine::VType::NodeType type) override {\n";
         bridgeFile += "        VSceneNodeName* swiftName = [[VSceneNodeName alloc] initWithVSceneNodeName:name.get()];\n";
@@ -1023,15 +1022,15 @@ namespace xhn {
         bridgeFile += "    }\n";
         bridgeFile += "}\n";
         bridgeFile += "void LoadScene(const char* sceneName, const char* sceneFilePath, void* renderSys, void* removedSceneNodes, void* sceneNodeFilter, void* callback) {\n";
-        bridgeFile += "    NSArray<NSString>* removedSceneNodeNames = (__bridge id)removedSceneNodes;\n";
+        bridgeFile += "    NSArray<NSString*>* removedSceneNodeNames = (__bridge id)removedSceneNodes;\n";
         bridgeFile += "    VEngine::SceneNodeNameVectorPtr sceneNodeVector = VNEW VEngine::SceneNodeNameVector();\n";
         bridgeFile += "    for (NSString* name in removedSceneNodeNames) {\n";
-        bridgeFile += "        sceneNodeVector.push_back([name UTF8String]);\n";
+        bridgeFile += "        sceneNodeVector->push_back([name UTF8String]);\n";
         bridgeFile += "    }\n";
         bridgeFile += "    xhn::SmartPtr<SwiftCallback> swiftCallback = VNEW SwiftCallback();\n";
-        bridgeFile += "    swiftCallback->m_callback = (__bridget void (^) (void))callback;\n";
+        bridgeFile += "    swiftCallback->m_callback = (__bridge void (^) (void))callback;\n";
         bridgeFile += "    auto channel = VEngine::VRobotManager::Get((VEngine::VRenderSystem*)renderSys)->GetChannel(VEngine::VScriptRobot::StrScriptRobot,\n";
-        bridgeFile += "                                                                                               VEngine::VSceneRobot::StrSceneRobot));\n";
+        bridgeFile += "                                                                                               VEngine::VSceneRobot::StrSceneRobot);\n";
         bridgeFile += "    xhn::string strSceneName(sceneName);\n";
         bridgeFile += "    xhn::string strSceneFilePath(sceneFilePath);\n";
         bridgeFile += "    SwiftSceneNodeFilter* filter = VNEW SwiftSceneNodeFilter();\n";
@@ -1040,7 +1039,7 @@ namespace xhn {
         bridgeFile += "    xhn::Lambda<void (VEngine::VRobotCommandReceipt*)>\n";
         bridgeFile += "    deleteSceneNodesCallback([strSceneName, strSceneFilePath, renderSys, swiftNodeFilter, swiftCallback](VEngine::VRobotCommandReceipt*){\n";
         bridgeFile += "        auto channel = VEngine::VRobotManager::Get((VEngine::VRenderSystem*)renderSys)->GetChannel(VEngine::VScriptRobot::StrScriptRobot,\n";
-        bridgeFile += "                                                                                                   VEngine::VSceneRobot::StrSceneRobot));\n";
+        bridgeFile += "                                                                                                   VEngine::VSceneRobot::StrSceneRobot);\n";
         bridgeFile += "        xhn::Lambda<void (VEngine::VRobotCommandReceipt*)> loadSceneCallback([swiftCallback](VEngine::VRobotCommandReceipt*){\n";
         bridgeFile += "            swiftCallback->m_callback();\n";
         bridgeFile += "        });\n";
