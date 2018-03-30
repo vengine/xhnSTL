@@ -817,8 +817,18 @@ namespace xhn {
                             snprintf(mbuf, 512,
                                      "    s_createActorAgentProcDic[@%c%s%c] = [[CreateActorAgentProc alloc] initWithProc:^(void* renderSys, void* actor)\n"
                                      "    {\n"
-                                     "        %s* ret = [[%s alloc] initWithActor:[[VActor alloc] initWithVRenderSystemActor:renderSys actor:actor]];\n",
-                                     '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
+                                     "        %s* ret = nil;\n"
+                                     "        VActor* act = ((VEngine::VActor*)actor)->m_slot;\n"
+                                     "        if (act) {\n"
+                                     "            ret = [[%s alloc] initWithActor:act];"
+                                     "        }\n"
+                                     "        else {\n"
+                                     "            ret = [[%s alloc] initWithActor:[[VActor alloc] initWithVRenderSystemActor:renderSys actor:actor]];\n"
+                                     "        }\n",
+                                     '"', node->name.c_str(), '"',
+                                     node->name.c_str(),
+                                     node->name.c_str(),
+                                     node->name.c_str());
                             m_actorAgentNameVector.push_back(node->name);
                             
                             bridgeFile += mbuf;
