@@ -319,7 +319,10 @@ namespace xhn {
         bridgeFile += "    id<VSceneNodeFilter> m_swiftSceneNodeFilter;\n";
         bridgeFile += "public:\n";
         bridgeFile += "    virtual bool IsFiltered(VEngine::VSceneNodeNamePtr name, VEngine::VType::NodeType type) override {\n";
-        bridgeFile += "        VSceneNodeName* swiftName = [[VSceneNodeName alloc] initWithVSceneNodeName:name.get()];\n";
+        bridgeFile += "        VSceneNodeName* swiftName = name->m_slot;\n";
+        bridgeFile += "        if (!swiftName) {\n";
+        bridgeFile += "            swiftName = [[VSceneNodeName alloc] initWithVSceneNodeName:name.get()];\n";
+        bridgeFile += "        }\n";
         bridgeFile += "        VSceneNodeType swiftType = UnknownNode;\n";
         bridgeFile += "        switch (type)\n";
         bridgeFile += "        {\n";
@@ -838,8 +841,18 @@ namespace xhn {
                                 snprintf(mbuf, 512,
                                          "    s_createGUIAgentProcDic[@%c%s%c] = [[CreateGUIAgentProc alloc] initWithProc:^(void* renderSys, void* widget)\n"
                                          "    {\n"
-                                         "        %s* ret = [[%s alloc] initWithWidget:[[VWidget alloc] initWithVRenderSystemWidget:renderSys widget:widget]];\n",
-                                         '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
+                                         "        %s* ret = nil;\n"
+                                         "        VWidget* wg = ((VEngine::GUIWidget*)widget)->m_slot;\n"
+                                         "        if (wg) {\n"
+                                         "            ret = [[%s alloc] initWithWidget:wg];\n"
+                                         "        }\n"
+                                         "        else {\n"
+                                         "            ret = [[%s alloc] initWithWidget:[[VWidget alloc] initWithVRenderSystemWidget:renderSys widget:widget]];\n"
+                                         "        }\n",
+                                         '"', node->name.c_str(), '"',
+                                         node->name.c_str(),
+                                         node->name.c_str(),
+                                         node->name.c_str());
                                 m_guiAgentNameVector.push_back(node->name);
                                 
                                 bridgeFile += mbuf;
