@@ -780,8 +780,18 @@ namespace xhn {
                         snprintf(mbuf, 512,
                                  "    s_createSceneNodeAgentProcDic[@%c%s%c] = [[CreateSceneNodeAgentProc alloc] initWithProc:^(void* sceneNode)\n"
                                  "    {\n"
-                                 "        %s* ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n",
-                                 '"', node->name.c_str(), '"', node->name.c_str(), node->name.c_str());
+                                 "        %s* ret = nil;\n"
+                                 "        VSceneNode* sn = ((VEngine::VSceneNode*)sceneNode)->m_slot;\n"
+                                 "        if (sn) {\n"
+                                 "            ret = [[%s alloc] initWithSceneNode:sn];\n"
+                                 "        }\n"
+                                 "        else {\n"
+                                 "            ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n"
+                                 "        }\n",
+                                 '"', node->name.c_str(), '"',
+                                 node->name.c_str(),
+                                 node->name.c_str(),
+                                 node->name.c_str());
                         m_sceneNodeAgentNameVector.push_back(node->name);
                         
                         bridgeFile += mbuf;
