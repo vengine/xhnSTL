@@ -872,6 +872,9 @@ namespace xhn {
                 }
             };
             printNodes(m_roots, "");
+            for (auto r : m_roots) {
+                ASTNodeLog("###T:%s, N:%s\n", r->nodetype.c_str(), r->name.c_str());
+            }
         }
 #endif
         
@@ -1588,8 +1591,17 @@ namespace xhn {
                     m_isName = false;
                     if (!m_isApostropheBlock &&
                         !m_isQuotationBlock) {
-                        m_nodeStack.push_back(VNEW ASTNode());
-                        m_nodes.push_back(m_nodeStack.back());
+                        ASTNode* currentNode = VNEW ASTNode();
+                        if (m_nodeStack.size()) {
+                            ASTNode* parentNode = m_nodeStack.back();
+                            if (!parentNode->children) {
+                                parentNode->children = VNEW xhn::vector<ASTNode*>();
+                            }
+                            parentNode->children->push_back(currentNode);
+                            currentNode->parent = parentNode;
+                        }
+                        m_nodeStack.push_back(currentNode);
+                        m_nodes.push_back(currentNode);
                         m_isNodeType = true;
                         ASTLog("NEW NODE\n");
                     }
@@ -1604,23 +1616,18 @@ namespace xhn {
                         reduce();
                         m_symbolBuffer.bufferTop = 0;
                         ASTNode* currentNode = m_nodeStack.back();
-                        m_nodeStack.pop_back();
-                        if (m_nodeStack.size()) {
-                            ASTNode* parentNode = m_nodeStack.back();
-                            ASTLog("NODETYPE=%s, NAME=%s, ACCESS=%s, DECL=%s, TYPE=%s, INTERFACETYPE=%s\n",
-                                   currentNode->nodetype.c_str(),
-                                   currentNode->name.c_str(),
-                                   currentNode->access.c_str(),
-                                   currentNode->decl.c_str(),
-                                   currentNode->type.c_str(),
-                                   currentNode->interfacetype.c_str());
+                        ASTNode* parentNode = currentNode->parent;
+                        ASTLog("NODETYPE=%s, NAME=%s, ACCESS=%s, DECL=%s, TYPE=%s, INTERFACETYPE=%s\n",
+                               currentNode->nodetype.c_str(),
+                               currentNode->name.c_str(),
+                               currentNode->access.c_str(),
+                               currentNode->decl.c_str(),
+                               currentNode->type.c_str(),
+                               currentNode->interfacetype.c_str());
+                        if (parentNode) {
                             ASTLog("%s <- %s\n", parentNode->nodetype.c_str(), currentNode->nodetype.c_str());
-                            if (!parentNode->children) {
-                                parentNode->children = VNEW xhn::vector<ASTNode*>();
-                            }
-                            parentNode->children->push_back(currentNode);
-                            currentNode->parent = parentNode;
                         }
+                        m_nodeStack.pop_back();
                         ASTLog("PUSH TO PARENT NODE\n");
                     }
                     else {
