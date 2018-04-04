@@ -45,11 +45,13 @@ static NSMutableSet* s_SwiftCommandLineUtils = nil;
 
 @interface SwiftCommandLineUtil : NSObject
 @property (assign) xhn::SwiftParser* parser;
-- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string& bridgeFile,
-                                                              const xhn::string& stateActionFile,
-                                                              const xhn::vector<xhn::static_string>&,
-                                                              const xhn::vector<xhn::static_string>&,
-                                                              const xhn::vector<xhn::static_string>&))proc;
+- (void) runCommand:(NSString*)commandToRun
+             logDir:(const xhn::string&)logDir
+           callback:(void(^)(const xhn::string& bridgeFile,
+                             const xhn::string& stateActionFile,
+                             const xhn::vector<xhn::static_string>&,
+                             const xhn::vector<xhn::static_string>&,
+                             const xhn::vector<xhn::static_string>&))proc;
 @end
 
 namespace xhn {
@@ -1590,7 +1592,8 @@ namespace xhn {
             count++;
         }
     }
-    void SwiftParser::ParseSwifts(const string& paths, xhn::Lambda<void (const xhn::string& bridgeFile,
+    void SwiftParser::ParseSwifts(const string& logDir,
+                                  const string& paths, xhn::Lambda<void (const xhn::string& bridgeFile,
                                                                          const xhn::string& stateActionFile,
                                                                          const xhn::vector<xhn::static_string>&,
                                                                          const xhn::vector<xhn::static_string>&,
@@ -1618,9 +1621,11 @@ namespace xhn {
                                                                           const xhn::vector<xhn::static_string>& actorAgentNames) {
             tmpCallback(bridgeFile, stateActionFile, sceneNodeAgentNames, guiAgentNames, actorAgentNames);
         };
-        [sclu runCommand:command callback:objcCallback];
+        [sclu runCommand:command
+                  logDir:logDir
+                callback:objcCallback];
     }
-    SwiftParser::SwiftParser()
+    SwiftParser::SwiftParser(const string& logDir)
     : m_isApostropheBlock(false)
     , m_isQuotationBlock(false)
     , m_isNodeType(false)
@@ -1632,8 +1637,8 @@ namespace xhn {
     , m_isType(false)
     {
 #if USING_AST_LOG
-        s_ASTLogFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/log.txt", "wb");
-        s_ASTFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/ast.txt", "wb");
+        s_ASTLogFile = fopen((logDir + "/swiftParseLog.txt").c_str(), "wb");
+        s_ASTFile = fopen((logDir + "/swiftParseAst.txt").c_str(), "wb");
 #endif
     }
     SwiftParser::~SwiftParser()
@@ -1692,11 +1697,13 @@ namespace xhn {
     }
 }
 
-- (void) runCommand:(NSString*)commandToRun callback:(void(^)(const xhn::string& bridgeFile,
-                                                              const xhn::string& stateActionFile,
-                                                              const xhn::vector<xhn::static_string>&,
-                                                              const xhn::vector<xhn::static_string>&,
-                                                              const xhn::vector<xhn::static_string>&))proc
+- (void) runCommand:(NSString*)commandToRun
+             logDir:(const xhn::string&)logDir
+           callback:(void(^)(const xhn::string& bridgeFile,
+                             const xhn::string& stateActionFile,
+                             const xhn::vector<xhn::static_string>&,
+                             const xhn::vector<xhn::static_string>&,
+                             const xhn::vector<xhn::static_string>&))proc
 {
     mCallback = proc;
     mTask = [[NSTask alloc] init];
@@ -1707,7 +1714,7 @@ namespace xhn {
                           [NSString stringWithFormat:@"%@", commandToRun],
                           nil];
 #if USING_AST_LOG
-    s_COMMANDFile = fopen("/Users/xhnsworks/测试工程/swiftTest/swiftTest/command.txt", "wb");
+    s_COMMANDFile = fopen((logDir + "/swiftParserCommand.txt").c_str(), "wb");
 #endif
     COMMANDLog("run command: %s", [commandToRun UTF8String]);
 #if USING_AST_LOG
@@ -1731,7 +1738,7 @@ namespace xhn {
         }
         [s_SwiftCommandLineUtils addObject:self];
     }
-    self.parser = VNEW xhn::SwiftParser();
+    self.parser = VNEW xhn::SwiftParser(logDir);
     self.parser->BeginParse();
     [mTask launch];
 }

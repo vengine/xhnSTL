@@ -118,12 +118,13 @@ public:
                                  Lambda<bool (static_string, static_string,
                                               vector<static_string>&)>& isInheritFromClassProc);
     void Parse(const char* strBuffer, euint length);
-    static void ParseSwifts(const string& paths, Lambda<void (const xhn::string& bridgeFile,
+    static void ParseSwifts(const string& logDir,
+                            const string& paths, Lambda<void (const xhn::string& bridgeFile,
                                                               const xhn::string& stateActionFile,
                                                               const vector<static_string>&,
                                                               const vector<static_string>&,
                                                               const vector<static_string>&)>& callback);
-    SwiftParser();
+    SwiftParser(const string& logDir);
     ~SwiftParser();
     inline const vector<static_string>& GetSceneNodeAgentNameVector() const { return m_sceneNodeAgentNameVector; }
     inline const vector<static_string>& GetGUIAgentNameVector() const { return m_guiAgentNameVector; }
