@@ -1615,6 +1615,7 @@ namespace xhn {
                         !m_isQuotationBlock) {
                         reduce();
                         m_symbolBuffer.bufferTop = 0;
+#if USING_AST_LOG
                         ASTNode* currentNode = m_nodeStack.back();
                         ASTNode* parentNode = currentNode->parent;
                         ASTLog("NODETYPE=%s, NAME=%s, ACCESS=%s, DECL=%s, TYPE=%s, INTERFACETYPE=%s\n",
@@ -1627,8 +1628,9 @@ namespace xhn {
                         if (parentNode) {
                             ASTLog("%s <- %s\n", parentNode->nodetype.c_str(), currentNode->nodetype.c_str());
                         }
-                        m_nodeStack.pop_back();
                         ASTLog("PUSH TO PARENT NODE\n");
+#endif
+                        m_nodeStack.pop_back();
                     }
                     else {
                         m_symbolBuffer.AddCharacter(c);
