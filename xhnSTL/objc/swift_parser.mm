@@ -128,6 +128,8 @@ namespace xhn {
     }
     void SwiftParser::EndParse(string& bridgeFile, string& stateActionFile)
     {
+        EAssert(m_nodeStack.size() == 0, "error");
+        
         map<static_string, static_string> aliasMap;
         map<static_string, vector<static_string>> inheritMap;
         map<static_string, vector<static_string>> childrenClassMap;
@@ -232,6 +234,16 @@ namespace xhn {
                     }
                 }
                 classMap[nodePath.c_str()] = node;
+            }
+            else {
+                /// 对于非class节点一样向下传递
+                if (node->children) {
+                    auto childIter = node->children->begin();
+                    auto childEnd = node->children->end();
+                    for (; childIter != childEnd; childIter++) {
+                        makeClassMapProc(parentPath, *childIter);
+                    }
+                }
             }
         };
         
