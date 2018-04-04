@@ -855,6 +855,12 @@ namespace xhn {
         {
             for (auto n : m_nodes) {
                 ASTNodeLog("#T:%s N:%s\n", n->nodetype.c_str(), n->name.c_str());
+                ASTNode* parentNode = n->parent;
+                while (parentNode)
+                {
+                    ASTNodeLog("  #T:%s N:%s\n", parentNode->nodetype.c_str(), parentNode->name.c_str());
+                    parentNode = parentNode->parent;
+                }
             }
             xhn::Lambda<void (vector<ASTNode*>&, xhn::string)> printNodes;
             printNodes = [&printNodes](vector<ASTNode*>& children, xhn::string indentation){

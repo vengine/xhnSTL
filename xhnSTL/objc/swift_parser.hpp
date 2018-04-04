@@ -79,9 +79,12 @@ public:
         static_string interfacetype;
         SmartPtr<vector<static_string>> inherits;
         SmartPtr<vector<ASTNode*>> children;
+        ASTNode* parent;
         ASTNode()
+        : parent(nullptr)
         {}
         ASTNode(const static_string nodeName)
+        : parent(nullptr)
         {}
     };
 private:
