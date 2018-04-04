@@ -17,10 +17,16 @@
 
 #define AST_BUFFER_SIZE (1024 * 512)
 #define COMMAND_BUFFER_SIZE (1024)
+
 #define ASTLog(fmt,...) { \
 int size = \
 snprintf(s_ASTBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
 fwrite(s_ASTBuffer, 1, size, s_ASTLogFile); }
+
+#define GUILog(fmt,...) { \
+int size = \
+snprintf(s_GUIBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
+fwrite(s_GUIBuffer, 1, size, s_GUILogFile); }
 
 #define COMMANDLog(fmt,...) { \
 int size = \
@@ -30,6 +36,9 @@ fwrite(s_COMMANDBuffer, 1, size, s_COMMANDFile); }
 static char s_ASTBuffer[AST_BUFFER_SIZE];
 static FILE* s_ASTLogFile = nullptr;
 
+static char s_GUIBuffer[AST_BUFFER_SIZE];
+static FILE* s_GUILogFile = nullptr;
+
 static char s_COMMANDBuffer[AST_BUFFER_SIZE];
 static FILE* s_COMMANDFile = nullptr;
 
@@ -37,6 +46,7 @@ static FILE* s_ASTFile = nullptr;
 
 #else
 #define ASTLog(fmt,...)
+#define GUILog(fmt,...)
 #define COMMANDLog(fmt,...)
 #endif
 
@@ -659,6 +669,8 @@ namespace xhn {
             xhn::string firstAction;
             xhn::static_string agentClassName = inheritPath.back();
             
+            GUILog("Agent:%s\n", agentClassName.c_str());
+            
             ASTNode* node = nullptr;
             auto nodeIter = classMap.find(agentClassName);
             if (nodeIter != classMap.end()) {
@@ -668,10 +680,24 @@ namespace xhn {
             snprintf(mbuf, 512,
                      "        /// agentClassName = %s\n", agentClassName.c_str());
             bridgeFile += mbuf;
+
             ///
             /// 找到所有的子类
             auto childClassIter = childrenClassMap.find(agentClassName);
+#if USING_AST_LOG
             if (childClassIter != childrenClassMap.end()) {
+                GUILog("  Has Child Classes:\n");
+            }
+            else {
+                GUILog("  Has Not Child Classes:\n");
+            }
+#endif
+            if (childClassIter != childrenClassMap.end()) {
+#if USING_AST_LOG
+                for (auto& c : childClassIter->second) {
+                    GUILog("  %s\n", c.c_str());
+                }
+#endif
                 auto childIter = childClassIter->second.begin();
                 auto childEnd = childClassIter->second.end();
                 /// 遍历子类
@@ -683,9 +709,28 @@ namespace xhn {
                     bridgeFile += mbuf;
                     ///
                     /// 找到子类名对应的ASTNode
+#if USING_AST_LOG
+                    GUILog("Child Class:%s\n", childClassName.c_str());
+                    if (classMap.find(childClassName) != classMap.end()) {
+                        GUILog("  Found Child Class Node:\n");
+                    }
+                    else {
+                        GUILog("  Not Found Child Class Node:\n");
+                    }
+#endif
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
                         ASTNode* child = childNodeIter->second;
+#if USING_AST_LOG
+                        if (StrClassDecl == child->nodetype &&
+                            (StrPublic == child->access || StrOpen == child->access) &&
+                            child->inherits) {
+                            GUILog("  Is A Inherited Class And Accessible:\n");
+                        }
+                        else {
+                            GUILog("  Is Not A Inherited Class Or Unaccessible:\n");
+                        }
+#endif
                         /// 判断该ASTNode的类型和访问状况，是否是派生类
                         if (StrClassDecl == child->nodetype &&
                             (StrPublic == child->access || StrOpen == child->access) &&
@@ -712,11 +757,27 @@ namespace xhn {
                             guiStateInheritPath.clear();
                             isInheritFromGUIStateInterface = isInheritFromClassProc(strFullClassName, StrGUIStateInterface, guiStateInheritPath);
                             
+#if USING_AST_LOG
+                            if (isInheritFromGUIState && isInheritFromGUIStateInterface) {
+                                GUILog("  Is Inherited From GUIState And Is Inherited From GUIState Interface:\n");
+                            }
+                            else {
+                                GUILog("  Is Not Inherited From GUIState Or Is Not Inherited From GUIState Interface:\n");
+                            }
+#endif
                             if (isInheritFromGUIState && isInheritFromGUIStateInterface) {
                                 /// 这里要判断状态的类型
                                 /// NormalState、HoveringState、SelectedState、PressedState、DraggingState
                                 xhn::string tmpFullClassName = strFullClassName.c_str();
                                 euint pos = tmpFullClassName.rfind(".");
+#if USING_AST_LOG
+                                if (xhn::string::npos != pos) {
+                                    GUILog("  Has A Dot:\n");
+                                }
+                                else {
+                                    GUILog("  Has Not A Dot:\n");
+                                }
+#endif
                                 if (xhn::string::npos != pos) {
                                     xhn::string stateName = tmpFullClassName.substr(pos + 1, tmpFullClassName.size() - pos - 1);
                                     ///
@@ -848,6 +909,10 @@ namespace xhn {
                             inheritPath.clear();
                             if (isInheritFromClassProc(node->name, StrGUIAgent, inheritPath)) {
                                 inheritPath.insert(inheritPath.begin(), node->name);
+                                
+                                for (auto i : inheritPath) {
+                                    GUILog("--%s\n", i.c_str());
+                                }
                                 
                                 char mbuf[512];
                                 snprintf(mbuf, 512,
@@ -1638,6 +1703,7 @@ namespace xhn {
     {
 #if USING_AST_LOG
         s_ASTLogFile = fopen((logDir + "/swiftParseLog.txt").c_str(), "wb");
+        s_GUILogFile = fopen((logDir + "/swiftParseGUILog.txt").c_str(), "wb");
         s_ASTFile = fopen((logDir + "/swiftParseAst.txt").c_str(), "wb");
 #endif
     }
@@ -1645,6 +1711,7 @@ namespace xhn {
     {
 #if USING_AST_LOG
         fclose(s_ASTLogFile);
+        fclose(s_GUILogFile);
         fclose(s_ASTFile);
 #endif
     }
