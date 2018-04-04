@@ -127,7 +127,6 @@
 		68245D3A1BC9D8F90006E99D /* xhn_void_vector.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 68245CB31BC9D8F90006E99D /* xhn_void_vector.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245D411BC9E8F60006E99D /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245D3F1BC9E8F60006E99D /* common.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68245D421BC9E8F60006E99D /* etypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 68245D401BC9E8F60006E99D /* etypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		68FC12CF1BC9D31A00C8A0BE /* xhnSTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 68FC12CE1BC9D31A00C8A0BE /* xhnSTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68FC12D61BC9D31A00C8A0BE /* xhnSTLStatic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68FC12CB1BC9D31A00C8A0BE /* xhnSTLStatic.framework */; };
 		68FC12DB1BC9D31A00C8A0BE /* xhnSTLTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */; };
 		B10D55A61CBE6D47003733D9 /* swift_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B10D55A41CBE6D47003733D9 /* swift_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -138,7 +137,20 @@
 		B1607BBF1E7D2AC200CBBDDD /* llvm_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BBD1E7D2AC200CBBDDD /* llvm_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */; };
 		B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
-		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; };
+		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1929A8F2074ED190072CC94 /* xhn_parallel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1929A862074ED180072CC94 /* xhn_parallel.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1929A902074ED190072CC94 /* xhn_group.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1929A872074ED180072CC94 /* xhn_group.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1929A912074ED190072CC94 /* xhn_concurrent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1929A882074ED190072CC94 /* xhn_concurrent.cpp */; };
+		B1929A922074ED190072CC94 /* xhn_concurrent.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1929A892074ED190072CC94 /* xhn_concurrent.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1929A932074ED190072CC94 /* xhn_stacktrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1929A8A2074ED190072CC94 /* xhn_stacktrace.cpp */; };
+		B1929A942074ED190072CC94 /* xhn_stacktrace.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1929A8B2074ED190072CC94 /* xhn_stacktrace.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1929A952074ED190072CC94 /* xhn_parallel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1929A8C2074ED190072CC94 /* xhn_parallel.cpp */; };
+		B1929A962074ED190072CC94 /* xhn_triple_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1929A8D2074ED190072CC94 /* xhn_triple_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1929A972074ED190072CC94 /* xhn_triple_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1929A8E2074ED190072CC94 /* xhn_triple_buffer.cpp */; };
+		B1929A9B2074EDE40072CC94 /* asm_syntax_converter.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1929A982074EDE40072CC94 /* asm_syntax_converter.mm */; };
+		B1929A9C2074EDE40072CC94 /* symbol_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1929A992074EDE40072CC94 /* symbol_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1929A9D2074EDE40072CC94 /* asm_syntax_converter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1929A9A2074EDE40072CC94 /* asm_syntax_converter.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1929A9F2074EED70072CC94 /* xhnSTLStatic.h in Headers */ = {isa = PBXBuildFile; fileRef = B1929A9E2074EED70072CC94 /* xhnSTLStatic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1A89DB71CAF9F2700358DD4 /* xhn_singly_linked_list.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1C17FE01E7A57FC007C7088 /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1C17FDF1E7A57FC007C7088 /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1CED06F1F32257000FCA4D7 /* cpu_x86_64.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED06E1F32257000FCA4D7 /* cpu_x86_64.c */; };
@@ -278,7 +290,6 @@
 		68245D3F1BC9E8F60006E99D /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		68245D401BC9E8F60006E99D /* etypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = etypes.h; sourceTree = "<group>"; };
 		68FC12CB1BC9D31A00C8A0BE /* xhnSTLStatic.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = xhnSTLStatic.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		68FC12CE1BC9D31A00C8A0BE /* xhnSTL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xhnSTL.h; sourceTree = "<group>"; };
 		68FC12D01BC9D31A00C8A0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		68FC12D51BC9D31A00C8A0BE /* xhnSTLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = xhnSTLTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = xhnSTLTests.mm; sourceTree = "<group>"; };
@@ -292,6 +303,19 @@
 		B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
 		B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
+		B1929A862074ED180072CC94 /* xhn_parallel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_parallel.hpp; sourceTree = "<group>"; };
+		B1929A872074ED180072CC94 /* xhn_group.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_group.hpp; sourceTree = "<group>"; };
+		B1929A882074ED190072CC94 /* xhn_concurrent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_concurrent.cpp; sourceTree = "<group>"; };
+		B1929A892074ED190072CC94 /* xhn_concurrent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_concurrent.hpp; sourceTree = "<group>"; };
+		B1929A8A2074ED190072CC94 /* xhn_stacktrace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_stacktrace.cpp; sourceTree = "<group>"; };
+		B1929A8B2074ED190072CC94 /* xhn_stacktrace.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_stacktrace.hpp; sourceTree = "<group>"; };
+		B1929A8C2074ED190072CC94 /* xhn_parallel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_parallel.cpp; sourceTree = "<group>"; };
+		B1929A8D2074ED190072CC94 /* xhn_triple_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_triple_buffer.hpp; sourceTree = "<group>"; };
+		B1929A8E2074ED190072CC94 /* xhn_triple_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_triple_buffer.cpp; sourceTree = "<group>"; };
+		B1929A982074EDE40072CC94 /* asm_syntax_converter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = asm_syntax_converter.mm; sourceTree = "<group>"; };
+		B1929A992074EDE40072CC94 /* symbol_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = symbol_buffer.hpp; sourceTree = "<group>"; };
+		B1929A9A2074EDE40072CC94 /* asm_syntax_converter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = asm_syntax_converter.hpp; sourceTree = "<group>"; };
+		B1929A9E2074EED70072CC94 /* xhnSTLStatic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xhnSTLStatic.h; sourceTree = "<group>"; };
 		B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_singly_linked_list.hpp; sourceTree = "<group>"; };
 		B1C17FDF1E7A57FC007C7088 /* xhn_dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_dictionary.hpp; sourceTree = "<group>"; };
 		B1CED06E1F32257000FCA4D7 /* cpu_x86_64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_x86_64.c; sourceTree = "<group>"; };
@@ -321,6 +345,9 @@
 		68245C2A1BC9D8F80006E99D /* objc */ = {
 			isa = PBXGroup;
 			children = (
+				B1929A9A2074EDE40072CC94 /* asm_syntax_converter.hpp */,
+				B1929A982074EDE40072CC94 /* asm_syntax_converter.mm */,
+				B1929A992074EDE40072CC94 /* symbol_buffer.hpp */,
 				B1607BBC1E7D2AC200CBBDDD /* llvm_parser.mm */,
 				B1607BBD1E7D2AC200CBBDDD /* llvm_parser.hpp */,
 				B10D55A41CBE6D47003733D9 /* swift_parser.hpp */,
@@ -386,6 +413,15 @@
 		68245C591BC9D8F80006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B1929A882074ED190072CC94 /* xhn_concurrent.cpp */,
+				B1929A892074ED190072CC94 /* xhn_concurrent.hpp */,
+				B1929A872074ED180072CC94 /* xhn_group.hpp */,
+				B1929A8C2074ED190072CC94 /* xhn_parallel.cpp */,
+				B1929A862074ED180072CC94 /* xhn_parallel.hpp */,
+				B1929A8A2074ED190072CC94 /* xhn_stacktrace.cpp */,
+				B1929A8B2074ED190072CC94 /* xhn_stacktrace.hpp */,
+				B1929A8E2074ED190072CC94 /* xhn_triple_buffer.cpp */,
+				B1929A8D2074ED190072CC94 /* xhn_triple_buffer.hpp */,
 				B13A04AA1E8E8B8D003C55E3 /* xhn_cache.hpp */,
 				B13A04AB1E8E8B8D003C55E3 /* xhn_memory_pool.hpp */,
 				B1C17FDF1E7A57FC007C7088 /* xhn_dictionary.hpp */,
@@ -495,12 +531,12 @@
 		68FC12CD1BC9D31A00C8A0BE /* xhnSTL */ = {
 			isa = PBXGroup;
 			children = (
+				B1929A9E2074EED70072CC94 /* xhnSTLStatic.h */,
 				68245D3F1BC9E8F60006E99D /* common.h */,
 				68245D401BC9E8F60006E99D /* etypes.h */,
 				68245C2A1BC9D8F80006E99D /* objc */,
 				68245C331BC9D8F80006E99D /* xlibc */,
 				68245C591BC9D8F80006E99D /* xstl */,
-				68FC12CE1BC9D31A00C8A0BE /* xhnSTL.h */,
 				68FC12D01BC9D31A00C8A0BE /* Info.plist */,
 			);
 			path = xhnSTL;
@@ -528,9 +564,11 @@
 				68245D111BC9D8F90006E99D /* xhn_list2.h in Headers */,
 				68245CBC1BC9D8F90006E99D /* array.h in Headers */,
 				68245D061BC9D8F90006E99D /* xhn_hash_set.hpp in Headers */,
+				B1929A902074ED190072CC94 /* xhn_group.hpp in Headers */,
 				68245D261BC9D8F90006E99D /* xhn_routine_pool.hpp in Headers */,
 				B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */,
 				68245CFC1BC9D8F90006E99D /* xhn_garbage_collector.hpp in Headers */,
+				B1929A9C2074EDE40072CC94 /* symbol_buffer.hpp in Headers */,
 				B1A89DB71CAF9F2700358DD4 /* xhn_singly_linked_list.hpp in Headers */,
 				68245CF41BC9D8F90006E99D /* xhn_exception.hpp in Headers */,
 				68245CD51BC9D8F90006E99D /* rwbuffer.h in Headers */,
@@ -540,12 +578,12 @@
 				68245CB61BC9D8F90006E99D /* ObjCPropertys.h in Headers */,
 				68245CE21BC9D8F90006E99D /* map.hpp in Headers */,
 				68245CE01BC9D8F90006E99D /* utility.h in Headers */,
+				B1929A942074ED190072CC94 /* xhn_stacktrace.hpp in Headers */,
 				68245CFE1BC9D8F90006E99D /* xhn_gc_array.h in Headers */,
 				68245D071BC9D8F90006E99D /* xhn_iterator.hpp in Headers */,
 				68245CD31BC9D8F90006E99D /* prime.h in Headers */,
 				B13A04AC1E8E8B8D003C55E3 /* xhn_cache.hpp in Headers */,
 				68245D051BC9D8F90006E99D /* xhn_hash_map.hpp in Headers */,
-				68FC12CF1BC9D31A00C8A0BE /* xhnSTL.h in Headers */,
 				68245CC31BC9D8F90006E99D /* elog.h in Headers */,
 				68245CC71BC9D8F90006E99D /* esignal.h in Headers */,
 				68245CC51BC9D8F90006E99D /* emem.h in Headers */,
@@ -556,10 +594,13 @@
 				B1D0B56D1E6D036B004D1206 /* cpu.h in Headers */,
 				68245D341BC9D8F90006E99D /* xhn_thread_map.hpp in Headers */,
 				68245CDC1BC9D8F90006E99D /* static_string.h in Headers */,
+				B1929A8F2074ED190072CC94 /* xhn_parallel.hpp in Headers */,
 				68245CE81BC9D8F90006E99D /* xhn_btree.hpp in Headers */,
 				B13A04AD1E8E8B8D003C55E3 /* xhn_memory_pool.hpp in Headers */,
 				68245D381BC9D8F90006E99D /* xhn_utility.hpp in Headers */,
 				68245CB41BC9D8F90006E99D /* apple_file_manager.h in Headers */,
+				B1929A9F2074EED70072CC94 /* xhnSTLStatic.h in Headers */,
+				B1929A922074ED190072CC94 /* xhn_concurrent.hpp in Headers */,
 				68245D361BC9D8F90006E99D /* xhn_thread_pool.hpp in Headers */,
 				68245CD01BC9D8F90006E99D /* list_base.h in Headers */,
 				68245CB81BC9D8F90006E99D /* ObjCString.h in Headers */,
@@ -577,6 +618,7 @@
 				68245CFA1BC9D8F90006E99D /* xhn_functor.hpp in Headers */,
 				68245CBE1BC9D8F90006E99D /* comparison_algorithm.h in Headers */,
 				68245CEE1BC9D8F90006E99D /* xhn_crypto.hpp in Headers */,
+				B1929A9D2074EDE40072CC94 /* asm_syntax_converter.hpp in Headers */,
 				68245D241BC9D8F90006E99D /* xhn_recursive.hpp in Headers */,
 				68245CC11BC9D8F90006E99D /* eassert.h in Headers */,
 				68245D171BC9D8F90006E99D /* xhn_memory.hpp in Headers */,
@@ -603,6 +645,7 @@
 				68245CBA1BC9D8F90006E99D /* Singleton.h in Headers */,
 				68245D2F1BC9D8F90006E99D /* xhn_string.hpp in Headers */,
 				68245CE51BC9D8F90006E99D /* timer.h in Headers */,
+				B1929A962074ED190072CC94 /* xhn_triple_buffer.hpp in Headers */,
 				68245D201BC9D8F90006E99D /* xhn_path_tree.hpp in Headers */,
 				68245CD71BC9D8F90006E99D /* sha256.h in Headers */,
 				68245CF91BC9D8F90006E99D /* xhn_fixed_queue.hpp in Headers */,
@@ -707,6 +750,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68245CB71BC9D8F90006E99D /* ObjCPropertys.m in Sources */,
+				B1929A932074ED190072CC94 /* xhn_stacktrace.cpp in Sources */,
 				68245D2A1BC9D8F90006E99D /* xhn_state_machine.cpp in Sources */,
 				68245D2C1BC9D8F90006E99D /* xhn_static_string.cpp in Sources */,
 				68245CC01BC9D8F90006E99D /* eassert.c in Sources */,
@@ -716,6 +760,7 @@
 				68245D281BC9D8F90006E99D /* xhn_smart_ptr.cpp in Sources */,
 				68245CD61BC9D8F90006E99D /* sha256.c in Sources */,
 				B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */,
+				B1929A9B2074EDE40072CC94 /* asm_syntax_converter.mm in Sources */,
 				B1CED06F1F32257000FCA4D7 /* cpu_x86_64.c in Sources */,
 				68245CD91BC9D8F90006E99D /* stack.c in Sources */,
 				68245CBB1BC9D8F90006E99D /* xhn_filesystem_node.mm in Sources */,
@@ -727,6 +772,7 @@
 				68245D371BC9D8F90006E99D /* xhn_utility.cpp in Sources */,
 				68245CD41BC9D8F90006E99D /* rwbuffer.c in Sources */,
 				68245CFD1BC9D8F90006E99D /* xhn_gc_array.cpp in Sources */,
+				B1929A972074ED190072CC94 /* xhn_triple_buffer.cpp in Sources */,
 				68245D2E1BC9D8F90006E99D /* xhn_string.cpp in Sources */,
 				68245CDF1BC9D8F90006E99D /* utility.c in Sources */,
 				B10D55A71CBE6D47003733D9 /* swift_parser.mm in Sources */,
@@ -734,7 +780,9 @@
 				68245CFF1BC9D8F90006E99D /* xhn_gc_container_base.cpp in Sources */,
 				68245D351BC9D8F90006E99D /* xhn_thread_pool.cpp in Sources */,
 				68245CF71BC9D8F90006E99D /* xhn_filesystem_node.cpp in Sources */,
+				B1929A912074ED190072CC94 /* xhn_concurrent.cpp in Sources */,
 				68245CF31BC9D8F90006E99D /* xhn_exception.cpp in Sources */,
+				B1929A952074ED190072CC94 /* xhn_parallel.cpp in Sources */,
 				68245CFB1BC9D8F90006E99D /* xhn_garbage_collector.cpp in Sources */,
 				68245CD21BC9D8F90006E99D /* prime.c in Sources */,
 				B1CED0751F3226C800FCA4D7 /* cpu_common.c in Sources */,

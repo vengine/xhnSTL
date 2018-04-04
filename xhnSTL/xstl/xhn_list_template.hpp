@@ -15,7 +15,7 @@
 
 #include "common.h"
 #include "etypes.h"
-#include "emem.hpp"
+#include "emem.h"
 namespace xhn
 {
     [[deprecated]]

@@ -74,6 +74,7 @@ public:
     }
 };
     
+template<typename T>
 class fixed_memory_pool : public MemObject
 {
 private:
@@ -107,7 +108,7 @@ public:
     }
     void free(void* ptr)
     {
-        if (m_count <= m_capacity || MemPoolNode_is_from(ptr)) {
+        if (m_count <= m_capacity || MemPoolNode_is_from(m_pool, ptr)) {
             MemPoolNode_free(m_pool, ptr);
         }
         else {
