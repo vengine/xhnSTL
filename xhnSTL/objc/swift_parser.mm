@@ -1619,6 +1619,7 @@ namespace xhn {
                                 parentNode->children = VNEW xhn::vector<ASTNode*>();
                             }
                             parentNode->children->push_back(currentNode);
+                            currentNode->parent = parentNode;
                         }
                         ASTLog("PUSH TO PARENT NODE\n");
                     }
