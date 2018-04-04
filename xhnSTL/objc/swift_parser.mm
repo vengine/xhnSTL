@@ -23,6 +23,11 @@ int size = \
 snprintf(s_ASTBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
 fwrite(s_ASTBuffer, 1, size, s_ASTLogFile); }
 
+#define ASTNodeLog(fmt,...) { \
+int size = \
+snprintf(s_ASTNodeBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
+fwrite(s_ASTNodeBuffer, 1, size, s_ASTNodeLogFile); }
+
 #define ClassHierarchyLog(fmt,...) { \
 int size = \
 snprintf(s_ClassHierarchyBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
@@ -41,6 +46,9 @@ fwrite(s_COMMANDBuffer, 1, size, s_COMMANDFile); }
 static char s_ASTBuffer[AST_BUFFER_SIZE];
 static FILE* s_ASTLogFile = nullptr;
 
+static char s_ASTNodeBuffer[AST_BUFFER_SIZE];
+static FILE* s_ASTNodeLogFile = nullptr;
+
 static char s_ClassHierarchyBuffer[AST_BUFFER_SIZE];
 static FILE* s_ClassHierarchyLogFile = nullptr;
 
@@ -54,6 +62,7 @@ static FILE* s_ASTFile = nullptr;
 
 #else
 #define ASTLog(fmt,...)
+#define ASTNodeLog(fmt,...)
 #define ClassHierarchyLog(fmt,...);
 #define GUILog(fmt,...)
 #define COMMANDLog(fmt,...)
@@ -311,6 +320,12 @@ namespace xhn {
             ASTLog("@ TranslationScript.ZMoveState is not inherit from None\n");
         }
         inheritPath.clear();
+        auto classMapIter = classMap.begin();
+        auto classMapEnd = classMap.end();
+        for (; classMapIter != classMapEnd; classMapIter++) {
+            ClassHierarchyLog("#%s\n", classMapIter->first.c_str());
+        }
+        ClassHierarchyLog("\n");
         auto childMapIter = childrenClassMap.begin();
         auto childMapEnd = childrenClassMap.end();
         for (; childMapIter != childMapEnd; childMapIter++) {
@@ -835,6 +850,24 @@ namespace xhn {
         m_sceneNodeAgentNameVector.clear();
         m_guiAgentNameVector.clear();
         m_actorAgentNameVector.clear();
+        
+#if USING_AST_LOG
+        {
+            for (auto n : m_nodes) {
+                ASTNodeLog("#T:%s N:%s\n", n->nodetype.c_str(), n->name.c_str());
+            }
+            xhn::Lambda<void (vector<ASTNode*>&, xhn::string)> printNodes;
+            printNodes = [&printNodes](vector<ASTNode*>& children, xhn::string indentation){
+                for (auto c : children) {
+                    ASTNodeLog("%sT:%s, N:%s\n", indentation.c_str(), c->nodetype.c_str(), c->name.c_str());
+                    if (c->children) {
+                        printNodes(*c->children, indentation + "  ");
+                    }
+                }
+            };
+            printNodes(m_roots, "");
+        }
+#endif
         
         auto rootIter = m_roots.begin();
         auto rootEnd = m_roots.end();
@@ -1550,6 +1583,7 @@ namespace xhn {
                     if (!m_isApostropheBlock &&
                         !m_isQuotationBlock) {
                         m_nodeStack.push_back(VNEW ASTNode());
+                        m_nodes.push_back(m_nodeStack.back());
                         m_isNodeType = true;
                         ASTLog("NEW NODE\n");
                     }
@@ -1712,6 +1746,7 @@ namespace xhn {
     {
 #if USING_AST_LOG
         s_ASTLogFile = fopen((logDir + "/swiftParseLog.txt").c_str(), "wb");
+        s_ASTNodeLogFile = fopen((logDir + "/swiftParseNodeLog.txt").c_str(), "wb");
         s_ClassHierarchyLogFile = fopen((logDir + "/swiftParserClassHierarchyLog.txt").c_str(), "wb");
         s_GUILogFile = fopen((logDir + "/swiftParseGUILog.txt").c_str(), "wb");
         s_ASTFile = fopen((logDir + "/swiftParseAst.txt").c_str(), "wb");
@@ -1721,6 +1756,7 @@ namespace xhn {
     {
 #if USING_AST_LOG
         fclose(s_ASTLogFile);
+        fclose(s_ASTNodeLogFile);
         fclose(s_ClassHierarchyLogFile);
         fclose(s_GUILogFile);
         fclose(s_ASTFile);
