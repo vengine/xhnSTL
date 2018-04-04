@@ -23,6 +23,11 @@ int size = \
 snprintf(s_ASTBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
 fwrite(s_ASTBuffer, 1, size, s_ASTLogFile); }
 
+#define ClassHierarchyLog(fmt,...) { \
+int size = \
+snprintf(s_ClassHierarchyBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
+fwrite(s_ClassHierarchyBuffer, 1, size, s_ClassHierarchyLogFile); }
+
 #define GUILog(fmt,...) { \
 int size = \
 snprintf(s_GUIBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
@@ -36,6 +41,9 @@ fwrite(s_COMMANDBuffer, 1, size, s_COMMANDFile); }
 static char s_ASTBuffer[AST_BUFFER_SIZE];
 static FILE* s_ASTLogFile = nullptr;
 
+static char s_ClassHierarchyBuffer[AST_BUFFER_SIZE];
+static FILE* s_ClassHierarchyLogFile = nullptr;
+
 static char s_GUIBuffer[AST_BUFFER_SIZE];
 static FILE* s_GUILogFile = nullptr;
 
@@ -46,6 +54,7 @@ static FILE* s_ASTFile = nullptr;
 
 #else
 #define ASTLog(fmt,...)
+#define ClassHierarchyLog(fmt,...);
 #define GUILog(fmt,...)
 #define COMMANDLog(fmt,...)
 #endif
@@ -305,13 +314,13 @@ namespace xhn {
         auto childMapIter = childrenClassMap.begin();
         auto childMapEnd = childrenClassMap.end();
         for (; childMapIter != childMapEnd; childMapIter++) {
-            ASTLog("%c %s children: ", '%', childMapIter->first.c_str());
+            ClassHierarchyLog("%c %s:\n", '%', childMapIter->first.c_str());
             auto childIter = childMapIter->second.begin();
             auto childEnd = childMapIter->second.end();
             for (; childIter != childEnd; childIter++) {
-                ASTLog("%s, ", (*childIter).c_str());
+                ClassHierarchyLog("  %s\n", (*childIter).c_str());
             }
-            ASTLog("\n");
+            ClassHierarchyLog("\n");
         }
         bridgeFile = CreateBridgeFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
         stateActionFile = CreateStateActionFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
@@ -1703,6 +1712,7 @@ namespace xhn {
     {
 #if USING_AST_LOG
         s_ASTLogFile = fopen((logDir + "/swiftParseLog.txt").c_str(), "wb");
+        s_ClassHierarchyLogFile = fopen((logDir + "/swiftParserClassHierarchyLog.txt").c_str(), "wb");
         s_GUILogFile = fopen((logDir + "/swiftParseGUILog.txt").c_str(), "wb");
         s_ASTFile = fopen((logDir + "/swiftParseAst.txt").c_str(), "wb");
 #endif
@@ -1711,6 +1721,7 @@ namespace xhn {
     {
 #if USING_AST_LOG
         fclose(s_ASTLogFile);
+        fclose(s_ClassHierarchyLogFile);
         fclose(s_GUILogFile);
         fclose(s_ASTFile);
 #endif
