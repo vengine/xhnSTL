@@ -128,8 +128,6 @@ namespace xhn {
     }
     void SwiftParser::EndParse(string& bridgeFile, string& stateActionFile)
     {
-        EAssert(m_nodeStack.size() == 0, "error");
-        
         map<static_string, static_string> aliasMap;
         map<static_string, vector<static_string>> inheritMap;
         map<static_string, vector<static_string>> childrenClassMap;
@@ -1726,8 +1724,10 @@ namespace xhn {
                                                                          const xhn::vector<xhn::static_string>&)>& callback)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
-        NSString* swiftc = @"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
-        NSString* sdk = @"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
+        NSString* swiftc = @"/Users/xhnsworks/Projects/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
+        NSString* sdk = @"/Users/xhnsworks/Projects/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
+//        NSString* swiftc = @"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
+//        NSString* sdk = @"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
         NSString* command = [[NSString alloc] initWithFormat:@"%@ -sdk %@ -dump-ast %@",
                              swiftc, sdk,
                              [[NSString alloc] initWithUTF8String:paths.c_str()]];
