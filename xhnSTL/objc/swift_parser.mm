@@ -235,16 +235,6 @@ namespace xhn {
                 }
                 classMap[nodePath.c_str()] = node;
             }
-            else {
-                /// 对于非class节点一样向下传递
-                if (node->children) {
-                    auto childIter = node->children->begin();
-                    auto childEnd = node->children->end();
-                    for (; childIter != childEnd; childIter++) {
-                        makeClassMapProc(parentPath, *childIter);
-                    }
-                }
-            }
         };
         
         isInheritFromClassProc = [&isInheritFromClassProc, &inheritMap](static_string _class,
