@@ -11,7 +11,7 @@
 #include "xhn_lock.hpp"
 #import <Foundation/Foundation.h>
 
-#define USING_AST_LOG 1
+#define USING_AST_LOG 0
 
 #if USING_AST_LOG
 
