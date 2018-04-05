@@ -20,6 +20,13 @@
 #include "symbol_buffer.hpp"
 
 namespace xhn {
+    
+class ASTReformatter : public RefObject
+{
+public:
+    virtual xhn::string Reformat(const char* strBuffer, euint length) = 0;
+};
+typedef xhn::SmartPtr<ASTReformatter> ASTReformatterPtr;
 
 class SwiftParser : public MemObject
 {
@@ -107,6 +114,8 @@ private:
     vector<static_string> m_sceneNodeAgentNameVector;
     vector<static_string> m_guiAgentNameVector;
     vector<static_string> m_actorAgentNameVector;
+private:
+    ASTReformatterPtr m_reformatter;
 public:
     void BeginParse();
     void EndParse(string& bridgeFile, string& stateActionFile);
@@ -122,12 +131,14 @@ public:
                                               vector<static_string>&)>& isInheritFromClassProc);
     void Parse(const char* strBuffer, euint length);
     static void ParseSwifts(const string& logDir,
+                            ASTReformatterPtr reformatter,
                             const string& paths, Lambda<void (const xhn::string& bridgeFile,
                                                               const xhn::string& stateActionFile,
                                                               const vector<static_string>&,
                                                               const vector<static_string>&,
                                                               const vector<static_string>&)>& callback);
-    SwiftParser(const string& logDir);
+    SwiftParser(const string& logDir,
+                ASTReformatterPtr reformatter);
     ~SwiftParser();
     inline const vector<static_string>& GetSceneNodeAgentNameVector() const { return m_sceneNodeAgentNameVector; }
     inline const vector<static_string>& GetGUIAgentNameVector() const { return m_guiAgentNameVector; }

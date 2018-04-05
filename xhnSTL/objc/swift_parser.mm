@@ -75,6 +75,7 @@ static NSMutableSet* s_SwiftCommandLineUtils = nil;
 @property (assign) xhn::SwiftParser* parser;
 - (void) runCommand:(NSString*)commandToRun
              logDir:(const xhn::string&)logDir
+        reformatter:(xhn::ASTReformatterPtr)reformatter
            callback:(void(^)(const xhn::string& bridgeFile,
                              const xhn::string& stateActionFile,
                              const xhn::vector<xhn::static_string>&,
@@ -1494,8 +1495,17 @@ namespace xhn {
         actionFile += "}\n";
         return actionFile;
     }
-    void SwiftParser::Parse(const char* strBuffer, euint length)
+    void SwiftParser::Parse(const char* _strBuffer, euint _length)
     {
+        xhn::string parsedString;
+        const char* parsedBuffer = _strBuffer;
+        euint parsedLength = _length;
+        if (m_reformatter) {
+            parsedString = m_reformatter->Reformat(_strBuffer, _length);
+            parsedBuffer = parsedString.c_str();
+            parsedLength = parsedString.size();
+        }
+        
         euint count = 0;
         
         auto reduce = [this]()
@@ -1578,8 +1588,8 @@ namespace xhn {
                 }
             }
         };
-        while (count < length) {
-            char c = strBuffer[count];
+        while (count < parsedLength) {
+            char c = parsedBuffer[count];
 //            ASTLog("%c, m_isNodeType %d, m_isName %d, m_isInterface %d, m_isApostropheBlock %d, m_isQuotationBlock %d\n",
 //                   c,   m_isNodeType,    m_isName,    m_isInterface,    m_isApostropheBlock,    m_isQuotationBlock);
             switch (c)
@@ -1717,6 +1727,7 @@ namespace xhn {
         }
     }
     void SwiftParser::ParseSwifts(const string& logDir,
+                                  ASTReformatterPtr reformatter,
                                   const string& paths, xhn::Lambda<void (const xhn::string& bridgeFile,
                                                                          const xhn::string& stateActionFile,
                                                                          const xhn::vector<xhn::static_string>&,
@@ -1749,9 +1760,11 @@ namespace xhn {
         };
         [sclu runCommand:command
                   logDir:logDir
+             reformatter:reformatter
                 callback:objcCallback];
     }
-    SwiftParser::SwiftParser(const string& logDir)
+    SwiftParser::SwiftParser(const string& logDir,
+                             ASTReformatterPtr reformatter)
     : m_isApostropheBlock(false)
     , m_isQuotationBlock(false)
     , m_isNodeType(false)
@@ -1761,6 +1774,7 @@ namespace xhn {
     , m_isAccess(false)
     , m_isDecl(false)
     , m_isType(false)
+    , m_reformatter(reformatter)
     {
 #if USING_AST_LOG
         s_ASTLogFile = fopen((logDir + "/swiftParseLog.txt").c_str(), "wb");
@@ -1831,6 +1845,7 @@ namespace xhn {
 
 - (void) runCommand:(NSString*)commandToRun
              logDir:(const xhn::string&)logDir
+        reformatter:(xhn::ASTReformatterPtr)reformatter
            callback:(void(^)(const xhn::string& bridgeFile,
                              const xhn::string& stateActionFile,
                              const xhn::vector<xhn::static_string>&,
@@ -1870,7 +1885,7 @@ namespace xhn {
         }
         [s_SwiftCommandLineUtils addObject:self];
     }
-    self.parser = VNEW xhn::SwiftParser(logDir);
+    self.parser = VNEW xhn::SwiftParser(logDir, reformatter);
     self.parser->BeginParse();
     [mTask launch];
 }
