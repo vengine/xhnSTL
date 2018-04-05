@@ -1197,7 +1197,7 @@ namespace xhn {
         bridgeFile += "        });\n";
         bridgeFile += "        VEngine::VLoadSceneCommand lsc((VEngine::VRenderSystem*)renderSys,\n";
         bridgeFile += "                                       strSceneName.c_str(), strSceneFilePath.c_str(),\n";
-        bridgeFile += "                                       swiftNodeFilter, loadSceneCallback, false);\n";
+        bridgeFile += "                                       swiftNodeFilter, nullptr, loadSceneCallback, false);\n";
         bridgeFile += "        channel->Write(lsc);\n";
         bridgeFile += "    });\n";
         bridgeFile += "    VEngine::VDeleteSceneNodesCommand dsnc((VEngine::VRenderSystem*)renderSys, sceneNodeVector, deleteSceneNodesCallback);\n";
