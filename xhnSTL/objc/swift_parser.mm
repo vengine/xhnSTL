@@ -1582,17 +1582,17 @@ namespace xhn {
         };
         while (count < length) {
             char c = strBuffer[count];
-            ASTLog("%c, m_isNodeType %d, m_isName %d, m_isInterface %d, m_isApostropheBlock %d, m_isQuotationBlock %d\n",
-                   c,   m_isNodeType,    m_isName,    m_isInterface,    m_isApostropheBlock,    m_isQuotationBlock);
+//            ASTLog("%c, m_isNodeType %d, m_isName %d, m_isInterface %d, m_isApostropheBlock %d, m_isQuotationBlock %d\n",
+//                   c,   m_isNodeType,    m_isName,    m_isInterface,    m_isApostropheBlock,    m_isQuotationBlock);
             switch (c)
             {
                 case '\0':
                     break;
                 case '(':
-                    m_symbolBuffer.bufferTop = 0;
-                    m_isName = false;
                     if (!m_isApostropheBlock &&
                         !m_isQuotationBlock) {
+                        m_symbolBuffer.bufferTop = 0;
+                        m_isName = false;
                         ASTNode* currentNode = VNEW ASTNode();
                         if (m_nodeStack.size()) {
                             ASTNode* parentNode = m_nodeStack.back();
@@ -1612,9 +1612,9 @@ namespace xhn {
                     }
                     break;
                 case ')':
-                    m_isName = false;
                     if (!m_isApostropheBlock &&
                         !m_isQuotationBlock) {
+                        m_isName = false;
                         reduce();
                         m_symbolBuffer.bufferTop = 0;
 #if USING_AST_LOG
