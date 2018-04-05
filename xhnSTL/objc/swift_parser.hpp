@@ -12,6 +12,7 @@
 #ifdef __cplusplus
 #include "common.h"
 #include "etypes.h"
+#include "rtti.hpp"
 #include "xhn_string.hpp"
 #include "xhn_static_string.hpp"
 #include "xhn_vector.hpp"
@@ -21,6 +22,27 @@
 
 namespace xhn {
     
+class Parser
+{
+    DeclareRootRTTI;
+public:
+    virtual void BeginParse() = 0;
+    virtual void Parse(const char* strBuffer, euint length) = 0;
+};
+    
+class SwiftVerisonInfoParser : public MemObject, public Parser
+{
+    DeclareRTTI;
+public:
+    string m_versionInfo;
+public:
+    virtual void BeginParse() override;
+    void EndParser(string& result);
+    virtual void Parse(const char* strBuffer, euint length) override;
+    static void GetSwiftVersion(const string& logDir,
+                                Lambda<void (const xhn::string& versionInfo)>& callback);
+};
+    
 class ASTReformatter : public RefObject
 {
 public:
@@ -28,8 +50,9 @@ public:
 };
 typedef xhn::SmartPtr<ASTReformatter> ASTReformatterPtr;
 
-class SwiftParser : public MemObject
+class SwiftParser : public MemObject, public Parser
 {
+    DeclareRTTI;
 public:
     static const static_string StrSourceFile;
     static const static_string StrClassDecl;
@@ -117,7 +140,7 @@ private:
 private:
     ASTReformatterPtr m_reformatter;
 public:
-    void BeginParse();
+    virtual void BeginParse() override;
     void EndParse(string& bridgeFile, string& stateActionFile);
     string CreateBridgeFile(const map<static_string, vector<static_string>>& inheritMap,
                             const map<static_string, vector<static_string>>& childrenClassMap,
@@ -129,7 +152,7 @@ public:
                                  const map<static_string, ASTNode*>& classMap,
                                  Lambda<bool (static_string, static_string,
                                               vector<static_string>&)>& isInheritFromClassProc);
-    void Parse(const char* strBuffer, euint length);
+    virtual void Parse(const char* strBuffer, euint length) override;
     static void ParseSwifts(const string& logDir,
                             ASTReformatterPtr reformatter,
                             const string& paths, Lambda<void (const xhn::string& bridgeFile,

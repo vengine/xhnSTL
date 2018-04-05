@@ -11,7 +11,12 @@
 #include "xhn_lock.hpp"
 #import <Foundation/Foundation.h>
 
-#define USING_AST_LOG 0
+//NSString* swiftc = @"/Users/xhnsworks/Projects/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
+//NSString* sdk = @"/Users/xhnsworks/Projects/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
+NSString* swiftc = @"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
+NSString* sdk = @"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
+
+#define USING_AST_LOG 1
 
 #if USING_AST_LOG
 
@@ -72,18 +77,57 @@ static xhn::SpinLock s_SwiftCommandLineUtilsLock;
 static NSMutableSet* s_SwiftCommandLineUtils = nil;
 
 @interface SwiftCommandLineUtil : NSObject
-@property (assign) xhn::SwiftParser* parser;
-- (void) runCommand:(NSString*)commandToRun
-             logDir:(const xhn::string&)logDir
-        reformatter:(xhn::ASTReformatterPtr)reformatter
-           callback:(void(^)(const xhn::string& bridgeFile,
-                             const xhn::string& stateActionFile,
-                             const xhn::vector<xhn::static_string>&,
-                             const xhn::vector<xhn::static_string>&,
-                             const xhn::vector<xhn::static_string>&))proc;
+@property (assign) xhn::Parser* parser;
+- (void) getSwiftVersion:(NSString*)commandToRun
+                  logDir:(const xhn::string&)logDir
+                callback:(void(^)(const xhn::string&))proc;
+- (void) parseSwiftSourceFiles:(NSString*)commandToRun
+                        logDir:(const xhn::string&)logDir
+                   reformatter:(xhn::ASTReformatterPtr)reformatter
+                      callback:(void(^)(const xhn::string& bridgeFile,
+                                        const xhn::string& stateActionFile,
+                                        const xhn::vector<xhn::static_string>&,
+                                        const xhn::vector<xhn::static_string>&,
+                                        const xhn::vector<xhn::static_string>&))proc;
 @end
 
 namespace xhn {
+    
+    ImplementRootRTTI(Parser);
+    ImplementRTTI(SwiftVerisonInfoParser, Parser);
+    ImplementRTTI(SwiftParser, Parser);
+    
+    void SwiftVerisonInfoParser::BeginParse()
+    {
+    }
+    
+    void SwiftVerisonInfoParser::EndParser(string& result)
+    {
+        result = m_versionInfo;
+    }
+    
+    void SwiftVerisonInfoParser::Parse(const char* strBuffer, euint length)
+    {
+        char* buf = (char*)malloc(length + 1);
+        memcpy(buf, strBuffer, length);
+        buf[length] = 0x00;
+        m_versionInfo += buf;
+        free(buf);
+    }
+    
+    void SwiftVerisonInfoParser::GetSwiftVersion(const string& logDir,
+                                                 Lambda<void (const xhn::string& versionInfo)>& callback)
+    {
+        SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
+        NSString* command = [[NSString alloc] initWithFormat:@"%@ -v", swiftc];
+        __block xhn::Lambda<void (const xhn::string& versionInfo)> tmpCallback = callback;
+        void (^objcCallback)(const xhn::string& versionInfo)  = ^(const xhn::string& versionInfo) {
+            tmpCallback(versionInfo);
+        };
+        [sclu getSwiftVersion:command
+                       logDir:logDir
+                     callback:objcCallback];
+    }
     
     const static_string SwiftParser::StrSourceFile("source_file");
     const static_string SwiftParser::StrClassDecl("class_decl");
@@ -1495,13 +1539,13 @@ namespace xhn {
         actionFile += "}\n";
         return actionFile;
     }
-    void SwiftParser::Parse(const char* _strBuffer, euint _length)
+    void SwiftParser::Parse(const char* strBuffer, euint length)
     {
         xhn::string parsedString;
-        const char* parsedBuffer = _strBuffer;
-        euint parsedLength = _length;
+        const char* parsedBuffer = strBuffer;
+        euint parsedLength = length;
         if (m_reformatter) {
-            parsedString = m_reformatter->Reformat(_strBuffer, _length);
+            parsedString = m_reformatter->Reformat(strBuffer, length);
             parsedBuffer = parsedString.c_str();
             parsedLength = parsedString.size();
         }
@@ -1735,10 +1779,6 @@ namespace xhn {
                                                                          const xhn::vector<xhn::static_string>&)>& callback)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
-        NSString* swiftc = @"/Users/xhnsworks/Projects/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
-        NSString* sdk = @"/Users/xhnsworks/Projects/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
-//        NSString* swiftc = @"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
-//        NSString* sdk = @"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
         NSString* command = [[NSString alloc] initWithFormat:@"%@ -sdk %@ -dump-ast %@",
                              swiftc, sdk,
                              [[NSString alloc] initWithUTF8String:paths.c_str()]];
@@ -1758,10 +1798,10 @@ namespace xhn {
                                                                           const xhn::vector<xhn::static_string>& actorAgentNames) {
             tmpCallback(bridgeFile, stateActionFile, sceneNodeAgentNames, guiAgentNames, actorAgentNames);
         };
-        [sclu runCommand:command
-                  logDir:logDir
-             reformatter:reformatter
-                callback:objcCallback];
+        [sclu parseSwiftSourceFiles:command
+                             logDir:logDir
+                        reformatter:reformatter
+                           callback:objcCallback];
     }
     SwiftParser::SwiftParser(const string& logDir,
                              ASTReformatterPtr reformatter)
@@ -1798,11 +1838,12 @@ namespace xhn {
 
 @implementation SwiftCommandLineUtil
 {
-    void(^mCallback)(const xhn::string& bridgeFile,
-                     const xhn::string& stateActionFile,
-                     const xhn::vector<xhn::static_string>&,
-                     const xhn::vector<xhn::static_string>&,
-                     const xhn::vector<xhn::static_string>&);
+    void(^mGetSwiftVersionCallback)(const xhn::string&);
+    void(^mSwiftParserCallback)(const xhn::string& bridgeFile,
+                                const xhn::string& stateActionFile,
+                                const xhn::vector<xhn::static_string>&,
+                                const xhn::vector<xhn::static_string>&,
+                                const xhn::vector<xhn::static_string>&);
     NSTask *mTask;
     NSPipe *mPipe;
     NSFileHandle *mFile;
@@ -1820,39 +1861,98 @@ namespace xhn {
 
         self.parser->Parse((const char*)[data bytes], [data length]);
 #if USING_AST_LOG
-        fwrite([data bytes], 1, [data length], s_ASTFile);
+        if (s_ASTFile) {
+            fwrite([data bytes], 1, [data length], s_ASTFile);
+        }
 #endif
     }
     else {
-        xhn::string bridgeFile;
-        xhn::string stateActionFile;
-        self.parser->EndParse(bridgeFile, stateActionFile);
-        xhn::vector<xhn::static_string> sceneNodeAgentNameVector = self.parser->GetSceneNodeAgentNameVector();
-        xhn::vector<xhn::static_string> guiAgentNameVector = self.parser->GetGUIAgentNameVector();
-        xhn::vector<xhn::static_string> actorAgentNameVector = self.parser->GetActorAgentNameVector();
-        ASTLog("%s\n", bridgeFile.c_str());
-        ASTLog("%s\n", stateActionFile.c_str());
-        delete self.parser;
-        {
-            auto inst = s_SwiftCommandLineUtilsLock.Lock();
-            if (s_SwiftCommandLineUtils) {
-                [s_SwiftCommandLineUtils removeObject:self];
-            }
+        if (mGetSwiftVersionCallback) {
+            xhn::string versionInfo;
+            xhn::SwiftVerisonInfoParser* versionParser = self.parser->DynamicCast<xhn::SwiftVerisonInfoParser>();
+            EDebugAssert(versionParser, "current parser must be a kind of SwiftVerisonInfoParser");
+            versionParser->EndParser(versionInfo);
+            delete versionParser;
+            self.parser = nil;
+            mGetSwiftVersionCallback(versionInfo);
+            mGetSwiftVersionCallback = nil;
         }
-        mCallback(bridgeFile, stateActionFile, sceneNodeAgentNameVector, guiAgentNameVector, actorAgentNameVector);
+        else if (mSwiftParserCallback) {
+            xhn::string bridgeFile;
+            xhn::string stateActionFile;
+            xhn::SwiftParser* swiftParser = self.parser->DynamicCast<xhn::SwiftParser>();
+            EDebugAssert(swiftParser, "current parser must be a kind of SwiftParser");
+            swiftParser->EndParse(bridgeFile, stateActionFile);
+            xhn::vector<xhn::static_string> sceneNodeAgentNameVector = swiftParser->GetSceneNodeAgentNameVector();
+            xhn::vector<xhn::static_string> guiAgentNameVector = swiftParser->GetGUIAgentNameVector();
+            xhn::vector<xhn::static_string> actorAgentNameVector = swiftParser->GetActorAgentNameVector();
+            ASTLog("%s\n", bridgeFile.c_str());
+            ASTLog("%s\n", stateActionFile.c_str());
+            delete swiftParser;
+            self.parser = nil;
+            {
+                auto inst = s_SwiftCommandLineUtilsLock.Lock();
+                if (s_SwiftCommandLineUtils) {
+                    [s_SwiftCommandLineUtils removeObject:self];
+                }
+            }
+            mSwiftParserCallback(bridgeFile, stateActionFile, sceneNodeAgentNameVector, guiAgentNameVector, actorAgentNameVector);
+            mSwiftParserCallback = nil;
+        }
     }
 }
-
-- (void) runCommand:(NSString*)commandToRun
-             logDir:(const xhn::string&)logDir
-        reformatter:(xhn::ASTReformatterPtr)reformatter
-           callback:(void(^)(const xhn::string& bridgeFile,
-                             const xhn::string& stateActionFile,
-                             const xhn::vector<xhn::static_string>&,
-                             const xhn::vector<xhn::static_string>&,
-                             const xhn::vector<xhn::static_string>&))proc
+- (void) getSwiftVersion:(NSString*)commandToRun
+                  logDir:(const xhn::string&)logDir
+                callback:(void(^)(const xhn::string&))proc
 {
-    mCallback = proc;
+    mGetSwiftVersionCallback = proc;
+    mTask = [[NSTask alloc] init];
+    [mTask setLaunchPath: @"/bin/sh"];
+    
+    NSArray *arguments = [NSArray arrayWithObjects:
+                          @"-c" ,
+                          [NSString stringWithFormat:@"%@", commandToRun],
+                          nil];
+#if USING_AST_LOG
+    s_COMMANDFile = fopen((logDir + "/swiftParserCommand.txt").c_str(), "wb");
+#endif
+    COMMANDLog("run command: %s", [commandToRun UTF8String]);
+#if USING_AST_LOG
+    fclose(s_COMMANDFile);
+#endif
+    [mTask setArguments: arguments];
+    
+    mPipe = [NSPipe pipe];
+    [mTask setStandardOutput: mPipe];
+    [mTask setStandardError: [mTask standardOutput]];
+    
+    mFile = [mPipe fileHandleForReading];
+    
+    [mFile waitForDataInBackgroundAndNotify];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedData:) name:NSFileHandleDataAvailableNotification object:mFile];
+    
+    {
+        auto inst = s_SwiftCommandLineUtilsLock.Lock();
+        if (!s_SwiftCommandLineUtils) {
+            s_SwiftCommandLineUtils = [NSMutableSet new];
+        }
+        [s_SwiftCommandLineUtils addObject:self];
+    }
+    self.parser = VNEW xhn::SwiftVerisonInfoParser();
+    self.parser->BeginParse();
+    [mTask launch];
+}
+
+- (void) parseSwiftSourceFiles:(NSString*)commandToRun
+                        logDir:(const xhn::string&)logDir
+                   reformatter:(xhn::ASTReformatterPtr)reformatter
+                      callback:(void(^)(const xhn::string& bridgeFile,
+                                        const xhn::string& stateActionFile,
+                                        const xhn::vector<xhn::static_string>&,
+                                        const xhn::vector<xhn::static_string>&,
+                                        const xhn::vector<xhn::static_string>&))proc
+{
+    mSwiftParserCallback = proc;
     mTask = [[NSTask alloc] init];
     [mTask setLaunchPath: @"/bin/sh"];
     
