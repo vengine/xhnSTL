@@ -16,7 +16,7 @@
 NSString* swiftc = @"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
 NSString* sdk = @"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
 
-#define USING_AST_LOG 1
+#define USING_AST_LOG 0
 
 #if USING_AST_LOG
 
@@ -1850,7 +1850,6 @@ namespace xhn {
 }
 - (void) dealloc
 {
-    ASTLog("here\n");
 }
 
 - (void)receivedData:(NSNotification *)notif {
@@ -1874,6 +1873,13 @@ namespace xhn {
             versionParser->EndParser(versionInfo);
             delete versionParser;
             self.parser = nil;
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
+            {
+                auto inst = s_SwiftCommandLineUtilsLock.Lock();
+                if (s_SwiftCommandLineUtils) {
+                    [s_SwiftCommandLineUtils removeObject:self];
+                }
+            }
             mGetSwiftVersionCallback(versionInfo);
             mGetSwiftVersionCallback = nil;
         }
@@ -1890,6 +1896,7 @@ namespace xhn {
             ASTLog("%s\n", stateActionFile.c_str());
             delete swiftParser;
             self.parser = nil;
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
             {
                 auto inst = s_SwiftCommandLineUtilsLock.Lock();
                 if (s_SwiftCommandLineUtils) {
