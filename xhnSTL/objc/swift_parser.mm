@@ -15,6 +15,7 @@
 //NSString* sdk = @"/Users/xhnsworks/Projects/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
 NSString* swiftc = @"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
 NSString* sdk = @"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
+NSString* usedVersion = @"3";
 
 #define USING_AST_LOG 0
 
@@ -1779,8 +1780,8 @@ namespace xhn {
                                                                          const xhn::vector<xhn::static_string>&)>& callback)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
-        NSString* command = [[NSString alloc] initWithFormat:@"%@ -sdk %@ -dump-ast %@",
-                             swiftc, sdk,
+        NSString* command = [[NSString alloc] initWithFormat:@"%@ -swift-version %@ -sdk %@ -dump-ast %@",
+                             swiftc, usedVersion, sdk,
                              [[NSString alloc] initWithUTF8String:paths.c_str()]];
         __block xhn::Lambda<void (const xhn::string& bridgeFile,
                                   const xhn::string& stateActionFile,
