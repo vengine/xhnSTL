@@ -403,9 +403,9 @@ euint64 AppleFile::read(euint8* buffer, euint64 size)
         NSFileHandle *fileHandle = (NSFileHandle*)m_fileHandle;
 #endif
         @autoreleasepool {
-            NSData* data = [fileHandle readDataOfLength: size];
+            NSData* data = [fileHandle readDataOfLength: (NSUInteger)size];
             ret = [data length];
-            [data getBytes:buffer length:size];
+            [data getBytes:buffer length:(NSUInteger)size];
         }
     }
     return ret;
@@ -419,7 +419,7 @@ euint64 AppleFile::write(const euint8* buffer, euint64 size)
         NSFileHandle *fileHandle = (NSFileHandle*)m_fileHandle;
 #endif
         @autoreleasepool {
-            NSData* data = [NSData dataWithBytes:buffer length:size];
+            NSData* data = [NSData dataWithBytes:buffer length:(NSUInteger)size];
             [fileHandle writeData:data];
         }
         return size;

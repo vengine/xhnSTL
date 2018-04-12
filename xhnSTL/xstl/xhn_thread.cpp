@@ -385,7 +385,7 @@ xhn::thread::thread()
     EDebugAssert (!status, "Get stack size");
 #if BIT_WIDTH == 32
     printf ("Default stack size is %u; minimum is %u\n",
-            stack_size, PTHREAD_STACK_MIN);
+            (euint)stack_size, PTHREAD_STACK_MIN);
 #else
     printf ("Default stack size is %lu; minimum is %u\n",
             stack_size, PTHREAD_STACK_MIN);
@@ -397,7 +397,7 @@ xhn::thread::thread()
     EDebugAssert (!status, "Get stack size");
 #if BIT_WIDTH == 32
     printf ("Default stack size is %u; minimum is %u\n",
-            stack_size, PTHREAD_STACK_MIN);
+            (euint)stack_size, PTHREAD_STACK_MIN);
 #else
     printf ("Default stack size is %lu; minimum is %u\n",
             stack_size, PTHREAD_STACK_MIN);

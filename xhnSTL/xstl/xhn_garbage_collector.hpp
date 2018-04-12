@@ -212,7 +212,7 @@ public:
         PushNode(ret);
         ret->isRoot = true;
         if (size) {
-            ret->memory = NMalloc(size);
+            ret->memory = NMalloc((euint)size);
         }
         ret->size = size + sizeof(GCRootNode);
         ret->birthTime = currentTime;
@@ -223,7 +223,7 @@ public:
         GCNode* ret = VNEW GCNode;
         PushNode(ret);
         ret->isRoot = false;
-        ret->memory = NMalloc(size);
+        ret->memory = NMalloc((euint)size);
         ret->size = size + sizeof(GCNode);
         ret->birthTime = currentTime;
         totalSize += ret->size;
@@ -585,7 +585,7 @@ public:
     {
         GCMemoryInfo* info = (GCMemoryInfo*)ptr;
         GCNode* node = NULL;
-        GCObject* obj = (GCObject*)info->gc->AllocMem(nSize + info->extraMemorySize, &node);
+        GCObject* obj = (GCObject*)info->gc->AllocMem(nSize + (euint)info->extraMemorySize, &node);
         obj->gc = info->gc;
         obj->gcNode = node;
         return obj;

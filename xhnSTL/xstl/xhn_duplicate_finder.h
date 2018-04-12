@@ -66,10 +66,10 @@ namespace xhn
             m_file = fopen(path.c_str(), "rb");
         }
         inline void Seek(euint64 offs) {
-            fseek(m_file, offs, SEEK_SET);
+            fseek(m_file, (euint)offs, SEEK_SET);
         }
         inline void Read(void* buf, euint64 size) {
-            fread(buf, 1, size, m_file);
+            fread(buf, 1, (euint)size, m_file);
         }
         inline void close() {
             if (m_file) {

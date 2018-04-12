@@ -41,7 +41,7 @@ xhn::file_block::~file_block()
 }
 void xhn::file_block::write(euint64 offs, const euint8* buf, euint64 size)
 {
-    memcpy(buffer[offs], buf, size);
+    memcpy(buffer[(euint)offs], buf, (euint)size);
     if (offs + size > buffered_size)
         buffered_size = offs + size;
 }
@@ -59,12 +59,12 @@ void xhn::file_block::read(euint64 offs, euint8* buf, euint64 size)
             if (stream_size > begin_addr + offs) {
                 stream->set_pos(begin_addr + offs);
                 euint64 incremented_size = offs + size - buffered_size;
-                stream->read((euint8*)buffer[buffered_size], incremented_size);
+                stream->read((euint8*)buffer[(euint)buffered_size], (euint)incremented_size);
             }
         }
         buffered_size = offs + size;
     }
-    memcpy(buf, buffer[offs], size);
+    memcpy(buf, buffer[(euint)offs], (euint)size);
 }
 
 void xhn::file_block::init()
@@ -85,12 +85,12 @@ euint8* xhn::file_block::access(euint64 offs, euint64 size)
     if (offs + size > buffered_size) {
         buffered_size = offs + size;
     }
-    return (euint8*)buffer[offs];
+    return (euint8*)buffer[(euint)offs];
 }
 
 const euint8* xhn::file_block::access(euint64 offs, euint64 size) const
 {
-    return (const euint8*)buffer[offs];
+    return (const euint8*)buffer[(euint)offs];
 }
 
 ///==========================================================================///
@@ -263,8 +263,8 @@ euint64 xhn::console_output_device::read(euint8* buf, euint64 size)
 euint64 xhn::console_output_device::write(const euint8* buf, euint64 size)
 {
     xhn::string tmp;
-    tmp.resize(size);
-    memcpy(&tmp[0], buf, size);
+    tmp.resize((euint)size);
+    memcpy(&tmp[0], buf, (euint)size);
     printf("%s\n", tmp.c_str());
     return size;
 }
@@ -313,22 +313,22 @@ euint64 xhn::memory_output_device::read(euint8* buf, euint64 size)
         size = m_size;
     }
     if (size) {
-        memcpy(buf, m_buffer, size);
+        memcpy(buf, m_buffer, (euint)size);
     }
     return size;
 }
 euint64 xhn::memory_output_device::write(const euint8* buf, euint64 size)
 {
     if (m_size + size < m_capacity) {
-        memcpy(&m_buffer[m_size], buf, size);
+        memcpy(&m_buffer[(euint)m_size], buf, (euint)size);
         m_size += size;
         return size;
     }
     else {
         m_capacity = (m_capacity + size) * 2;
-        euint8* tmp = (euint8*)NMalloc(m_capacity);
-        memcpy(tmp, m_buffer, m_size);
-        memcpy(&tmp[m_size], buf, size);
+        euint8* tmp = (euint8*)NMalloc((euint)m_capacity);
+        memcpy(tmp, m_buffer, (euint)m_size);
+        memcpy(&tmp[m_size], buf, (euint)size);
         m_size += size;
         Mfree(m_buffer);
         m_buffer = tmp;
@@ -339,8 +339,8 @@ euint64 xhn::memory_output_device::set_pos(euint64 pos)
 {
     if (pos >= m_capacity) {
         m_capacity = (pos + 1) * 2;
-        euint8* tmp = (euint8*)NMalloc(m_capacity);
-        memcpy(tmp, m_buffer, m_size);
+        euint8* tmp = (euint8*)NMalloc((euint)m_capacity);
+        memcpy(tmp, m_buffer, (euint)m_size);
         Mfree(m_buffer);
         m_buffer = tmp;
         m_size = pos;
