@@ -27,11 +27,11 @@ class BannedAllocObject
 {
 public:
 	//////////////////////////////////////////////////////////////////////////
-	void* operator new( size_t nSize )
+	void* operator new( size_t nSize ) noexcept(false)
 	{
         xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant new operator");
 	}
-	void operator delete( void *p)
+	void operator delete( void *p) noexcept(false)
 	{
         xhnSTLExce(xhn::InvalidMemoryFreeException, "this object cant delete operator");
 	}
@@ -41,7 +41,7 @@ public:
         xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant new operator");
 	}
 
-	void operator delete( void *p, const char* file,int line )
+	void operator delete( void *p, const char* file,int line ) noexcept(false)
 	{
         xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant delete operator");
 	}
@@ -61,7 +61,7 @@ public:
         xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant new operator");
 	}
 
-	void operator delete[]( void* ptr, size_t nSize )
+	void operator delete[]( void* ptr, size_t nSize ) noexcept(false)
 	{
         xhnSTLExce(xhn::InvalidMemoryAllocException, "this object cant delete operator");
 	}
