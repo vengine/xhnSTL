@@ -239,6 +239,12 @@ void xhn::thread::stop() {
 void xhn::thread::reset() {
     AtomicCompareExchange(1, 0, &m_is_errored);
 }
+euint xhn::thread::num_tasks() {
+    pthread_mutex_lock(&m_mutex);
+    euint ret = m_tasks.size();
+    pthread_mutex_unlock(&m_mutex);
+    return ret;
+}
 void xhn::thread::force_stop()
 {
     while (!is_stopped()) {

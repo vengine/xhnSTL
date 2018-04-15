@@ -166,9 +166,7 @@ public:
     bool is_running() {
         return AtomicCompareExchange(1, 1, &m_is_running);
     }
-    euint num_tasks() {
-        return m_tasks.size();
-    }
+    euint num_tasks();
     void force_stop();
     void force_restart();
     void wait_completed();
