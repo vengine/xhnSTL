@@ -15,6 +15,8 @@
 #include <limits.h>
 #endif
 
+#define DEBUG_XHN_THREAD 0
+
 xhn::SpinLock xhn::thread::s_thread_stack_range_map_lock;
 xhn::range_map<vptr, xhn::thread*> xhn::thread::s_thread_stack_range_map;
 
@@ -389,18 +391,21 @@ xhn::thread::thread()
 #ifdef _POSIX_THREAD_ATTR_STACKSIZE
     status = pthread_attr_getstacksize (&thread_attr, &stack_size);
     EDebugAssert (!status, "Get stack size");
+#if DEBUG_XHN_THREAD
 #if BIT_WIDTH == 32
     printf ("Default stack size is %u; minimum is %u\n",
             (euint)stack_size, PTHREAD_STACK_MIN);
 #else
     printf ("Default stack size is %lu; minimum is %u\n",
             stack_size, PTHREAD_STACK_MIN);
+#endif
 #endif
     vptr base = (void *) malloc(1024 * 1024);
     status = pthread_attr_setstack(&thread_attr, base, 1024 * 1024);
     EDebugAssert (!status, "Set stack");
     status = pthread_attr_getstacksize (&thread_attr, &stack_size);
     EDebugAssert (!status, "Get stack size");
+#if DEBUG_XHN_THREAD
 #if BIT_WIDTH == 32
     printf ("Default stack size is %u; minimum is %u\n",
             (euint)stack_size, PTHREAD_STACK_MIN);
@@ -408,25 +413,32 @@ xhn::thread::thread()
     printf ("Default stack size is %lu; minimum is %u\n",
             stack_size, PTHREAD_STACK_MIN);
 #endif
+#endif
     m_stack_range.m_begin_addr = base;
     m_stack_range.m_size = 1024 * 1024;
 #endif
+#if DEBUG_XHN_THREAD
 #if BIT_WIDTH == 32
     printf("%x\n", (ref_ptr)this);
 #else
     printf("%llx\n", (ref_ptr)this);
+#endif
 #endif
     pthread_mutex_init(&m_mutex, NULL);
     pthread_cond_init(&m_cond, NULL);
     SpinLock::Instance inst = s_thread_stack_range_map_lock.Lock();
     ref_ptr end_addr = (ref_ptr)m_stack_range.m_begin_addr + m_stack_range.m_size;
     s_thread_stack_range_map.insert(m_stack_range.m_begin_addr, (vptr)end_addr, this);
+#if DEBUG_XHN_THREAD
     printf("begin create thread\n");
+#endif
 	pthread_create(&m_pt,
 		&thread_attr,
 		thread_proc,
 		(void *) this);
+#if DEBUG_XHN_THREAD
     printf("end create thread\n");
+#endif
 }
 xhn::thread::~thread()
 {

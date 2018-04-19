@@ -265,13 +265,13 @@ void AppleFileManager::get_resource_dirs(xhn::vector<xhn::wstring>& result)
 void AppleFileManager::get_system_font_dirs(xhn::vector<xhn::wstring>& result)
 {
     result.clear();
-    NSString* dir = @"/System/Library/Fonts";
-    NSFileManager* fileManager = [NSFileManager defaultManager];
-    NSError* err = nil;
-    NSArray* subpaths = [fileManager subpathsOfDirectoryAtPath:dir error:&err];
-    for (NSString* subpath in subpaths) {
-        NSLog(@"%@", subpath);
-    }
+//    NSString* dir = @"/System/Library/Fonts";
+//    NSFileManager* fileManager = [NSFileManager defaultManager];
+//    NSError* err = nil;
+//    NSArray* subpaths = [fileManager subpathsOfDirectoryAtPath:dir error:&err];
+//    for (NSString* subpath in subpaths) {
+//        NSLog(@"%@", subpath);
+//    }
     result.push_back(L"/System/Library/Fonts");
 }
 void _get_folder_information(NSString* folder, xhn::folder_information& info)
