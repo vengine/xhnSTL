@@ -421,7 +421,7 @@ class MutexObject : public RefObject
 {
 public:
     mutable pthread_mutex_t m_lock;
-    T m_data;
+    mutable T m_data;
 public:
     class Instance
     {
@@ -448,6 +448,12 @@ public:
         inline const T* operator->() const {
             return m_data;
         }
+        inline T& operator*() {
+            return *m_data;
+        }
+        inline const T& operator*() const {
+            return *m_data;
+        }
     };
 public:
     inline MutexObject()
@@ -465,6 +471,11 @@ public:
         pthread_mutex_destroy(&m_lock);
     }
     inline Instance Lock()
+    {
+        pthread_mutex_lock(&m_lock);
+        return Instance(&m_lock, &m_data);
+    }
+    inline Instance Lock() const
     {
         pthread_mutex_lock(&m_lock);
         return Instance(&m_lock, &m_data);
