@@ -139,6 +139,7 @@
 		B1229DC51F3557ED0082FB3E /* xhn_group.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1229DC31F3557ED0082FB3E /* xhn_group.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B153770D1F55A1F7005F1741 /* xhn_concurrent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B153770B1F55A1F7005F1741 /* xhn_concurrent.cpp */; };
 		B153770E1F55A1F7005F1741 /* xhn_concurrent.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B153770C1F55A1F7005F1741 /* xhn_concurrent.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B15D7BF0208CFFC2001CF370 /* xhn_atomic_ptr.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B15D7BEF208CFFC2001CF370 /* xhn_atomic_ptr.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BB41E7D217900CBBDDD /* llvm_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1607BB21E7D217900CBBDDD /* llvm_parser.mm */; };
 		B1607BB51E7D217900CBBDDD /* llvm_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BD21E7D31CA00CBBDDD /* symbol_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -304,6 +305,7 @@
 		B1229DC31F3557ED0082FB3E /* xhn_group.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_group.hpp; sourceTree = "<group>"; };
 		B153770B1F55A1F7005F1741 /* xhn_concurrent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_concurrent.cpp; sourceTree = "<group>"; };
 		B153770C1F55A1F7005F1741 /* xhn_concurrent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_concurrent.hpp; sourceTree = "<group>"; };
+		B15D7BEF208CFFC2001CF370 /* xhn_atomic_ptr.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_ptr.hpp; sourceTree = "<group>"; };
 		B1607BB21E7D217900CBBDDD /* llvm_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = llvm_parser.mm; sourceTree = "<group>"; };
 		B1607BB31E7D217900CBBDDD /* llvm_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = llvm_parser.hpp; sourceTree = "<group>"; };
 		B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = symbol_buffer.hpp; sourceTree = "<group>"; };
@@ -419,6 +421,7 @@
 				68245C5D1BC9D8F80006E99D /* rtti.hpp */,
 				68245C5E1BC9D8F80006E99D /* timer.h */,
 				68245C5F1BC9D8F80006E99D /* xhn_atomic_operation.hpp */,
+				B15D7BEF208CFFC2001CF370 /* xhn_atomic_ptr.hpp */,
 				68245C601BC9D8F80006E99D /* xhn_btree.cpp */,
 				68245C611BC9D8F80006E99D /* xhn_btree.hpp */,
 				68245C621BC9D8F80006E99D /* xhn_cloned_ptr.hpp */,
@@ -646,6 +649,7 @@
 				68245D2F1BC9D8F90006E99D /* xhn_string.hpp in Headers */,
 				68245CE51BC9D8F90006E99D /* timer.h in Headers */,
 				68245D201BC9D8F90006E99D /* xhn_path_tree.hpp in Headers */,
+				B15D7BF0208CFFC2001CF370 /* xhn_atomic_ptr.hpp in Headers */,
 				68245CD71BC9D8F90006E99D /* sha256.h in Headers */,
 				68245CF91BC9D8F90006E99D /* xhn_fixed_queue.hpp in Headers */,
 				B1D6ADEB1F4D4B1C00AB8F2F /* xhn_parallel.hpp in Headers */,
