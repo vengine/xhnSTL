@@ -25,33 +25,33 @@ class AtomicPtr
 {
 public:
 #if BIT_WIDTH == 32
-    volatile esint32* m_ptr;
+    volatile esint32 m_ptr;
 #else
-    volatile esint64* m_ptr;
+    volatile esint64 m_ptr;
 #endif
 public:
     AtomicPtr()
     {
 #if BIT_WIDTH == 32
-        AtomicStore32(0, m_ptr);
+        AtomicStore32(0, &m_ptr);
 #else
-        AtomicStore64(0, m_ptr);
+        AtomicStore64(0, &m_ptr);
 #endif
     }
     AtomicPtr(const AtomicPtr& ptr)
     {
 #if BIT_WIDTH == 32
-        AtomicStore32((esint32)ptr.get(), m_ptr);
+        AtomicStore32((esint32)ptr.get(), &m_ptr);
 #else
-        AtomicStore64((esint64)ptr.get(), m_ptr);
+        AtomicStore64((esint64)ptr.get(), &m_ptr);
 #endif
     }
     AtomicPtr(T* ptr)
     {
 #if BIT_WIDTH == 32
-        AtomicStore32((esint32)ptr, m_ptr);
+        AtomicStore32((esint32)ptr, &m_ptr);
 #else
-        AtomicStore64((esint64)ptr, m_ptr);
+        AtomicStore64((esint64)ptr, &m_ptr);
 #endif
     }
     ~AtomicPtr()
@@ -75,77 +75,77 @@ public:
     inline T* operator = (T* ptr)
     {
 #if BIT_WIDTH == 32
-        AtomicStore32((esint32)ptr, m_ptr);
+        AtomicStore32((esint32)ptr, &m_ptr);
 #else
-        AtomicStore64((esint64)ptr, m_ptr);
+        AtomicStore64((esint64)ptr, &m_ptr);
 #endif
         return ptr;
     }
     inline T* operator = (const AtomicPtr& ptr)
     {
 #if BIT_WIDTH == 32
-        AtomicStore32((esint32)ptr.get(), m_ptr);
+        AtomicStore32((esint32)ptr.get(), &m_ptr);
 #else
-        AtomicStore64((esint64)ptr.get(), m_ptr);
+        AtomicStore64((esint64)ptr.get(), &m_ptr);
 #endif
         return get();
     }
     inline T* operator ->() {
 #if BIT_WIDTH == 32
-        return (T*)AtomicLoad32(m_ptr);
+        return (T*)AtomicLoad32(&m_ptr);
 #else
-        return (T*)AtomicLoad64(m_ptr);
+        return (T*)AtomicLoad64(&m_ptr);
 #endif
     }
     inline const T* operator ->() const {
 #if BIT_WIDTH == 32
-        return (T*)AtomicLoad32(m_ptr);
+        return (T*)AtomicLoad32(&m_ptr);
 #else
-        return (T*)AtomicLoad64(m_ptr);
+        return (T*)AtomicLoad64(&m_ptr);
 #endif
     }
     inline T& operator *() {
 #if BIT_WIDTH == 32
-        return *AtomicLoad32(m_ptr);
+        return *(T*)AtomicLoad32(&m_ptr);
 #else
-        return *AtomicLoad64(m_ptr);
+        return *(T*)AtomicLoad64(&m_ptr);
 #endif
     }
     inline const T& operator *() const {
 #if BIT_WIDTH == 32
-        return *AtomicLoad32(m_ptr);
+        return *(const T*)AtomicLoad32(&m_ptr);
 #else
-        return *AtomicLoad64(m_ptr);
+        return *(const T*)AtomicLoad64(&m_ptr);
 #endif
     }
     inline T* get()
     {
 #if BIT_WIDTH == 32
-        return *AtomicLoad32(m_ptr);
+        return (T*)AtomicLoad32(&m_ptr);
 #else
-        return *AtomicLoad64(m_ptr);
+        return (T*)AtomicLoad64(&m_ptr);
 #endif
     }
     inline const T* get() const
     {
 #if BIT_WIDTH == 32
-        return *AtomicLoad32(m_ptr);
+        return (const T*)AtomicLoad32(&m_ptr);
 #else
-        return *AtomicLoad64(m_ptr);
+        return (const T*)AtomicLoad64(&m_ptr);
 #endif
     }
     inline operator const T* () const {
 #if BIT_WIDTH == 32
-        return *AtomicLoad32(m_ptr);
+        return (T*)AtomicLoad32(&m_ptr);
 #else
-        return *AtomicLoad64(m_ptr);
+        return (T*)AtomicLoad64(&m_ptr);
 #endif
     }
     inline operator T* () {
 #if BIT_WIDTH == 32
-        return *AtomicLoad32(m_ptr);
+        return (T*)AtomicLoad32(&m_ptr);
 #else
-        return *AtomicLoad64(m_ptr);
+        return (T*)AtomicLoad64(&m_ptr);
 #endif
     }
 };

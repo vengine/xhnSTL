@@ -10,6 +10,7 @@
 #include <xhnSTL/xhn_thread.hpp>
 #include <xhnSTL/xhn_lambda.hpp>
 #include <xhnSTL/timer.h>
+#include <xhnSTL/xhn_atomic_ptr.hpp>
 #include <xhnSTL/xhn_smart_ptr.hpp>
 #include <xhnSTL/xhn_vector.hpp>
 #include <xhnSTL/xhn_group.hpp>
@@ -37,6 +38,13 @@
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
+}
+
+- (void) testAtomicPtr {
+    int a = 0;
+    xhn::AtomicPtr<int> b(&a);
+    *b = 32;
+    XCTAssert(a == 32, "a != 32");
 }
 
 class Test : public RefObject
