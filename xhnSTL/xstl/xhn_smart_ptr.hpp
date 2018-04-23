@@ -65,30 +65,40 @@ class WeakPtr
 private:
     mutable WeakCounter* m_weak_count;
 private:
-    WeakPtr(const WeakPtr& ptr) {
-        /// do nothing
-    }
-    const WeakPtr& operator = (const WeakPtr& ptr) {
-        /// do nothing
-    }
     void Dest() {
+        volatile bool must_delete_count = false;
         if (m_weak_count) {
+            RefSpinLock::Instance inst = m_weak_count->lock.Lock();
             if (!AtomicDecrement(&m_weak_count->weak_count)) {
-                volatile bool must_delete_count = false;
-                {
-                    RefSpinLock::Instance inst = m_weak_count->lock.Lock();
-                    if (!m_weak_count->ref_object) {
-                        must_delete_count = true;
-                    }
-                }
-                if (must_delete_count) {
-                    delete m_weak_count;
+                if (!m_weak_count->ref_object) {
+                    must_delete_count = true;
                 }
             }
+        }
+        if (must_delete_count) {
+            delete m_weak_count;
         }
         m_weak_count = nullptr;
     }
 public:
+    WeakPtr(const WeakPtr& ptr) {
+        if (ptr.m_weak_count) {
+            RefSpinLock::Instance count_inst = ptr.m_weak_count->lock.Lock();
+            AtomicIncrement(&ptr.m_weak_count->weak_count);
+            m_weak_count = ptr.m_weak_count;
+        }
+        else {
+            m_weak_count = nullptr;
+        }
+    }
+    const WeakPtr& operator = (const WeakPtr& ptr) {
+        if (ptr.m_weak_count) {
+            RefSpinLock::Instance count_inst = ptr.m_weak_count->lock.Lock();
+            AtomicIncrement(&ptr.m_weak_count->weak_count);
+        }
+        Dest();
+        m_weak_count = ptr.m_weak_count;
+    }
     WeakPtr()
     : m_weak_count(nullptr)
     {
