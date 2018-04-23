@@ -323,7 +323,6 @@ public:
             RefSpinLock::Instance inst = weak_count->lock.Lock();
             weak_count->ref_object = nullptr;
             if (!weak_count->weak_count) {
-                weak_count->ref_object = nullptr;
                 must_delete_count = true;
             }
         }
