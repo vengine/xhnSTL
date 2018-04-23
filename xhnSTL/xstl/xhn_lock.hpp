@@ -23,7 +23,7 @@ namespace xhn
     /// \brief MutexLock
     ///
     /// 互斥锁
-class MutexLock : public RefObject
+class MutexLock
 {
 public:
     mutable pthread_mutex_t m_lock;
@@ -64,7 +64,7 @@ public:
     /// \brief RecursiveMutexLock
     ///
     /// 递归互斥锁
-class RecursiveMutexLock : public RefObject
+class RecursiveMutexLock
 {
 public:
     mutable pthread_mutex_t m_lock;
@@ -109,7 +109,7 @@ public:
     ///
     /// 读写锁
 
-class RWLock : public RefObject
+class RWLock
 {
 private:
 	pthread_rwlock_t m_lock;
@@ -164,7 +164,7 @@ public:
     ///
     /// 另一种读写锁
 
-class RWLock2 : public RefObject
+class RWLock2
 {
 private:
     pthread_rwlock_t m_lock;
@@ -207,7 +207,7 @@ public:
 	}
 };
     
-class RWLock3 : public RefObject
+class RWLock3
 {
 private:
     volatile esint32 m_read_lock_count;
@@ -277,7 +277,7 @@ public:
     ///
     /// 自旋锁
 
-class SpinLock : public RefObject
+class SpinLock
 {
 private:
 	mutable ELock m_lock;
@@ -335,7 +335,7 @@ public:
     ///
     /// 自旋物体
 template <typename T>
-class SpinObject : public RefObject
+class SpinObject
 {
 private:
     mutable ELock m_lock;
@@ -417,7 +417,7 @@ public:
     /// 互斥物体
 
 template<typename T>
-class MutexObject : public RefObject
+class MutexObject
 {
 public:
     mutable pthread_mutex_t m_lock;
@@ -483,7 +483,7 @@ public:
 };
     
 template<typename T>
-class RecursiveMutexObject : public RefObject
+class RecursiveMutexObject
 {
 public:
     mutable pthread_mutex_t m_lock;
