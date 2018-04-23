@@ -341,7 +341,7 @@ namespace xhn
             m_buckets = new_buckets;
             m_num_buckets = new_num_buckets;
         }
-        
+    public:
         hash_node<K, V>* find_hash_node ( const K &key ) const {
             euint32 hash_value = m_hash_proc(key);
             euint32 ukey = hash_value & m_hash_mask;
@@ -504,10 +504,15 @@ namespace xhn
             hash_node<K, V>* current_node = bucket->begin();
             while (current_node) {
                 if (current_node->first == key) {
-                    bucket->remove(current_node);
+                    euint32 count = 0;
                     hash_node<K, V>* head = bucket->begin();
                     if (head) {
-                        head->m_count--;
+                        count = head->m_count - 1;
+                    }
+                    bucket->remove(current_node);
+                    head = bucket->begin();
+                    if (head) {
+                        head->m_count = count;
                     }
                     m_node_allocator.destroy(current_node);
                     m_node_allocator.deallocate(current_node, 1);

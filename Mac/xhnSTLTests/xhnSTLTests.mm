@@ -460,6 +460,20 @@ struct SinglyLinkedListNode
     VDELETE_ARRAY[] strs;
 }
 
+- (void) testDictionary7
+{
+    xhn::dictionary<int, xhn::string> hash_table;
+    hash_table.insert(0x0001, "abc");
+    xhn::hash_node<int, xhn::string>* node0 = hash_table.find_hash_node(0x0001);
+    printf("node0:%d\n", node0->m_count);
+    hash_table.insert(0x1001, "def");
+    xhn::hash_node<int, xhn::string>* node1 = hash_table.find_hash_node(0x1001);
+    printf("node1:%d\n", node1->m_count);
+    hash_table.remove(0x1001);
+    printf("node0:%d\n", node0->m_count);
+    XCTAssert(node0->m_count == 1, @"node0->m_count != 1");
+}
+
 - (void) testXhnMap1
 {
     __block int num = 1024 * 128;
