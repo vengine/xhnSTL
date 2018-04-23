@@ -304,7 +304,7 @@ public:
         weak_count = VNEW WeakCounter(this);
         EDebugAssert(weak_count, "weak count must be not null");
 	}
-    RefObjectBase(const RefObject& obj)
+    RefObjectBase(const RefObjectBase& obj)
     {
         ref_count = 0;
 #if DEBUG_REFOBJECT
