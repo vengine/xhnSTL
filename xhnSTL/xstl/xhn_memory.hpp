@@ -263,7 +263,7 @@ public:
                     WeakPtrBase* ptr);
 };
 
-class RefObject;
+class RefObjectBase;
 
 /// \brief WeakCounter
 ///
@@ -271,15 +271,10 @@ class RefObject;
 class WeakCounter : public MemObject
 {
 public:
-    volatile RefObject* ref_object;
+    volatile RefObjectBase* ref_object;
     volatile esint32 weak_count;
     RefSpinLock lock;
-    ///while (!OSAtomicCompareAndSwap32((int32_t)0, (int32_t)1, (volatile int32_t*)lock))
-    ///{}
-    ///while (!OSAtomicCompareAndSwap32((int32_t)1, (int32_t)0, (volatile int32_t*)lock))
-    ///{}
-    ///esint32 lock;
-    WeakCounter(RefObject* object)
+    WeakCounter(RefObjectBase* object)
     : ref_object(object)
     , weak_count(0)
     {}
@@ -288,48 +283,8 @@ public:
     }
 };
 
-class RefObject
+class RefObjectBase
 {
-public:
-    //////////////////////////////////////////////////////////////////////////
-	void* operator new( size_t nSize )
-    {
-        return NMalloc( nSize );
-    }
-	void operator delete( void *p)
-	{
-		Mfree(p);
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void* operator new( size_t nSize, const char* file,int line )
-    {
-        return _Malloc( nSize, file, line );
-    }
-    
-	void operator delete( void *p, const char* file,int line )
-    {
-        Mfree(p);
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void* operator new( size_t nSize, void* ptr )
-	{
-		EDebugAssert(((ref_ptr)ptr % 16) == 0, "new object error, ptr == %p", ptr);
-		return ptr;
-	}
-    
-	void operator delete( void *p, void* ptr )
-	{
-	}
-    //////////////////////////////////////////////////////////////////////////
-	void* operator new[]( size_t nSize )
-	{
-		return NMalloc( nSize );
-	}
-    
-	void operator delete[]( void* ptr, size_t nSize )
-	{
-		Mfree(ptr);
-	}
 public:
 	mutable volatile esint32 ref_count;
     mutable WeakCounter* weak_count;
@@ -338,7 +293,7 @@ public:
     void (*dec_callback)(RefObject*, void*);
     void* debug_value;
 #endif
-	RefObject()
+	RefObjectBase()
 	{
 		ref_count = 0;
 #if DEBUG_REFOBJECT
@@ -349,7 +304,7 @@ public:
         weak_count = VNEW WeakCounter(this);
         EDebugAssert(weak_count, "weak count must be not null");
 	}
-    RefObject(const RefObject& obj)
+    RefObjectBase(const RefObject& obj)
     {
         ref_count = 0;
 #if DEBUG_REFOBJECT
@@ -360,7 +315,7 @@ public:
         weak_count = VNEW WeakCounter(this);
         EDebugAssert(weak_count, "weak count must be not null");
     }
-	virtual ~RefObject()
+	virtual ~RefObjectBase()
 	{
         EDebugAssert(weak_count, "weak count must be not null");
         volatile bool must_delete_count = false;
@@ -377,7 +332,7 @@ public:
             weak_count = nullptr;
         }
 	}
-    inline const RefObject& operator = (RefObject& obj) {
+    inline const RefObjectBase& operator = (RefObjectBase& obj) {
         EDebugAssert(0, "RefObject can not perform assign operation");
         return *this;
     }
@@ -385,15 +340,10 @@ public:
         return ref_count;
     }
 };
-/**
-namespace xhn {
-    template< typename T,
-    typename INC_CALLBACK,
-    typename DEST_CALLBACK,
-    typename GARBAGE_COLLECTOR >
-    class SmartPtr;
-}
-**/
+
+class RefObject : public RefObjectBase, public MemObject
+{
+};
 
 #endif
 
