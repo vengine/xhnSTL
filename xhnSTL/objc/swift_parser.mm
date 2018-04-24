@@ -1555,6 +1555,9 @@ namespace xhn {
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
+            
+            printf("  _TtCC12VEngineLogic%s\n", p.first.c_str());
+            
             actionFile += mbuf;
         }
         actionFile += "}\n";
@@ -1568,6 +1571,9 @@ namespace xhn {
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
+            
+            printf("  _TtCC12VEngineLogic%s\n", p.first.c_str());
+            
             actionFile += mbuf;
         }
         
