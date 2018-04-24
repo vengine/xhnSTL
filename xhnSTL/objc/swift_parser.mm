@@ -1528,6 +1528,8 @@ namespace xhn {
             }
         }
         
+        printf("Beginning make action file...\n");
+        
         actionFile += "open class SwiftStates : NSObject {\n";
         
         for (auto& p : stateFuncClassMap) {
@@ -1537,6 +1539,9 @@ namespace xhn {
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
+            
+            printf("  _TtCC12VEngineLogic%s\n", p.first.c_str());
+            
             actionFile += mbuf;
         }
         
@@ -1567,6 +1572,9 @@ namespace xhn {
         }
         
         actionFile += "}\n";
+        
+        printf("Completed...\n");
+        
         return actionFile;
     }
     void SwiftParser::Parse(const char* strBuffer, euint length)
