@@ -2186,4 +2186,24 @@ struct IntProc4
     xhn::test_stacktrace();
 }
 
+- (void) testMutexLock
+{
+    [self measureBlock:^{
+        xhn::MutexLock lock;
+        for (euint i = 0; i < 10000000; i++) {
+            auto inst = lock.Lock();
+        }
+    }];
+}
+
+- (void) testSpinLock
+{
+    [self measureBlock:^{
+        xhn::SpinLock lock;
+        for (euint i = 0; i < 10000000; i++) {
+            auto inst = lock.Lock();
+        }
+    }];
+}
+
 @end
