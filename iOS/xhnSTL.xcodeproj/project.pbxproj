@@ -149,6 +149,8 @@
 		B1607BF71E7EBD5A00CBBDDD /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF81E7EBD5A00CBBDDD /* xhn_memory_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF91E7EBD5A00CBBDDD /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF51E7EBD5A00CBBDDD /* xhn_tuple.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B19BDBD4208EB2F70051716A /* xhn_atomic_bool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B19BDBD5208EB2F70051716A /* xhn_atomic_ptr.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1CED06D1F3224BF00FCA4D7 /* cpu_arm.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED06C1F3224BF00FCA4D7 /* cpu_arm.c */; };
 		B1CED0731F3226AE00FCA4D7 /* cpu_common.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED0721F3226AE00FCA4D7 /* cpu_common.c */; };
 /* End PBXBuildFile section */
@@ -309,6 +311,8 @@
 		B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_dictionary.hpp; sourceTree = "<group>"; };
 		B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_memory_pool.hpp; sourceTree = "<group>"; };
 		B1607BF51E7EBD5A00CBBDDD /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
+		B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_bool.hpp; sourceTree = "<group>"; };
+		B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_ptr.hpp; sourceTree = "<group>"; };
 		B1CED06C1F3224BF00FCA4D7 /* cpu_arm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_arm.c; sourceTree = "<group>"; };
 		B1CED0721F3226AE00FCA4D7 /* cpu_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_common.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -396,6 +400,8 @@
 		68245B481BC9D7680006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */,
+				B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */,
 				B1276EAB1FFD73DD0073914A /* xhn_stacktrace.cpp */,
 				B1276EAA1FFD73DD0073914A /* xhn_stacktrace.hpp */,
 				B1276EAD1FFD73DD0073914A /* xhn_triple_buffer.cpp */,
@@ -603,6 +609,7 @@
 				68245C041BC9D7680006E99D /* xhn_map.hpp in Headers */,
 				B11DBD991F586A2C006D89AD /* xhn_group.hpp in Headers */,
 				68245C211BC9D7680006E99D /* xhn_thread.hpp in Headers */,
+				B19BDBD5208EB2F70051716A /* xhn_atomic_ptr.hpp in Headers */,
 				68245C1A1BC9D7680006E99D /* xhn_state_machine.hpp in Headers */,
 				68245BBC1BC9D7680006E99D /* hash.h in Headers */,
 				68245C121BC9D7680006E99D /* xhn_rbtree.hpp in Headers */,
@@ -617,6 +624,7 @@
 				68245BB01BC9D7680006E99D /* eassert.h in Headers */,
 				68245C061BC9D7680006E99D /* xhn_memory.hpp in Headers */,
 				68245C181BC9D7680006E99D /* xhn_smart_ptr.hpp in Headers */,
+				B19BDBD4208EB2F70051716A /* xhn_atomic_bool.hpp in Headers */,
 				B11892761E6BEA8900AD5279 /* cpu.h in Headers */,
 				68245BE11BC9D7680006E99D /* xhn_duplicate_finder.h in Headers */,
 				68245BAE1BC9D7680006E99D /* container.h in Headers */,
