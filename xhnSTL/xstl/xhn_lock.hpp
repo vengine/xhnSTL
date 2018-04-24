@@ -374,6 +374,16 @@ public:
             return *m_data;
         }
     };
+private:
+    inline SpinObject(const SpinObject& obj)
+    {
+        /// users should not call this construct function.
+    }
+    inline const SpinObject& operator = (const SpinObject& obj)
+    {
+        /// users should not call this operator.
+        return *this;
+    }
 public:
     inline SpinObject()
 #ifdef __APPLE__
@@ -455,6 +465,16 @@ public:
             return *m_data;
         }
     };
+private:
+    inline MutexObject(const MutexObject& obj)
+    {
+        /// users should not call this construct function.
+    }
+    inline const MutexObject& operator = (const MutexObject& obj)
+    {
+        /// users should not call this operator.
+        return *this;
+    }
 public:
     inline MutexObject()
     {
@@ -515,6 +535,16 @@ public:
             return m_data;
         }
     };
+private:
+    inline RecursiveMutexObject(const RecursiveMutexObject& obj)
+    {
+        /// users should not call this construct function.
+    }
+    inline const RecursiveMutexObject& operator = (const RecursiveMutexObject& obj)
+    {
+        /// users should not call this operator.
+        return *this;
+    }
 public:
     inline RecursiveMutexObject()
     {
