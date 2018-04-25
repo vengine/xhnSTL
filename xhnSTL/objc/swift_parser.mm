@@ -1266,8 +1266,17 @@ namespace xhn {
         bridgeFile += "    deleteSceneNodesCallback([strSceneName, strSceneFilePath, renderSys, swiftNodeFilter, swiftCallback](VEngine::VRobotCommandReceipt*){\n";
         bridgeFile += "        auto channel = VEngine::VRobotManager::Get((VEngine::VRenderSystem*)renderSys)->GetChannel(VEngine::VScriptRobot::StrScriptRobot,\n";
         bridgeFile += "                                                                                                   VEngine::VSceneRobot::StrSceneRobot);\n";
-        bridgeFile += "        xhn::Lambda<void (VEngine::VRobotCommandReceipt*)> loadSceneCallback([swiftCallback](VEngine::VRobotCommandReceipt*){\n";
-        bridgeFile += "            swiftCallback->m_callback();\n";
+        bridgeFile += "        xhn::Lambda<void (VEngine::VRobotCommandReceipt*)> loadSceneCallback([renderSys, swiftCallback](VEngine::VRobotCommandReceipt* rec){\n";
+        bridgeFile += "            VEngine::VLoadSceneCommandReceipt* lscr = rec->DynamicCast<VEngine::VLoadSceneCommandReceipt>();\n";
+        bridgeFile += "            auto channel = VEngine::VRobotManager::Get((VEngine::VRenderSystem*)renderSys)->GetChannel(VEngine::VScriptRobot::StrScriptRobot,\n";
+        bridgeFile += "                                                                                                       VEngine::VSceneRobot::StrSceneRobot);\n";
+        bridgeFile += "            xhn::Lambda<void (VEngine::VRobotCommandReceipt*)> loadAgentsCallback([swiftCallback](VEngine::VRobotCommandReceipt*){\n";
+        bridgeFile += "                swiftCallback->m_callback();\n";
+        bridgeFile += "            });\n";
+        bridgeFile += "            VEngine::VLoadAgentsCommand lac((VEngine::VRenderSystem*)renderSys,\n";
+        bridgeFile += "                                            lscr->m_sceneNodeVector.get(),\n";
+        bridgeFile += "                                            loadAgentsCallback);\n";
+        bridgeFile += "            channel->Write(lac);\n";
         bridgeFile += "        });\n";
         bridgeFile += "        VEngine::VLoadSceneCommand lsc((VEngine::VRenderSystem*)renderSys,\n";
         bridgeFile += "                                       strSceneName.c_str(), strSceneFilePath.c_str(),\n";
@@ -2006,6 +2015,9 @@ namespace xhn {
     mSwiftParserCallback = proc;
     mTask = [[NSTask alloc] init];
     [mTask setLaunchPath: @"/bin/sh"];
+    
+    printf("Run command:\n");
+    printf("%s\n", [commandToRun UTF8String]);
     
     NSArray *arguments = [NSArray arrayWithObjects:
                           @"-c" ,
