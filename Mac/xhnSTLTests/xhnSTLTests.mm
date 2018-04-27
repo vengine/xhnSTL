@@ -44,6 +44,24 @@
     [super tearDown];
 }
 
+- (void) testXhnString
+{
+    std::string stdstr =
+    "abcdefghi\n"
+    "defghiabc\n"
+    "abdghidef\n"
+    "ghidefdef\n";
+    xhn::string xhnstr =
+    "abcdefghi\n"
+    "defghiabc\n"
+    "abdghidef\n"
+    "ghidefdef\n";
+    euint xhnpos = xhnstr.find("def", 13);
+    size_t stdpos = stdstr.find("def", 13);
+    printf("stnpos=%lld, stdpos=%ld\n", xhnpos, stdpos);
+    XCTAssert(xhnpos == stdpos, @"error");
+}
+
 - (void) testColladaTool
 {
     VEngine::ColladaTool tool;

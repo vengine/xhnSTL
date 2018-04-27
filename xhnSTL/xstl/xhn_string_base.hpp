@@ -535,7 +535,7 @@ public:
                 if ( _str[count] != str_str[match_count] ) {
                     match_count = 0;
                     matching = false;
-                    match_pos = pos + count + 1;
+                    match_pos = count + 1;
                 }
                 else {
                     
