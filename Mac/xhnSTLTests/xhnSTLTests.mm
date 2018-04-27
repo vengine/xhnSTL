@@ -44,6 +44,16 @@
     [super tearDown];
 }
 
+- (void) testUrl
+{
+    xhn::string path = "/Users/xhnsworks/VEngineProjects/未命名项目/COLLADATextures/Archer/Female/Archer_Female_dds/Archer_Female_01.dds";
+    xhn::string url = xhn::to_url(path);
+    printf("URL:%s\n", url.c_str());
+    xhn::string newpath = xhn::to_utf8_path(url);
+    printf("NEWPATH:%s\n", newpath.c_str());
+    XCTAssert(path == newpath, @"error");
+}
+
 - (void) testXhnString
 {
     std::string stdstr =

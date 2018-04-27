@@ -64,6 +64,8 @@ char* string_convert_to_utf8(const char* input);
 char* localized_string(const char* identifier);
 /// 通过free来释放
 const wchar_t* utf8_to_unicode(const char* input);
+const char* convert_utf8_path_to_url(const char* utf8_path);
+const char* convert_url_to_utf8_path(const char* url);
 #ifdef __cplusplus
 }
 #endif

@@ -365,3 +365,41 @@ const wchar_t* utf8_to_unicode(const char* input)
     memcpy(ret, ((xhn::wstring)uni).c_str(), (((xhn::wstring)uni).size() + 1) * sizeof(wchar_t));
     return ret;
 }
+
+const char* convert_utf8_path_to_url(const char* utf8_path)
+{
+    NSString* str = [NSString stringWithUTF8String:utf8_path];
+    NSURL* url = [NSURL fileURLWithPath:str];
+    if (url) {
+        NSString* urlstr = url.absoluteString;
+        if (urlstr) {
+            const char* buf = [urlstr UTF8String];
+            if (buf) {
+                size_t size = strlen(buf);
+                char* ret = (char*)malloc(size + 1);
+                memcpy(ret, buf, size + 1);
+                return ret;
+            }
+        }
+    }
+    return nullptr;
+}
+
+const char* convert_url_to_utf8_path(const char* url)
+{
+    NSString* str = [NSString stringWithUTF8String:url];
+    NSURL* ocUrl = [NSURL URLWithString:str];
+    if (ocUrl) {
+        NSString* pathstr = ocUrl.path;
+        if (pathstr) {
+            const char* buf = [pathstr UTF8String];
+            if (buf) {
+                size_t size = strlen(buf);
+                char* ret = (char*)malloc(size + 1);
+                memcpy(ret, buf, size + 1);
+                return ret;
+            }
+        }
+    }
+    return nullptr;
+}

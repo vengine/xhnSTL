@@ -35,6 +35,9 @@ typedef string_base<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc> string;
 typedef string_base<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc> wstring;
     
 #endif
+    
+string to_url(const string& utf8_path);
+string to_utf8_path(const string& url);
 
 class Utf8
 {

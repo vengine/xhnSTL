@@ -257,6 +257,28 @@ bool xhn::Unicode::utf8towcs(const char *utf8, vector< wchar_t, FGetCharRealSize
 	return num_errors == 0;
 }
 
+xhn::string xhn::to_url(const xhn::string& utf8_path)
+{
+    string ret;
+    const char* buf = convert_utf8_path_to_url(utf8_path.c_str());
+    if (buf) {
+        ret = buf;
+        free((char*)buf);
+    }
+    return ret;
+}
+
+xhn::string xhn::to_utf8_path(const string& url)
+{
+    string ret;
+    const char* buf = convert_url_to_utf8_path(url.c_str());
+    if (buf) {
+        ret = buf;
+        free((char*)buf);
+    }
+    return ret;
+}
+
 /**
  * Copyright (c) 2011-2013 Xu Haining
  *
