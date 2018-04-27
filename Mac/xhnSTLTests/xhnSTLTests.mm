@@ -24,6 +24,10 @@
 #include <string>
 #include <cxxabi.h>
 
+#define STD xhn
+#include "ColladaTool.hpp"
+
+
 @interface xhnSTLTests : XCTestCase
 
 @end
@@ -38,6 +42,26 @@
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
+}
+
+- (void) testColladaTool
+{
+    VEngine::ColladaTool tool;
+    tool.m_colladaContent =
+    "abcdefghi\n"
+    "defghiabc\n"
+    "abdghidef\n"
+    "ghidefdef\n";
+    xhn::string correctResult =
+    "abc-A-ghi\n"
+    "-A-ghiabc\n"
+    "abdghi-A-\n"
+    "ghi-A--A-\n";
+    xhn::vector<xhn::pair<xhn::string, xhn::string>> resetDirVec;
+    resetDirVec.push_back(xhn::make_pair(xhn::string("def"), xhn::string("-A-")));
+    tool.ResetTexturesDirectory(resetDirVec);
+    printf("%s\n", tool.m_colladaContent.c_str());
+    XCTAssert(tool.m_colladaContent == correctResult, @"error");
 }
 
 - (void) testAtomicPtr {

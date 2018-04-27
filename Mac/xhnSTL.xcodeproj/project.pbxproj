@@ -312,6 +312,7 @@
 		B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = symbol_buffer.hpp; sourceTree = "<group>"; };
 		B1607BE81E7E423A00CBBDDD /* asm_syntax_converter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = asm_syntax_converter.mm; sourceTree = "<group>"; };
 		B1607BE91E7E423A00CBBDDD /* asm_syntax_converter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = asm_syntax_converter.hpp; sourceTree = "<group>"; };
+		B16A6E092093855400119FC2 /* ColladaTool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ColladaTool.hpp; sourceTree = "<group>"; };
 		B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
 		B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
@@ -551,6 +552,7 @@
 		68FC12D91BC9D31A00C8A0BE /* xhnSTLTests */ = {
 			isa = PBXGroup;
 			children = (
+				B16A6E092093855400119FC2 /* ColladaTool.hpp */,
 				68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */,
 				68FC12DC1BC9D31A00C8A0BE /* Info.plist */,
 			);
