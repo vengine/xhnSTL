@@ -89,7 +89,7 @@ public:
 
 #endif
 
-#endif /* defined(__ecg__apple_file_manager__) */
+#endif 
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

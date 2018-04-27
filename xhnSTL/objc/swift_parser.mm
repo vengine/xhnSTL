@@ -1,10 +1,4 @@
-//
-//  swift_parser.cpp
-//  VEngine
-//
-//  Created by 徐海宁 on 16/4/9.
-//  Copyright © 2016年 徐海宁. All rights reserved.
-//
+
 
 #include "swift_parser.hpp"
 #include "utility.h"
