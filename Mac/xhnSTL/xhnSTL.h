@@ -63,7 +63,7 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTL/xhn_lambda.hpp>
 #import <xhnSTL/xhn_list.hpp>
 #import <xhnSTL/xhn_list2.h>
-#import <xhnSTL/xhn_list_template.hpp>
+//#import <xhnSTL/xhn_list_template.hpp>
 #import <xhnSTL/xhn_singly_linked_list.hpp>
 #import <xhnSTL/xhn_lock.hpp>
 #import <xhnSTL/xhn_map.hpp>
