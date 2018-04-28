@@ -285,14 +285,11 @@ public:
     {
         friend class ReadWriteMutexObject;
     private:
-        ReadWriteMutexObject* m_prototype;
-        T* m_data;
+        const ReadWriteMutexObject* m_prototype;
         const bool m_is_read_lock;
-        inline Instance(ReadWriteMutexObject* lock,
-                        T* data,
+        inline Instance(const ReadWriteMutexObject* lock,
                         bool is_read_lock)
         : m_prototype(lock)
-        , m_data(data)
         , m_is_read_lock(is_read_lock)
         {}
     public:
@@ -310,16 +307,16 @@ public:
             }
         }
         inline T* operator->() {
-            return m_data;
+            return &m_prototype->m_data;
         }
         inline const T* operator->() const {
-            return m_data;
+            return &m_prototype->m_data;
         }
         inline T& operator*() {
-            return *m_data;
+            return m_prototype->m_data;
         }
         inline const T& operator*() const {
-            return *m_data;
+            return m_prototype->m_data;
         }
     };
 private:
@@ -354,7 +351,7 @@ public:
         pthread_mutex_lock(&m_write_lock);
         AtomicIncrement(&m_read_lock_count);
         pthread_mutex_unlock(&m_write_lock);
-        return Instance(this, &m_data, true);
+        return Instance(this, true);
     }
     inline Instance WriteLock()
     {
@@ -373,7 +370,33 @@ public:
             pthread_mutex_unlock(&m_write_lock);
             goto WaitReadLock;
         }
-        return Instance(this, &m_data, false);
+        return Instance(this, false);
+    }
+    inline const Instance ReadLock() const
+    {
+        pthread_mutex_lock(&m_write_lock);
+        AtomicIncrement(&m_read_lock_count);
+        pthread_mutex_unlock(&m_write_lock);
+        return Instance(this, true);
+    }
+    inline const Instance WriteLock() const
+    {
+    WaitReadLock:
+        euint pause_count = 100;
+        while (AtomicLoad32(&m_read_lock_count)) {
+            nanopause(pause_count);
+            pause_count += 100;
+            if (pause_count > 1000) {
+                pthread_yield_np();
+                pause_count = 100;
+            }
+        }
+        pthread_mutex_lock(&m_write_lock);
+        if (AtomicLoad32(&m_read_lock_count)) {
+            pthread_mutex_unlock(&m_write_lock);
+            goto WaitReadLock;
+        }
+        return Instance(this, false);
     }
 };
 
