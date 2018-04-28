@@ -59,6 +59,7 @@ private:
     STR_LEN_PROC m_str_len_proc;
     STR_CMP_PROC m_str_cmp_proc;
     DEFAULT_STR_PROC m_default_str_proc;
+public:
     mutable CHAR_ALLOCATOR m_char_allocator;
 public:
     inline void set_own_str(bool flag) {
@@ -99,6 +100,33 @@ public:
         set_using_data1( true );
         set_data1_size( 0 );
         m_data.data1.m_str[0] = 0;
+    }
+    
+    string_base ( const CHAR_ALLOCATOR& allocator, const C *str )
+    : m_char_allocator ( allocator )
+    {
+        if (!str) {
+            set_own_str( true );
+            set_using_data1( true );
+            set_data1_size( 0 );
+            m_data.data1.m_str[0] = 0;
+            return;
+        }
+        
+        euint count = m_str_len_proc(str);
+        
+        if (count + 1 > DATA1_SIZE) {
+            m_data.data0.m_str = m_char_allocator.allocate ( count + 1 );
+            memcpy ( m_data.data0.m_str, str, (count + 1) * sizeof(C) );
+            m_data.data0.m_size = count;
+            set_using_data1( false );
+        }
+        else {
+            memcpy( m_data.data1.m_str, str, (count + 1) * sizeof(C) );
+            set_using_data1( true );
+            set_data1_size( count );
+        }
+        set_own_str( true );
     }
     
     string_base ( const C *str ) {
@@ -637,11 +665,11 @@ public:
             return npos;
     }
     euint find ( const C *str, euint pos = 0 ) const {
-        string_base tmp ( str );
+        string_base tmp ( m_char_allocator, str );
         return find ( tmp, pos );
     }
     euint rfind ( const C *str, euint pos = npos ) const {
-        string_base tmp ( str );
+        string_base tmp ( m_char_allocator, str );
         return rfind ( tmp, pos );
     }
     euint find_first_of ( const string_base &str, euint pos = 0 ) const {
@@ -660,7 +688,7 @@ public:
         const C* _str = get_using_data1() ? m_data.data1.m_str : m_data.data0.m_str;
         euint _size = get_using_data1() ? get_data1_size() : m_data.data0.m_size;
         if ( pos >= _size ) {
-            return string_base();
+            return string_base( m_char_allocator );
         }
 
         if ( pos == 0 && len == npos ) {
@@ -684,7 +712,7 @@ public:
             if (_str[count] == ch) {
                 subStrSize = count - begin;
                 if (subStrSize) {
-                    string_base tmp(&_str[begin], subStrSize);
+                    string_base tmp( m_char_allocator, &_str[begin], subStrSize );
                     ret.push_back(tmp);
                 }
                 begin = count + 1;
@@ -695,7 +723,7 @@ public:
             subStrSize = count - begin;
             count--;
             if (subStrSize) {
-                string_base tmp(&_str[begin], subStrSize);
+                string_base tmp( m_char_allocator, &_str[begin], subStrSize );
                 ret.push_back(tmp);
             }
         }
