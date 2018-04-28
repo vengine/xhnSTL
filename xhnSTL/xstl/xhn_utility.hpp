@@ -917,10 +917,109 @@ struct FCharFormat
         }
     };
     
+    template <typename C>
+    class FCharAllocator
+    {
+    public:
+        typedef euint size_type;
+        typedef euint difference_type;
+        typedef C* pointer;
+        typedef const C* const_pointer;
+        typedef C value_type;
+        typedef C& reference;
+        typedef const C& const_reference;
+        
+        template<typename AC>
+        struct rebind
+        {
+            typedef FCharAllocator<AC> other;
+        };
+        
+        pointer address(reference v) const
+        {
+            return &v;
+        }
+        
+        const_pointer address(const_reference v) const
+        {
+            return &v;
+        }
+        
+        FCharAllocator()
+        {
+        }
+        
+        FCharAllocator(const FCharAllocator& rth)
+        {
+        }
+        
+        template<typename AC>
+        FCharAllocator(const FCharAllocator<AC>&)
+        {
+        }
+        
+        template<typename AC>
+        FCharAllocator<AC>& operator=(const FCharAllocator<AC>&)
+        {
+            return (*this);
+        }
+        
+        void deallocate(pointer ptr)
+        {
+            Mfree(ptr);
+        }
+        
+        void deallocate(pointer ptr, size_type)
+        {
+            Mfree(ptr);
+        }
+        
+        pointer allocate(size_type count)
+        {
+            return (pointer)NMalloc(count * sizeof(C));
+        }
+        
+        pointer allocate(size_type count, const void*)
+        {
+            return (pointer)NMalloc(count * sizeof(C));
+        }
+        
+        void construct(pointer ptr, const C& v)
+        {
+            new (ptr) C();
+        }
+        
+        void construct(pointer ptr)
+        {
+            new ( ptr ) C ();
+        }
+        
+        void destroy(pointer ptr)
+        {
+            ((C*)ptr)->~C();
+        }
+        
+        size_type max_size() const {
+            return static_cast<size_type>(-1) / sizeof(value_type);
+        }
+    };
+    
 #if USING_STRING_OLD
-    template <typename T, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC> class string_base_old;
+    template <
+    typename T,
+    unsigned NUM_EXTENDED_WORDS,
+    typename STR_LEN_PROC,
+    typename STR_CMP_PROC,
+    typename DEFAULT_STR_PROC,
+    typename CHAR_ALLOCATOR> class string_base_old;
 #else
-    template <typename T, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC> class string_base;
+    template <
+    typename T,
+    unsigned NUM_EXTENDED_WORDS,
+    typename STR_LEN_PROC,
+    typename STR_CMP_PROC,
+    typename DEFAULT_STR_PROC,
+    typename CHAR_ALLOCATOR> class string_base;
 #endif
     
     template <typename T>
@@ -929,11 +1028,11 @@ struct FCharFormat
         typedef
         typename conditional<is_pointer<T>::value,
 #if USING_STRING_OLD
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base_old<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc>,
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base_old<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc>, void*>::type
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base_old<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc, FCharAllocator<char>>,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base_old<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc, FCharAllocator<wchar_t>>, void*>::type
 #else
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc>,
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc>, void*>::type
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc, FCharAllocator<char>>,
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc, FCharAllocator<wchar_t>>, void*>::type
 #endif
         >::type,
         T

@@ -22,6 +22,8 @@
 #include <string.h>
 namespace xhn
 {
+    
+
 template <typename C, unsigned NUM_EXTENDED_WORDS>
 struct string_data0
 {
@@ -38,7 +40,14 @@ struct string_data1
     C m_flag;
 };
 
-template <typename C, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
+template <
+    typename C,
+    unsigned NUM_EXTENDED_WORDS,
+    typename STR_LEN_PROC,
+    typename STR_CMP_PROC,
+    typename DEFAULT_STR_PROC,
+    typename CHAR_ALLOCATOR
+    >
 class string_base
 {
 private:
@@ -50,6 +59,7 @@ private:
     STR_LEN_PROC m_str_len_proc;
     STR_CMP_PROC m_str_cmp_proc;
     DEFAULT_STR_PROC m_default_str_proc;
+    mutable CHAR_ALLOCATOR m_char_allocator;
 public:
     inline void set_own_str(bool flag) {
         if (flag) { m_data.data1.m_flag |= 0x80; }
@@ -94,7 +104,7 @@ public:
         euint count = m_str_len_proc(str);
 
         if (count + 1 > DATA1_SIZE) {
-            m_data.data0.m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
+            m_data.data0.m_str = m_char_allocator.allocate ( count + 1 );
             memcpy ( m_data.data0.m_str, str, (count + 1) * sizeof(C) );
             m_data.data0.m_size = count;
             set_using_data1( false );
@@ -117,7 +127,7 @@ private:
         }
         
         if ( size + 1 > DATA1_SIZE ) {
-            m_data.data0.m_str = ( C * ) NMalloc ( (size + 1) * sizeof(C) );
+            m_data.data0.m_str = m_char_allocator.allocate ( size + 1 );
             memcpy ( m_data.data0.m_str, str, size * sizeof(C) );
             m_data.data0.m_str[size] = 0;
             m_data.data0.m_size = size;
@@ -135,7 +145,7 @@ public:
         euint size = str.size();
         set_own_str( true );
         if ( size + 1 > DATA1_SIZE ) {
-            m_data.data0.m_str = ( C * ) NMalloc ( (size + 1) * sizeof(C) );
+            m_data.data0.m_str = m_char_allocator.allocate ( size + 1 );
             memcpy ( m_data.data0.m_str, str.get(), size * sizeof(C) );
             m_data.data0.m_str[size] = 0;
             m_data.data0.m_size = size;
@@ -155,7 +165,7 @@ public:
             set_data1_size( str.get_data1_size() );
         }
         else {
-            m_data.data0.m_str = ( C * ) NMalloc ( (str.m_data.data0.m_size + 1) * sizeof(C) );
+            m_data.data0.m_str = m_char_allocator.allocate ( str.m_data.data0.m_size + 1 );
             memcpy ( m_data.data0.m_str, str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             m_data.data0.m_size = str.m_data.data0.m_size;
             set_using_data1( false );
@@ -169,7 +179,7 @@ public:
             set_data1_size( str.get_data1_size() );
         }
         else {
-            m_data.data0.m_str = ( C * ) NMalloc ( (str.m_data.data0.m_size + 1) * sizeof(C) );
+            m_data.data0.m_str = m_char_allocator.allocate ( str.m_data.data0.m_size + 1 );
             memcpy ( m_data.data0.m_str, str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             m_data.data0.m_size = str.m_data.data0.m_size;
             set_using_data1( false );
@@ -179,7 +189,7 @@ public:
     }
     ~string_base() {
         if (get_own_str() && !get_using_data1()) {
-            Mfree ( m_data.data0.m_str );
+            m_char_allocator.deallocate ( m_data.data0.m_str );
         }
     }
     iterator begin() {
@@ -282,14 +292,14 @@ public:
     }
     string_base &operator = ( const string_base &str ) {
         if (!get_using_data1()) {
-            Mfree ( m_data.data0.m_str );
+            m_char_allocator.deallocate ( m_data.data0.m_str );
         }
         if (str.get_using_data1()) {
             memcpy ( &m_data, &str.m_data, sizeof(m_data) );
             set_data1_size( str.get_data1_size() );
         }
         else {
-            m_data.data0.m_str = ( C * ) NMalloc ( (str.m_data.data0.m_size + 1) * sizeof(C) );
+            m_data.data0.m_str = m_char_allocator.allocate ( str.m_data.data0.m_size + 1 );
             memcpy ( m_data.data0.m_str, str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             m_data.data0.m_size = str.m_data.data0.m_size;
         }
@@ -298,7 +308,7 @@ public:
     }
     string_base &operator = ( string_base &&str ) {
         if (!get_using_data1()) {
-            Mfree ( m_data.data0.m_str );
+            m_char_allocator.deallocate ( m_data.data0.m_str );
         }
         if (str.get_using_data1()) {
             memcpy ( &m_data, &str.m_data, sizeof(m_data) );
@@ -316,10 +326,10 @@ public:
         euint count = m_str_len_proc(str);
         
         if (!get_using_data1()) {
-            Mfree ( m_data.data0.m_str );
+            m_char_allocator.deallocate ( m_data.data0.m_str );
         }
         if ( count + 1 > DATA1_SIZE ) {
-            m_data.data0.m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
+            m_data.data0.m_str = m_char_allocator.allocate ( count + 1 );
             memcpy ( m_data.data0.m_str, str, (count + 1) * sizeof(C) );
             m_data.data0.m_size = count;
             set_using_data1( false );
@@ -334,10 +344,10 @@ public:
 	string_base &operator = ( const vector< C, FGetCharRealSizeProc<C> >& str ) {
         euint count = str.size();
         if (!get_using_data1()) {
-            Mfree ( m_data.data0.m_str );
+            m_char_allocator.deallocate ( m_data.data0.m_str );
         }
         if ( count + 1 > DATA1_SIZE ) {
-            m_data.data0.m_str = ( C * ) NMalloc ( (count + 1) * sizeof(C) );
+            m_data.data0.m_str = m_char_allocator.allocate ( count + 1 );
             memcpy ( m_data.data0.m_str, str.get(), count * sizeof(C) );
             m_data.data0.m_str[count] = 0;
             m_data.data0.m_size = count;
@@ -358,7 +368,7 @@ public:
             euint new_size = get_data1_size() + str.get_data1_size();
             if ( new_size + 1 > DATA1_SIZE ) {
                 ret.set_using_data1( false );
-                ret.m_data.data0.m_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+                ret.m_data.data0.m_str = m_char_allocator.allocate ( new_size + 1 );
                 memcpy ( ret.m_data.data0.m_str, m_data.data1.m_str, get_data1_size() * sizeof(C) );
                 memcpy ( &ret.m_data.data0.m_str[get_data1_size()], str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
                 ret.m_data.data0.m_size = new_size;
@@ -373,7 +383,7 @@ public:
         else if (get_using_data1() && !str.get_using_data1()) {
             euint new_size = get_data1_size() + str.m_data.data0.m_size;
             ret.set_using_data1( false );
-            ret.m_data.data0.m_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+            ret.m_data.data0.m_str = m_char_allocator.allocate ( new_size + 1 );
             memcpy ( ret.m_data.data0.m_str, m_data.data1.m_str, get_data1_size() * sizeof(C) );
             memcpy ( &ret.m_data.data0.m_str[get_data1_size()], str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             ret.m_data.data0.m_size = new_size;
@@ -381,7 +391,7 @@ public:
         else if (!get_using_data1() && str.get_using_data1()) {
             euint new_size = m_data.data0.m_size + str.get_data1_size();
             ret.set_using_data1( false );
-            ret.m_data.data0.m_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+            ret.m_data.data0.m_str = m_char_allocator.allocate ( new_size + 1 );
             memcpy ( ret.m_data.data0.m_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &ret.m_data.data0.m_str[m_data.data0.m_size], str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
             ret.m_data.data0.m_size = new_size;
@@ -389,7 +399,7 @@ public:
         else {
             euint new_size = m_data.data0.m_size + str.m_data.data0.m_size;
             ret.set_using_data1( false );
-            ret.m_data.data0.m_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+            ret.m_data.data0.m_str = m_char_allocator.allocate ( new_size + 1 );
             memcpy ( ret.m_data.data0.m_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &ret.m_data.data0.m_str[m_data.data0.m_size], str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             ret.m_data.data0.m_size = new_size;
@@ -405,7 +415,7 @@ public:
             euint new_size = get_data1_size() + count;
             if ( new_size + 1 > DATA1_SIZE ) {
                 ret.set_using_data1( false );
-                ret.m_data.data0.m_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+                ret.m_data.data0.m_str = m_char_allocator.allocate ( new_size + 1 );
                 memcpy ( ret.m_data.data0.m_str, m_data.data1.m_str, get_data1_size() * sizeof(C) );
                 memcpy ( &ret.m_data.data0.m_str[get_data1_size()], str, (count + 1) * sizeof(C) );
                 ret.m_data.data0.m_size = new_size;
@@ -420,7 +430,7 @@ public:
         else {
             euint new_size = m_data.data0.m_size + count;
             ret.set_using_data1( false );
-            ret.m_data.data0.m_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+            ret.m_data.data0.m_str = m_char_allocator.allocate ( new_size + 1 );
             memcpy ( ret.m_data.data0.m_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &ret.m_data.data0.m_str[m_data.data0.m_size], str, (count + 1) * sizeof(C) );
             ret.m_data.data0.m_size = new_size;
@@ -432,7 +442,7 @@ public:
             euint new_size = get_data1_size() + str.get_data1_size();
             if ( new_size + 1 > DATA1_SIZE ) {
                 set_using_data1( false );
-                C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+                C* new_str = m_char_allocator.allocate ( new_size + 1 );
                 memcpy ( new_str, m_data.data1.m_str, get_data1_size() * sizeof(C) );
                 memcpy ( &new_str[get_data1_size()], str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
                 m_data.data0.m_str = new_str;
@@ -447,7 +457,7 @@ public:
         else if (get_using_data1() && !str.get_using_data1()) {
             euint new_size = get_data1_size() + str.m_data.data0.m_size;
             set_using_data1( false );
-            C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+            C* new_str = m_char_allocator.allocate ( new_size + 1 );
             memcpy ( new_str, m_data.data1.m_str, get_data1_size() * sizeof(C) );
             memcpy ( &new_str[get_data1_size()], str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
             m_data.data0.m_str = new_str;
@@ -456,20 +466,20 @@ public:
         else if (!get_using_data1() && str.get_using_data1()) {
             euint new_size = m_data.data0.m_size + str.get_data1_size();
             set_using_data1( false );
-            C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+            C* new_str = m_char_allocator.allocate ( new_size + 1 );
             memcpy ( new_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &new_str[m_data.data0.m_size], str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
-            Mfree(m_data.data0.m_str);
+            m_char_allocator.deallocate ( m_data.data0.m_str );
             m_data.data0.m_str = new_str;
             m_data.data0.m_size = new_size;
         }
         else {
             euint new_size = m_data.data0.m_size + str.m_data.data0.m_size;
             set_using_data1( false );
-            C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+            C* new_str = m_char_allocator.allocate ( new_size + 1 );
             memcpy ( new_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &new_str[m_data.data0.m_size], str.m_data.data0.m_str, (str.m_data.data0.m_size + 1) * sizeof(C) );
-            Mfree(m_data.data0.m_str);
+            m_char_allocator.deallocate ( m_data.data0.m_str );
             m_data.data0.m_str = new_str;
             m_data.data0.m_size = new_size;
         }
@@ -482,7 +492,7 @@ public:
             euint new_size = get_data1_size() + count;
             if ( new_size + 1 > DATA1_SIZE ) {
                 set_using_data1( false );
-                C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+                C* new_str = m_char_allocator.allocate ( new_size + 1 );
                 memcpy ( new_str, m_data.data1.m_str, get_data1_size() * sizeof(C) );
                 memcpy ( &new_str[get_data1_size()], str, (count + 1) * sizeof(C) );
                 m_data.data0.m_str = new_str;
@@ -497,10 +507,10 @@ public:
         else {
             euint new_size = m_data.data0.m_size + count;
             set_using_data1( false );
-            C* new_str = ( C * ) NMalloc ( (new_size + 1) * sizeof(C) );
+            C* new_str = m_char_allocator.allocate ( new_size + 1 );
             memcpy ( new_str, m_data.data0.m_str, m_data.data0.m_size * sizeof(C) );
             memcpy ( &new_str[m_data.data0.m_size], str, (count + 1) * sizeof(C) );
-            Mfree(m_data.data0.m_str);
+            m_char_allocator.deallocate ( m_data.data0.m_str );
             m_data.data0.m_str = new_str;
             m_data.data0.m_size = new_size;
         }
@@ -702,7 +712,7 @@ public:
     }
 	void clear() {
         if (!get_using_data1()) {
-            Mfree(m_data.data0.m_str);
+            m_char_allocator.deallocate ( m_data.data0.m_str );
         }
         set_using_data1( true );
         set_data1_size( 0 );
@@ -712,12 +722,13 @@ public:
 	void resize(euint newSize) {
         const C* _str = get_using_data1() ? m_data.data1.m_str : m_data.data0.m_str;
         euint _size = get_using_data1() ? get_data1_size() : m_data.data0.m_size;
-        C *tmp = ( C * ) SMalloc ( (newSize + 1) * sizeof(C) );
+        C *tmp = m_char_allocator.allocate ( newSize + 1 );
+        memset( tmp, 0, (newSize + 1) * sizeof(C) );
         if (_size) {
             memcpy(tmp, _str, _size * sizeof(C));
         }
         if (!get_using_data1()) {
-            Mfree(m_data.data0.m_str);
+            m_char_allocator.deallocate ( m_data.data0.m_str );
         }
         set_using_data1( false );
         m_data.data0.m_str = tmp;
@@ -725,8 +736,8 @@ public:
 	}
 };
     
-template <typename C, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC>
-inline euint32 _hash ( const string_base<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC> &key )
+template <typename C, unsigned NUM_EXTENDED_WORDS, typename STR_LEN_PROC, typename STR_CMP_PROC, typename DEFAULT_STR_PROC, typename CHAR_ALLOCATOR>
+inline euint32 _hash ( const string_base<C, NUM_EXTENDED_WORDS, STR_LEN_PROC, STR_CMP_PROC, DEFAULT_STR_PROC, CHAR_ALLOCATOR> &key )
 {
     return key.get_hash();
 }
