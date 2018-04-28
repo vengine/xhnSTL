@@ -969,34 +969,9 @@ struct FCharFormat
             Mfree(ptr);
         }
         
-        void deallocate(pointer ptr, size_type)
-        {
-            Mfree(ptr);
-        }
-        
         pointer allocate(size_type count)
         {
             return (pointer)NMalloc(count * sizeof(C));
-        }
-        
-        pointer allocate(size_type count, const void*)
-        {
-            return (pointer)NMalloc(count * sizeof(C));
-        }
-        
-        void construct(pointer ptr, const C& v)
-        {
-            new (ptr) C();
-        }
-        
-        void construct(pointer ptr)
-        {
-            new ( ptr ) C ();
-        }
-        
-        void destroy(pointer ptr)
-        {
-            ((C*)ptr)->~C();
         }
         
         size_type max_size() const {
