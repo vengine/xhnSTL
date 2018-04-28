@@ -92,6 +92,15 @@ public:
         m_data.data1.m_str[0] = 0;
     }
     
+    string_base( const CHAR_ALLOCATOR& allocator )
+    : m_char_allocator ( allocator )
+    {
+        set_own_str( true );
+        set_using_data1( true );
+        set_data1_size( 0 );
+        m_data.data1.m_str[0] = 0;
+    }
+    
     string_base ( const C *str ) {
         if (!str) {
             set_own_str( true );
@@ -117,7 +126,9 @@ public:
         set_own_str( true );
     }
 private:
-    string_base ( const C *str, euint size ) {
+    string_base ( const CHAR_ALLOCATOR& allocator, const C *str, euint size )
+    : m_char_allocator ( allocator )
+    {
         set_own_str( true );
         if (!str) {
             set_using_data1( true );
@@ -158,7 +169,9 @@ public:
             set_data1_size( size );
         }
     }
-    string_base ( const string_base &str ) {
+    string_base ( const string_base &str )
+    : m_char_allocator(str.m_char_allocator)
+    {
         if (str.get_using_data1()) {
             memcpy( m_data.data1.m_str, str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
             set_using_data1( true );
@@ -172,7 +185,9 @@ public:
         }
         set_own_str( true );
     }
-    string_base ( string_base &&str ) {
+    string_base ( string_base &&str )
+    : m_char_allocator(str.m_char_allocator)
+    {
         if (str.get_using_data1()) {
             memcpy( m_data.data1.m_str, str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
             set_using_data1( true );
@@ -362,7 +377,7 @@ public:
         return *this;
     }
     string_base operator + ( const string_base &str ) const {
-        string_base ret;
+        string_base ret( m_char_allocator );
         ret.set_own_str( true );
         if (get_using_data1() && str.get_using_data1()) {
             euint new_size = get_data1_size() + str.get_data1_size();
@@ -409,7 +424,7 @@ public:
     string_base operator + ( const C *str ) const {
         euint count = m_str_len_proc(str);
 
-        string_base ret;
+        string_base ret( m_char_allocator );
         ret.set_own_str( true );
         if (get_using_data1()) {
             euint new_size = get_data1_size() + count;
@@ -656,7 +671,7 @@ public:
             len = _size - pos;
         }
         
-        string_base ret(&_str[pos], len);
+        string_base ret( m_char_allocator, &_str[pos], len );
         return ret;
     }
     vector< string_base > split( C ch ) const {
