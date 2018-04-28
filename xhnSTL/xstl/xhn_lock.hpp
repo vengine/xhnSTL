@@ -340,7 +340,8 @@ public:
     }
     template <typename ...ARGS>
     inline ReadWriteMutexObject(ARGS... args)
-    : m_data(args...)
+    : m_read_lock_count(0)
+    , m_data(args...)
     {
         pthread_mutex_init(&m_write_lock, NULL);
     }
