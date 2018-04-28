@@ -272,6 +272,109 @@ public:
         return Instance(this, false);
     }
 };
+    
+template <typename T>
+class ReadWriteMutexObject
+{
+private:
+    mutable volatile esint32 m_read_lock_count;
+    mutable pthread_mutex_t m_write_lock;
+    mutable T m_data;
+public:
+    class Instance
+    {
+        friend class ReadWriteMutexObject;
+    private:
+        ReadWriteMutexObject* m_prototype;
+        T* m_data;
+        const bool m_is_read_lock;
+        inline Instance(ReadWriteMutexObject* lock,
+                        T* data,
+                        bool is_read_lock)
+        : m_prototype(lock)
+        , m_data(data)
+        , m_is_read_lock(is_read_lock)
+        {}
+    public:
+        inline Instance(const Instance& inst)
+        : m_prototype(inst.m_prototype)
+        , m_is_read_lock(inst.m_is_read_lock)
+        {}
+        inline ~Instance()
+        {
+            if (m_is_read_lock) {
+                AtomicDecrement(&m_prototype->m_read_lock_count);
+            }
+            else {
+                pthread_mutex_unlock(&m_prototype->m_write_lock);
+            }
+        }
+        inline T* operator->() {
+            return m_data;
+        }
+        inline const T* operator->() const {
+            return m_data;
+        }
+        inline T& operator*() {
+            return *m_data;
+        }
+        inline const T& operator*() const {
+            return *m_data;
+        }
+    };
+private:
+    inline ReadWriteMutexObject(const ReadWriteMutexObject& obj)
+    {
+        /// users should not call this construct function.
+    }
+    inline const ReadWriteMutexObject& operator = (const ReadWriteMutexObject& obj)
+    {
+        /// users should not call this operator.
+        return *this;
+    }
+public:
+    inline ReadWriteMutexObject()
+    : m_read_lock_count(0)
+    {
+        pthread_mutex_init(&m_write_lock, nullptr);
+    }
+    template <typename ...ARGS>
+    inline ReadWriteMutexObject(ARGS... args)
+    : m_data(args...)
+    {
+        pthread_mutex_init(&m_write_lock, NULL);
+    }
+    inline ~ReadWriteMutexObject()
+    {
+        pthread_mutex_destroy(&m_write_lock);
+    }
+    inline Instance ReadLock()
+    {
+        pthread_mutex_lock(&m_write_lock);
+        AtomicIncrement(&m_read_lock_count);
+        pthread_mutex_unlock(&m_write_lock);
+        return Instance(this, &m_data, true);
+    }
+    inline Instance WriteLock()
+    {
+    WaitReadLock:
+        euint pause_count = 100;
+        while (AtomicLoad32(&m_read_lock_count)) {
+            nanopause(pause_count);
+            pause_count += 100;
+            if (pause_count > 1000) {
+                pthread_yield_np();
+                pause_count = 100;
+            }
+        }
+        pthread_mutex_lock(&m_write_lock);
+        if (AtomicLoad32(&m_read_lock_count)) {
+            pthread_mutex_unlock(&m_write_lock);
+            goto WaitReadLock;
+        }
+        return Instance(this, &m_data, false);
+    }
+};
 
     /// \brief SpinLock
     ///
