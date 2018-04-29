@@ -61,6 +61,7 @@ void ELog_write()
 
 void ELog2_Init(struct elogger* logger)
 {
+#if DEBUG
     ELock_lock(&g_elog_lock);
 #if defined(_WIN32) || defined(_WIN64)
     logger->logFile = SafeFOpen("log.txt", "w+");
@@ -77,13 +78,16 @@ void ELog2_Init(struct elogger* logger)
     logger->logFile = SafeFOpen(logFilename, "w+");
 #endif
     ELock_unlock(&g_elog_lock);
+#endif
 }
 
 void ELog2_write(struct elogger* logger)
 {
+#if DEBUG
     snprintf(g_elog_buffer, ELOG_BUFFER_SIZE, "%s\n", g_elog_buffer);
     fwrite(g_elog_buffer, strlen(g_elog_buffer), 1, logger->logFile);
     fflush(logger->logFile);
+#endif
 }
 
 void ELog_Release()
