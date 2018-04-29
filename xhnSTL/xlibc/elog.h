@@ -34,6 +34,9 @@ struct elogger
 {
     FILE* logFile;
 };
+    
+#if DEBUG
+
 API_EXPORT void ELog2_Init(struct elogger* logger);
 API_EXPORT void ELog2_write(struct elogger* logger);
     
@@ -41,6 +44,15 @@ API_EXPORT void ELog2_write(struct elogger* logger);
 snprintf(g_elog_buffer,ELOG_BUFFER_SIZE,fmt,##__VA_ARGS__); \
 ELog2_write(renderSys); \
 ELock_unlock(&g_elog_lock); }
+    
+#else
+    
+#define ELog2_Init(logger)
+#define ELog2_write(logger)
+    
+#define elog2(renderSys, fmt,...)
+    
+#endif
     
 #ifdef __cplusplus
 }
