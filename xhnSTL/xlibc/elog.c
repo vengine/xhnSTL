@@ -27,6 +27,7 @@ LOCKED_STATIC FILE* g_elog_file = NULL;
 #endif
 void ELog_Init()
 {
+#if DEBUG
     ELock_lock(&g_elog_lock);
 #ifdef USE_LOG_SYSTEM
     if (!g_elog_file) {
@@ -43,11 +44,14 @@ void ELog_Init()
 #endif
     
     ELock_unlock(&g_elog_lock);
+    
+#endif
 
 }
 
 void ELog_write()
 {
+#if DEBUG
 #ifdef USE_LOG_SYSTEM
     if (g_elog_file) {
         snprintf(g_elog_buffer, ELOG_BUFFER_SIZE, "%s\n", g_elog_buffer);
@@ -56,6 +60,7 @@ void ELog_write()
     }
 #else
     printf("%s\n", g_elog_buffer);
+#endif
 #endif
 }
 
@@ -92,11 +97,13 @@ void ELog2_write(struct elogger* logger)
 
 void ELog_Release()
 {
+#if DEBUG
 #ifdef USE_LOG_SYSTEM
     if (g_elog_file) {
         fclose(g_elog_file);
         g_elog_file = NULL;
     }
+#endif
 #endif
 }
 

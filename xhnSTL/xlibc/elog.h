@@ -24,11 +24,19 @@ API_EXPORT void ELog_Init(void);
 API_EXPORT void ELog_Release(void);
 extern char g_elog_buffer[ELOG_BUFFER_SIZE];
 API_EXPORT void ELog_write(void);
+    
+#if DEBUG
 
 #define elog(fmt,...) { ELock_lock(&g_elog_lock); \
     snprintf(g_elog_buffer,ELOG_BUFFER_SIZE,fmt,##__VA_ARGS__); \
     ELog_write(); \
     ELock_unlock(&g_elog_lock); }
+    
+#else
+    
+#define elog(fmt,...)
+    
+#endif
     
 struct elogger
 {
