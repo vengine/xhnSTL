@@ -250,7 +250,13 @@ public:
             nanopause(pause_count);
             pause_count += 100;
             if (pause_count > 1000) {
+#if defined(__APPLE__)
                 pthread_yield_np();
+#elif defined(ANDROID) || defined(__ANDROID__)
+                sched_yield();
+#else
+#error
+#endif
                 pause_count = 100;
             }
         }
@@ -265,7 +271,13 @@ public:
             nanopause(pause_count);
             pause_count += 100;
             if (pause_count > 1000) {
+#if defined(__APPLE__)
                 pthread_yield_np();
+#elif defined(ANDROID) || defined(__ANDROID__)
+                sched_yield();
+#else
+#error
+#endif
                 pause_count = 100;
             }
         }
@@ -361,7 +373,13 @@ public:
             nanopause(pause_count);
             pause_count += 100;
             if (pause_count > 1000) {
+#if defined(__APPLE__)
                 pthread_yield_np();
+#elif defined(ANDROID) || defined(__ANDROID__)
+                sched_yield();
+#else
+#error
+#endif
                 pause_count = 100;
             }
         }
@@ -387,7 +405,13 @@ public:
             nanopause(pause_count);
             pause_count += 100;
             if (pause_count > 1000) {
+#if defined(__APPLE__)
                 pthread_yield_np();
+#elif defined(ANDROID) || defined(__ANDROID__)
+                sched_yield();
+#else
+#error
+#endif
                 pause_count = 100;
             }
         }

@@ -12,7 +12,8 @@
 
 void nanopause(euint n)
 {
-    for (euint i = 0; i < n; i++) {
+    euint i = 0;
+    for (; i < n; i++) {
         __asm__ __volatile__("yield");
     }
 }

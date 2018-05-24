@@ -87,14 +87,16 @@ typedef string_hash_set* StringHashSet;
 
 void StringHashSet_Init(StringHashSet self)
 {
-    for (int i = 0; i < STRING_HASH_BUCKET_COUNT; i++) {
+    int i = 0;
+    for (; i < STRING_HASH_BUCKET_COUNT; i++) {
         StringHashBucket_Init(&self->buckets[i], &g_StringHashAllocator);
     }
 }
 
 void StringHashSet_Dest(StringHashSet self)
 {
-    for (int i = 0; i < STRING_HASH_BUCKET_COUNT; i++) {
+    int i = 0;
+    for (; i < STRING_HASH_BUCKET_COUNT; i++) {
         StringHashBucket_Dest(&self->buckets[i]);
     }
 }

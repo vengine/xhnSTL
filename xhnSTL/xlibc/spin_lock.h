@@ -61,6 +61,19 @@ inline bool ELock_try(ELock* lock) {
     return os_unfair_lock_trylock(lock);
 }
 #endif
+#elif defined(ANDROID) || defined(__ANDROID__)
+    
+typedef volatile esint32 ELock;
+#define ELock_Init(lock) *lock = 0
+#define ELock_lock(lock) \
+    while (!__sync_val_compare_and_swap(lock, 0, 1)) \
+    {}
+#define ELock_unlock(lock) \
+    while (!__sync_val_compare_and_swap(lock, 1, 0)) \
+    {}
+#define ELock_try(lock) \
+    __sync_fetch_and_add(lock, 0)
+    
 #elif defined(LINUX) && defined(AO_ATOMIC_OPS_H)
     ///AO_compare_and_swap  takes an address, an old value and a new value and
     ///returns an int.  non-zero indicates the compare and swap succeeded.

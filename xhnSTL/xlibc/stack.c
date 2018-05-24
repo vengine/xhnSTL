@@ -237,14 +237,15 @@ void FixedStack_test()
 {
     FixedStack s = FixedStack_new(sizeof(int));
     int from = 0;
-    for (int i = 0; i < 100; i++)
+    int i = 0;
+    int to = 0;
+    for (; i < 100; i++)
     {
         from = i * 100;
         FixedStack_push(s, &from);
     }
-    int to = 0;
-
-    for (int i = 0; i < 101; i++)
+    
+    for (i = 0; i < 101; i++)
     {
         if (FixedStack_pop(s, &to))
             printf("pop %d\n", to);
