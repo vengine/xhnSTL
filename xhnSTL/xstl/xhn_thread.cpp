@@ -138,8 +138,10 @@ void xhn::thread::nano_sleep(euint32 nanosecond)
 
 void* xhn::thread::thread_proc(void* self)
 {
+#if defined(__APPLE__)
     int oldState;
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldState);
+#endif
     thread* t = (thread*)self;
 	t->run();
 	return NULL;
@@ -267,7 +269,13 @@ void xhn::thread::force_restart()
 void xhn::thread::wait_completed()
 {
     while (!AtomicLoad32(&m_is_completed)) {
-        pthread_yield_np();
+#if defined(__APPLE__)
+                pthread_yield_np();
+#elif defined(ANDROID) || defined(__ANDROID__)
+                sched_yield();
+#else
+#error
+#endif
     }
 }
 void xhn::thread::join()

@@ -14,7 +14,11 @@ void nanopause(euint n)
 {
     euint i = 0;
     for (; i < n; i++) {
+#if defined(__APPLE__)
         __asm__ __volatile__("yield");
+#else
+        __asm__ __volatile__("nop");
+#endif
     }
 }
 /**

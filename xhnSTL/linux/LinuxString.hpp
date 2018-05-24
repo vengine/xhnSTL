@@ -11,6 +11,8 @@
 #define OBJC_STRING_H
 /// 这个函数实际上什么也没做
 char* string_convert_to_utf8(const char* input);
+const char* convert_utf8_path_to_url(const char* utf8_path);
+const char* convert_url_to_utf8_path(const char* url);
 #endif
 
  /**

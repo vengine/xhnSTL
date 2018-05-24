@@ -54,7 +54,7 @@ euint xhn::create_uid()
     s_uid_list->pop_front();
     return ret;
 }
-
+#if defined(__APPLE__)
 #include <uuid/uuid.h>
 xhn::string xhn::create_uuid_string()
 {
@@ -63,7 +63,7 @@ xhn::string xhn::create_uuid_string()
     int remainder = 256;
     uuid_t uuid;
     uuid_generate(uuid);
-
+    
     unsigned char *p = uuid;
     for (euint i = 0; i < sizeof(uuid_t); i++, p++)
     {
@@ -79,7 +79,16 @@ xhn::string xhn::create_uuid_string()
             remainder -= len;
         }
     }
-
+    
     xhn::string ret(mbuf);
     return ret;
 }
+#elif defined(ANDROID) || defined (__ANDROID__)
+// ToDo:这里未实现
+xhn::string xhn::create_uuid_string()
+{
+    xhn::string ret;
+    return ret;
+}
+#endif
+

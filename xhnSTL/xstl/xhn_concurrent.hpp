@@ -115,7 +115,13 @@ public:
                 auto inst = m_lock.Lock();
                 if (m_used_threads.empty()) return;
             }
-            pthread_yield_np();
+#if defined(__APPLE__)
+                pthread_yield_np();
+#elif defined(ANDROID) || defined(__ANDROID__)
+                sched_yield();
+#else
+#error
+#endif
         }
     }
 };

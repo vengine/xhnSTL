@@ -207,7 +207,8 @@ static euint32 Hash32Len13to24(const char *s, euint32 len) {
 static euint32 Hash32Len0to4(const char *s, euint32 len) {
     euint32 b = 0;
     euint32 c = 9;
-    for (euint32 i = 0; i < len; i++) {
+    euint32 i = 0;
+    for (; i < len; i++) {
         signed char v = s[i];
         b = b * c1 + v;
         c ^= b;

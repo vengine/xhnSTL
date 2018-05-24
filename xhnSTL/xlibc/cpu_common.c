@@ -10,6 +10,8 @@
 
 #include "cpu.h"
 
+#if defined(__APPLE__)
+
 #include <sys/sysctl.h>
 #include <mach/mach_types.h>
 #include <mach/thread_act.h>
@@ -69,6 +71,19 @@ euint32 number_of_physicalcores()
     
     return ncores;
 }
+
+#else
+
+euint32 number_of_cores()
+{
+    return 2;
+}
+euint32 number_of_physicalcores()
+{
+    return 2;
+}
+
+#endif
 
 /**
  * Copyright (c) 2011-2013 Xu Haining

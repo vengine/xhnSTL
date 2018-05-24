@@ -19,6 +19,7 @@
 #include "xhn_string.hpp"
 
 #if defined (_WIN32) || defined (_WIN64)
+#elif defined (ANDROID) || defined (__ANDROID__)
 #else
 
 #include <stdio.h>

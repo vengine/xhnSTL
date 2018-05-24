@@ -74,7 +74,13 @@ public:
             }
 
             while (AtomicLoad64(&worked_thread_count)) {
+#if defined(__APPLE__)
                 pthread_yield_np();
+#elif defined(ANDROID) || defined(__ANDROID__)
+                sched_yield();
+#else
+#error
+#endif
             }
         }
         else {

@@ -31,7 +31,9 @@ template <typename T>
 void cc()
 {
     vector<T> result;
+#if defined(__APPLE__)
     get_stacktrace(result);
+#endif
     for (auto& s : result) {
         printf("%s\n", s.c_str());
     }
