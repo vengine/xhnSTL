@@ -56,6 +56,9 @@ euint xhn::create_uid()
 }
 #if defined(__APPLE__)
 #include <uuid/uuid.h>
+#elif defined(ANDROID) || defined (__ANDROID__)
+#include <uuid/uuid.h>
+#endif
 xhn::string xhn::create_uuid_string()
 {
     char mbuf[256];
@@ -83,12 +86,4 @@ xhn::string xhn::create_uuid_string()
     xhn::string ret(mbuf);
     return ret;
 }
-#elif defined(ANDROID) || defined (__ANDROID__)
-// ToDo:这里未实现
-xhn::string xhn::create_uuid_string()
-{
-    xhn::string ret;
-    return ret;
-}
-#endif
 
