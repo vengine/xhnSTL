@@ -1,9 +1,12 @@
 
 #include "xhn_stacktrace.hpp"
+#if defined(__APPLE__)
 #include <cxxabi.h>
+#endif
 
 namespace xhn {
     
+#if defined(__APPLE__)
 string to_function_call(const char* str)
 {
     string tmp0(str);
@@ -26,6 +29,7 @@ string to_function_call(const char* str)
     }
     return tmp0;
 }
+#endif
     
 template <typename T>
 void cc()
