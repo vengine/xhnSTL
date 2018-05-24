@@ -35,8 +35,6 @@ public:
         Completed,
     };
 public:
-    static SpinLock s_thread_stack_range_map_lock;
-    static range_map<vptr, thread*> s_thread_stack_range_map;
     static void milli_sleep(euint32 millisecond);
     static void micro_sleep(euint32 microsecond);
     static void nano_sleep(euint32 nanosecond);

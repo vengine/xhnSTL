@@ -17,8 +17,10 @@
 
 #define DEBUG_XHN_THREAD 0
 
-xhn::SpinLock xhn::thread::s_thread_stack_range_map_lock;
-xhn::range_map<vptr, xhn::thread*> xhn::thread::s_thread_stack_range_map;
+#if !defined(ANDROID) && !defined(__ANDROID__)
+xhn::SpinLock s_thread_stack_range_map_lock;
+xhn::range_map<vptr, xhn::thread*> s_thread_stack_range_map;
+#endif
 
 const xhn::static_string xhn::thread::lambda_task::StrLambdaTask("LambdaTask");
 const xhn::static_string xhn::thread::lambda_task::type() const
@@ -434,9 +436,11 @@ xhn::thread::thread()
 #endif
     pthread_mutex_init(&m_mutex, NULL);
     pthread_cond_init(&m_cond, NULL);
+#if !defined(ANDROID) && !defined(__ANDROID__)
     SpinLock::Instance inst = s_thread_stack_range_map_lock.Lock();
     ref_ptr end_addr = (ref_ptr)m_stack_range.m_begin_addr + m_stack_range.m_size;
     s_thread_stack_range_map.insert(m_stack_range.m_begin_addr, (vptr)end_addr, this);
+#endif
 #if DEBUG_XHN_THREAD
     printf("begin create thread\n");
 #endif
@@ -464,8 +468,10 @@ xhn::thread::~thread()
         pthread_mutex_unlock(&m_mutex);
     }
     pthread_join(m_pt, NULL);
+#if !defined(ANDROID) && !defined(__ANDROID__)
     SpinLock::Instance inst = s_thread_stack_range_map_lock.Lock();
     s_thread_stack_range_map.remove(m_stack_range.m_begin_addr);
+#endif
     if (m_stack_range.m_begin_addr) {
         free(m_stack_range.m_begin_addr);
     }
