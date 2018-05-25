@@ -135,6 +135,7 @@ inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * vola
 #define MemBarrier __atomic_thread_fence(__ATOMIC_SEQ_CST)
 #endif
 #elif defined(ANDROID) || defined(__ANDROID__)
+#define MemBarrier __atomic_thread_fence(__ATOMIC_SEQ_CST)
 ///#include <sys/atomics.h>
 inline esint32 AtomicIncrement(volatile esint32* i)
 {
