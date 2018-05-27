@@ -380,14 +380,19 @@ namespace xhn {
         bridgeFile = CreateBridgeFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
         stateActionFile = CreateStateActionFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
     }
+#define TEST_AS_OBJC if (ObjC == language) {
+#define ELSE         } else {
+#define END          }
     string SwiftParser::CreateBridgeFile(const map<static_string, vector<static_string>>& inheritMap,
                                          const map<static_string, vector<static_string>>& childrenClassMap,
                                          const map<static_string, ASTNode*>& classMap,
                                          Lambda<bool (static_string, static_string,
-                                                      vector<static_string>&)>& isInheritFromClassProc)
+                                                      vector<static_string>&)>& isInheritFromClassProc,
+                                         BridgeFileLanguage language)
     {
         xhn::string bridgeFile;
         char mbuf[1024];
+        TEST_AS_OBJC
         bridgeFile = "static xhn::SpinLock s_lock;\n";
         bridgeFile += "class SwiftSceneNodeFilter : public VEngine::VSceneNodeFilter\n";
         bridgeFile += "{\n";
@@ -468,7 +473,228 @@ namespace xhn {
         bridgeFile += "   return self;\n";
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
-        
+        ELSE
+        bridgeFile = "func bridgeToPtr<T : AnyObject>(obj : T) -> UnsafeRawPointer {\n";
+        bridgeFile += "    return UnsafeRawPointer(Unmanaged.passUnretained(obj).toOpaque())\n";
+        bridgeFile += "}\n";
+        bridgeFile += "func bridgeToObject<T : AnyObject>(ptr : UnsafeRawPointer) -> T {\n";
+        bridgeFile += "    return Unmanaged<T>.fromOpaque(ptr).takeUnretainedValue()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "func bridgeRetained<T : AnyObject>(obj : T) -> UnsafeRawPointer {\n";
+        bridgeFile += "    return UnsafeRawPointer(Unmanaged.passRetained(obj).toOpaque())\n";
+        bridgeFile += "}\n";
+        bridgeFile += "func bridgeTransfer<T : AnyObject>(ptr : UnsafeRawPointer) -> T {\n";
+        bridgeFile += "    return Unmanaged<T>.fromOpaque(ptr).takeRetainedValue()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "open class SwiftCallbackHandle\n";
+        bridgeFile += "{\n";
+        bridgeFile += "    var callback : () -> Void\n";
+        bridgeFile += "    init (callback : @escaping () -> Void) {\n";
+        bridgeFile += "        self.callback = callback\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func CallbackToVoidPointer(callback : @escaping () -> Void) -> UnsafeRawPointer {\n";
+        bridgeFile += "    let handle = SwiftCallbackHandle(callback: callback)\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func DoCallback(ptr : UnsafeRawPointer) {\n";
+        bridgeFile += "    let handle = bridgeTransfer(ptr : ptr) as SwiftCallbackHandle\n";
+        bridgeFile += "    handle.callback()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "let s_lock = NSLock()\n";
+        bridgeFile += "var s_sceneNodeAgentSet = Set<AnyHashable>()\n";
+        bridgeFile += "var s_guiAgentSet = Set<AnyHashable>()\n";
+        bridgeFile += "var s_actorAgentSet = Set<AnyHashable>()\n";
+        bridgeFile += "public class CreateSceneNodeAgentProc\n";
+        bridgeFile += "{\n";
+        bridgeFile += "    let createAgentProc : (_ : UnsafeRawPointer)->SceneNodeAgent\n";
+        bridgeFile += "    init( proc : @escaping (_ : UnsafeRawPointer)->SceneNodeAgent ) {\n";
+        bridgeFile += "        createAgentProc = proc\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public class CreateGUIAgentProc\n";
+        bridgeFile += "{\n";
+        bridgeFile += "    let createAgentProc : (_ : UnsafeRawPointer, _ : UnsafeRawPointer)->GUIAgent\n";
+        bridgeFile += "    init( proc : @escaping (_ : UnsafeRawPointer, _ : UnsafeRawPointer)->GUIAgent ) {\n";
+        bridgeFile += "        createAgentProc = proc\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public class CreateActorAgentProc\n";
+        bridgeFile += "{\n";
+        bridgeFile += "    let createAgentProc : (_ : UnsafeRawPointer, _ : UnsafeRawPointer)->ActorAgent\n";
+        bridgeFile += "    init( proc : @escaping (_ : UnsafeRawPointer, _ : UnsafeRawPointer)->ActorAgent ) {\n";
+        bridgeFile += "        createAgentProc = proc\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "var s_createSceneNodeAgentProcDic = Dictionary<String, CreateSceneNodeAgentProc>()\n";
+        bridgeFile += "var s_createGUIAgentProcDic = Dictionary<String, CreateGUIAgentProc>()\n";
+        bridgeFile += "var s_createActorAgentProcDic = Dictionary<String, CreateActorAgentProc>()\n";
+        bridgeFile += "func swiftClassString(nameSpace : String, className : String) -> String {\n";
+        bridgeFile += "    let appName = \"VEngineLogic\"\n";
+        bridgeFile += "    var classStringName = \"_TtCC\"\n";
+        bridgeFile += "    classStringName += String(appName.count)\n";
+        bridgeFile += "    classStringName += appName\n";
+        bridgeFile += "    classStringName += String(nameSpace.count)\n";
+        bridgeFile += "    classStringName += nameSpace\n";
+        bridgeFile += "    classStringName += String(className.count)\n";
+        bridgeFile += "    classStringName += className\n";
+        bridgeFile += "    return classStringName\n";
+        bridgeFile += "}\n";
+        bridgeFile += "func swiftClassStringFromPath(path : String) -> String {\n";
+        bridgeFile += "    let appName = \"VEngineLogic\"\n";
+        bridgeFile += "    var classStringName = \"_TtCC\"\n";
+        bridgeFile += "    classStringName += String(appName.count)\n";
+        bridgeFile += "    classStringName += appName\n";
+        bridgeFile += "    let subpaths = path.components(separatedBy: \".\")\n";
+        bridgeFile += "    for subpath in subpaths {\n";
+        bridgeFile += "        classStringName = classStringName + String(subpath.count) + subpath\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "    return classStringName\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func CreateSceneNodeAgent(type : UnsafePointer<Int8>, sceneNode : UnsafeRawPointer)\n";
+        bridgeFile += "    -> UnsafeRawPointer? {\n";
+        bridgeFile += "    let strType = String(cString : UnsafePointer<Int8>(type))\n";
+        bridgeFile += "    guard let proc = s_createSceneNodeAgentProcDic[strType] else { return nil }\n";
+        bridgeFile += "    let agent = proc.createAgentProc(sceneNode)\n";
+        bridgeFile += "    s_lock.lock()\n";
+        bridgeFile += "    _ = s_sceneNodeAgentSet.insert(agent)\n";
+        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "    return bridgeToPtr(obj : agent)\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func RemoveSceneNodeAgent(agent : UnsafeRawPointer) {\n";
+        bridgeFile += "    let snagent = bridgeToObject(ptr : agent) as SceneNodeAgent\n";
+        bridgeFile += "    s_lock.lock()\n";
+        bridgeFile += "    s_sceneNodeAgentSet.remove(snagent)\n";
+        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func UpdateSceneNodeAgent(agent : UnsafeRawPointer, elapsedTime : Double) {\n";
+        bridgeFile += "    let snagent = bridgeToObject(ptr : agent) as SceneNodeAgent\n";
+        bridgeFile += "    snagent.update(elapsedTime)\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func SceneNodeAgentGotoState(agent : UnsafeRawPointer, nextStateName : UnsafePointer<Int8>) {\n";
+        bridgeFile += "    let snagent = bridgeToObject(ptr : agent) as SceneNodeAgent\n";
+        bridgeFile += "    let strNextStateName = String(cString: nextStateName)\n";
+        bridgeFile += "    snagent.gotoState(strNextStateName)\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func CreateGUIAgent(type : UnsafePointer<Int8>, renderSys : UnsafeRawPointer, widget : UnsafeRawPointer)\n";
+        bridgeFile += "    -> UnsafeRawPointer?\n";
+        bridgeFile += "{\n";
+        bridgeFile += "    let strType = String(cString: type)\n";
+        bridgeFile += "    guard let proc = s_createGUIAgentProcDic[strType] else { return nil }\n";
+        bridgeFile += "    let agent = proc.createAgentProc(renderSys, widget)\n";
+        bridgeFile += "    s_lock.lock()\n";
+        bridgeFile += "    _ = s_guiAgentSet.insert(agent)\n";
+        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "    return bridgeToPtr(obj: agent)\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func RemoveGUIAgent(agent : UnsafeRawPointer) {\n";
+        bridgeFile += "    s_lock.lock()\n";
+        bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
+        bridgeFile += "    s_guiAgentSet.remove(gagent)\n";
+        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func UpdateGUIAgent(agent : UnsafeRawPointer, elapsedTime : Double) {\n";
+        bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
+        bridgeFile += "    gagent.update(elapsedTime)\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func GotoGUIAgentState(agent : UnsafeRawPointer, stateKind : Int) {\n";
+        bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
+        bridgeFile += "    var strStateKind : String? = nil\n";
+        bridgeFile += "    switch (stateKind)\n";
+        bridgeFile += "    {\n";
+        bridgeFile += "    case 0: strStateKind = \"NormalState\"\n";
+        bridgeFile += "    case 1: strStateKind = \"HoveringState\"\n";
+        bridgeFile += "    case 2: strStateKind = \"SelectedState\"\n";
+        bridgeFile += "    case 3: strStateKind = \"PressedState\"\n";
+        bridgeFile += "    case 4: strStateKind = \"DraggingState\"\n";
+        bridgeFile += "    default: strStateKind = nil\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "    if let strStateKindValue = strStateKind {\n";
+        bridgeFile += "        gagent.gotoState(strStateKindValue)\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func AllowGUIStateChange(agent : UnsafeRawPointer, prevStateKind : Int, nextStateKind : Int) -> Bool {\n";
+        bridgeFile += "    var strPrevStateKind : String? = nil\n";
+        bridgeFile += "    switch (prevStateKind)\n";
+        bridgeFile += "    {\n";
+        bridgeFile += "    case 0: strPrevStateKind = \"NormalState\"\n";
+        bridgeFile += "    case 1: strPrevStateKind = \"HoveringState\"\n";
+        bridgeFile += "    case 2: strPrevStateKind = \"SelectedState\"\n";
+        bridgeFile += "    case 3: strPrevStateKind = \"PressedState\"\n";
+        bridgeFile += "    case 4: strPrevStateKind = \"DraggingState\"\n";
+        bridgeFile += "    default: strPrevStateKind = nil\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "    var strNextStateKind : String? = nil\n";
+        bridgeFile += "    switch (nextStateKind)\n";
+        bridgeFile += "    {\n";
+        bridgeFile += "    case 0: strNextStateKind = \"NormalState\"\n";
+        bridgeFile += "    case 1: strNextStateKind = \"HoveringState\"\n";
+        bridgeFile += "    case 2: strNextStateKind = \"SelectedState\"\n";
+        bridgeFile += "    case 3: strNextStateKind = \"PressedState\"\n";
+        bridgeFile += "    case 4: strNextStateKind = \"DraggingState\"\n";
+        bridgeFile += "    default: strNextStateKind = nil\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "    if let strPrevStateKindValue = strPrevStateKind ,let strNextStateKindValue = strNextStateKind {\n";
+        bridgeFile += "        let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
+        bridgeFile += "        return gagent.allowStateChange(strPrevStateKindValue, nextStateKind: strNextStateKindValue)\n";
+        bridgeFile += "    } else {\n";
+        bridgeFile += "        return false\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func OnGUIWidgetMove(agent : UnsafeRawPointer, dispX : Float, dispY : Float) {\n";
+        bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
+        bridgeFile += "    gagent.onMove(dispX, dispY: dispY)\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func OnGUIWidgetPress(agent : UnsafeRawPointer) {\n";
+        bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
+        bridgeFile += "    gagent.onPress()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func OnGUIWidgetLeave(agent : UnsafeRawPointer) {\n";
+        bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
+        bridgeFile += "    gagent.onLeave()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func OnGUIWidgetHover(agent : UnsafeRawPointer) {\n";
+        bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
+        bridgeFile += "    gagent.onHover()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func CreateActorAgent(type : UnsafePointer<Int8>, renderSys : UnsafeRawPointer, actor : UnsafeRawPointer)\n";
+        bridgeFile += "    -> UnsafeRawPointer?\n";
+        bridgeFile += "{\n";
+        bridgeFile += "    let strType = String(cString: type)\n";
+        bridgeFile += "    guard let proc = s_createActorAgentProcDic[strType] else { return nil }\n";
+        bridgeFile += "    let agent = proc.createAgentProc(renderSys, actor)\n";
+        bridgeFile += "    s_lock.lock()\n";
+        bridgeFile += "    _ = s_actorAgentSet.insert(agent)\n";
+        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "    return bridgeToPtr(obj: agent)\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func RemoveActorAgent(agent : UnsafeRawPointer) {\n";
+        bridgeFile += "    s_lock.lock();\n";
+        bridgeFile += "    let aagent = bridgeToObject(ptr: agent) as ActorAgent\n";
+        bridgeFile += "    s_actorAgentSet.remove(aagent)\n";
+        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func UpdateActorAgent(agent : UnsafeRawPointer, elapsedTime : Double) {\n";
+        bridgeFile += "    let aagent = bridgeToObject(ptr: agent) as ActorAgent\n";
+        bridgeFile += "    aagent.update(elapsedTime)\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func GetNumSceneNodeAgentProcs() -> Int {\n";
+        bridgeFile += "    return s_createSceneNodeAgentProcDic.count\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func GetNumActorAgentProcs() -> Int {\n";
+        bridgeFile += "    return s_createActorAgentProcDic.count\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func GetSceneNodeAgentProcTypes() -> UnsafeRawPointer? {\n";
+        bridgeFile += "    return nil\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func GetActorAgentProcTypes() ->UnsafeRawPointer? {\n";
+        bridgeFile += "    return nil\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func SetPrintLogProc(proc : UnsafeRawPointer) {\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func PrintLog(type : Int, log : UnsafePointer<Int8>) {\n";
+        bridgeFile += "}\n";
+        END
+        TEST_AS_OBJC
         snprintf(mbuf, 1024,
                  "NSString* swiftClassString(NSString *nameSpace, NSString *className) {\n"
                  "    NSString *appName = @%cVEngineLogic%c;\n"
@@ -522,7 +748,8 @@ namespace xhn {
         '"', '"',
         '"', '%', '%', '"');
         bridgeFile += mbuf;
-        
+        END
+        TEST_AS_OBJC
         bridgeFile += "void InitProcDic() {\n";
         bridgeFile += "    s_sceneNodeAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createSceneNodeAgentProcDic = [NSMutableDictionary new];\n";
@@ -530,13 +757,16 @@ namespace xhn {
         bridgeFile += "    s_createGUIAgentProcDic = [NSMutableDictionary new];\n";
         bridgeFile += "    s_actorAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createActorAgentProcDic = [NSMutableDictionary new];\n";
+        ELSE
+        bridgeFile += "func InitProcDic() {\n";
+        END
         /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
         /// 例：RegularSceneNodeAgent 继承自 SceneNodeAgent，SceneNodeAgent 继承自 NSObject
         /// 则 inheritPath[2] = NSObject， inheritPath[1] = SceneNodeAgent，inheritPath[0] = RegularSceneNodeAgent
         xhn::vector<xhn::static_string> inheritPath;
         
         /// 通过这个i可以知道加入的state有多少个
-        auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile](int& i) {
+        auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile, language](int& i) {
             xhn::vector<xhn::static_string> stateInheritPath;
             char mbuf[512];
             xhn::string firstState;
@@ -596,6 +826,7 @@ namespace xhn {
                             
                             if (isInheritFromState && isInheritFromStateInterface) {
                                 /// 真正开始添加state了
+                                TEST_AS_OBJC
                                 snprintf(mbuf, 512,
                                          "        NSString* state%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
@@ -605,6 +836,17 @@ namespace xhn {
                                          i, stateFuncName.c_str(),
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, i);
+                                ELSE
+                                snprintf(mbuf, 512,
+                                         "        let state%dName = swiftClassStringFromPath(@%c%s%c)\n"
+                                         ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
+                                         "        let state%d = SwiftStates._TtCC12VEngineLogic%s()\n"
+                                         "        ret.setState(state%dName, state:state%d)\n",
+                                         i, '"', fullClassName.c_str(), '"',
+                                         i, stateFuncName.c_str(),
+                                         ///i, '"', fullClassName.c_str(), '"',
+                                         i, i);
+                                END
                                 bridgeFile += mbuf;
                                 
                                 if (!firstState.size()) {
@@ -619,16 +861,22 @@ namespace xhn {
                 }
                 /// 将第一个state设为默认的state
                 if (firstState.size()) {
+                    TEST_AS_OBJC
                     snprintf(mbuf, 512,
                              "        [ret setCurrentState:%s];\n",
                              firstState.c_str());
+                    ELSE
+                    snprintf(mbuf, 512,
+                             "        ret.setCurrentState(%s)\n",
+                             firstState.c_str());
+                    END
                     bridgeFile += mbuf;
                 }
             }
         };
         
         /// 通过这个i可以知道加入的action有多少个
-        auto addActionsProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile](int& i) {
+        auto addActionsProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile, language](int& i) {
             xhn::vector<xhn::static_string> actionInheritPath;
             char mbuf[512];
             xhn::string firstAction;
@@ -685,6 +933,7 @@ namespace xhn {
                             isInheritFromActionInterface = isInheritFromClassProc(strFullClassName, StrActionInterface, actionInheritPath);
                             
                             if (isInheritFromAction && isInheritFromActionInterface) {
+                                TEST_AS_OBJC
                                 snprintf(mbuf, 512,
                                          ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        id action%d = [SwiftActions _TtCC12VEngineLogic%s];\n"
@@ -702,6 +951,21 @@ namespace xhn {
                                          i, i,
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, i);
+                                ELSE
+                                snprintf(mbuf, 512,
+                                         ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
+                                         "        let action%d = SwiftActions._TtCC12VEngineLogic%s() as! AnimationInterface\n"
+                                         "        if (action%d.resourceName) {\n"
+                                         "            let action%dResName = action%d.resourceName\n"
+                                         "            ret.setAction(action%dResName, action:action%d)\n"
+                                         "        }\n",
+                                         ///i, '"', fullClassName.c_str(), '"',
+                                         i, actionFuncName.c_str(),
+                                         i,
+                                         i, i,
+                                         ///i, '"', fullClassName.c_str(), '"',
+                                         i, i);
+                                END
                                 bridgeFile += mbuf;
                                 
                                 if (!firstAction.size()) {
@@ -715,9 +979,15 @@ namespace xhn {
                     }
                 }
                 if (firstAction.size()) {
+                    TEST_AS_OBJC
                     snprintf(mbuf, 512,
                              "        [ret setCurrentAction:%s];\n",
                              firstAction.c_str());
+                    ELSE
+                    snprintf(mbuf, 512,
+                             "        ret.setCurrentAction(%s)\n",
+                             firstAction.c_str());
+                    END
                     bridgeFile += mbuf;
                 }
             }
@@ -934,6 +1204,7 @@ namespace xhn {
                         /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
                         inheritPath.insert(inheritPath.begin(), node->name);
                         char mbuf[512];
+                        TEST_AS_OBJC
                         snprintf(mbuf, 512,
                                  "    s_createSceneNodeAgentProcDic[@%c%s%c] = [[CreateSceneNodeAgentProc alloc] initWithProc:^(void* sceneNode)\n"
                                  "    {\n"
@@ -949,6 +1220,21 @@ namespace xhn {
                                  node->name.c_str(),
                                  node->name.c_str(),
                                  node->name.c_str());
+                        ELSE
+                        snprintf(mbuf, 512,
+                                 "    s_createSceneNodeAgentProcDic[@%c%s%c] = CreateSceneNodeAgentProc(proc:{ _ sceneNode : UnsafeRawPointer in\n"
+                                 "        var ret : %s = nil;\n"
+                                 "        var sn : VSceneNode = bridgeToObject(ptr : GetSlotPtr(sceneNode)) as? VSceneNode\n"
+                                 "        if sn {\n"
+                                 "            ret = %s(sn);\n"
+                                 "        } else {\n"
+                                 "            ret = %s(VSceneNode(sceneNode));\n"
+                                 "        }\n",
+                                 '"', node->name.c_str(), '"',
+                                 node->name.c_str(),
+                                 node->name.c_str(),
+                                 node->name.c_str());
+                        END
                         m_sceneNodeAgentNameVector.push_back(node->name);
                         
                         bridgeFile += mbuf;
@@ -957,10 +1243,17 @@ namespace xhn {
                             addStatesProc(i);
                             inheritPath.pop_back();
                         }
+                        TEST_AS_OBJC
                         bridgeFile +=
                         "        [ret start];\n"
                         "        return ret;\n"
                         "    }];\n";
+                        ELSE
+                        bridgeFile +=
+                        "        ret.start()\n"
+                        "        return ret\n"
+                        "    })\n";
+                        END
                     }
                     else {
                         inheritPath.clear();
@@ -968,6 +1261,7 @@ namespace xhn {
                             /// 这里将创建actor代理的回调放在s_createActorAgentProcDic里
                             inheritPath.insert(inheritPath.begin(), node->name);
                             char mbuf[512];
+                            TEST_AS_OBJC
                             snprintf(mbuf, 512,
                                      "    s_createActorAgentProcDic[@%c%s%c] = [[CreateActorAgentProc alloc] initWithProc:^(void* renderSys, void* actor)\n"
                                      "    {\n"
@@ -983,6 +1277,21 @@ namespace xhn {
                                      node->name.c_str(),
                                      node->name.c_str(),
                                      node->name.c_str());
+                            ELSE
+                            snprintf(mbuf, 512,
+                                     "    s_createActorAgentProcDic[@%c%s%c] = CreateActorAgentProc(proc:{ _ renderSys : UnsafeRawPointer, _ actor : UnsafeRawPointer in\n"
+                                     "        var ret : %s = nil;\n"
+                                     "        var act : VActor = bridgeToObject(ptr : GetSlotPtr(actor)) as? VActor\n"
+                                     "        if act {\n"
+                                     "            ret = %s(act)"
+                                     "        } else {\n"
+                                     "            ret = %s(VActor(renderSys, actor:actor));\n"
+                                     "        }\n",
+                                     '"', node->name.c_str(), '"',
+                                     node->name.c_str(),
+                                     node->name.c_str(),
+                                     node->name.c_str());
+                            END
                             m_actorAgentNameVector.push_back(node->name);
                             
                             bridgeFile += mbuf;
@@ -991,10 +1300,17 @@ namespace xhn {
                                 addActionsProc(i);
                                 inheritPath.pop_back();
                             }
+                            TEST_AS_OBJC
                             bridgeFile +=
                             "        [ret start];\n"
                             "        return ret;\n"
                             "    }];\n";
+                            ELSE
+                            bridgeFile +=
+                            "        ret.start()\n"
+                            "        return ret\n"
+                            "    })\n";
+                            END
                         }
                         else {
                             inheritPath.clear();
@@ -1006,6 +1322,7 @@ namespace xhn {
                                 }
                                 
                                 char mbuf[512];
+                                TEST_AS_OBJC
                                 snprintf(mbuf, 512,
                                          "    s_createGUIAgentProcDic[@%c%s%c] = [[CreateGUIAgentProc alloc] initWithProc:^(void* renderSys, void* widget)\n"
                                          "    {\n"
@@ -1021,6 +1338,21 @@ namespace xhn {
                                          node->name.c_str(),
                                          node->name.c_str(),
                                          node->name.c_str());
+                                ELSE
+                                snprintf(mbuf, 512,
+                                         "    s_createGUIAgentProcDic[@%c%s%c] = CreateGUIAgentProc(proc:{ _ renderSys : UnsafeRawPointer, _ widget : UnsafeRawPointer in\n"
+                                         "        ret %s = nil\n"
+                                         "        var wg : VWidget = bridgeToObject(ptr : GetSlotPtr(widget)) as? VWidget\n"
+                                         "        if wg {\n"
+                                         "            ret = %s(wg)\n"
+                                         "        } else {\n"
+                                         "            ret = %s(VWidget(renderSys, widget:widget))\n"
+                                         "        }\n",
+                                         '"', node->name.c_str(), '"',
+                                         node->name.c_str(),
+                                         node->name.c_str(),
+                                         node->name.c_str());
+                                END
                                 m_guiAgentNameVector.push_back(node->name);
                                 
                                 bridgeFile += mbuf;
@@ -1044,6 +1376,7 @@ namespace xhn {
                                         xhn::static_string::empty_string != draggingState, "gui state member are incomplete!, %s, %s, %s, %s, %s",
                                         normalState.c_str(), hoveringState.c_str(), selectedState.c_str(), pressedState.c_str(), draggingState.c_str());
                                 ///
+                                TEST_AS_OBJC
                                 snprintf(mbuf, 512, "        id normalState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", normalState.c_str());
                                 bridgeFile += mbuf;
                                 snprintf(mbuf, 512, "        id hoveringState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", hoveringState.c_str());
@@ -1060,12 +1393,37 @@ namespace xhn {
                                                     "        [ret setState:@\"PressedState\" state:pressedState];\n"
                                                     "        [ret setState:@\"DraggingState\" state:draggingState];\n"
                                                     "        [ret setCurrentState:normalState];\n");
+                                ELSE
+                                snprintf(mbuf, 512, "        let normalState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", normalState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 512, "        let hoveringState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", hoveringState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 512, "        let selectedState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", selectedState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 512, "        let pressedState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", pressedState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 512, "        let draggingState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", draggingState.c_str());
+                                bridgeFile += mbuf;
+                                snprintf(mbuf, 512, "        ret.setState(\"NormalState\", state:normalState)\n"
+                                         "        ret.setState(\"HoveringState\", state:hoveringState)\n"
+                                         "        ret.setState(\"SelectedState\", state:selectedState)\n"
+                                         "        ret.setState(\"PressedState\", state:pressedState)\n"
+                                         "        ret.setState(\"DraggingState\", state:draggingState)\n"
+                                         "        ret.setCurrentState(normalState)\n");
+                                END
                                 bridgeFile += mbuf;
                                 ///
+                                TEST_AS_OBJC
                                 bridgeFile +=
                                 "        [ret start];\n"
                                 "        return ret;\n"
                                 "    }];\n";
+                                ELSE
+                                bridgeFile +=
+                                "        ret.start()\n"
+                                "        return ret\n"
+                                "    })\n";
+                                END
                             }
                         }
                     }
@@ -1074,6 +1432,7 @@ namespace xhn {
         }
         
         bridgeFile += "}\n";
+        TEST_AS_OBJC
         bridgeFile += "void* CreateSceneNodeAgent(const char* type, void* sceneNode) {\n";
         bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
         bridgeFile += "    CreateSceneNodeAgentProc* proc = s_createSceneNodeAgentProcDic[strType];\n";
@@ -1280,6 +1639,7 @@ namespace xhn {
         bridgeFile += "    VEngine::VDeleteSceneNodesCommand dsnc((VEngine::VRenderSystem*)renderSys, sceneNodeVector, deleteSceneNodesCallback);\n";
         bridgeFile += "    channel->Write(dsnc);\n";
         bridgeFile += "}\n";
+        END
         ///printf("%s\n", bridgeFile.c_str());
         return bridgeFile;
     }

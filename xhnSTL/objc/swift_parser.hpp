@@ -56,6 +56,12 @@ class SwiftParser : public MemObject, public Parser
 {
     DeclareRTTI;
 public:
+    enum BridgeFileLanguage
+    {
+        ObjC,
+        Swift,
+    };
+public:
     static const static_string StrSourceFile;
     static const static_string StrClassDecl;
     static const static_string StrImportDecl;
@@ -148,7 +154,8 @@ public:
                             const map<static_string, vector<static_string>>& childrenClassMap,
                             const map<static_string, ASTNode*>& classMap,
                             xhn::Lambda<bool (static_string,
-                                              static_string, vector<static_string>&)>& isInheritFromClassProc);
+                                              static_string, vector<static_string>&)>& isInheritFromClassProc,
+                            BridgeFileLanguage language = ObjC);
     string CreateStateActionFile(const map<static_string, vector<static_string>>& inheritMap,
                                  const map<static_string, vector<static_string>>& childrenClassMap,
                                  const map<static_string, ASTNode*>& classMap,
