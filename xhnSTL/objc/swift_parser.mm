@@ -79,7 +79,8 @@ static NSMutableSet* s_SwiftCommandLineUtils = nil;
 - (void) parseSwiftSourceFiles:(NSString*)commandToRun
                         logDir:(const xhn::string&)logDir
                    reformatter:(xhn::ASTReformatterPtr)reformatter
-                      callback:(void(^)(const xhn::string& bridgeFile,
+                      callback:(void(^)(const xhn::string& objcBridgeFile,
+                                        const xhn::string& swiftBridgeFile,
                                         const xhn::string& stateActionFile,
                                         const xhn::vector<xhn::static_string>&,
                                         const xhn::vector<xhn::static_string>&,
@@ -166,7 +167,7 @@ namespace xhn {
     {
         ///
     }
-    void SwiftParser::EndParse(string& bridgeFile, string& stateActionFile)
+    void SwiftParser::EndParse(string& bridgeFile, string& stateActionFile, BridgeFileLanguage language)
     {
         map<static_string, static_string> aliasMap;
         map<static_string, vector<static_string>> inheritMap;
@@ -377,7 +378,7 @@ namespace xhn {
             }
             ClassHierarchyLog("\n");
         }
-        bridgeFile = CreateBridgeFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
+        bridgeFile = CreateBridgeFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc, language);
         stateActionFile = CreateStateActionFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
     }
 #define TEST_AS_OBJC if (ObjC == language) {
@@ -528,7 +529,7 @@ namespace xhn {
         bridgeFile += "var s_createSceneNodeAgentProcDic = Dictionary<String, CreateSceneNodeAgentProc>()\n";
         bridgeFile += "var s_createGUIAgentProcDic = Dictionary<String, CreateGUIAgentProc>()\n";
         bridgeFile += "var s_createActorAgentProcDic = Dictionary<String, CreateActorAgentProc>()\n";
-        bridgeFile += "func swiftClassString(nameSpace : String, className : String) -> String {\n";
+        bridgeFile += "func swiftClassString(_ nameSpace : String, className : String) -> String {\n";
         bridgeFile += "    let appName = \"VEngineLogic\"\n";
         bridgeFile += "    var classStringName = \"_TtCC\"\n";
         bridgeFile += "    classStringName += String(appName.count)\n";
@@ -539,7 +540,7 @@ namespace xhn {
         bridgeFile += "    classStringName += className\n";
         bridgeFile += "    return classStringName\n";
         bridgeFile += "}\n";
-        bridgeFile += "func swiftClassStringFromPath(path : String) -> String {\n";
+        bridgeFile += "func swiftClassStringFromPath(_ path : String) -> String {\n";
         bridgeFile += "    let appName = \"VEngineLogic\"\n";
         bridgeFile += "    var classStringName = \"_TtCC\"\n";
         bridgeFile += "    classStringName += String(appName.count)\n";
@@ -838,7 +839,7 @@ namespace xhn {
                                          i, i);
                                 ELSE
                                 snprintf(mbuf, 512,
-                                         "        let state%dName = swiftClassStringFromPath(@%c%s%c)\n"
+                                         "        let state%dName = swiftClassStringFromPath(%c%s%c)\n"
                                          ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
                                          "        let state%d = SwiftStates._TtCC12VEngineLogic%s()\n"
                                          "        ret.setState(state%dName, state:state%d)\n",
@@ -1222,7 +1223,7 @@ namespace xhn {
                                  node->name.c_str());
                         ELSE
                         snprintf(mbuf, 512,
-                                 "    s_createSceneNodeAgentProcDic[@%c%s%c] = CreateSceneNodeAgentProc(proc:{ _ sceneNode : UnsafeRawPointer in\n"
+                                 "    s_createSceneNodeAgentProcDic[%c%s%c] = CreateSceneNodeAgentProc(proc:{ _ sceneNode : UnsafeRawPointer in\n"
                                  "        var ret : %s = nil;\n"
                                  "        var sn : VSceneNode = bridgeToObject(ptr : GetSlotPtr(sceneNode)) as? VSceneNode\n"
                                  "        if sn {\n"
@@ -1279,7 +1280,7 @@ namespace xhn {
                                      node->name.c_str());
                             ELSE
                             snprintf(mbuf, 512,
-                                     "    s_createActorAgentProcDic[@%c%s%c] = CreateActorAgentProc(proc:{ _ renderSys : UnsafeRawPointer, _ actor : UnsafeRawPointer in\n"
+                                     "    s_createActorAgentProcDic[%c%s%c] = CreateActorAgentProc(proc:{ _ renderSys : UnsafeRawPointer, _ actor : UnsafeRawPointer in\n"
                                      "        var ret : %s = nil;\n"
                                      "        var act : VActor = bridgeToObject(ptr : GetSlotPtr(actor)) as? VActor\n"
                                      "        if act {\n"
@@ -1340,7 +1341,7 @@ namespace xhn {
                                          node->name.c_str());
                                 ELSE
                                 snprintf(mbuf, 512,
-                                         "    s_createGUIAgentProcDic[@%c%s%c] = CreateGUIAgentProc(proc:{ _ renderSys : UnsafeRawPointer, _ widget : UnsafeRawPointer in\n"
+                                         "    s_createGUIAgentProcDic[%c%s%c] = CreateGUIAgentProc(proc:{ _ renderSys : UnsafeRawPointer, _ widget : UnsafeRawPointer in\n"
                                          "        ret %s = nil\n"
                                          "        var wg : VWidget = bridgeToObject(ptr : GetSlotPtr(widget)) as? VWidget\n"
                                          "        if wg {\n"
@@ -2179,7 +2180,8 @@ namespace xhn {
     }
     void SwiftParser::ParseSwifts(const string& logDir,
                                   ASTReformatterPtr reformatter,
-                                  const string& paths, xhn::Lambda<void (const xhn::string& bridgeFile,
+                                  const string& paths, xhn::Lambda<void (const xhn::string& objcBridgeFile,
+                                                                         const xhn::string& swiftBridgeFile,
                                                                          const xhn::string& stateActionFile,
                                                                          const xhn::vector<xhn::static_string>&,
                                                                          const xhn::vector<xhn::static_string>&,
@@ -2189,21 +2191,25 @@ namespace xhn {
         NSString* command = [[NSString alloc] initWithFormat:@"%@ -swift-version %@ -sdk %@ -dump-ast %@",
                              swiftc, usedVersion, sdk,
                              [[NSString alloc] initWithUTF8String:paths.c_str()]];
-        __block xhn::Lambda<void (const xhn::string& bridgeFile,
+        __block xhn::Lambda<void (const xhn::string& objcBridgeFile,
+                                  const xhn::string& swiftBridgeFile,
                                   const xhn::string& stateActionFile,
                                   const xhn::vector<xhn::static_string>&,
                                   const xhn::vector<xhn::static_string>&,
                                   const xhn::vector<xhn::static_string>&)> tmpCallback = callback;
-        void (^objcCallback)(const xhn::string& bridgeFile,
+        void (^objcCallback)(const xhn::string& objcBridgeFile,
+                             const xhn::string& swiftBridgeFile,
                              const xhn::string& stateActionFile,
                              const xhn::vector<xhn::static_string>&,
                              const xhn::vector<xhn::static_string>&,
-                             const xhn::vector<xhn::static_string>&)  = ^(const xhn::string& bridgeFile,
+                             const xhn::vector<xhn::static_string>&)  = ^(const xhn::string& objcBridgeFile,
+                                                                          const xhn::string& swiftBridgeFile,
                                                                           const xhn::string& stateActionFile,
                                                                           const xhn::vector<xhn::static_string>& sceneNodeAgentNames,
                                                                           const xhn::vector<xhn::static_string>& guiAgentNames,
                                                                           const xhn::vector<xhn::static_string>& actorAgentNames) {
-            tmpCallback(bridgeFile, stateActionFile, sceneNodeAgentNames, guiAgentNames, actorAgentNames);
+            tmpCallback(objcBridgeFile, swiftBridgeFile, stateActionFile,
+                        sceneNodeAgentNames, guiAgentNames, actorAgentNames);
         };
         [sclu parseSwiftSourceFiles:command
                              logDir:logDir
@@ -2246,7 +2252,8 @@ namespace xhn {
 @implementation SwiftCommandLineUtil
 {
     void(^mGetSwiftVersionCallback)(const xhn::string&);
-    void(^mSwiftParserCallback)(const xhn::string& bridgeFile,
+    void(^mSwiftParserCallback)(const xhn::string& objcBridgeFile,
+                                const xhn::string& swiftBridgeFile,
                                 const xhn::string& stateActionFile,
                                 const xhn::vector<xhn::static_string>&,
                                 const xhn::vector<xhn::static_string>&,
@@ -2291,11 +2298,14 @@ namespace xhn {
             mGetSwiftVersionCallback = nil;
         }
         else if (mSwiftParserCallback) {
-            xhn::string bridgeFile;
+            xhn::string objcBridgeFile;
+            xhn::string swiftBridgeFile;
             xhn::string stateActionFile;
+            xhn::string tmp;
             xhn::SwiftParser* swiftParser = self.parser->DynamicCast<xhn::SwiftParser>();
             EDebugAssert(swiftParser, "current parser must be a kind of SwiftParser");
-            swiftParser->EndParse(bridgeFile, stateActionFile);
+            swiftParser->EndParse(objcBridgeFile, stateActionFile, xhn::SwiftParser::ObjC);
+            swiftParser->EndParse(swiftBridgeFile, stateActionFile, xhn::SwiftParser::Swift);
             xhn::vector<xhn::static_string> sceneNodeAgentNameVector = swiftParser->GetSceneNodeAgentNameVector();
             xhn::vector<xhn::static_string> guiAgentNameVector = swiftParser->GetGUIAgentNameVector();
             xhn::vector<xhn::static_string> actorAgentNameVector = swiftParser->GetActorAgentNameVector();
@@ -2310,7 +2320,8 @@ namespace xhn {
                     [s_SwiftCommandLineUtils removeObject:self];
                 }
             }
-            mSwiftParserCallback(bridgeFile, stateActionFile, sceneNodeAgentNameVector, guiAgentNameVector, actorAgentNameVector);
+            mSwiftParserCallback(objcBridgeFile, swiftBridgeFile, stateActionFile,
+                                 sceneNodeAgentNameVector, guiAgentNameVector, actorAgentNameVector);
             mSwiftParserCallback = nil;
         }
     }
@@ -2360,7 +2371,8 @@ namespace xhn {
 - (void) parseSwiftSourceFiles:(NSString*)commandToRun
                         logDir:(const xhn::string&)logDir
                    reformatter:(xhn::ASTReformatterPtr)reformatter
-                      callback:(void(^)(const xhn::string& bridgeFile,
+                      callback:(void(^)(const xhn::string& objcBridgeFile,
+                                        const xhn::string& swiftBridgeFile,
                                         const xhn::string& stateActionFile,
                                         const xhn::vector<xhn::static_string>&,
                                         const xhn::vector<xhn::static_string>&,

@@ -149,7 +149,7 @@ private:
     ASTReformatterPtr m_reformatter;
 public:
     virtual void BeginParse() override;
-    void EndParse(string& bridgeFile, string& stateActionFile);
+    void EndParse(string& bridgeFile, string& stateActionFile, BridgeFileLanguage language = ObjC);
     string CreateBridgeFile(const map<static_string, vector<static_string>>& inheritMap,
                             const map<static_string, vector<static_string>>& childrenClassMap,
                             const map<static_string, ASTNode*>& classMap,
@@ -164,7 +164,8 @@ public:
     virtual void Parse(const char* strBuffer, euint length) override;
     static void ParseSwifts(const string& logDir,
                             ASTReformatterPtr reformatter,
-                            const string& paths, Lambda<void (const xhn::string& bridgeFile,
+                            const string& paths, Lambda<void (const xhn::string& objcBridgeFile,
+                                                              const xhn::string& swiftBridgeFile,
                                                               const xhn::string& stateActionFile,
                                                               const vector<static_string>&,
                                                               const vector<static_string>&,
