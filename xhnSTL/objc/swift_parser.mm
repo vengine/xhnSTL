@@ -842,7 +842,7 @@ namespace xhn {
                                          "        let state%dName = swiftClassStringFromPath(%c%s%c)\n"
                                          ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
                                          "        let state%d = SwiftStates._TtCC12VEngineLogic%s()\n"
-                                         "        ret.setState(state%dName, state:state%d)\n",
+                                         "        ret!.setState(state%dName, state:state%d)\n",
                                          i, '"', fullClassName.c_str(), '"',
                                          i, stateFuncName.c_str(),
                                          ///i, '"', fullClassName.c_str(), '"',
@@ -868,7 +868,7 @@ namespace xhn {
                              firstState.c_str());
                     ELSE
                     snprintf(mbuf, 512,
-                             "        ret.setCurrentState(%s)\n",
+                             "        ret!.setCurrentState(%s)\n",
                              firstState.c_str());
                     END
                     bridgeFile += mbuf;
@@ -958,7 +958,7 @@ namespace xhn {
                                          "        let action%d = SwiftActions._TtCC12VEngineLogic%s() as! AnimationInterface\n"
                                          "        if (action%d.resourceName) {\n"
                                          "            let action%dResName = action%d.resourceName\n"
-                                         "            ret.setAction(action%dResName, action:action%d)\n"
+                                         "            ret!.setAction(action%dResName, action:action%d)\n"
                                          "        }\n",
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, actionFuncName.c_str(),
@@ -986,7 +986,7 @@ namespace xhn {
                              firstAction.c_str());
                     ELSE
                     snprintf(mbuf, 512,
-                             "        ret.setCurrentAction(%s)\n",
+                             "        ret!.setCurrentAction(%s)\n",
                              firstAction.c_str());
                     END
                     bridgeFile += mbuf;
@@ -1252,7 +1252,7 @@ namespace xhn {
                         "    }];\n";
                         ELSE
                         bridgeFile +=
-                        "        ret.start()\n"
+                        "        ret!.start()\n"
                         "        return ret!\n"
                         "    })\n";
                         END
@@ -1286,9 +1286,9 @@ namespace xhn {
                                      "        var ret : %s? = nil;\n"
                                      "        var act : VActor? = bridgeToObject(ptr : GetSlotPtr(actor)) as? VActor\n"
                                      "        if act != nil {\n"
-                                     "            ret = %s(actor : act)"
+                                     "            ret = %s(actor : act)\n"
                                      "        } else {\n"
-                                     "            ret = %s(actor : VActor(renderSys, actor:actor));\n"
+                                     "            ret = %s(actor : VActor(renderSys, actor:actor))\n"
                                      "        }\n",
                                      '"', node->name.c_str(), '"',
                                      node->name.c_str(),
@@ -1310,7 +1310,7 @@ namespace xhn {
                             "    }];\n";
                             ELSE
                             bridgeFile +=
-                            "        ret.start()\n"
+                            "        ret!.start()\n"
                             "        return ret!\n"
                             "    })\n";
                             END
@@ -1409,11 +1409,11 @@ namespace xhn {
                                 snprintf(mbuf, 512, "        let draggingState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", draggingState.c_str());
                                 bridgeFile += mbuf;
                                 snprintf(mbuf, 512, "        ret.setState(\"NormalState\", state:normalState)\n"
-                                         "        ret.setState(\"HoveringState\", state:hoveringState)\n"
-                                         "        ret.setState(\"SelectedState\", state:selectedState)\n"
-                                         "        ret.setState(\"PressedState\", state:pressedState)\n"
-                                         "        ret.setState(\"DraggingState\", state:draggingState)\n"
-                                         "        ret.setCurrentState(normalState)\n");
+                                         "        ret!.setState(\"HoveringState\", state:hoveringState)\n"
+                                         "        ret!.setState(\"SelectedState\", state:selectedState)\n"
+                                         "        ret!.setState(\"PressedState\", state:pressedState)\n"
+                                         "        ret!.setState(\"DraggingState\", state:draggingState)\n"
+                                         "        ret!.setCurrentState(normalState)\n");
                                 END
                                 bridgeFile += mbuf;
                                 ///
@@ -1424,7 +1424,7 @@ namespace xhn {
                                 "    }];\n";
                                 ELSE
                                 bridgeFile +=
-                                "        ret.start()\n"
+                                "        ret!.start()\n"
                                 "        return ret!\n"
                                 "    })\n";
                                 END
