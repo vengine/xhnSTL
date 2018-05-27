@@ -1204,9 +1204,9 @@ namespace xhn {
                     if (isInheritFromClassProc(node->name, StrSceneNodeAgent, inheritPath)) {
                         /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
                         inheritPath.insert(inheritPath.begin(), node->name);
-                        char mbuf[512];
+                        char mbuf[1024];
                         TEST_AS_OBJC
-                        snprintf(mbuf, 512,
+                        snprintf(mbuf, 1024,
                                  "    s_createSceneNodeAgentProcDic[@%c%s%c] = [[CreateSceneNodeAgentProc alloc] initWithProc:^(void* sceneNode)\n"
                                  "    {\n"
                                  "        %s* ret = nil;\n"
@@ -1222,7 +1222,7 @@ namespace xhn {
                                  node->name.c_str(),
                                  node->name.c_str());
                         ELSE
-                        snprintf(mbuf, 512,
+                        snprintf(mbuf, 1024,
                                  "    s_createSceneNodeAgentProcDic[%c%s%c] = CreateSceneNodeAgentProc(proc:{ \n"
                                  "        ( _ sceneNode : UnsafeRawPointer ) in\n"
                                  "        var ret : %s? = nil;\n"
@@ -1230,7 +1230,7 @@ namespace xhn {
                                  "        if sn != nil {\n"
                                  "            ret = %s(sceneNode : sn);\n"
                                  "        } else {\n"
-                                 "            ret = %s(sceneNode : VSceneNode(vSceneNode : sceneNode));\n"
+                                 "            ret = %s(sceneNode : VSceneNode(vSceneNode : UnsafeMutableRawPointer(mutating:sceneNode)));\n"
                                  "        }\n",
                                  '"', node->name.c_str(), '"',
                                  node->name.c_str(),
@@ -1262,9 +1262,9 @@ namespace xhn {
                         if (isInheritFromClassProc(node->name, StrActorAgent, inheritPath)) {
                             /// 这里将创建actor代理的回调放在s_createActorAgentProcDic里
                             inheritPath.insert(inheritPath.begin(), node->name);
-                            char mbuf[512];
+                            char mbuf[1024];
                             TEST_AS_OBJC
-                            snprintf(mbuf, 512,
+                            snprintf(mbuf, 1024,
                                      "    s_createActorAgentProcDic[@%c%s%c] = [[CreateActorAgentProc alloc] initWithProc:^(void* renderSys, void* actor)\n"
                                      "    {\n"
                                      "        %s* ret = nil;\n"
@@ -1280,7 +1280,7 @@ namespace xhn {
                                      node->name.c_str(),
                                      node->name.c_str());
                             ELSE
-                            snprintf(mbuf, 512,
+                            snprintf(mbuf, 1024,
                                      "    s_createActorAgentProcDic[%c%s%c] = CreateActorAgentProc(proc:{ \n"
                                      "        ( _ renderSys : UnsafeRawPointer, _ actor : UnsafeRawPointer ) in\n"
                                      "        var ret : %s? = nil;\n"
@@ -1288,7 +1288,7 @@ namespace xhn {
                                      "        if act != nil {\n"
                                      "            ret = %s(actor : act)\n"
                                      "        } else {\n"
-                                     "            ret = %s(actor : VActor(renderSys, actor:actor))\n"
+                                     "            ret = %s(actor : VActor(vRenderSys : UnsafeMutableRawPointer(mutating:renderSys), actor: UnsafeMutableRawPointer(mutating:actor)))\n"
                                      "        }\n",
                                      '"', node->name.c_str(), '"',
                                      node->name.c_str(),
@@ -1324,9 +1324,9 @@ namespace xhn {
                                     GUILog("--%s\n", i.c_str());
                                 }
                                 
-                                char mbuf[512];
+                                char mbuf[1024];
                                 TEST_AS_OBJC
-                                snprintf(mbuf, 512,
+                                snprintf(mbuf, 1024,
                                          "    s_createGUIAgentProcDic[@%c%s%c] = [[CreateGUIAgentProc alloc] initWithProc:^(void* renderSys, void* widget)\n"
                                          "    {\n"
                                          "        %s* ret = nil;\n"
@@ -1342,7 +1342,7 @@ namespace xhn {
                                          node->name.c_str(),
                                          node->name.c_str());
                                 ELSE
-                                snprintf(mbuf, 512,
+                                snprintf(mbuf, 1024,
                                          "    s_createGUIAgentProcDic[%c%s%c] = CreateGUIAgentProc(proc:{ \n"
                                          "        ( _ renderSys : UnsafeRawPointer, _ widget : UnsafeRawPointer ) in\n"
                                          "        var ret : %s? = nil\n"
@@ -1350,7 +1350,7 @@ namespace xhn {
                                          "        if wg != nil {\n"
                                          "            ret = %s(widget : wg)\n"
                                          "        } else {\n"
-                                         "            ret = %s(widget : VWidget(renderSys, widget:widget))\n"
+                                         "            ret = %s(widget : VWidget(vRenderSys : UnsafeMutableRawPointer(mutating:renderSys), widget : UnsafeMutableRawPointer(mutating:widget)))\n"
                                          "        }\n",
                                          '"', node->name.c_str(), '"',
                                          node->name.c_str(),
