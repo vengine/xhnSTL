@@ -1223,13 +1223,14 @@ namespace xhn {
                                  node->name.c_str());
                         ELSE
                         snprintf(mbuf, 512,
-                                 "    s_createSceneNodeAgentProcDic[%c%s%c] = CreateSceneNodeAgentProc(proc:{ _ sceneNode : UnsafeRawPointer in\n"
-                                 "        var ret : %s = nil;\n"
-                                 "        var sn : VSceneNode = bridgeToObject(ptr : GetSlotPtr(sceneNode)) as? VSceneNode\n"
-                                 "        if sn {\n"
-                                 "            ret = %s(sn);\n"
+                                 "    s_createSceneNodeAgentProcDic[%c%s%c] = CreateSceneNodeAgentProc(proc:{ \n"
+                                 "        ( _ sceneNode : UnsafeRawPointer ) in\n"
+                                 "        var ret : %s? = nil;\n"
+                                 "        var sn : VSceneNode? = bridgeToObject(ptr : GetSlotPtr(sceneNode)) as? VSceneNode\n"
+                                 "        if sn != nil {\n"
+                                 "            ret = %s(sceneNode : sn);\n"
                                  "        } else {\n"
-                                 "            ret = %s(VSceneNode(sceneNode));\n"
+                                 "            ret = %s(sceneNode : VSceneNode(vSceneNode : sceneNode));\n"
                                  "        }\n",
                                  '"', node->name.c_str(), '"',
                                  node->name.c_str(),
@@ -1252,7 +1253,7 @@ namespace xhn {
                         ELSE
                         bridgeFile +=
                         "        ret.start()\n"
-                        "        return ret\n"
+                        "        return ret!\n"
                         "    })\n";
                         END
                     }
@@ -1280,13 +1281,14 @@ namespace xhn {
                                      node->name.c_str());
                             ELSE
                             snprintf(mbuf, 512,
-                                     "    s_createActorAgentProcDic[%c%s%c] = CreateActorAgentProc(proc:{ _ renderSys : UnsafeRawPointer, _ actor : UnsafeRawPointer in\n"
-                                     "        var ret : %s = nil;\n"
-                                     "        var act : VActor = bridgeToObject(ptr : GetSlotPtr(actor)) as? VActor\n"
-                                     "        if act {\n"
-                                     "            ret = %s(act)"
+                                     "    s_createActorAgentProcDic[%c%s%c] = CreateActorAgentProc(proc:{ \n"
+                                     "        ( _ renderSys : UnsafeRawPointer, _ actor : UnsafeRawPointer ) in\n"
+                                     "        var ret : %s? = nil;\n"
+                                     "        var act : VActor? = bridgeToObject(ptr : GetSlotPtr(actor)) as? VActor\n"
+                                     "        if act != nil {\n"
+                                     "            ret = %s(actor : act)"
                                      "        } else {\n"
-                                     "            ret = %s(VActor(renderSys, actor:actor));\n"
+                                     "            ret = %s(actor : VActor(renderSys, actor:actor));\n"
                                      "        }\n",
                                      '"', node->name.c_str(), '"',
                                      node->name.c_str(),
@@ -1309,7 +1311,7 @@ namespace xhn {
                             ELSE
                             bridgeFile +=
                             "        ret.start()\n"
-                            "        return ret\n"
+                            "        return ret!\n"
                             "    })\n";
                             END
                         }
@@ -1341,13 +1343,14 @@ namespace xhn {
                                          node->name.c_str());
                                 ELSE
                                 snprintf(mbuf, 512,
-                                         "    s_createGUIAgentProcDic[%c%s%c] = CreateGUIAgentProc(proc:{ _ renderSys : UnsafeRawPointer, _ widget : UnsafeRawPointer in\n"
-                                         "        ret %s = nil\n"
-                                         "        var wg : VWidget = bridgeToObject(ptr : GetSlotPtr(widget)) as? VWidget\n"
-                                         "        if wg {\n"
-                                         "            ret = %s(wg)\n"
+                                         "    s_createGUIAgentProcDic[%c%s%c] = CreateGUIAgentProc(proc:{ \n"
+                                         "        ( _ renderSys : UnsafeRawPointer, _ widget : UnsafeRawPointer ) in\n"
+                                         "        var ret : %s? = nil\n"
+                                         "        var wg : VWidget? = bridgeToObject(ptr : GetSlotPtr(widget)) as? VWidget\n"
+                                         "        if wg != nil {\n"
+                                         "            ret = %s(widget : wg)\n"
                                          "        } else {\n"
-                                         "            ret = %s(VWidget(renderSys, widget:widget))\n"
+                                         "            ret = %s(widget : VWidget(renderSys, widget:widget))\n"
                                          "        }\n",
                                          '"', node->name.c_str(), '"',
                                          node->name.c_str(),
@@ -1422,7 +1425,7 @@ namespace xhn {
                                 ELSE
                                 bridgeFile +=
                                 "        ret.start()\n"
-                                "        return ret\n"
+                                "        return ret!\n"
                                 "    })\n";
                                 END
                             }
