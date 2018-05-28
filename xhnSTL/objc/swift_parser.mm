@@ -396,7 +396,8 @@ namespace xhn {
         TEST_AS_OBJC
         bridgeFile = "static xhn::SpinLock s_lock;\n";
         bridgeFile += "void ReleaseObject(void* ptr) {\n";
-        bridgeFile += "    (__bridge_transfer id)(ptr);\n";
+        bridgeFile += "    id<Blanker> blanker = (__bridge_transfer id<Blanker>)(ptr);\n";
+        bridgeFile += "    [blanker blankPointer];\n";
         bridgeFile += "}\n";
         bridgeFile += "class SwiftSceneNodeFilter : public VEngine::VSceneNodeFilter\n";
         bridgeFile += "{\n";
