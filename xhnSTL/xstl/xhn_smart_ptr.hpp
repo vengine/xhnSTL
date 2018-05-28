@@ -22,15 +22,16 @@
 namespace xhn
 {
 template <typename T,
-typename INC_CALLBACK,
-typename DEST_CALLBACK,
+typename DELETE_PROC,
 typename GARBAGE_COLLECTOR>
 class SmartPtr;
 
 template <typename T>
-struct FDestCallbackProc
+struct FDeleteProc
 {
-	inline void operator() (volatile T* ptr) {}
+	inline void operator() (volatile T* ptr) {
+        delete (T*)ptr;
+    }
 };
 
 template <typename T>
@@ -46,21 +47,14 @@ struct FGarbageCollectProc
 		}
 	}
 };
-template <typename T>
-struct FIncCallbackProc
-{
-    void operator() (volatile T* ptr) {
-	}
-};
 
 
 template< typename T,
-          typename INC_CALLBACK = FIncCallbackProc<T>,
-          typename DEST_CALLBACK = FDestCallbackProc<T>,
+          typename DELETE_PROC = FDeleteProc<T>,
           typename GARBAGE_COLLECTOR = FGarbageCollectProc<T> >
 class WeakPtr
 {
-    friend class xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR>;
+    friend class xhn::SmartPtr<T, DELETE_PROC, GARBAGE_COLLECTOR>;
     friend class WeakNodeList;
 private:
     mutable WeakCounter* m_weak_count;
@@ -107,8 +101,8 @@ public:
     {
         Dest();
     }
-    inline xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ToStrongPtr() const {
-        xhn::SmartPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR> ret;
+    inline xhn::SmartPtr<T, DELETE_PROC, GARBAGE_COLLECTOR> ToStrongPtr() const {
+        xhn::SmartPtr<T, DELETE_PROC, GARBAGE_COLLECTOR> ret;
         if (m_weak_count) {
             RefSpinLock::Instance inst = m_weak_count->lock.Lock();
             ret = (T*)m_weak_count->ref_object;
@@ -123,8 +117,7 @@ public:
 /// 这可能会引起一个bug
 
 template< typename T,
-          typename INC_CALLBACK = FIncCallbackProc<T>,
-          typename DEST_CALLBACK = FDestCallbackProc<T>,
+          typename DELETE_PROC = FDeleteProc<T>,
           typename GARBAGE_COLLECTOR = FGarbageCollectProc<T> >
 class SmartPtr
 {
@@ -165,8 +158,7 @@ public:
 	};
 private:
 	volatile T* m_ptr;
-	DEST_CALLBACK m_dest_callback;
-    INC_CALLBACK m_inc_callback;
+	DELETE_PROC m_delete_proc;
 #if DEBUG_REFOBJECT
 public:
     string stackframe;
@@ -177,7 +169,6 @@ public:
 		if (ptr)
 		{
 			AtomicIncrement(&ptr->ref_count);
-            m_inc_callback(ptr);
 #if DEBUG_REFOBJECT
             if (ptr->inc_callback) {
                 ptr->inc_callback((RefObject*)ptr, this);
@@ -189,13 +180,12 @@ public:
 	{
 		if (ptr) {
 			if (!AtomicDecrement(&ptr->ref_count)) {
-                m_dest_callback(ptr);
 #if DEBUG_REFOBJECT
                 if (ptr->dec_callback) {
                     ptr->dec_callback((RefObject*)ptr, this);
                 }
 #endif
-                delete ptr;
+                m_delete_proc(ptr);
             }
 #if DEBUG_REFOBJECT
             else {
@@ -324,7 +314,7 @@ public:
 		}
 	}
 
-    void ToWeakPtr(WeakPtr<T, INC_CALLBACK, DEST_CALLBACK, GARBAGE_COLLECTOR>& result) {
+    void ToWeakPtr(WeakPtr<T, DELETE_PROC, GARBAGE_COLLECTOR>& result) {
         if (m_ptr) {
             AtomicIncrement(&m_ptr->weak_count->weak_count);
             result.Dest();
