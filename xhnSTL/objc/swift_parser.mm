@@ -395,13 +395,16 @@ namespace xhn {
         char mbuf[1024];
         TEST_AS_OBJC
         bridgeFile = "static xhn::SpinLock s_lock;\n";
+        bridgeFile += "void ReleaseObject(void* ptr) {\n";
+        bridgeFile += "    (__bridge_transfer id)(ptr);\n";
+        bridgeFile += "}\n";
         bridgeFile += "class SwiftSceneNodeFilter : public VEngine::VSceneNodeFilter\n";
         bridgeFile += "{\n";
         bridgeFile += "public:\n";
         bridgeFile += "    id<VSceneNodeFilter> m_swiftSceneNodeFilter;\n";
         bridgeFile += "public:\n";
         bridgeFile += "    virtual bool IsFiltered(VEngine::VSceneNodeNamePtr name, VEngine::VType::NodeType type) override {\n";
-        bridgeFile += "        VSceneNodeName* swiftName = name->m_slot;\n";
+        bridgeFile += "        VSceneNodeName* swiftName = (__bridge VSceneNodeName*)name->m_slot;\n";
         bridgeFile += "        if (!swiftName) {\n";
         bridgeFile += "            swiftName = [[VSceneNodeName alloc] initWithVSceneNodeName:name.get()];\n";
         bridgeFile += "        }\n";
@@ -475,7 +478,10 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
         ELSE
-        bridgeFile = "func bridgeToPtr<T : AnyObject>(obj : T) -> UnsafeRawPointer {\n";
+        bridgeFile = "func ReleaseObject(ptr : UnsafeRawPointer) {\n";
+        bridgeFile += "    Unmanaged<T>.fromOpaque(ptr).takeRetainedValue()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "func bridgeToPtr<T : AnyObject>(obj : T) -> UnsafeRawPointer {\n";
         bridgeFile += "    return UnsafeRawPointer(Unmanaged.passUnretained(obj).toOpaque())\n";
         bridgeFile += "}\n";
         bridgeFile += "func bridgeToObject<T : AnyObject>(ptr : UnsafeRawPointer) -> T {\n";
@@ -1211,7 +1217,7 @@ namespace xhn {
                                  "    s_createSceneNodeAgentProcDic[@%c%s%c] = [[CreateSceneNodeAgentProc alloc] initWithProc:^(void* sceneNode)\n"
                                  "    {\n"
                                  "        %s* ret = nil;\n"
-                                 "        VSceneNode* sn = ((VEngine::VSceneNode*)sceneNode)->m_slot;\n"
+                                 "        VSceneNode* sn = (__bridge VSceneNode*)((VEngine::VSceneNode*)sceneNode)->m_slot;\n"
                                  "        if (sn) {\n"
                                  "            ret = [[%s alloc] initWithSceneNode:sn];\n"
                                  "        }\n"
@@ -1275,7 +1281,7 @@ namespace xhn {
                                      "    s_createActorAgentProcDic[@%c%s%c] = [[CreateActorAgentProc alloc] initWithProc:^(void* renderSys, void* actor)\n"
                                      "    {\n"
                                      "        %s* ret = nil;\n"
-                                     "        VActor* act = ((VEngine::VActor*)actor)->m_slot;\n"
+                                     "        VActor* act = (__bridge VActor*)((VEngine::VActor*)actor)->m_slot;\n"
                                      "        if (act) {\n"
                                      "            ret = [[%s alloc] initWithActor:act];"
                                      "        }\n"
@@ -1343,7 +1349,7 @@ namespace xhn {
                                          "    s_createGUIAgentProcDic[@%c%s%c] = [[CreateGUIAgentProc alloc] initWithProc:^(void* renderSys, void* widget)\n"
                                          "    {\n"
                                          "        %s* ret = nil;\n"
-                                         "        VWidget* wg = ((VEngine::GUIWidget*)widget)->m_slot;\n"
+                                         "        VWidget* wg = (__bridge VWidget*)((VEngine::GUIWidget*)widget)->m_slot;\n"
                                          "        if (wg) {\n"
                                          "            ret = [[%s alloc] initWithWidget:wg];\n"
                                          "        }\n"
