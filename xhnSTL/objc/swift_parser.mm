@@ -480,7 +480,9 @@ namespace xhn {
         bridgeFile += "@end\n";
         ELSE
         bridgeFile = "func ReleaseObject(ptr : UnsafeRawPointer) {\n";
-        bridgeFile += "    Unmanaged<T>.fromOpaque(ptr).takeRetainedValue()\n";
+        bridgeFile += "    let obj = bridgeTransfer(ptr : ptr) as AnyObject\n";
+        bridgeFile += "    let blanker = obj as! Blanker\n";
+        bridgeFile += "    blanker.blankPointer()\n";
         bridgeFile += "}\n";
         bridgeFile += "func bridgeToPtr<T : AnyObject>(obj : T) -> UnsafeRawPointer {\n";
         bridgeFile += "    return UnsafeRawPointer(Unmanaged.passUnretained(obj).toOpaque())\n";
