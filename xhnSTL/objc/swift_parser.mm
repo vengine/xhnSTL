@@ -395,6 +395,9 @@ namespace xhn {
         char mbuf[1024];
         TEST_AS_OBJC
         bridgeFile = "static xhn::SpinLock s_lock;\n";
+        bridgeFile += "void InitSwiftWrapper() {\n";
+        bridgeFile += "    [SwiftWrapper InitSwiftWrapper];\n";
+        bridgeFile += "}\n";
         bridgeFile += "void ReleaseObject(void* ptr) {\n";
         bridgeFile += "    id<Blanker> blanker = (__bridge_transfer id<Blanker>)(ptr);\n";
         bridgeFile += "    [blanker blankPointer];\n";
@@ -2211,6 +2214,7 @@ namespace xhn {
     }
     void SwiftParser::ParseSwifts(const string& logDir,
                                   ASTReformatterPtr reformatter,
+                                  const string& importPaths,
                                   const string& paths, xhn::Lambda<void (const xhn::string& objcBridgeFile,
                                                                          const xhn::string& swiftBridgeFile,
                                                                          const xhn::string& stateActionFile,
@@ -2219,8 +2223,9 @@ namespace xhn {
                                                                          const xhn::vector<xhn::static_string>&)>& callback)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
-        NSString* command = [[NSString alloc] initWithFormat:@"%@ -swift-version %@ -sdk %@ -dump-ast %@",
+        NSString* command = [[NSString alloc] initWithFormat:@"%@ -swift-version %@ -sdk %@ -dump-ast %@ %@",
                              swiftc, usedVersion, sdk,
+                             [[NSString alloc] initWithUTF8String:importPaths.c_str()],
                              [[NSString alloc] initWithUTF8String:paths.c_str()]];
         __block xhn::Lambda<void (const xhn::string& objcBridgeFile,
                                   const xhn::string& swiftBridgeFile,

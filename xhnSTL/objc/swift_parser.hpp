@@ -164,6 +164,7 @@ public:
     virtual void Parse(const char* strBuffer, euint length) override;
     static void ParseSwifts(const string& logDir,
                             ASTReformatterPtr reformatter,
+                            const string& importPaths,
                             const string& paths, Lambda<void (const xhn::string& objcBridgeFile,
                                                               const xhn::string& swiftBridgeFile,
                                                               const xhn::string& stateActionFile,
