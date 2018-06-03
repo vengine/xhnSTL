@@ -72,6 +72,7 @@ static xhn::SpinLock s_SwiftCommandLineUtilsLock;
 static NSMutableSet* s_SwiftCommandLineUtils = nil;
 
 @interface SwiftCommandLineUtil : NSObject
+@property (assign) UInt32 parseMask;
 @property (assign) xhn::Parser* parser;
 - (void) getSwiftVersion:(NSString*)commandToRun
                   logDir:(const xhn::string&)logDir
@@ -2264,6 +2265,14 @@ namespace xhn {
     NSPipe *mPipe;
     NSFileHandle *mFile;
 }
+- (id) init
+{
+    self = [super init];
+    if (self) {
+        self.parseMask = PARSE_MASK;
+    }
+    return self;
+}
 - (void) dealloc
 {
 }
@@ -2306,8 +2315,12 @@ namespace xhn {
             xhn::string tmp;
             xhn::SwiftParser* swiftParser = self.parser->DynamicCast<xhn::SwiftParser>();
             EDebugAssert(swiftParser, "current parser must be a kind of SwiftParser");
-            swiftParser->EndParse(objcBridgeFile, stateActionFile, xhn::SwiftParser::ObjC);
-            swiftParser->EndParse(swiftBridgeFile, stateActionFile, xhn::SwiftParser::Swift);
+            if ( self.parseMask & OBJC_MASK ) {
+                swiftParser->EndParse(objcBridgeFile, stateActionFile, xhn::SwiftParser::ObjC);
+            }
+            if ( self.parseMask & SWIFT_MASK ) {
+                swiftParser->EndParse(swiftBridgeFile, stateActionFile, xhn::SwiftParser::Swift);
+            }
             xhn::vector<xhn::static_string> sceneNodeAgentNameVector = swiftParser->GetSceneNodeAgentNameVector();
             xhn::vector<xhn::static_string> guiAgentNameVector = swiftParser->GetGUIAgentNameVector();
             xhn::vector<xhn::static_string> actorAgentNameVector = swiftParser->GetActorAgentNameVector();

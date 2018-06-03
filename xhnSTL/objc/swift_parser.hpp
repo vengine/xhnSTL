@@ -24,6 +24,10 @@
 
 namespace xhn {
     
+#define OBJC_MASK  0x00000001
+#define SWIFT_MASK 0x00000002
+#define PARSE_MASK 0x00000002
+    
 class Parser
 {
     DeclareRootRTTI;
