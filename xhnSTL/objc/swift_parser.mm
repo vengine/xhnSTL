@@ -487,18 +487,6 @@ namespace xhn {
         bridgeFile += "    let blanker = obj as! Blanker\n";
         bridgeFile += "    blanker.blankPointer()\n";
         bridgeFile += "}\n";
-        bridgeFile += "func bridgeToPtr<T : AnyObject>(obj : T) -> UnsafeRawPointer {\n";
-        bridgeFile += "    return UnsafeRawPointer(Unmanaged.passUnretained(obj).toOpaque())\n";
-        bridgeFile += "}\n";
-        bridgeFile += "func bridgeToObject<T : AnyObject>(ptr : UnsafeRawPointer) -> T {\n";
-        bridgeFile += "    return Unmanaged<T>.fromOpaque(ptr).takeUnretainedValue()\n";
-        bridgeFile += "}\n";
-        bridgeFile += "func bridgeRetained<T : AnyObject>(obj : T) -> UnsafeRawPointer {\n";
-        bridgeFile += "    return UnsafeRawPointer(Unmanaged.passRetained(obj).toOpaque())\n";
-        bridgeFile += "}\n";
-        bridgeFile += "func bridgeTransfer<T : AnyObject>(ptr : UnsafeRawPointer) -> T {\n";
-        bridgeFile += "    return Unmanaged<T>.fromOpaque(ptr).takeRetainedValue()\n";
-        bridgeFile += "}\n";
         bridgeFile += "open class SwiftCallbackHandle\n";
         bridgeFile += "{\n";
         bridgeFile += "    var callback : () -> Void\n";
@@ -514,10 +502,6 @@ namespace xhn {
         bridgeFile += "    let handle = bridgeTransfer(ptr : ptr) as SwiftCallbackHandle\n";
         bridgeFile += "    handle.callback()\n";
         bridgeFile += "}\n";
-        bridgeFile += "let s_lock = NSLock()\n";
-        bridgeFile += "var s_sceneNodeAgentSet = Set<AnyHashable>()\n";
-        bridgeFile += "var s_guiAgentSet = Set<AnyHashable>()\n";
-        bridgeFile += "var s_actorAgentSet = Set<AnyHashable>()\n";
         bridgeFile += "public class CreateSceneNodeAgentProc\n";
         bridgeFile += "{\n";
         bridgeFile += "    let createAgentProc : (_ : UnsafeRawPointer)->SceneNodeAgent\n";
@@ -569,16 +553,16 @@ namespace xhn {
         bridgeFile += "    let strType = String(cString : UnsafePointer<Int8>(type))\n";
         bridgeFile += "    guard let proc = s_createSceneNodeAgentProcDic[strType] else { return nil }\n";
         bridgeFile += "    let agent = proc.createAgentProc(sceneNode)\n";
-        bridgeFile += "    s_lock.lock()\n";
-        bridgeFile += "    _ = s_sceneNodeAgentSet.insert(agent)\n";
-        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "    s_agentSetLock.lock()\n";
+        bridgeFile += "    _ = s_sceneNodeAgentSet.add(object : agent)\n";
+        bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "    return bridgeToPtr(obj : agent)\n";
         bridgeFile += "}\n";
         bridgeFile += "public func RemoveSceneNodeAgent(agent : UnsafeRawPointer) {\n";
         bridgeFile += "    let snagent = bridgeToObject(ptr : agent) as SceneNodeAgent\n";
-        bridgeFile += "    s_lock.lock()\n";
+        bridgeFile += "    s_agentSetLock.lock()\n";
         bridgeFile += "    s_sceneNodeAgentSet.remove(snagent)\n";
-        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "}\n";
         bridgeFile += "public func UpdateSceneNodeAgent(agent : UnsafeRawPointer, elapsedTime : Double) {\n";
         bridgeFile += "    let snagent = bridgeToObject(ptr : agent) as SceneNodeAgent\n";
@@ -595,16 +579,16 @@ namespace xhn {
         bridgeFile += "    let strType = String(cString: type)\n";
         bridgeFile += "    guard let proc = s_createGUIAgentProcDic[strType] else { return nil }\n";
         bridgeFile += "    let agent = proc.createAgentProc(renderSys, widget)\n";
-        bridgeFile += "    s_lock.lock()\n";
-        bridgeFile += "    _ = s_guiAgentSet.insert(agent)\n";
-        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "    s_agentSetLock.lock()\n";
+        bridgeFile += "    _ = s_guiAgentSet.add(object : agent)\n";
+        bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "    return bridgeToPtr(obj: agent)\n";
         bridgeFile += "}\n";
         bridgeFile += "public func RemoveGUIAgent(agent : UnsafeRawPointer) {\n";
-        bridgeFile += "    s_lock.lock()\n";
+        bridgeFile += "    s_agentSetLock.lock()\n";
         bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
         bridgeFile += "    s_guiAgentSet.remove(gagent)\n";
-        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "}\n";
         bridgeFile += "public func UpdateGUIAgent(agent : UnsafeRawPointer, elapsedTime : Double) {\n";
         bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
@@ -676,16 +660,16 @@ namespace xhn {
         bridgeFile += "    let strType = String(cString: type)\n";
         bridgeFile += "    guard let proc = s_createActorAgentProcDic[strType] else { return nil }\n";
         bridgeFile += "    let agent = proc.createAgentProc(renderSys, actor)\n";
-        bridgeFile += "    s_lock.lock()\n";
-        bridgeFile += "    _ = s_actorAgentSet.insert(agent)\n";
-        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "    s_agentSetLock.lock()\n";
+        bridgeFile += "    _ = s_actorAgentSet.add(object : agent)\n";
+        bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "    return bridgeToPtr(obj: agent)\n";
         bridgeFile += "}\n";
         bridgeFile += "public func RemoveActorAgent(agent : UnsafeRawPointer) {\n";
-        bridgeFile += "    s_lock.lock();\n";
+        bridgeFile += "    s_agentSetLock.lock();\n";
         bridgeFile += "    let aagent = bridgeToObject(ptr: agent) as ActorAgent\n";
         bridgeFile += "    s_actorAgentSet.remove(aagent)\n";
-        bridgeFile += "    s_lock.unlock()\n";
+        bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "}\n";
         bridgeFile += "public func UpdateActorAgent(agent : UnsafeRawPointer, elapsedTime : Double) {\n";
         bridgeFile += "    let aagent = bridgeToObject(ptr: agent) as ActorAgent\n";
@@ -772,7 +756,7 @@ namespace xhn {
         bridgeFile += "    s_actorAgentSet = [NSMutableSet new];\n";
         bridgeFile += "    s_createActorAgentProcDic = [NSMutableDictionary new];\n";
         ELSE
-        bridgeFile += "func InitProcDic() {\n";
+        bridgeFile += "public func InitProcDic() {\n";
         END
         /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
         /// 例：RegularSceneNodeAgent 继承自 SceneNodeAgent，SceneNodeAgent 继承自 NSObject
@@ -855,7 +839,7 @@ namespace xhn {
                                          "        let state%dName = swiftClassStringFromPath(%c%s%c)\n"
                                          ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
                                          "        let state%d = SwiftStates._TtCC12VEngineLogic%s()\n"
-                                         "        ret!.setState(state%dName, state:state%d)\n",
+                                         "        ret.setState(state%dName, state:state%d)\n",
                                          i, '"', fullClassName.c_str(), '"',
                                          i, stateFuncName.c_str(),
                                          ///i, '"', fullClassName.c_str(), '"',
@@ -881,7 +865,7 @@ namespace xhn {
                              firstState.c_str());
                     ELSE
                     snprintf(mbuf, 512,
-                             "        ret!.setCurrentState(%s)\n",
+                             "        ret.setCurrentState(%s)\n",
                              firstState.c_str());
                     END
                     bridgeFile += mbuf;
@@ -969,16 +953,14 @@ namespace xhn {
                                 snprintf(mbuf, 512,
                                          ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        let action%d = SwiftActions._TtCC12VEngineLogic%s() as! AnimationInterface\n"
-                                         "        if action%d.resourceName != nil {\n"
-                                         "            let action%dResName = action%d.resourceName\n"
-                                         "            ret!.setAction(action%dResName, action:action%d as! AnyObject)\n"
-                                         "        }\n",
+                                         "        let action%dResName = action%d.resourceName\n"
+                                         "        ret.setAction(action%dResName, action:action%d as AnyObject)\n",
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, actionFuncName.c_str(),
                                          i,
                                          i, i,
                                          ///i, '"', fullClassName.c_str(), '"',
-                                         i, i);
+                                         i);
                                 END
                                 bridgeFile += mbuf;
                                 
@@ -999,7 +981,7 @@ namespace xhn {
                              firstAction.c_str());
                     ELSE
                     snprintf(mbuf, 512,
-                             "        ret!.setCurrentAction(%s as! AnyObject)\n",
+                             "        ret.setCurrentAction(%s as AnyObject)\n",
                              firstAction.c_str());
                     END
                     bridgeFile += mbuf;
@@ -1238,22 +1220,16 @@ namespace xhn {
                         snprintf(mbuf, 1024,
                                  "    s_createSceneNodeAgentProcDic[%c%s%c] = CreateSceneNodeAgentProc(proc:{ \n"
                                  "        ( _ sceneNode : UnsafeRawPointer ) in\n"
-                                 "        var ret : %s? = nil;\n"
-                                 "        if let ptr = GetSlotPtr(UnsafeMutableRawPointer(mutating:sceneNode)) {\n"
-                                 "            let p : UnsafeRawPointer = UnsafeRawPointer(ptr)\n"
-                                 "            var sn : VSceneNode? = bridgeToObject(ptr : p) as VSceneNode\n"
-                                 "            if sn != nil {\n"
-                                 "                ret = %s(sceneNode : sn);\n"
-                                 "            } else {\n"
-                                 "                ret = %s(sceneNode : VSceneNode(vSceneNode : UnsafeMutableRawPointer(mutating:sceneNode)));\n"
-                                 "            }\n"
+                                 "        var swiftSceneNode : VSceneNode? = nil\n"
+                                 "        if let sceneNodePtr = VEngine_GetSlotPtr(UnsafeMutableRawPointer(mutating:sceneNode)) {\n"
+                                 "            swiftSceneNode = bridgeToObject(ptr : sceneNodePtr) as VSceneNode\n"
                                  "        } else {\n"
-                                 "            ret = %s(sceneNode : VSceneNode(vSceneNode : UnsafeMutableRawPointer(mutating:sceneNode)));\n"
-                                 "        }\n",
+                                 "            swiftSceneNode = VSceneNode(vSceneNode : UnsafeMutableRawPointer(mutating:sceneNode))\n"
+                                 "            VEngine_SetSlotPtr(UnsafeMutableRawPointer(mutating:sceneNode), \n"
+                                 "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : swiftSceneNode!)))\n"
+                                 "        }\n"
+                                 "        let ret = %s(sceneNode : swiftSceneNode!)\n",
                                  '"', node->name.c_str(), '"',
-                                 node->name.c_str(),
-                                 node->name.c_str(),
-                                 node->name.c_str(),
                                  node->name.c_str());
                         END
                         m_sceneNodeAgentNameVector.push_back(node->name);
@@ -1271,8 +1247,8 @@ namespace xhn {
                         "    }];\n";
                         ELSE
                         bridgeFile +=
-                        "        ret!.start()\n"
-                        "        return ret!\n"
+                        "        ret.start()\n"
+                        "        return ret\n"
                         "    })\n";
                         END
                     }
@@ -1301,24 +1277,19 @@ namespace xhn {
                             ELSE
                             snprintf(mbuf, 1024,
                                      "    s_createActorAgentProcDic[%c%s%c] = CreateActorAgentProc(proc:{ \n"
-                                     "        ( _ actor : UnsafeRawPointer, _ renderSys : UnsafeRawPointer ) in\n"
-                                     "        var ret : %s? = nil;\n"
-                                     "        if let ptr = GetSlotPtr(UnsafeMutableRawPointer(mutating:actor)) {\n"
-                                     "            let p : UnsafeRawPointer = UnsafeRawPointer(ptr)\n"
-                                     "            var act : VActor? = bridgeToObject(ptr : p) as VActor\n"
-                                     "            if act != nil {\n"
-                                     "                ret = %s(actor : act)\n"
-                                     "            } else {\n"
-                                     "                ret = %s(actor : VActor(vRenderSys : UnsafeMutableRawPointer(mutating:renderSys), actor: UnsafeMutableRawPointer(mutating:actor)))\n"
-                                     "            }\n"
+                                     "        ( _ renderSys : UnsafeRawPointer, _ actor : UnsafeRawPointer ) in\n"
+                                     "        var swiftActor : VActor? = nil\n"
+                                     "        if let actorPtr = VEngine_GetSlotPtr(UnsafeMutableRawPointer(mutating:actor)) {\n"
+                                     "            swiftActor = bridgeToObject(ptr : actorPtr) as VActor\n"
                                      "        } else {\n"
-                                     "            ret = %s(actor : VActor(vRenderSys : UnsafeMutableRawPointer(mutating:renderSys), actor: UnsafeMutableRawPointer(mutating:actor)))\n"
-                                     "        }\n",
+                                     "            swiftActor = VActor(vActor : UnsafeMutableRawPointer(mutating:actor))\n"
+                                     "            VEngine_SetSlotPtr(UnsafeMutableRawPointer(mutating:actor), \n"
+                                     "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : swiftActor!)))\n"
+                                     "        }\n"
+                                     "        let ret = %s(actor : swiftActor!)\n",
                                      '"', node->name.c_str(), '"',
-                                     node->name.c_str(),
-                                     node->name.c_str(),
-                                     node->name.c_str(),
                                      node->name.c_str());
+                            
                             END
                             m_actorAgentNameVector.push_back(node->name);
                             
@@ -1335,8 +1306,8 @@ namespace xhn {
                             "    }];\n";
                             ELSE
                             bridgeFile +=
-                            "        ret!.start()\n"
-                            "        return ret!\n"
+                            "        ret.start()\n"
+                            "        return ret\n"
                             "    })\n";
                             END
                         }
@@ -1370,22 +1341,16 @@ namespace xhn {
                                 snprintf(mbuf, 1024,
                                          "    s_createGUIAgentProcDic[%c%s%c] = CreateGUIAgentProc(proc:{ \n"
                                          "        ( _ renderSys : UnsafeRawPointer, _ widget : UnsafeRawPointer ) in\n"
-                                         "        var ret : %s? = nil;\n"
-                                         "        if let wptr = GetSlotPtr(UnsafeMutableRawPointer(mutating:widget)) {\n"
-                                         "            let w : UnsafeRawPointer = UnsafeRawPointer(wptr)\n"
-                                         "            var wg : VWidget? = bridgeToObject(ptr : w) as VWidget\n"
-                                         "            if wg != nil {\n"
-                                         "                ret = %s(widget : wg)\n"
-                                         "            } else {\n"
-                                         "                ret = %s(widget : VWidget(vRenderSys : UnsafeMutableRawPointer(mutating:renderSys), widget : UnsafeMutableRawPointer(mutating:widget)))\n"
-                                         "            }\n"
+                                         "        var swiftWidget : VWidget? = nil\n"
+                                         "        if let widgetPtr = VEngine_GetSlotPtr(UnsafeMutableRawPointer(mutating:widget)) {\n"
+                                         "            swiftWidget = bridgeToObject(ptr : widgetPtr) as VWidget\n"
                                          "        } else {\n"
-                                         "            ret = %s(widget : VWidget(vRenderSys : UnsafeMutableRawPointer(mutating:renderSys), widget : UnsafeMutableRawPointer(mutating:widget)))\n"
-                                         "        }\n",
+                                         "            swiftWidget = VWidget(vWidget : UnsafeMutableRawPointer(mutating:widget))\n"
+                                         "            VEngine_SetSlotPtr(UnsafeMutableRawPointer(mutating:widget), \n"
+                                         "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : swiftWidget!)))\n"
+                                         "        }\n"
+                                         "        let ret = %s(widget : swiftWidget!)\n",
                                          '"', node->name.c_str(), '"',
-                                         node->name.c_str(),
-                                         node->name.c_str(),
-                                         node->name.c_str(),
                                          node->name.c_str());
                                 END
                                 m_guiAgentNameVector.push_back(node->name);
@@ -1439,12 +1404,13 @@ namespace xhn {
                                 bridgeFile += mbuf;
                                 snprintf(mbuf, 512, "        let draggingState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", draggingState.c_str());
                                 bridgeFile += mbuf;
-                                snprintf(mbuf, 512, "        ret!.setState(\"NormalState\", state:normalState)\n"
-                                         "        ret!.setState(\"HoveringState\", state:hoveringState)\n"
-                                         "        ret!.setState(\"SelectedState\", state:selectedState)\n"
-                                         "        ret!.setState(\"PressedState\", state:pressedState)\n"
-                                         "        ret!.setState(\"DraggingState\", state:draggingState)\n"
-                                         "        ret!.setCurrentState(normalState)\n");
+                                snprintf(mbuf, 512,
+                                         "        ret.setState(\"NormalState\", state:normalState)\n"
+                                         "        ret.setState(\"HoveringState\", state:hoveringState)\n"
+                                         "        ret.setState(\"SelectedState\", state:selectedState)\n"
+                                         "        ret.setState(\"PressedState\", state:pressedState)\n"
+                                         "        ret.setState(\"DraggingState\", state:draggingState)\n"
+                                         "        ret.setCurrentState(normalState)\n");
                                 END
                                 bridgeFile += mbuf;
                                 ///
@@ -1455,8 +1421,8 @@ namespace xhn {
                                 "    }];\n";
                                 ELSE
                                 bridgeFile +=
-                                "        ret!.start()\n"
-                                "        return ret!\n"
+                                "        ret.start()\n"
+                                "        return ret\n"
                                 "    })\n";
                                 END
                             }

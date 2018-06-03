@@ -342,6 +342,16 @@ public:
 
 class RefObject : public RefObjectBase, public MemObject
 {
+public:
+    void* m_slot;
+public:
+    RefObject()
+    : m_slot(nullptr)
+    {}
+    RefObject(const RefObject& obj)
+    : RefObjectBase(obj)
+    , m_slot(nullptr)
+    {}
 };
 
 #endif
