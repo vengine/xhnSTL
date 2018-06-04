@@ -11,6 +11,14 @@
 #include "string.h"
 #include <unistd.h>
 
+#if defined(ANDROID) || defined(__ANDROID__)
+void (*s_logFunction)(const char*) = NULL;
+void TestLogFunction()
+{
+    s_logFunction("this is xhnSTL");
+}
+#endif
+
 void (*GetHomeDirectory)(char* output, int outlen) = NULL;
 #ifdef __APPLE__
 #ifndef OSSPINLOCK_DEPRECATED
@@ -51,6 +59,9 @@ void ELog_Init()
 
 void ELog_write()
 {
+#if defined(ANDROID) || defined(__ANDROID__)
+    s_logFunction(g_elog_buffer);
+#else
 #if DEBUG
 #ifdef USE_LOG_SYSTEM
     if (g_elog_file) {
@@ -60,6 +71,7 @@ void ELog_write()
     }
 #else
     printf("%s\n", g_elog_buffer);
+#endif
 #endif
 #endif
 }
@@ -88,10 +100,14 @@ void ELog2_Init(struct elogger* logger)
 
 void ELog2_write(struct elogger* logger)
 {
+#if defined(ANDROID) || defined(__ANDROID__)
+    s_logFunction(g_elog_buffer);
+#else
 #if DEBUG
     snprintf(g_elog_buffer, ELOG_BUFFER_SIZE, "%s\n", g_elog_buffer);
     fwrite(g_elog_buffer, strlen(g_elog_buffer), 1, logger->logFile);
     fflush(logger->logFile);
+#endif
 #endif
 }
 

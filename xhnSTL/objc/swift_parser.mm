@@ -955,7 +955,7 @@ namespace xhn {
                                          ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        let action%d = SwiftActions._TtCC12VEngineLogic%s() as! AnimationInterface\n"
                                          "        let action%dResName = action%d.resourceName\n"
-                                         "        ret.setAction(action%dResName, action:action%d as AnyObject)\n",
+                                         "        ret.setAction(action%dResName, action:action%d as! AnyObject)\n",
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, actionFuncName.c_str(),
                                          i,
@@ -982,7 +982,7 @@ namespace xhn {
                              firstAction.c_str());
                     ELSE
                     snprintf(mbuf, 512,
-                             "        ret.setCurrentAction(%s as AnyObject)\n",
+                             "        ret.setCurrentAction(%s as! AnyObject)\n",
                              firstAction.c_str());
                     END
                     bridgeFile += mbuf;

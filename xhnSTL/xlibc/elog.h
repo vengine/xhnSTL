@@ -17,6 +17,12 @@
 extern "C"
 {
 #endif
+    
+#if defined(ANDROID) || defined(__ANDROID__)
+extern void (*s_logFunction)(const char*);
+void TestLogFunction();
+#endif
+    
 extern void (*GetHomeDirectory)(char* output, int outlen);
 extern ELock g_elog_lock;
 #define ELOG_BUFFER_SIZE 4096 * 2
