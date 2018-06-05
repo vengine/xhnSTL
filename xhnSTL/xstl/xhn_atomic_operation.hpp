@@ -155,11 +155,11 @@ inline esint64 AtomicDecrement(volatile esint64* i)
 }
 inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
 {
-    return __sync_val_compare_and_swap(theValue, oldValue, newValue);
+    return __sync_bool_compare_and_swap(theValue, oldValue, newValue);
 }
 inline bool AtomicCompareExchange(esint64 oldValue, esint64 newValue, volatile esint64* theValue)
 {
-    return __sync_val_compare_and_swap(theValue, oldValue, newValue);
+    return __sync_bool_compare_and_swap(theValue, oldValue, newValue);
 }
 #if BIT_WIDTH == 32
 inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * volatile * theValue)
