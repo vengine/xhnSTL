@@ -47,6 +47,9 @@ void ELog_Init()
         char logFilename[256];
         snprintf(logFilename, 256, "%s/Documents/log.txt", homeDir);
         g_elog_file = SafeFOpen(logFilename, "w+");
+#elif defined(ANDROID) || defined(__ANDROID__)
+#else
+#error
 #endif
     }
 #endif
@@ -93,6 +96,9 @@ void ELog2_Init(struct elogger* logger)
         snprintf(logFilename, 256, "%s/Documents/log%d.txt", homeDir, logCount);
     }
     logger->logFile = SafeFOpen(logFilename, "w+");
+#elif defined(ANDROID) || defined(__ANDROID__)
+#else
+#error
 #endif
     ELock_unlock(&g_elog_lock);
 #endif
