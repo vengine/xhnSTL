@@ -682,6 +682,17 @@ xhn::file_manager* xhn::file_manager::get()
     }
     return s_AppleFileManager;
 }
+#elif defined(ANDROID) || defined(__ANDROID__)
+#include "android_file_manager.hpp"
+static AndroidFileManager* s_AndroidFileManager = NULL;
+
+xhn::file_manager* xhn::file_manager::get()
+{
+    if (!s_AndroidFileManager) {
+        s_AndroidFileManager = VNEW AndroidFileManager;
+    }
+    return s_AndroidFileManager;
+}
 #elif defined(LINUX)
 #include "linux_file_manager.hpp"
 static LinuxFileManager* s_LinuxFileManager = NULL;
@@ -693,6 +704,8 @@ xhn::file_manager* xhn::file_manager::get()
     }
     return s_LinuxFileManager;
 }
+#else
+#error
 #endif
 
 xhn::wstring xhn::file_manager::get_file_name(const xhn::wstring& path)

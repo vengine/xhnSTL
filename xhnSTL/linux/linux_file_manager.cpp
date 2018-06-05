@@ -170,7 +170,7 @@ bool LinuxFileManager::is_exist(const xhn::wstring& dir, bool& is_directory)
 }
 bool LinuxFileManager::is_exist(const xhn::string& path, bool& is_directory)
 {
-    if (access("test.txt", F_OK)==0) {
+    if (access(path.c_str(), F_OK)==0) {
         struct stat s_buf;
         stat(path.c_str(),&s_buf);
         if(S_ISDIR(s_buf.st_mode)) {
