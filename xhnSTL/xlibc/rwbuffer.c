@@ -112,7 +112,7 @@ bool RWBuffer_Read(RWBuffer _self, euint* result, euint* read_size)
 #elif defined (__APPLE__)
     OSMemoryBarrier();
 #elif defined(ANDROID) || defined(__ANDROID__)
-    __atomic_thread_fence(__ATOMIC_SEQ_CST)
+    __atomic_thread_fence(__ATOMIC_SEQ_CST);
 #else
 #error
 #endif
@@ -179,7 +179,7 @@ bool RWBuffer_Write(RWBuffer _self, const euint* from, const euint write_size)
 #elif defined (__APPLE__)
     OSMemoryBarrier();
 #elif defined(ANDROID) || defined(__ANDROID__)
-    __atomic_thread_fence(__ATOMIC_SEQ_CST)
+    __atomic_thread_fence(__ATOMIC_SEQ_CST);
 #else
 #error
 #endif
