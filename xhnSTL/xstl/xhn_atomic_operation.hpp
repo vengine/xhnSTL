@@ -164,12 +164,12 @@ inline bool AtomicCompareExchange(esint64 oldValue, esint64 newValue, volatile e
 #if BIT_WIDTH == 32
 inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * volatile * theValue)
 {
-    return __sync_val_compare_and_swap((volatile esint32*)theValue, (esint32)oldValue, (esint32)newValue);
+    return __sync_bool_compare_and_swap((volatile esint32*)theValue, (esint32)oldValue, (esint32)newValue);
 }
 #else
 inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * volatile * theValue)
 {
-    return __sync_val_compare_and_swap((volatile esint64*)theValue, (esint64)oldValue, (esint64)newValue);
+    return __sync_bool_compare_and_swap((volatile esint64*)theValue, (esint64)oldValue, (esint64)newValue);
 }
 #endif
 #elif defined(LINUX) && defined(AO_ATOMIC_OPS_H)
