@@ -953,9 +953,9 @@ namespace xhn {
                                 ELSE
                                 snprintf(mbuf, 512,
                                          ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
-                                         "        let action%d = SwiftActions._TtCC12VEngineLogic%s() as! AnimationInterface\n"
-                                         "        let action%dResName = action%d.resourceName\n"
-                                         "        ret.setAction(action%dResName, action:action%d as! AnyObject)\n",
+                                         "        let objectGroup%d = SwiftActions._TtCC12VEngineLogic%s()\n"
+                                         "        let action%dResName = objectGroup%d.1.resourceName\n"
+                                         "        ret.setAction(action%dResName, action:objectGroup%d.0 as AnyObject)\n",
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, actionFuncName.c_str(),
                                          i,
@@ -964,11 +964,17 @@ namespace xhn {
                                          i);
                                 END
                                 bridgeFile += mbuf;
-                                
+                                TEST_AS_OBJC
                                 if (!firstAction.size()) {
                                     snprintf(mbuf, 512, "action%d", i);
                                     firstAction = mbuf;
                                 }
+                                ELSE
+                                if (!firstAction.size()) {
+                                    snprintf(mbuf, 512, "objectGroup%d", i);
+                                    firstAction = mbuf;
+                                }
+                                END
                                 
                                 i++;
                             }
@@ -982,7 +988,7 @@ namespace xhn {
                              firstAction.c_str());
                     ELSE
                     snprintf(mbuf, 512,
-                             "        ret.setCurrentAction(%s as! AnyObject)\n",
+                             "        ret.setCurrentAction(%s.0 as AnyObject)\n",
                              firstAction.c_str());
                     END
                     bridgeFile += mbuf;
@@ -1932,8 +1938,9 @@ namespace xhn {
         for (auto& p : actionFuncClassMap) {
             char mbuf[512];
             snprintf(mbuf, 512,
-                     "    static open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
-                     "        return %s();\n"
+                     "    static open func _TtCC12VEngineLogic%s() -> (Action, AnimationInterface, ActionInterface) {\n"
+                     "        let ret = %s();\n"
+                     "        return (ret as Action, ret as AnimationInterface, ret as ActionInterface);\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
             
