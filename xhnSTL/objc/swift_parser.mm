@@ -837,12 +837,15 @@ namespace xhn {
                                          i, i);
                                 ELSE
                                 snprintf(mbuf, 512,
-                                         "        let state%dName = swiftClassStringFromPath(%c%s%c)\n"
+//                                         "        let state%dName = swiftClassStringFromPath(%c%s%c)\n"
                                          ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
                                          "        let state%d = SwiftStates._TtCC12VEngineLogic%s()\n"
+                                         "        let state%dName = getClassName(type(of:state%d))\n"
                                          "        ret.setState(state%dName, state:state%d)\n",
-                                         i, '"', fullClassName.c_str(), '"',
+//                                         i, '"', fullClassName.c_str(), '"',
+                                        
                                          i, stateFuncName.c_str(),
+                                          i, i,
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, i);
                                 END
