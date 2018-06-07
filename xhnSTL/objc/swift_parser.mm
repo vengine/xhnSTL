@@ -9,7 +9,7 @@
 //NSString* sdk = @"/Users/xhnsworks/Projects/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
 NSString* swiftc = @"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc";
 NSString* sdk = @"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
-NSString* usedVersion = @"3";
+NSString* usedVersion = @"4";
 
 #define USING_AST_LOG 0
 
@@ -555,7 +555,7 @@ namespace xhn {
         bridgeFile += "    guard let proc = s_createSceneNodeAgentProcDic[strType] else { return nil }\n";
         bridgeFile += "    let agent = proc.createAgentProc(sceneNode)\n";
         bridgeFile += "    s_agentSetLock.lock()\n";
-        bridgeFile += "    _ = s_sceneNodeAgentSet.add(object : agent)\n";
+        bridgeFile += "    _ = s_sceneNodeAgentSet.add(agent)\n";
         bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "    return bridgeToPtr(obj : agent)\n";
         bridgeFile += "}\n";
@@ -581,7 +581,7 @@ namespace xhn {
         bridgeFile += "    guard let proc = s_createGUIAgentProcDic[strType] else { return nil }\n";
         bridgeFile += "    let agent = proc.createAgentProc(renderSys, widget)\n";
         bridgeFile += "    s_agentSetLock.lock()\n";
-        bridgeFile += "    _ = s_guiAgentSet.add(object : agent)\n";
+        bridgeFile += "    _ = s_guiAgentSet.add(agent)\n";
         bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "    return bridgeToPtr(obj: agent)\n";
         bridgeFile += "}\n";
@@ -662,7 +662,7 @@ namespace xhn {
         bridgeFile += "    guard let proc = s_createActorAgentProcDic[strType] else { return nil }\n";
         bridgeFile += "    let agent = proc.createAgentProc(renderSys, actor)\n";
         bridgeFile += "    s_agentSetLock.lock()\n";
-        bridgeFile += "    _ = s_actorAgentSet.add(object : agent)\n";
+        bridgeFile += "    _ = s_actorAgentSet.add(agent)\n";
         bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "    return bridgeToPtr(obj: agent)\n";
         bridgeFile += "}\n";
@@ -956,9 +956,9 @@ namespace xhn {
                                 ELSE
                                 snprintf(mbuf, 512,
                                          ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
-                                         "        let objectGroup%d = SwiftActions._TtCC12VEngineLogic%s()\n"
-                                         "        let action%dResName = objectGroup%d.1.resourceName\n"
-                                         "        ret.setAction(action%dResName, action:objectGroup%d.0 as AnyObject)\n",
+                                         "        let action%d = SwiftActions._TtCC12VEngineLogic%s()\n"
+                                         "        let action%dResName = action%d.resourceName\n"
+                                         "        ret.setAction(action%dResName, action:action%d)\n",
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, actionFuncName.c_str(),
                                          i,
@@ -974,7 +974,7 @@ namespace xhn {
                                 }
                                 ELSE
                                 if (!firstAction.size()) {
-                                    snprintf(mbuf, 512, "objectGroup%d", i);
+                                    snprintf(mbuf, 512, "action%d", i);
                                     firstAction = mbuf;
                                 }
                                 END
@@ -991,7 +991,7 @@ namespace xhn {
                              firstAction.c_str());
                     ELSE
                     snprintf(mbuf, 512,
-                             "        ret.setCurrentAction(%s.0 as AnyObject)\n",
+                             "        ret.setCurrentAction(%s)\n",
                              firstAction.c_str());
                     END
                     bridgeFile += mbuf;
@@ -1909,7 +1909,7 @@ namespace xhn {
         for (auto& p : stateFuncClassMap) {
             char mbuf[512];
             snprintf(mbuf, 512,
-                     "    static open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
+                     "    static open func _TtCC12VEngineLogic%s() -> (SceneNodeState & SceneNodeStateInterface) {\n"
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
@@ -1925,7 +1925,7 @@ namespace xhn {
         for (auto& p : guiStateFuncClassMap) {
             char mbuf[512];
             snprintf(mbuf, 512,
-                     "    static open func _TtCC12VEngineLogic%s() -> AnyObject {\n"
+                     "    static open func _TtCC12VEngineLogic%s() -> (GUIState & GUIStateInterface) {\n"
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
@@ -1941,9 +1941,8 @@ namespace xhn {
         for (auto& p : actionFuncClassMap) {
             char mbuf[512];
             snprintf(mbuf, 512,
-                     "    static open func _TtCC12VEngineLogic%s() -> (Action, AnimationInterface, ActionInterface) {\n"
-                     "        let ret = %s();\n"
-                     "        return (ret as Action, ret as AnimationInterface, ret as ActionInterface);\n"
+                     "    static open func _TtCC12VEngineLogic%s() -> (Action & AnimationInterface & ActionInterface) {\n"
+                     "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
             
