@@ -343,14 +343,17 @@ public:
 class RefObject : public RefObjectBase, public MemObject
 {
 public:
-    void* m_slot;
+    void* m_scriptSlot;
+    void* m_releaseHelper;
 public:
     RefObject()
-    : m_slot(nullptr)
+    : m_scriptSlot(nullptr)
+    , m_releaseHelper(nullptr)
     {}
     RefObject(const RefObject& obj)
     : RefObjectBase(obj)
-    , m_slot(nullptr)
+    , m_scriptSlot(nullptr)
+    , m_releaseHelper(nullptr)
     {}
 };
 

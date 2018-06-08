@@ -483,12 +483,7 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "@end\n";
         ELSE
-        bridgeFile = "func ReleaseObject(ptr : UnsafeRawPointer) {\n";
-        bridgeFile += "    let obj = bridgeTransfer(ptr : ptr) as AnyObject\n";
-        bridgeFile += "    let blanker = obj as! Blanker\n";
-        bridgeFile += "    blanker.blankPointer()\n";
-        bridgeFile += "}\n";
-        bridgeFile += "open class SwiftCallbackHandle\n";
+        bridgeFile =  "open class SwiftCallbackHandle\n";
         bridgeFile += "{\n";
         bridgeFile += "    var callback : () -> Void\n";
         bridgeFile += "    init (callback : @escaping () -> Void) {\n";
@@ -1237,8 +1232,12 @@ namespace xhn {
                                  "            swiftSceneNode = bridgeToObject(ptr : sceneNodePtr) as VSceneNode\n"
                                  "        } else {\n"
                                  "            swiftSceneNode = VSceneNode(vSceneNode : UnsafeMutableRawPointer(mutating:sceneNode))\n"
+                                 "            let releaseHelper = ReleaseHelper()\n"
+                                 "            releaseHelper._blanker = swiftSceneNode\n"
+                                 "            releaseHelper._ptr = bridgeRetained(obj : swiftSceneNode!)\n"
                                  "            VEngine_SetSlotPtr(UnsafeMutableRawPointer(mutating:sceneNode), \n"
-                                 "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : swiftSceneNode!)))\n"
+                                 "                               UnsafeMutableRawPointer(mutating:releaseHelper._ptr), \n"
+                                 "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : releaseHelper)))\n"
                                  "        }\n"
                                  "        let ret = %s(sceneNode : swiftSceneNode!)\n",
                                  '"', node->name.c_str(), '"',
@@ -1295,8 +1294,12 @@ namespace xhn {
                                      "            swiftActor = bridgeToObject(ptr : actorPtr) as VActor\n"
                                      "        } else {\n"
                                      "            swiftActor = VActor(vActor : UnsafeMutableRawPointer(mutating:actor))\n"
+                                     "            let releaseHelper = ReleaseHelper()\n"
+                                     "            releaseHelper._blanker = swiftActor\n"
+                                     "            releaseHelper._ptr = bridgeRetained(obj : swiftActor!)\n"
                                      "            VEngine_SetSlotPtr(UnsafeMutableRawPointer(mutating:actor), \n"
-                                     "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : swiftActor!)))\n"
+                                     "                               UnsafeMutableRawPointer(mutating:releaseHelper._ptr), \n"
+                                     "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : releaseHelper)))\n"
                                      "        }\n"
                                      "        let ret = %s(actor : swiftActor!)\n",
                                      '"', node->name.c_str(), '"',
@@ -1358,8 +1361,12 @@ namespace xhn {
                                          "            swiftWidget = bridgeToObject(ptr : widgetPtr) as VWidget\n"
                                          "        } else {\n"
                                          "            swiftWidget = VWidget(vWidget : UnsafeMutableRawPointer(mutating:widget))\n"
+                                         "            let releaseHelper = ReleaseHelper()\n"
+                                         "            releaseHelper._blanker = swiftWidget\n"
+                                         "            releaseHelper._ptr = bridgeRetained(obj : swiftWidget!)\n"
                                          "            VEngine_SetSlotPtr(UnsafeMutableRawPointer(mutating:widget), \n"
-                                         "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : swiftWidget!)))\n"
+                                         "                               UnsafeMutableRawPointer(mutating:releaseHelper._ptr), \n"
+                                         "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : releaseHelper)))\n"
                                          "        }\n"
                                          "        let ret = %s(widget : swiftWidget!)\n",
                                          '"', node->name.c_str(), '"',
