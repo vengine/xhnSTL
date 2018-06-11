@@ -182,14 +182,31 @@ public:
                       unsigned long matchPosition,
                       unsigned int* matchLength, unsigned int* idResult)
         {
+            unsigned int mostLengthIndex = 0;
+            unsigned int mostLength = 0;
+            unsigned int mostLengthId = 0;
+            unsigned int tmpLength = 0;
             for (unsigned int i = 0; i < m_lineCount; i++) {
-                if (m_lines[i].Match(header, pattern0, pattern1, matchPosition, matchLength)) {
-                    *idResult = m_lines[i].id;
-                    if (i) {
-                        Promote(i);
+                if (m_lines[i].Match(header, pattern0, pattern1, matchPosition, &tmpLength)) {
+//                    *idResult = m_lines[i].id;
+//                    if (i) {
+//                        Promote(i);
+//                    }
+//                    return true;
+                    if (tmpLength > mostLength) {
+                        mostLengthIndex = i;
+                        mostLength = tmpLength;
+                        mostLengthId = m_lines[i].id;
                     }
-                    return true;
                 }
+            }
+            if (mostLength) {
+                *matchLength = mostLength;
+                *idResult = mostLengthId;
+                if (mostLengthIndex) {
+                    Promote(mostLengthIndex);
+                }
+                return true;
             }
             return false;
         }
