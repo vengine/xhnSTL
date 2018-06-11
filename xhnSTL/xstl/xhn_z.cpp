@@ -5,27 +5,26 @@ void xhn::OutputCommand::Print()
     if (type == EmptyCommand) {
         printf("Emtpy:\n");
     } else if (type == CompressCommand) {
-        unsigned long long pattern0 = 0;
-        unsigned long long pattern1 = 0;
-        dict->FindLine(compressHeader, compressId, &pattern0, &pattern1);
+        unsigned char* pattern = nullptr;
+        dict->FindLine(compressHeader, compressId, &pattern);
         
-        unsigned char com0 = (unsigned char)(pattern0 >> 56);
-        unsigned char com1 = (unsigned char)(pattern0 >> 48);
-        unsigned char com2 = (unsigned char)(pattern0 >> 40);
-        unsigned char com3 = (unsigned char)(pattern0 >> 32);
-        unsigned char com4 = (unsigned char)(pattern0 >> 24);
-        unsigned char com5 = (unsigned char)(pattern0 >> 16);
-        unsigned char com6 = (unsigned char)(pattern0 >> 8);
-        unsigned char com7 = (unsigned char)(pattern0 >> 0);
+        unsigned char com0 = pattern[0];
+        unsigned char com1 = pattern[1];
+        unsigned char com2 = pattern[2];
+        unsigned char com3 = pattern[3];
+        unsigned char com4 = pattern[4];
+        unsigned char com5 = pattern[5];
+        unsigned char com6 = pattern[6];
+        unsigned char com7 = pattern[7];
         
-        unsigned char com8 = (unsigned char)(pattern1 >> 56);
-        unsigned char com9 = (unsigned char)(pattern1 >> 48);
-        unsigned char com10 = (unsigned char)(pattern1 >> 40);
-        unsigned char com11 = (unsigned char)(pattern1 >> 32);
-        unsigned char com12 = (unsigned char)(pattern1 >> 24);
-        unsigned char com13 = (unsigned char)(pattern1 >> 16);
-        unsigned char com14 = (unsigned char)(pattern1 >> 8);
-        unsigned char com15 = (unsigned char)(pattern1 >> 0);
+        unsigned char com8 = pattern[8];
+        unsigned char com9 = pattern[9];
+        unsigned char com10 = pattern[10];
+        unsigned char com11 = pattern[11];
+        unsigned char com12 = pattern[12];
+        unsigned char com13 = pattern[13];
+        unsigned char com14 = pattern[14];
+        unsigned char com15 = pattern[15];
         
         switch (compressLength)
         {
@@ -122,28 +121,27 @@ void xhn::OutputCommand::TextPrint()
 {
     if (type == EmptyCommand) {
     } else if (type == CompressCommand) {
-        unsigned long long pattern0 = 0;
-        unsigned long long pattern1 = 0;
-        dict->FindLine(compressHeader, compressId, &pattern0, &pattern1);
+        unsigned char* pattern = nullptr;
+        dict->FindLine(compressHeader, compressId, &pattern);
         
         
-        unsigned char com0 = (unsigned char)(pattern0 >> 56);
-        unsigned char com1 = (unsigned char)(pattern0 >> 48);
-        unsigned char com2 = (unsigned char)(pattern0 >> 40);
-        unsigned char com3 = (unsigned char)(pattern0 >> 32);
-        unsigned char com4 = (unsigned char)(pattern0 >> 24);
-        unsigned char com5 = (unsigned char)(pattern0 >> 16);
-        unsigned char com6 = (unsigned char)(pattern0 >> 8);
-        unsigned char com7 = (unsigned char)(pattern0 >> 0);
+        unsigned char com0 = pattern[0];
+        unsigned char com1 = pattern[1];
+        unsigned char com2 = pattern[2];
+        unsigned char com3 = pattern[3];
+        unsigned char com4 = pattern[4];
+        unsigned char com5 = pattern[5];
+        unsigned char com6 = pattern[6];
+        unsigned char com7 = pattern[7];
         
-        unsigned char com8 = (unsigned char)(pattern1 >> 56);
-        unsigned char com9 = (unsigned char)(pattern1 >> 48);
-        unsigned char com10 = (unsigned char)(pattern1 >> 40);
-        unsigned char com11 = (unsigned char)(pattern1 >> 32);
-        unsigned char com12 = (unsigned char)(pattern1 >> 24);
-        unsigned char com13 = (unsigned char)(pattern1 >> 16);
-        unsigned char com14 = (unsigned char)(pattern1 >> 8);
-        unsigned char com15 = (unsigned char)(pattern1 >> 0);
+        unsigned char com8 = pattern[8];
+        unsigned char com9 = pattern[9];
+        unsigned char com10 = pattern[10];
+        unsigned char com11 = pattern[11];
+        unsigned char com12 = pattern[12];
+        unsigned char com13 = pattern[13];
+        unsigned char com14 = pattern[14];
+        unsigned char com15 = pattern[15];
         
         switch (compressLength)
         {
@@ -237,35 +235,29 @@ void xhn::OutputCommand::TextPrint()
     }
 }
 
-inline void PushAByteImpl(unsigned short& m_header, unsigned long long& m_pattern0, unsigned long long& m_pattern1,
-                          unsigned char byte)
+inline void PushAByteImpl(unsigned short& m_header, unsigned char*& m_pattern)
 {
-    unsigned char tmp1 = (unsigned char)(m_pattern1 >> 56);
-    m_pattern1 = m_pattern1 << 8;
-    m_pattern1 |= (unsigned long long)byte;
-    
-    unsigned char tmp0 = (unsigned char)(m_pattern0 >> 56);
-    m_pattern0 = m_pattern0 << 8;
-    m_pattern0 |= tmp1;
+    unsigned char tmp0 = *m_pattern;
+    m_pattern++;
     
     m_header = m_header << 8;
     m_header |= (unsigned short)tmp0;
 }
 
-xhn::OutputCommand xhn::MatchBuffer::PushAByte(unsigned char byte)
+xhn::OutputCommand xhn::MatchBuffer::PushAByte()
 {
     m_positionCount++;
     OutputCommand ret;
-    if (m_numberOfBytesOnPipeline < 18) {
+    if (m_numberOfBytesOnPipeline < PIPELINE_LENGTH) {
         ret.type = EmptyCommand;
         
-        PushAByteImpl(m_header, m_pattern0, m_pattern1, byte);
+        PushAByteImpl(m_header, m_pattern);
         
         m_numberOfBytesOnPipeline++;
     } else {
         unsigned int matchLength = 0;
         unsigned int matchId = 0;
-        if (m_dictionary->FindLine(m_header, m_pattern0, m_pattern1, m_positionCount, &matchLength, &matchId)) {
+        if (m_dictionary->FindLine(m_header, m_pattern, m_positionCount, &matchLength, &matchId)) {
             ret.type = CompressCommand;
             ret.compressHeader = m_header;
             ret.compressLength = (unsigned char)matchLength;
@@ -273,15 +265,15 @@ xhn::OutputCommand xhn::MatchBuffer::PushAByte(unsigned char byte)
             ret.dict = m_dictionary;
             m_numberOfBytesOnPipeline -= (matchLength + 2);
             
-            PushAByteImpl(m_header, m_pattern0, m_pattern1, byte);
+            PushAByteImpl(m_header, m_pattern);
             
             m_numberOfBytesOnPipeline++;
         } else {
             unsigned char retByte = (unsigned char)(m_header >> 8);
             
-            PushAByteImpl(m_header, m_pattern0, m_pattern1, byte);
+            PushAByteImpl(m_header, m_pattern);
             
-            m_dictionary->PushNewLine(m_header, m_pattern0, m_pattern1, m_positionCount);
+            m_dictionary->PushNewLine(m_header, m_pattern, m_positionCount);
             
             ret.type = ByteCommand;
             ret.byteData = retByte;

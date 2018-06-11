@@ -56,6 +56,9 @@ struct OutputCommand
     void TextPrint();
 };
     
+#define PATTERN_SIZE 16
+#define PIPELINE_LENGTH (PATTERN_SIZE + 2)
+    
 class MatchBuffer
 {
 public:
@@ -64,16 +67,17 @@ public:
     unsigned char m_numberOfBytesOnPipeline;
 public:
     unsigned short m_header;
-    unsigned long long m_pattern0;
-    unsigned long long m_pattern1;
+    unsigned char* m_pattern;
 public:
-    MatchBuffer(ZDictionary* dictionary)
-    : m_dictionary(dictionary)
+    MatchBuffer(unsigned char* input,
+                ZDictionary* dictionary)
+    : m_pattern(input)
+    , m_dictionary(dictionary)
     , m_positionCount(0)
-    , m_numberOfBytesOnPipeline(0)
+    , m_numberOfBytesOnPipeline(PATTERN_SIZE)
     {
     }
-    OutputCommand PushAByte(unsigned char byte);
+    OutputCommand PushAByte();
 };
     
 class ZDictionary
@@ -87,72 +91,31 @@ public:
         {
         public:
             unsigned short tagHeader;
-            unsigned long long tag0;
-            unsigned long long tag1;
+            unsigned char* tag;
             unsigned long position;
             unsigned char id;
             Line()
             : tagHeader(0)
-            , tag0(0)
-            , tag1(0)
+            , tag(nullptr)
             , position(0)
             , id(0)
             {}
             bool Match(unsigned short header,
-                       unsigned long long pattern0, unsigned long long pattern1,
+                       unsigned char* pattern,
                        unsigned long matchPosition, unsigned int* matchLength)
             {
                 if (tagHeader != header)
                     return false;
-                if (matchPosition - position < 19)
+                if (matchPosition - position < PIPELINE_LENGTH + 1)
                     return false;
-                if ((tag0 & MASK_FULL) == (pattern0 & MASK_FULL)) {
-                    if ((tag1 & MASK_HALF) == (pattern1 & MASK_HALF)) {
-                        if ((tag1 & MASK_FULL) == (pattern1 & MASK_FULL)) {
-                            *matchLength = 16;
-                        } else if ((tag1 & MASK_THREE_QUARTERS) == (pattern1 & MASK_THREE_QUARTERS)) {
-                            if ((tag1 & MASK_SEVEN_EIGHTHS) == (pattern1 & MASK_SEVEN_EIGHTHS)) {
-                                *matchLength = 15;
-                            } else {
-                                *matchLength = 14;
-                            }
-                        } else if ((tag1 & MASK_FIVE_EIGHTHS) == (pattern1 & MASK_FIVE_EIGHTHS)) {
-                            *matchLength = 13;
-                        } else {
-                            *matchLength = 12;
-                        }
-                        return true;
-                    } else if ((tag1 & MASK_QUARTER) == (pattern1 & MASK_QUARTER)) {
-                        if ((tag1 & MASK_THREE_EIGHTHS) == (pattern1 & MASK_THREE_EIGHTHS)) {
-                            *matchLength = 11;
-                        } else {
-                            *matchLength = 10;
-                        }
-                    } else if ((tag1 & MASK_EIGHTH) == (pattern1 & MASK_EIGHTH)) {
-                        *matchLength = 9;
-                    } else {
-                        *matchLength = 8;
-                    }
-                    return true;
-                } else if ((tag0 & MASK_HALF) == (pattern0 & MASK_HALF)) {
-                    if ((tag0 & MASK_THREE_QUARTERS) == (pattern0 & MASK_THREE_QUARTERS)) {
-                        if ((tag0 & MASK_SEVEN_EIGHTHS) == (pattern0 & MASK_SEVEN_EIGHTHS)) {
-                            *matchLength = 7;
-                        } else {
-                            *matchLength = 6;
-                        }
-                    } else if ((tag0 & MASK_FIVE_EIGHTHS) == (pattern0 & MASK_FIVE_EIGHTHS)) {
-                        *matchLength = 5;
-                    } else {
-                        *matchLength = 4;
-                    }
-                    return true;
-                } else if ((tag0 & MASK_QUARTER) == (pattern0 & MASK_QUARTER)) {
-                    if ((tag0 & MASK_THREE_EIGHTHS) == (pattern0 & MASK_THREE_EIGHTHS)) {
-                        *matchLength = 3;
-                    } else {
-                        *matchLength = 2;
-                    }
+                unsigned char matchCount = 0;
+                for (int i = 0; i < PATTERN_SIZE; i++) {
+                    if (pattern[i] != tag[i])
+                        break;
+                    matchCount++;
+                }
+                if (matchCount > 1) {
+                    *matchLength = matchCount;
                     return true;
                 } else {
                     return false;
@@ -178,7 +141,7 @@ public:
             m_lines[index - 1] = tmp;
         }
         bool FindLine(unsigned short header,
-                      unsigned long long pattern0, unsigned long long pattern1,
+                      unsigned char* pattern,
                       unsigned long matchPosition,
                       unsigned int* matchLength, unsigned int* idResult)
         {
@@ -187,7 +150,7 @@ public:
             unsigned int mostLengthId = 0;
             unsigned int tmpLength = 0;
             for (unsigned int i = 0; i < m_lineCount; i++) {
-                if (m_lines[i].Match(header, pattern0, pattern1, matchPosition, &tmpLength)) {
+                if (m_lines[i].Match(header, pattern, matchPosition, &tmpLength)) {
                     if (tmpLength > mostLength) {
                         mostLengthIndex = i;
                         mostLength = tmpLength;
@@ -205,12 +168,11 @@ public:
             }
             return false;
         }
-        bool FindLine(unsigned int id, unsigned long long* patternResult0, unsigned long long* patternResult1)
+        bool FindLine(unsigned int id, unsigned char** patternResult)
         {
             for (unsigned int i = 0; i < m_lineCount; i++) {
                 if (m_lines[i].id == id) {
-                    *patternResult0 = m_lines[i].tag0;
-                    *patternResult1 = m_lines[i].tag1;
+                    *patternResult = m_lines[i].tag;
                     if (i) {
                         Promote(i);
                     }
@@ -220,18 +182,16 @@ public:
             return false;
         }
         void PushNewLine(unsigned short header,
-                         unsigned long long pattern0, unsigned long long pattern1,
+                         unsigned char* pattern,
                          unsigned long position)
         {
             if (m_lineCount == MAX_TAGS) {
                 m_lines[MAX_TAGS - 1].tagHeader = header;
-                m_lines[MAX_TAGS - 1].tag0 = pattern0;
-                m_lines[MAX_TAGS - 1].tag1 = pattern1;
+                m_lines[MAX_TAGS - 1].tag = pattern;
                 m_lines[MAX_TAGS - 1].position = position;
             } else {
                 m_lines[m_lineCount].tagHeader = header;
-                m_lines[m_lineCount].tag0 = pattern0;
-                m_lines[m_lineCount].tag1 = pattern1;
+                m_lines[m_lineCount].tag = pattern;
                 m_lines[m_lineCount].position = position;
                 m_lineCount++;
             }
@@ -248,26 +208,23 @@ public:
         return ((header >> 8) ^ (header << 4)) & 0x1ff;
     }
     bool FindLine(unsigned short header,
-                  unsigned long long pattern0,
-                  unsigned long long pattern1,
+                  unsigned char* pattern,
                   unsigned long matchPosition,
                   unsigned int* matchLength, unsigned int* idResult)
     {
-        return m_entries[ HeaderHash(header) ].FindLine(header, pattern0, pattern1, matchPosition, matchLength, idResult);
+        return m_entries[ HeaderHash(header) ].FindLine(header, pattern, matchPosition, matchLength, idResult);
     }
     bool FindLine(unsigned short header,
                   unsigned int id,
-                  unsigned long long* patternResult0,
-                  unsigned long long* patternResult1)
+                  unsigned char** patternResult)
     {
-        return m_entries[ HeaderHash(header) ].FindLine(id, patternResult0, patternResult1);
+        return m_entries[ HeaderHash(header) ].FindLine(id, patternResult);
     }
     void PushNewLine(unsigned short header,
-                     unsigned long long pattern0,
-                     unsigned long long pattern1,
+                     unsigned char* pattern,
                      unsigned long position)
     {
-        m_entries[ HeaderHash(header) ].PushNewLine(header, pattern0, pattern1, position);
+        m_entries[ HeaderHash(header) ].PushNewLine(header, pattern, position);
     }
 };
     
