@@ -149,6 +149,8 @@
 		B1607BF71E7EBD5A00CBBDDD /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF81E7EBD5A00CBBDDD /* xhn_memory_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF91E7EBD5A00CBBDDD /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF51E7EBD5A00CBBDDD /* xhn_tuple.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B16D6A4E20CE255100A75E3D /* xhn_z.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B16D6A4C20CE255100A75E3D /* xhn_z.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B16D6A4F20CE255100A75E3D /* xhn_z.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B16D6A4D20CE255100A75E3D /* xhn_z.cpp */; };
 		B19BDBD4208EB2F70051716A /* xhn_atomic_bool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B19BDBD5208EB2F70051716A /* xhn_atomic_ptr.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1CED06D1F3224BF00FCA4D7 /* cpu_arm.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED06C1F3224BF00FCA4D7 /* cpu_arm.c */; };
@@ -311,6 +313,8 @@
 		B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_dictionary.hpp; sourceTree = "<group>"; };
 		B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_memory_pool.hpp; sourceTree = "<group>"; };
 		B1607BF51E7EBD5A00CBBDDD /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
+		B16D6A4C20CE255100A75E3D /* xhn_z.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_z.hpp; sourceTree = "<group>"; };
+		B16D6A4D20CE255100A75E3D /* xhn_z.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_z.cpp; sourceTree = "<group>"; };
 		B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_bool.hpp; sourceTree = "<group>"; };
 		B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_ptr.hpp; sourceTree = "<group>"; };
 		B1CED06C1F3224BF00FCA4D7 /* cpu_arm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_arm.c; sourceTree = "<group>"; };
@@ -400,6 +404,8 @@
 		68245B481BC9D7680006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B16D6A4D20CE255100A75E3D /* xhn_z.cpp */,
+				B16D6A4C20CE255100A75E3D /* xhn_z.hpp */,
 				B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */,
 				B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */,
 				B1276EAB1FFD73DD0073914A /* xhn_stacktrace.cpp */,
@@ -579,6 +585,7 @@
 				68245BC41BC9D7680006E99D /* rwbuffer.h in Headers */,
 				B1276EB01FFD73DE0073914A /* xhn_triple_buffer.hpp in Headers */,
 				68245BD31BC9D7680006E99D /* rtti.hpp in Headers */,
+				B16D6A4E20CE255100A75E3D /* xhn_z.hpp in Headers */,
 				B1607BF91E7EBD5A00CBBDDD /* xhn_tuple.hpp in Headers */,
 				68245BA51BC9D7680006E99D /* ObjCPropertys.h in Headers */,
 				68245BD11BC9D7680006E99D /* map.hpp in Headers */,
@@ -805,6 +812,7 @@
 				68245BF01BC9D7680006E99D /* xhn_gc_string.cpp in Sources */,
 				68245C091BC9D7680006E99D /* xhn_operation.cpp in Sources */,
 				B1CED0731F3226AE00FCA4D7 /* cpu_common.c in Sources */,
+				B16D6A4F20CE255100A75E3D /* xhn_z.cpp in Sources */,
 				68245BFF1BC9D7680006E99D /* xhn_list2.cpp in Sources */,
 				68245BE41BC9D7680006E99D /* xhn_file_stream.cpp in Sources */,
 				68245BD61BC9D7680006E99D /* xhn_btree.cpp in Sources */,
