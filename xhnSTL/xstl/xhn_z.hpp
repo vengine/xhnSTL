@@ -104,36 +104,31 @@ public:
             {
                 if (tagHeader != header)
                     return false;
-                if (matchPosition - position < 11)
+                if (matchPosition - position < 19)
                     return false;
                 if ((tag0 & MASK_FULL) == (pattern0 & MASK_FULL)) {
-//                    if ((tag1 & MASK_HALF) == (pattern1 & MASK_HALF)) {
-//                        if ((tag1 & MASK_FULL) == (pattern1 & MASK_FULL)) {
-//                            *matchLength = 16;
-//                        } else if ((tag1 & MASK_THREE_QUARTERS) == (pattern1 & MASK_THREE_QUARTERS)) {
-//                            if ((tag1 & MASK_SEVEN_EIGHTHS) == (pattern1 & MASK_SEVEN_EIGHTHS)) {
-//                                *matchLength = 15;
-//                            } else {
-//                                *matchLength = 14;
-//                            }
-//                        } else if ((tag1 & MASK_FIVE_EIGHTHS) == (pattern1 & MASK_FIVE_EIGHTHS)) {
-//                            *matchLength = 13;
-//                        } else {
-//                            *matchLength = 12;
-//                        }
-//                        return true;
-//                    } else if ((tag1 & MASK_QUARTER) == (pattern1 & MASK_QUARTER)) {
-//                        if ((tag1 & MASK_THREE_EIGHTHS) == (pattern1 & MASK_THREE_EIGHTHS)) {
-//                            *matchLength = 11;
-//                        } else {
-//                            *matchLength = 10;
-//                        }
-//                    } else if ((tag1 & MASK_EIGHTH) == (pattern1 & MASK_EIGHTH)) {
-//                        *matchLength = 9;
-//                    } else {
-//                        *matchLength = 8;
-//                    }
-                    if ((tag1 & MASK_EIGHTH) == (pattern1 & MASK_EIGHTH)) {
+                    if ((tag1 & MASK_HALF) == (pattern1 & MASK_HALF)) {
+                        if ((tag1 & MASK_FULL) == (pattern1 & MASK_FULL)) {
+                            *matchLength = 16;
+                        } else if ((tag1 & MASK_THREE_QUARTERS) == (pattern1 & MASK_THREE_QUARTERS)) {
+                            if ((tag1 & MASK_SEVEN_EIGHTHS) == (pattern1 & MASK_SEVEN_EIGHTHS)) {
+                                *matchLength = 15;
+                            } else {
+                                *matchLength = 14;
+                            }
+                        } else if ((tag1 & MASK_FIVE_EIGHTHS) == (pattern1 & MASK_FIVE_EIGHTHS)) {
+                            *matchLength = 13;
+                        } else {
+                            *matchLength = 12;
+                        }
+                        return true;
+                    } else if ((tag1 & MASK_QUARTER) == (pattern1 & MASK_QUARTER)) {
+                        if ((tag1 & MASK_THREE_EIGHTHS) == (pattern1 & MASK_THREE_EIGHTHS)) {
+                            *matchLength = 11;
+                        } else {
+                            *matchLength = 10;
+                        }
+                    } else if ((tag1 & MASK_EIGHTH) == (pattern1 & MASK_EIGHTH)) {
                         *matchLength = 9;
                     } else {
                         *matchLength = 8;
@@ -231,8 +226,8 @@ public:
         }
     };
 public:
-    /// 0~511 的mask是1ff 共9个bit，id 用 4bit 0~15 长度 3bit 2～9
-    Entry<16> m_entries[512];
+    /// 0~511 的mask是1ff 共9个bit，id 用 3bit 0~7 长度 4bit 2~16
+    Entry<8> m_entries[512];
 public:
     ZDictionary()
     {}
