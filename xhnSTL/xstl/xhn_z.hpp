@@ -188,11 +188,6 @@ public:
             unsigned int tmpLength = 0;
             for (unsigned int i = 0; i < m_lineCount; i++) {
                 if (m_lines[i].Match(header, pattern0, pattern1, matchPosition, &tmpLength)) {
-//                    *idResult = m_lines[i].id;
-//                    if (i) {
-//                        Promote(i);
-//                    }
-//                    return true;
                     if (tmpLength > mostLength) {
                         mostLengthIndex = i;
                         mostLength = tmpLength;
