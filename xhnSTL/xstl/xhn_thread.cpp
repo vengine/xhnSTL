@@ -13,6 +13,7 @@
 #include <sys/errno.h>
 #include <unistd.h>
 #include <limits.h>
+#include <sched.h>
 #endif
 
 #define DEBUG_XHN_THREAD 0
@@ -378,6 +379,8 @@ void xhn::thread::move_to_realtime_scheduling_class()
         mach_error("thread_policy_set:", kr);
         exit(1);
     }
+#elif defined(LINUX)
+
 #else
     /// 什么也不做
 #endif
@@ -398,6 +401,16 @@ xhn::thread::thread()
     EDebugAssert(!status, "Create attr");
     status = pthread_attr_setdetachstate (&thread_attr, PTHREAD_CREATE_DETACHED);
     EDebugAssert(!status, "Set detach");
+#if defined(ANDROID) || defined(__ANDROID__)
+    sched_param SchedParam;
+    int MidPriority,MaxPriority,MinPriority;
+    MinPriority = sched_get_priority_max(SCHED_RR);
+    MaxPriority = sched_get_priority_min(SCHED_RR);
+    MidPriority = (MaxPriority + MinPriority)/2;
+    SchedParam.sched_priority = MidPriority;
+    pthread_attr_setschedparam(&thread_attr,&SchedParam);
+    pthread_attr_setschedpolicy(&thread_attr,SCHED_RR);
+#endif
 #ifdef _POSIX_THREAD_ATTR_STACKSIZE
     status = pthread_attr_getstacksize (&thread_attr, &stack_size);
     EDebugAssert (!status, "Get stack size");
