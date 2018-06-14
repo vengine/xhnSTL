@@ -17,6 +17,7 @@
 #include <xhnSTL/xhn_parallel.hpp>
 #include <xhnSTL/xhn_concurrent.hpp>
 #include <xhnSTL/xhn_stacktrace.hpp>
+#include <xhnSTL/xhn_realtime_thread.hpp>
 #include <xhnSTL/cpu.h>
 #include <vector>
 #include <map>
@@ -2256,6 +2257,38 @@ struct IntProc4
             auto inst = lock.Lock();
         }
     }];
+}
+    
+static int s_exceCount = 0;
+    
+class MyRealtimeTask : public xhn::realtime_thread::realtime_task
+{
+public:
+    virtual const xhn::static_string type() const { return ""; }
+    virtual ~MyRealtimeTask() {}
+    virtual void run_once(double elapsedTime) {
+        printf("run once %d, %f\n", s_exceCount, elapsedTime);
+        s_exceCount++;
+    }
+};
+    
+- (void) testRealtimeThread
+{
+    xhn::realtime_thread::realtime_task_pool_ptr taskPool;
+    taskPool = VNEW xhn::realtime_thread::realtime_task_pool();
+    {
+        auto tasks = taskPool->GetTasks().Lock();
+        tasks->push_back(VNEW MyRealtimeTask());
+    }
+    
+    {
+        xhn::realtime_thread thread(taskPool, 0.016666);
+        thread.run();
+        while (s_exceCount < 600) {
+            xhn::thread::nano_sleep(1000000);
+        }
+    }
+    
 }
 
 @end

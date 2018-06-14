@@ -145,6 +145,8 @@
 		B1607BD21E7D31CA00CBBDDD /* symbol_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BEA1E7E423A00CBBDDD /* asm_syntax_converter.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1607BE81E7E423A00CBBDDD /* asm_syntax_converter.mm */; };
 		B1607BEB1E7E423A00CBBDDD /* asm_syntax_converter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BE91E7E423A00CBBDDD /* asm_syntax_converter.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1652CC620D303DD00566A2C /* xhn_realtime_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1652CC420D303DD00566A2C /* xhn_realtime_thread.cpp */; };
+		B1652CC720D303DD00566A2C /* xhn_realtime_thread.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1652CC520D303DD00566A2C /* xhn_realtime_thread.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B16D6A4620CE246A00A75E3D /* xhn_z.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B16D6A4420CE246900A75E3D /* xhn_z.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B16D6A4720CE246A00A75E3D /* xhn_z.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B16D6A4520CE246A00A75E3D /* xhn_z.cpp */; };
 		B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */; };
@@ -314,6 +316,8 @@
 		B1607BD11E7D31CA00CBBDDD /* symbol_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = symbol_buffer.hpp; sourceTree = "<group>"; };
 		B1607BE81E7E423A00CBBDDD /* asm_syntax_converter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = asm_syntax_converter.mm; sourceTree = "<group>"; };
 		B1607BE91E7E423A00CBBDDD /* asm_syntax_converter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = asm_syntax_converter.hpp; sourceTree = "<group>"; };
+		B1652CC420D303DD00566A2C /* xhn_realtime_thread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_realtime_thread.cpp; sourceTree = "<group>"; };
+		B1652CC520D303DD00566A2C /* xhn_realtime_thread.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_realtime_thread.hpp; sourceTree = "<group>"; };
 		B16A6E092093855400119FC2 /* ColladaTool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ColladaTool.hpp; sourceTree = "<group>"; };
 		B16D6A4420CE246900A75E3D /* xhn_z.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_z.hpp; sourceTree = "<group>"; };
 		B16D6A4520CE246A00A75E3D /* xhn_z.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_z.cpp; sourceTree = "<group>"; };
@@ -518,6 +522,8 @@
 				B19A72291F60D044008208C5 /* xhn_stacktrace.hpp */,
 				B101A21B1FA04C1200F83D37 /* xhn_triple_buffer.cpp */,
 				B101A21C1FA04C1200F83D37 /* xhn_triple_buffer.hpp */,
+				B1652CC420D303DD00566A2C /* xhn_realtime_thread.cpp */,
+				B1652CC520D303DD00566A2C /* xhn_realtime_thread.hpp */,
 			);
 			name = xstl;
 			path = ../../xhnSTL/xstl;
@@ -608,6 +614,7 @@
 				68245CEA1BC9D8F90006E99D /* xhn_config.hpp in Headers */,
 				68245D341BC9D8F90006E99D /* xhn_thread_map.hpp in Headers */,
 				68245CDC1BC9D8F90006E99D /* static_string.h in Headers */,
+				B1652CC720D303DD00566A2C /* xhn_realtime_thread.hpp in Headers */,
 				68245CE81BC9D8F90006E99D /* xhn_btree.hpp in Headers */,
 				68245D381BC9D8F90006E99D /* xhn_utility.hpp in Headers */,
 				68245CB41BC9D8F90006E99D /* apple_file_manager.h in Headers */,
@@ -766,6 +773,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1652CC620D303DD00566A2C /* xhn_realtime_thread.cpp in Sources */,
 				68245CB71BC9D8F90006E99D /* ObjCPropertys.m in Sources */,
 				B16D6A4720CE246A00A75E3D /* xhn_z.cpp in Sources */,
 				68245D2A1BC9D8F90006E99D /* xhn_state_machine.cpp in Sources */,
