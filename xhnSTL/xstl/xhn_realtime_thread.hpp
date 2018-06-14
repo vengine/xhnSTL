@@ -67,6 +67,7 @@ public:
     virtual ~realtime_thread();
     void run();
 };
+typedef SmartPtr<realtime_thread> realtime_thread_ptr;
     
 }
 
