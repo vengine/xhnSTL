@@ -145,6 +145,8 @@
 		B1276EAF1FFD73DE0073914A /* xhn_stacktrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1276EAB1FFD73DD0073914A /* xhn_stacktrace.cpp */; };
 		B1276EB01FFD73DE0073914A /* xhn_triple_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1276EAC1FFD73DD0073914A /* xhn_triple_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1276EB11FFD73DE0073914A /* xhn_triple_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1276EAD1FFD73DD0073914A /* xhn_triple_buffer.cpp */; };
+		B13945CC20D32C3600378FF1 /* xhn_realtime_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B13945CA20D32C3600378FF1 /* xhn_realtime_thread.cpp */; };
+		B13945CD20D32C3600378FF1 /* xhn_realtime_thread.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B13945CB20D32C3600378FF1 /* xhn_realtime_thread.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF61E7EBD5A00CBBDDD /* xhn_cache.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF21E7EBD5A00CBBDDD /* xhn_cache.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF71E7EBD5A00CBBDDD /* xhn_dictionary.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1607BF81E7EBD5A00CBBDDD /* xhn_memory_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -309,6 +311,8 @@
 		B1276EAB1FFD73DD0073914A /* xhn_stacktrace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_stacktrace.cpp; sourceTree = "<group>"; };
 		B1276EAC1FFD73DD0073914A /* xhn_triple_buffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_triple_buffer.hpp; sourceTree = "<group>"; };
 		B1276EAD1FFD73DD0073914A /* xhn_triple_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_triple_buffer.cpp; sourceTree = "<group>"; };
+		B13945CA20D32C3600378FF1 /* xhn_realtime_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_realtime_thread.cpp; sourceTree = "<group>"; };
+		B13945CB20D32C3600378FF1 /* xhn_realtime_thread.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_realtime_thread.hpp; sourceTree = "<group>"; };
 		B1607BF21E7EBD5A00CBBDDD /* xhn_cache.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_cache.hpp; sourceTree = "<group>"; };
 		B1607BF31E7EBD5A00CBBDDD /* xhn_dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_dictionary.hpp; sourceTree = "<group>"; };
 		B1607BF41E7EBD5A00CBBDDD /* xhn_memory_pool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_memory_pool.hpp; sourceTree = "<group>"; };
@@ -404,6 +408,8 @@
 		68245B481BC9D7680006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B13945CA20D32C3600378FF1 /* xhn_realtime_thread.cpp */,
+				B13945CB20D32C3600378FF1 /* xhn_realtime_thread.hpp */,
 				B16D6A4D20CE255100A75E3D /* xhn_z.cpp */,
 				B16D6A4C20CE255100A75E3D /* xhn_z.hpp */,
 				B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */,
@@ -574,6 +580,7 @@
 				68245BEF1BC9D7680006E99D /* xhn_gc_container_base.h in Headers */,
 				68245BFE1BC9D7680006E99D /* xhn_list.hpp in Headers */,
 				68245C0A1BC9D7680006E99D /* xhn_operation.hpp in Headers */,
+				B13945CD20D32C3600378FF1 /* xhn_realtime_thread.hpp in Headers */,
 				68245C001BC9D7680006E99D /* xhn_list2.h in Headers */,
 				68245BAB1BC9D7680006E99D /* array.h in Headers */,
 				68245BF51BC9D7680006E99D /* xhn_hash_set.hpp in Headers */,
@@ -819,6 +826,7 @@
 				68245BCA1BC9D7680006E99D /* static_string.c in Sources */,
 				68245C0B1BC9D7680006E99D /* xhn_operation_manager.cpp in Sources */,
 				68245BD01BC9D7680006E99D /* exception.cpp in Sources */,
+				B13945CC20D32C3600378FF1 /* xhn_realtime_thread.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
