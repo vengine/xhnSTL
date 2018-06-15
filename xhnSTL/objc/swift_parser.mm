@@ -382,9 +382,6 @@ namespace xhn {
         bridgeFile = CreateBridgeFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc, language);
         stateActionFile = CreateStateActionFile(inheritMap, childrenClassMap, classMap, isInheritFromClassProc);
     }
-#define TEST_AS_OBJC if (ObjC == language) {
-#define ELSE         } else {
-#define END          }
     string SwiftParser::CreateBridgeFile(const map<static_string, vector<static_string>>& inheritMap,
                                          const map<static_string, vector<static_string>>& childrenClassMap,
                                          const map<static_string, ASTNode*>& classMap,
@@ -394,95 +391,6 @@ namespace xhn {
     {
         xhn::string bridgeFile;
         char mbuf[1024];
-        TEST_AS_OBJC
-        bridgeFile = "static xhn::SpinLock s_lock;\n";
-        bridgeFile += "void InitSwiftWrapper() {\n";
-        bridgeFile += "    [SwiftWrapper InitSwiftWrapper];\n";
-        bridgeFile += "}\n";
-//        bridgeFile += "void ReleaseObject(void* ptr) {\n";
-//        bridgeFile += "    id<Blanker> blanker = (__bridge_transfer id<Blanker>)(ptr);\n";
-//        bridgeFile += "    [blanker blankPointer];\n";
-//        bridgeFile += "}\n";
-//        bridgeFile += "class SwiftSceneNodeFilter : public VEngine::VSceneNodeFilter\n";
-//        bridgeFile += "{\n";
-//        bridgeFile += "public:\n";
-//        bridgeFile += "    id<VSceneNodeFilter> m_swiftSceneNodeFilter;\n";
-//        bridgeFile += "public:\n";
-//        bridgeFile += "    virtual bool IsFiltered(VEngine::VSceneNodeNamePtr name, VEngine::VType::NodeType type) override {\n";
-//        bridgeFile += "        VSceneNodeName* swiftName = (__bridge VSceneNodeName*)name->m_slot;\n";
-//        bridgeFile += "        if (!swiftName) {\n";
-//        bridgeFile += "            swiftName = [[VSceneNodeName alloc] initWithVSceneNodeName:name.get()];\n";
-//        bridgeFile += "        }\n";
-//        bridgeFile += "        VSceneNodeType swiftType = UnknownNode;\n";
-//        bridgeFile += "        switch (type)\n";
-//        bridgeFile += "        {\n";
-//        bridgeFile += "           case VEngine::VType::ColladaMeshNode:  swiftType = MeshNode; break;\n";
-//        bridgeFile += "           case VEngine::VType::LightNode:        swiftType = LightNode; break;\n";
-//        bridgeFile += "           case VEngine::VType::CameraNode:       swiftType = CameraNode; break;\n";
-//        bridgeFile += "           case VEngine::VType::EmptyNode:        swiftType = EmptyNode; break;\n";
-//        bridgeFile += "           case VEngine::VType::GUIFieldNode:     swiftType = GUIFieldNode; break;\n";
-//        bridgeFile += "           case VEngine::VType::GUIContainerNode: swiftType = GUIContainerNode; break;\n";
-//        bridgeFile += "           case VEngine::VType::JointNode:        swiftType = JointNode; break;\n";
-//        bridgeFile += "           default:                               break;\n";
-//        bridgeFile += "        }\n";
-//        bridgeFile += "        if (m_swiftSceneNodeFilter) {\n";
-//        bridgeFile += "            return [m_swiftSceneNodeFilter isFiltered:swiftName type:swiftType];\n";
-//        bridgeFile += "        }\n";
-//        bridgeFile += "        return false;\n";
-//        bridgeFile += "    }\n";
-//        bridgeFile += "};\n";
-//        bridgeFile += "class SwiftCallback : public RefObject\n";
-//        bridgeFile += "{\n";
-//        bridgeFile += "public:\n";
-//        bridgeFile += "    void (^m_callback)(void);\n";
-//        bridgeFile += "};\n";
-        bridgeFile += "static void (*s_printLogProc)(int, const char*) = NULL;\n";
-        bridgeFile += "NSMutableSet* s_sceneNodeAgentSet = nil;\n";
-        bridgeFile += "NSMutableSet* s_guiAgentSet = nil;\n";
-        bridgeFile += "NSMutableSet* s_actorAgentSet = nil;\n";
-        bridgeFile += "static NSMutableDictionary* s_createSceneNodeAgentProcDic = nil;\n";
-        bridgeFile += "static NSMutableDictionary* s_createGUIAgentProcDic = nil;\n";
-        bridgeFile += "static NSMutableDictionary* s_createActorAgentProcDic = nil;\n";
-        bridgeFile += "@interface CreateSceneNodeAgentProc : NSObject\n";
-        bridgeFile += "@property (strong) SceneNodeAgent* (^createAgentProc)(void*);\n";
-        bridgeFile += "-(id)initWithProc:(SceneNodeAgent*(^)(void*))proc;\n";
-        bridgeFile += "@end;\n";
-        bridgeFile += "@implementation CreateSceneNodeAgentProc \n";
-        bridgeFile += "-(id)initWithProc:(SceneNodeAgent*(^)(void*))proc {\n";
-        bridgeFile += "   self = [super init];\n";
-        bridgeFile += "   if (self) {\n";
-        bridgeFile += "       self.createAgentProc = proc;\n";
-        bridgeFile += "   }\n";
-        bridgeFile += "   return self;\n";
-        bridgeFile += "}\n";
-        bridgeFile += "@end\n";
-        bridgeFile += "@interface CreateGUIAgentProc : NSObject\n";
-        bridgeFile += "@property (strong) GUIAgent* (^createAgentProc)(void*, void*);\n";
-        bridgeFile += "-(id)initWithProc:(GUIAgent*(^)(void*, void*))proc;\n";
-        bridgeFile += "@end;\n";
-        bridgeFile += "@implementation CreateGUIAgentProc \n";
-        bridgeFile += "-(id)initWithProc:(GUIAgent*(^)(void*, void*))proc {\n";
-        bridgeFile += "   self = [super init];\n";
-        bridgeFile += "   if (self) {\n";
-        bridgeFile += "       self.createAgentProc = proc;\n";
-        bridgeFile += "   }\n";
-        bridgeFile += "   return self;\n";
-        bridgeFile += "}\n";
-        bridgeFile += "@end\n";
-        bridgeFile += "@interface CreateActorAgentProc : NSObject\n";
-        bridgeFile += "@property (strong) ActorAgent* (^createAgentProc)(void*, void*);\n";
-        bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*, void*))proc;\n";
-        bridgeFile += "@end;\n";
-        bridgeFile += "@implementation CreateActorAgentProc \n";
-        bridgeFile += "-(id)initWithProc:(ActorAgent*(^)(void*, void*))proc {\n";
-        bridgeFile += "   self = [super init];\n";
-        bridgeFile += "   if (self) {\n";
-        bridgeFile += "       self.createAgentProc = proc;\n";
-        bridgeFile += "   }\n";
-        bridgeFile += "   return self;\n";
-        bridgeFile += "}\n";
-        bridgeFile += "@end\n";
-        ELSE
         bridgeFile =  "open class SwiftCallbackHandle\n";
         bridgeFile += "{\n";
         bridgeFile += "    var callback : () -> Void\n";
@@ -652,6 +560,11 @@ namespace xhn {
         bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
         bridgeFile += "    gagent.onHover()\n";
         bridgeFile += "}\n";
+        bridgeFile += "public func ReshapeGUIWidget(agent : UnsafeRawPointer, x : UnsafePointer<Int32>, y : UnsafePointer<Int32>, \n";
+        bridgeFile += "                             width : UnsafePointer<Int32>, height : UnsafePointer<Int32>) {\n";
+        bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
+        bridgeFile += "    gagent.reshape(x[0], y : y[0], width : width[0], height : height[0])\n";
+        bridgeFile += "}\n";
         bridgeFile += "public func CreateActorAgent(type : UnsafePointer<Int8>, renderSys : UnsafeRawPointer, actor : UnsafeRawPointer)\n";
         bridgeFile += "    -> UnsafeRawPointer?\n";
         bridgeFile += "{\n";
@@ -689,73 +602,11 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "public func PrintLog(type : UnsafePointer<Int32>, log : UnsafePointer<Int8>) {\n";
         bridgeFile += "}\n";
-        END
-        TEST_AS_OBJC
-        snprintf(mbuf, 1024,
-                 "NSString* swiftClassString(NSString *nameSpace, NSString *className) {\n"
-                 "    NSString *appName = @%cVEngineLogic%c;\n"
-                 "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%cld%c@%cld%c@%c, \n"
-                 "    appName.length, appName, nameSpace.length, nameSpace, className.length, className];\n"
-                 "    return classStringName;\n"
-                 "}\n",
-                 '"', '"',
-                 '"', '%', '%', '%', '%', '%', '%', '"');
-        bridgeFile += mbuf;
         
-        snprintf(mbuf, 1024,
-        "Class swiftClassFromString(NSString *nameSpace, NSString *className) {\n"
-        "    NSString *appName = @%cVEngineLogic%c;\n"
-        "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%cld%c@%cld%c@%c, \n"
-        "    appName.length, appName, nameSpace.length, nameSpace, className.length, className];\n"
-        "    return NSClassFromString(classStringName);\n"
-        "}\n",
-        '"', '"',
-        '"', '%', '%', '%', '%', '%', '%', '"');
-        bridgeFile += mbuf;
         
-        snprintf(mbuf, 1024,
-                 "NSString* swiftClassStringFromPath(NSString *path) {\n"
-                 "    NSString *appName = @%cVEngineLogic%c;\n"
-                 "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%c, appName.length, appName];\n"
-                 "    NSArray *subpaths = [path componentsSeparatedByString:@%c.%c];\n"
-                 "    for (NSString* subpath in subpaths) {\n"
-                 "        classStringName = [classStringName stringByAppendingString:[NSString stringWithFormat:@%c%cld%c@%c, subpath.length, subpath]];\n"
-                 "    }\n"
-                 "    return classStringName;\n"
-                 "}\n",
-                 '"', '"',
-                 '"', '%', '%', '"',
-                 '"', '"',
-                 '"', '%', '%', '"');
-        bridgeFile += mbuf;
         
-        snprintf(mbuf, 1024,
-        "Class swiftClassFromPath(NSString *path) {\n"
-        "    NSString *appName = @%cVEngineLogic%c;\n"
-        "    NSString *classStringName = [NSString stringWithFormat:@%c_TtCC%cld%c@%c, appName.length, appName];\n"
-        "    NSArray *subpaths = [path componentsSeparatedByString:@%c.%c];\n"
-        "    for (NSString* subpath in subpaths) {\n"
-        "        classStringName = [classStringName stringByAppendingString:[NSString stringWithFormat:@%c%cld%c@%c, subpath.length, subpath]];\n"
-        "    }\n"
-        "    return NSClassFromString(classStringName);\n"
-        "}\n",
-        '"', '"',
-        '"', '%', '%', '"',
-        '"', '"',
-        '"', '%', '%', '"');
-        bridgeFile += mbuf;
-        END
-        TEST_AS_OBJC
-        bridgeFile += "void InitProcDic() {\n";
-        bridgeFile += "    s_sceneNodeAgentSet = [NSMutableSet new];\n";
-        bridgeFile += "    s_createSceneNodeAgentProcDic = [NSMutableDictionary new];\n";
-        bridgeFile += "    s_guiAgentSet = [NSMutableSet new];\n";
-        bridgeFile += "    s_createGUIAgentProcDic = [NSMutableDictionary new];\n";
-        bridgeFile += "    s_actorAgentSet = [NSMutableSet new];\n";
-        bridgeFile += "    s_createActorAgentProcDic = [NSMutableDictionary new];\n";
-        ELSE
         bridgeFile += "public func InitProcDic() {\n";
-        END
+        
         /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
         /// 例：RegularSceneNodeAgent 继承自 SceneNodeAgent，SceneNodeAgent 继承自 NSObject
         /// 则 inheritPath[2] = NSObject， inheritPath[1] = SceneNodeAgent，inheritPath[0] = RegularSceneNodeAgent
@@ -822,17 +673,6 @@ namespace xhn {
                             
                             if (isInheritFromState && isInheritFromStateInterface) {
                                 /// 真正开始添加state了
-                                TEST_AS_OBJC
-                                snprintf(mbuf, 512,
-                                         "        NSString* state%dName = swiftClassStringFromPath(@%c%s%c);\n"
-                                         ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
-                                         "        id state%d = [SwiftStates _TtCC12VEngineLogic%s];\n"
-                                         "        [ret setState:state%dName state:state%d];\n",
-                                         i, '"', fullClassName.c_str(), '"',
-                                         i, stateFuncName.c_str(),
-                                         ///i, '"', fullClassName.c_str(), '"',
-                                         i, i);
-                                ELSE
                                 snprintf(mbuf, 512,
 //                                         "        let state%dName = swiftClassStringFromPath(%c%s%c)\n"
                                          ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
@@ -845,7 +685,6 @@ namespace xhn {
                                           i, i,
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i, i);
-                                END
                                 bridgeFile += mbuf;
                                 
                                 if (!firstState.size()) {
@@ -860,15 +699,9 @@ namespace xhn {
                 }
                 /// 将第一个state设为默认的state
                 if (firstState.size()) {
-                    TEST_AS_OBJC
-                    snprintf(mbuf, 512,
-                             "        [ret setCurrentState:%s];\n",
-                             firstState.c_str());
-                    ELSE
                     snprintf(mbuf, 512,
                              "        ret.setCurrentState(%s)\n",
                              firstState.c_str());
-                    END
                     bridgeFile += mbuf;
                 }
             }
@@ -932,25 +765,6 @@ namespace xhn {
                             isInheritFromActionInterface = isInheritFromClassProc(strFullClassName, StrActionInterface, actionInheritPath);
                             
                             if (isInheritFromAction && isInheritFromActionInterface) {
-                                TEST_AS_OBJC
-                                snprintf(mbuf, 512,
-                                         ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
-                                         "        id action%d = [SwiftActions _TtCC12VEngineLogic%s];\n"
-                                         ///"        id action%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
-                                         "#pragma clang diagnostic push\n"
-                                         "#pragma clang diagnostic ignored \"-Wundeclared-selector\"\n"
-                                         "        if ([action%d respondsToSelector:@selector(resourceName)]) {\n"
-                                         "            NSString* action%dResName = [action%d performSelector:@selector(resourceName)];\n"
-                                         "            [ret setAction:action%dResName action:action%d];\n"
-                                         "        }\n"
-                                         "#pragma clang diagnostic pop\n",
-                                         ///i, '"', fullClassName.c_str(), '"',
-                                         i, actionFuncName.c_str(),
-                                         i,
-                                         i, i,
-                                         ///i, '"', fullClassName.c_str(), '"',
-                                         i, i);
-                                ELSE
                                 snprintf(mbuf, 512,
                                          ///"        NSString* action%dName = swiftClassStringFromPath(@%c%s%c);\n"
                                          "        let action%d = SwiftActions._TtCC12VEngineLogic%s()\n"
@@ -962,35 +776,20 @@ namespace xhn {
                                          i, i,
                                          ///i, '"', fullClassName.c_str(), '"',
                                          i);
-                                END
                                 bridgeFile += mbuf;
-                                TEST_AS_OBJC
                                 if (!firstAction.size()) {
                                     snprintf(mbuf, 512, "action%d", i);
                                     firstAction = mbuf;
                                 }
-                                ELSE
-                                if (!firstAction.size()) {
-                                    snprintf(mbuf, 512, "action%d", i);
-                                    firstAction = mbuf;
-                                }
-                                END
-                                
                                 i++;
                             }
                         }
                     }
                 }
                 if (firstAction.size()) {
-                    TEST_AS_OBJC
-                    snprintf(mbuf, 512,
-                             "        [ret setCurrentAction:%s];\n",
-                             firstAction.c_str());
-                    ELSE
                     snprintf(mbuf, 512,
                              "        ret.setCurrentAction(%s)\n",
                              firstAction.c_str());
-                    END
                     bridgeFile += mbuf;
                 }
             }
@@ -1207,23 +1006,6 @@ namespace xhn {
                         /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
                         inheritPath.insert(inheritPath.begin(), node->name);
                         char mbuf[1024];
-                        TEST_AS_OBJC
-                        snprintf(mbuf, 1024,
-                                 "    s_createSceneNodeAgentProcDic[@%c%s%c] = [[CreateSceneNodeAgentProc alloc] initWithProc:^(void* sceneNode)\n"
-                                 "    {\n"
-                                 "        %s* ret = nil;\n"
-                                 "        VSceneNode* sn = (__bridge VSceneNode*)((VEngine::VSceneNode*)sceneNode)->m_slot;\n"
-                                 "        if (sn) {\n"
-                                 "            ret = [[%s alloc] initWithSceneNode:sn];\n"
-                                 "        }\n"
-                                 "        else {\n"
-                                 "            ret = [[%s alloc] initWithSceneNode:[[VSceneNode alloc] initWithVSceneNode:sceneNode]];\n"
-                                 "        }\n",
-                                 '"', node->name.c_str(), '"',
-                                 node->name.c_str(),
-                                 node->name.c_str(),
-                                 node->name.c_str());
-                        ELSE
                         snprintf(mbuf, 1024,
                                  "    s_createSceneNodeAgentProcDic[%c%s%c] = CreateSceneNodeAgentProc(proc:{ \n"
                                  "        ( _ sceneNode : UnsafeRawPointer ) in\n"
@@ -1242,7 +1024,6 @@ namespace xhn {
                                  "        let ret = %s(sceneNode : swiftSceneNode!)\n",
                                  '"', node->name.c_str(), '"',
                                  node->name.c_str());
-                        END
                         m_sceneNodeAgentNameVector.push_back(node->name);
                         
                         bridgeFile += mbuf;
@@ -1251,17 +1032,10 @@ namespace xhn {
                             addStatesProc(i);
                             inheritPath.pop_back();
                         }
-                        TEST_AS_OBJC
-                        bridgeFile +=
-                        "        [ret start];\n"
-                        "        return ret;\n"
-                        "    }];\n";
-                        ELSE
                         bridgeFile +=
                         "        ret.start()\n"
                         "        return ret\n"
                         "    })\n";
-                        END
                     }
                     else {
                         inheritPath.clear();
@@ -1269,23 +1043,6 @@ namespace xhn {
                             /// 这里将创建actor代理的回调放在s_createActorAgentProcDic里
                             inheritPath.insert(inheritPath.begin(), node->name);
                             char mbuf[1024];
-                            TEST_AS_OBJC
-                            snprintf(mbuf, 1024,
-                                     "    s_createActorAgentProcDic[@%c%s%c] = [[CreateActorAgentProc alloc] initWithProc:^(void* renderSys, void* actor)\n"
-                                     "    {\n"
-                                     "        %s* ret = nil;\n"
-                                     "        VActor* act = (__bridge VActor*)((VEngine::VActor*)actor)->m_slot;\n"
-                                     "        if (act) {\n"
-                                     "            ret = [[%s alloc] initWithActor:act];"
-                                     "        }\n"
-                                     "        else {\n"
-                                     "            ret = [[%s alloc] initWithActor:[[VActor alloc] initWithVActor:actor]];\n"
-                                     "        }\n",
-                                     '"', node->name.c_str(), '"',
-                                     node->name.c_str(),
-                                     node->name.c_str(),
-                                     node->name.c_str());
-                            ELSE
                             snprintf(mbuf, 1024,
                                      "    s_createActorAgentProcDic[%c%s%c] = CreateActorAgentProc(proc:{ \n"
                                      "        ( _ renderSys : UnsafeRawPointer, _ actor : UnsafeRawPointer ) in\n"
@@ -1304,8 +1061,6 @@ namespace xhn {
                                      "        let ret = %s(actor : swiftActor!)\n",
                                      '"', node->name.c_str(), '"',
                                      node->name.c_str());
-                            
-                            END
                             m_actorAgentNameVector.push_back(node->name);
                             
                             bridgeFile += mbuf;
@@ -1314,17 +1069,10 @@ namespace xhn {
                                 addActionsProc(i);
                                 inheritPath.pop_back();
                             }
-                            TEST_AS_OBJC
-                            bridgeFile +=
-                            "        [ret start];\n"
-                            "        return ret;\n"
-                            "    }];\n";
-                            ELSE
                             bridgeFile +=
                             "        ret.start()\n"
                             "        return ret\n"
                             "    })\n";
-                            END
                         }
                         else {
                             inheritPath.clear();
@@ -1336,23 +1084,6 @@ namespace xhn {
                                 }
                                 
                                 char mbuf[1024];
-                                TEST_AS_OBJC
-                                snprintf(mbuf, 1024,
-                                         "    s_createGUIAgentProcDic[@%c%s%c] = [[CreateGUIAgentProc alloc] initWithProc:^(void* renderSys, void* widget)\n"
-                                         "    {\n"
-                                         "        %s* ret = nil;\n"
-                                         "        VWidget* wg = (__bridge VWidget*)((VEngine::GUIWidget*)widget)->m_slot;\n"
-                                         "        if (wg) {\n"
-                                         "            ret = [[%s alloc] initWithWidget:wg];\n"
-                                         "        }\n"
-                                         "        else {\n"
-                                         "            ret = [[%s alloc] initWithWidget:[[VWidget alloc] initWithVWidget:widget]];\n"
-                                         "        }\n",
-                                         '"', node->name.c_str(), '"',
-                                         node->name.c_str(),
-                                         node->name.c_str(),
-                                         node->name.c_str());
-                                ELSE
                                 snprintf(mbuf, 1024,
                                          "    s_createGUIAgentProcDic[%c%s%c] = CreateGUIAgentProc(proc:{ \n"
                                          "        ( _ renderSys : UnsafeRawPointer, _ widget : UnsafeRawPointer ) in\n"
@@ -1371,7 +1102,6 @@ namespace xhn {
                                          "        let ret = %s(widget : swiftWidget!)\n",
                                          '"', node->name.c_str(), '"',
                                          node->name.c_str());
-                                END
                                 m_guiAgentNameVector.push_back(node->name);
                                 
                                 bridgeFile += mbuf;
@@ -1395,24 +1125,6 @@ namespace xhn {
                                         xhn::static_string::empty_string != draggingState, "gui state member are incomplete!, %s, %s, %s, %s, %s",
                                         normalState.c_str(), hoveringState.c_str(), selectedState.c_str(), pressedState.c_str(), draggingState.c_str());
                                 ///
-                                TEST_AS_OBJC
-                                snprintf(mbuf, 512, "        id normalState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", normalState.c_str());
-                                bridgeFile += mbuf;
-                                snprintf(mbuf, 512, "        id hoveringState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", hoveringState.c_str());
-                                bridgeFile += mbuf;
-                                snprintf(mbuf, 512, "        id selectedState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", selectedState.c_str());
-                                bridgeFile += mbuf;
-                                snprintf(mbuf, 512, "        id pressedState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", pressedState.c_str());
-                                bridgeFile += mbuf;
-                                snprintf(mbuf, 512, "        id draggingState = [SwiftGUIStates _TtCC12VEngineLogic%s];\n", draggingState.c_str());
-                                bridgeFile += mbuf;
-                                snprintf(mbuf, 512, "        [ret setState:@\"NormalState\" state:normalState];\n"
-                                                    "        [ret setState:@\"HoveringState\" state:hoveringState];\n"
-                                                    "        [ret setState:@\"SelectedState\" state:selectedState];\n"
-                                                    "        [ret setState:@\"PressedState\" state:pressedState];\n"
-                                                    "        [ret setState:@\"DraggingState\" state:draggingState];\n"
-                                                    "        [ret setCurrentState:normalState];\n");
-                                ELSE
                                 snprintf(mbuf, 512, "        let normalState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", normalState.c_str());
                                 bridgeFile += mbuf;
                                 snprintf(mbuf, 512, "        let hoveringState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", hoveringState.c_str());
@@ -1430,20 +1142,12 @@ namespace xhn {
                                          "        ret.setState(\"PressedState\", state:pressedState)\n"
                                          "        ret.setState(\"DraggingState\", state:draggingState)\n"
                                          "        ret.setCurrentState(normalState)\n");
-                                END
                                 bridgeFile += mbuf;
                                 ///
-                                TEST_AS_OBJC
-                                bridgeFile +=
-                                "        [ret start];\n"
-                                "        return ret;\n"
-                                "    }];\n";
-                                ELSE
                                 bridgeFile +=
                                 "        ret.start()\n"
                                 "        return ret\n"
                                 "    })\n";
-                                END
                             }
                         }
                     }
@@ -1452,214 +1156,6 @@ namespace xhn {
         }
         
         bridgeFile += "}\n";
-        TEST_AS_OBJC
-        bridgeFile += "void* CreateSceneNodeAgent(const char* type, void* sceneNode) {\n";
-        bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
-        bridgeFile += "    CreateSceneNodeAgentProc* proc = s_createSceneNodeAgentProcDic[strType];\n";
-        bridgeFile += "    SceneNodeAgent* agent = proc.createAgentProc(sceneNode);\n";
-        bridgeFile += "    {\n";
-        bridgeFile += "        auto inst = s_lock.Lock();\n";
-        bridgeFile += "        [s_sceneNodeAgentSet addObject:agent];\n";
-        bridgeFile += "        return  (__bridge void *)agent;\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void RemoveSceneNodeAgent(void* agent) {\n";
-        bridgeFile += "    {\n";
-        bridgeFile += "        auto inst = s_lock.Lock();\n";
-        bridgeFile += "        SceneNodeAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "        [s_sceneNodeAgentSet removeObject:agentID];\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void UpdateSceneNodeAgent(void* agent, double elapsedTime) {\n";
-        bridgeFile += "    SceneNodeAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    [agentID update:elapsedTime];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void SceneNodeAgentGotoState(void* agent, const char* nextStateName) {\n";
-        bridgeFile += "    SceneNodeAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    NSString* _Nonnull strNextStateName = [NSString stringWithUTF8String:nextStateName];\n";
-        bridgeFile += "    [agentID gotoState:strNextStateName];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void* CreateGUIAgent(const char* type, void* renderSys, void* widget) {\n";
-        bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
-        bridgeFile += "    CreateGUIAgentProc* proc = s_createGUIAgentProcDic[strType];\n";
-        bridgeFile += "    GUIAgent* agent = proc.createAgentProc(renderSys, widget);\n";
-        bridgeFile += "    {\n";
-        bridgeFile += "        auto inst = s_lock.Lock();\n";
-        bridgeFile += "        [s_guiAgentSet addObject:agent];\n";
-        bridgeFile += "        return  (__bridge void *)agent;\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void RemoveGUIAgent(void* agent) {\n";
-        bridgeFile += "    {\n";
-        bridgeFile += "        auto inst = s_lock.Lock();\n";
-        bridgeFile += "        GUIAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "        [s_guiAgentSet removeObject:agentID];\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void UpdateGUIAgent(void* agent, double elapsedTime) {\n";
-        bridgeFile += "    GUIAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    [agentID update:elapsedTime];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void GotoGUIAgentState(void* agent, int stateKind) {\n";
-        bridgeFile += "    GUIAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    NSString* strStateKind = nil;\n";
-        bridgeFile += "    switch (stateKind)\n";
-        bridgeFile += "    {\n";
-        bridgeFile += "        case 0: strStateKind = @\"NormalState\"; break;\n";
-        bridgeFile += "        case 1: strStateKind = @\"HoveringState\"; break;\n";
-        bridgeFile += "        case 2: strStateKind = @\"SelectedState\"; break;\n";
-        bridgeFile += "        case 3: strStateKind = @\"PressedState\"; break;\n";
-        bridgeFile += "        case 4: strStateKind = @\"DraggingState\"; break;\n";
-        bridgeFile += "        default: break;\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "    if (strStateKind) {\n";
-        bridgeFile += "        [agentID gotoState:strStateKind];\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "}\n";
-        bridgeFile += "bool AllowGUIStateChange(void* agent, int prevStateKind, int nextStateKind) {\n";
-        bridgeFile += "    GUIAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    NSString* strPrevStateKind = nil;\n";
-        bridgeFile += "    switch (prevStateKind)\n";
-        bridgeFile += "    {\n";
-        bridgeFile += "        case 0: strPrevStateKind = @\"NormalState\"; break;\n";
-        bridgeFile += "        case 1: strPrevStateKind = @\"HoveringState\"; break;\n";
-        bridgeFile += "        case 2: strPrevStateKind = @\"SelectedState\"; break;\n";
-        bridgeFile += "        case 3: strPrevStateKind = @\"PressedState\"; break;\n";
-        bridgeFile += "        case 4: strPrevStateKind = @\"DraggingState\"; break;\n";
-        bridgeFile += "        default: break;\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "    NSString* strNextStateKind = nil;\n";
-        bridgeFile += "    switch (nextStateKind)\n";
-        bridgeFile += "    {\n";
-        bridgeFile += "        case 0: strNextStateKind = @\"NormalState\"; break;\n";
-        bridgeFile += "        case 1: strNextStateKind = @\"HoveringState\"; break;\n";
-        bridgeFile += "        case 2: strNextStateKind = @\"SelectedState\"; break;\n";
-        bridgeFile += "        case 3: strNextStateKind = @\"PressedState\"; break;\n";
-        bridgeFile += "        case 4: strNextStateKind = @\"DraggingState\"; break;\n";
-        bridgeFile += "        default: break;\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "    if (strPrevStateKind && strNextStateKind) {\n";
-        bridgeFile += "        return [agentID allowStateChange:strPrevStateKind nextStateKind:strNextStateKind];\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "    else {\n";
-        bridgeFile += "        return false;\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void OnGUIWidgetMove(void* agent, float dispX, float dispY) {\n";
-        bridgeFile += "    GUIAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    [agentID onMove:dispX dispY:dispY];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void OnGUIWidgetPress(void* agent) {\n";
-        bridgeFile += "    GUIAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    [agentID onPress];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void OnGUIWidgetLeave(void* agent) {\n";
-        bridgeFile += "    GUIAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    [agentID onLeave];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void OnGUIWidgetHover(void* agent) {\n";
-        bridgeFile += "    GUIAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    [agentID onHover];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void* CreateActorAgent(const char* type, void* renderSys, void* actor) {\n";
-        bridgeFile += "    NSString* strType = [[NSString alloc] initWithUTF8String:type];\n";
-        bridgeFile += "    CreateActorAgentProc* proc = s_createActorAgentProcDic[strType];\n";
-        bridgeFile += "    ActorAgent* agent = proc.createAgentProc(renderSys, actor);\n";
-        bridgeFile += "    {\n";
-        bridgeFile += "        auto inst = s_lock.Lock();\n";
-        bridgeFile += "        [s_actorAgentSet addObject:agent];\n";
-        bridgeFile += "        return  (__bridge void *)agent;\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void RemoveActorAgent(void* agent) {\n";
-        bridgeFile += "    {\n";
-        bridgeFile += "        auto inst = s_lock.Lock();\n";
-        bridgeFile += "        ActorAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "        [s_actorAgentSet removeObject:agentID];\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void UpdateActorAgent(void* agent, double elapsedTime) {\n";
-        bridgeFile += "    ActorAgent* agentID = (__bridge id)agent;\n";
-        bridgeFile += "    [agentID update:elapsedTime];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "int GetNumSceneNodeAgentProcs() {\n";
-        bridgeFile += "    return (int)[s_createSceneNodeAgentProcDic count];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "int GetNumActorAgentProcs() {\n";
-        bridgeFile += "    return (int)[s_createActorAgentProcDic count];\n";
-        bridgeFile += "}\n";
-        bridgeFile += "char** GetSceneNodeAgentProcTypes() {\n";
-        bridgeFile += "    char** ret = (char**)malloc(sizeof(char*) * [s_createSceneNodeAgentProcDic count]);\n";
-        bridgeFile += "    NSEnumerator *enumeratorKey = [s_createSceneNodeAgentProcDic keyEnumerator];\n";
-        bridgeFile += "    int i = 0;\n";
-        bridgeFile += "    for (NSString* key in enumeratorKey) {\n";
-        bridgeFile += "        int len = (int)strlen([key UTF8String]);\n";
-        bridgeFile += "        ret[i] = (char*)malloc(len + 1);\n";
-        bridgeFile += "        memcpy(ret[i], [key UTF8String], len + 1);\n";
-        bridgeFile += "        i++;\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "    return ret;\n";
-        bridgeFile += "}\n";
-        bridgeFile += "char** GetActorAgentProcTypes() {\n";
-        bridgeFile += "    char** ret = (char**)malloc(sizeof(char*) * [s_createActorAgentProcDic count]);\n";
-        bridgeFile += "    NSEnumerator *enumeratorKey = [s_createActorAgentProcDic keyEnumerator];\n";
-        bridgeFile += "    int i = 0;\n";
-        bridgeFile += "    for (NSString* key in enumeratorKey) {\n";
-        bridgeFile += "        int len = (int)strlen([key UTF8String]);\n";
-        bridgeFile += "        ret[i] = (char*)malloc(len + 1);\n";
-        bridgeFile += "        memcpy(ret[i], [key UTF8String], len + 1);\n";
-        bridgeFile += "        i++;\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "    return ret;\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void SetPrintLogProc(void (*printLogProc)(int, const char*)) {\n";
-        bridgeFile += "    s_printLogProc = printLogProc;\n";
-        bridgeFile += "}\n";
-        bridgeFile += "void PrintLog(int type, const char* log) {\n";
-        bridgeFile += "    if (s_printLogProc) {\n";
-        bridgeFile += "        s_printLogProc(type, log);\n";
-        bridgeFile += "    }\n";
-        bridgeFile += "}\n";
-//        bridgeFile += "void LoadScene(const char* sceneName, const char* sceneFilePath, void* renderSys, void* removedSceneNodes, void* sceneNodeFilter, void* callback) {\n";
-//        bridgeFile += "    NSArray<NSString*>* removedSceneNodeNames = (__bridge id)removedSceneNodes;\n";
-//        bridgeFile += "    VEngine::SceneNodeNameVectorPtr sceneNodeVector = VNEW VEngine::SceneNodeNameVector();\n";
-//        bridgeFile += "    for (NSString* name in removedSceneNodeNames) {\n";
-//        bridgeFile += "        sceneNodeVector->push_back([name UTF8String]);\n";
-//        bridgeFile += "    }\n";
-//        bridgeFile += "    xhn::SmartPtr<SwiftCallback> swiftCallback = VNEW SwiftCallback();\n";
-//        bridgeFile += "    swiftCallback->m_callback = (__bridge void (^) (void))callback;\n";
-//        bridgeFile += "    auto channel = VEngine::VRobotManager::Get((VEngine::VRenderSystem*)renderSys)->GetChannel(VEngine::VScriptRobot::StrScriptRobot,\n";
-//        bridgeFile += "                                                                                               VEngine::VSceneRobot::StrSceneRobot);\n";
-//        bridgeFile += "    xhn::string strSceneName(sceneName);\n";
-//        bridgeFile += "    xhn::string strSceneFilePath(sceneFilePath);\n";
-//        bridgeFile += "    SwiftSceneNodeFilter* filter = VNEW SwiftSceneNodeFilter();\n";
-//        bridgeFile += "    filter->m_swiftSceneNodeFilter = (__bridge id)sceneNodeFilter;\n";
-//        bridgeFile += "    VEngine::VSceneNodeFilterPtr swiftNodeFilter = filter;\n";
-//        bridgeFile += "    xhn::Lambda<void (VEngine::VRobotCommandReceipt*)>\n";
-//        bridgeFile += "    deleteSceneNodesCallback([strSceneName, strSceneFilePath, renderSys, swiftNodeFilter, swiftCallback](VEngine::VRobotCommandReceipt*){\n";
-//        bridgeFile += "        auto channel = VEngine::VRobotManager::Get((VEngine::VRenderSystem*)renderSys)->GetChannel(VEngine::VScriptRobot::StrScriptRobot,\n";
-//        bridgeFile += "                                                                                                   VEngine::VSceneRobot::StrSceneRobot);\n";
-//        bridgeFile += "        xhn::Lambda<void (VEngine::VRobotCommandReceipt*)> loadSceneCallback([renderSys, swiftCallback](VEngine::VRobotCommandReceipt* rec){\n";
-//        bridgeFile += "            VEngine::VLoadSceneCommandReceipt* lscr = rec->DynamicCast<VEngine::VLoadSceneCommandReceipt>();\n";
-//        bridgeFile += "            auto channel = VEngine::VRobotManager::Get((VEngine::VRenderSystem*)renderSys)->GetChannel(VEngine::VScriptRobot::StrScriptRobot,\n";
-//        bridgeFile += "                                                                                                       VEngine::VSceneRobot::StrSceneRobot);\n";
-//        bridgeFile += "            xhn::Lambda<void (VEngine::VRobotCommandReceipt*)> loadAgentsCallback([swiftCallback](VEngine::VRobotCommandReceipt*){\n";
-//        bridgeFile += "                swiftCallback->m_callback();\n";
-//        bridgeFile += "            });\n";
-//        bridgeFile += "            VEngine::VLoadAgentsCommand lac((VEngine::VRenderSystem*)renderSys,\n";
-//        bridgeFile += "                                            lscr->m_sceneNodeVector.get(),\n";
-//        bridgeFile += "                                            loadAgentsCallback);\n";
-//        bridgeFile += "            channel->Write(lac);\n";
-//        bridgeFile += "        });\n";
-//        bridgeFile += "        VEngine::VLoadSceneCommand lsc((VEngine::VRenderSystem*)renderSys,\n";
-//        bridgeFile += "                                       strSceneName.c_str(), strSceneFilePath.c_str(),\n";
-//        bridgeFile += "                                       swiftNodeFilter, nullptr, loadSceneCallback, false);\n";
-//        bridgeFile += "        channel->Write(lsc);\n";
-//        bridgeFile += "    });\n";
-//        bridgeFile += "    VEngine::VDeleteSceneNodesCommand dsnc((VEngine::VRenderSystem*)renderSys, sceneNodeVector, deleteSceneNodesCallback);\n";
-//        bridgeFile += "    channel->Write(dsnc);\n";
-//        bridgeFile += "}\n";
-        END
         ///printf("%s\n", bridgeFile.c_str());
         return bridgeFile;
     }
