@@ -85,6 +85,7 @@ static NSMutableSet* s_SwiftCommandLineUtils = nil;
                                         const xhn::string& stateActionFile,
                                         const xhn::vector<xhn::static_string>&,
                                         const xhn::vector<xhn::static_string>&,
+                                        const xhn::vector<xhn::static_string>&,
                                         const xhn::vector<xhn::static_string>&))proc;
 @end
 
@@ -163,6 +164,8 @@ namespace xhn {
     const static_string SwiftParser::StrActorAgent("ActorAgent");
     const static_string SwiftParser::StrAction("Action");
     const static_string SwiftParser::StrActionInterface("ActionInterface");
+    
+    const static_string SwiftParser::StrGUIListAgent("GUIListAgent");
     
     void SwiftParser::BeginParse()
     {
@@ -390,7 +393,6 @@ namespace xhn {
                                          BridgeFileLanguage language)
     {
         xhn::string bridgeFile;
-        char mbuf[1024];
         bridgeFile =  "open class SwiftCallbackHandle\n";
         bridgeFile += "{\n";
         bridgeFile += "    var callback : () -> Void\n";
@@ -420,6 +422,13 @@ namespace xhn {
         bridgeFile += "        createAgentProc = proc\n";
         bridgeFile += "    }\n";
         bridgeFile += "}\n";
+        bridgeFile += "public class CreateGUIListAgentProc\n";
+        bridgeFile += "{\n";
+        bridgeFile += "    let createAgentProc : (_ : UnsafeRawPointer, _ : UnsafeRawPointer)->GUIListAgent\n";
+        bridgeFile += "    init( proc : @escaping (_ : UnsafeRawPointer, _ : UnsafeRawPointer)->GUIListAgent ) {\n";
+        bridgeFile += "        createAgentProc = proc\n";
+        bridgeFile += "    }\n";
+        bridgeFile += "}\n";
         bridgeFile += "public class CreateActorAgentProc\n";
         bridgeFile += "{\n";
         bridgeFile += "    let createAgentProc : (_ : UnsafeRawPointer, _ : UnsafeRawPointer)->ActorAgent\n";
@@ -429,6 +438,7 @@ namespace xhn {
         bridgeFile += "}\n";
         bridgeFile += "var s_createSceneNodeAgentProcDic = Dictionary<String, CreateSceneNodeAgentProc>()\n";
         bridgeFile += "var s_createGUIAgentProcDic = Dictionary<String, CreateGUIAgentProc>()\n";
+        bridgeFile += "var s_createGUIListAgentProcDic = Dictionary<String, CreateGUIListAgentProc>()\n";
         bridgeFile += "var s_createActorAgentProcDic = Dictionary<String, CreateActorAgentProc>()\n";
         bridgeFile += "func swiftClassString(_ nameSpace : String, className : String) -> String {\n";
         bridgeFile += "    let appName = \"VEngineLogic\"\n";
@@ -488,10 +498,27 @@ namespace xhn {
         bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "    return bridgeToPtr(obj: agent)\n";
         bridgeFile += "}\n";
+        bridgeFile += "public func CreateGUIListAgent(type : UnsafePointer<Int8>, renderSys : UnsafeRawPointer, list : UnsafeRawPointer)\n";
+        bridgeFile += "    -> UnsafeRawPointer?\n";
+        bridgeFile += "{\n";
+        bridgeFile += "    let strType = String(cString: type)\n";
+        bridgeFile += "    guard let proc = s_createGUIListAgentProcDic[strType] else { return nil }\n";
+        bridgeFile += "    let agent = proc.createAgentProc(renderSys, list)\n";
+        bridgeFile += "    s_agentSetLock.lock()\n";
+        bridgeFile += "    _ = s_guiListAgentSet.add(agent)\n";
+        bridgeFile += "    s_agentSetLock.unlock()\n";
+        bridgeFile += "    return bridgeToPtr(obj: agent)\n";
+        bridgeFile += "}\n";
         bridgeFile += "public func RemoveGUIAgent(agent : UnsafeRawPointer) {\n";
         bridgeFile += "    s_agentSetLock.lock()\n";
         bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
         bridgeFile += "    s_guiAgentSet.remove(gagent)\n";
+        bridgeFile += "    s_agentSetLock.unlock()\n";
+        bridgeFile += "}\n";
+        bridgeFile += "public func RemoveGUIListAgent(agent : UnsafeRawPointer) {\n";
+        bridgeFile += "    s_agentSetLock.lock()\n";
+        bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIListAgent\n";
+        bridgeFile += "    s_guiListAgentSet.remove(gagent)\n";
         bridgeFile += "    s_agentSetLock.unlock()\n";
         bridgeFile += "}\n";
         bridgeFile += "public func UpdateGUIAgent(agent : UnsafeRawPointer, elapsedTime : UnsafePointer<Double>) {\n";
@@ -961,6 +988,7 @@ namespace xhn {
         
         m_sceneNodeAgentNameVector.clear();
         m_guiAgentNameVector.clear();
+        m_guiListAgentNameVector.clear();
         m_actorAgentNameVector.clear();
         
 #if USING_AST_LOG
@@ -1002,6 +1030,7 @@ namespace xhn {
                 ASTNode* node = *rootChildIter;
                 if (StrClassDecl == node->nodetype &&
                     (StrPublic == node->access || StrOpen == node->access)) {
+///=================Test whether it is an scene agent
                     if (isInheritFromClassProc(node->name, StrSceneNodeAgent, inheritPath)) {
                         /// 这里将创建节点代理的回调放进s_createSceneNodeAgentProcDic里
                         inheritPath.insert(inheritPath.begin(), node->name);
@@ -1037,8 +1066,10 @@ namespace xhn {
                         "        return ret\n"
                         "    })\n";
                     }
+///=================Test whether it is an scene agent
                     else {
                         inheritPath.clear();
+///=====================Test whether it is an actor agent
                         if (isInheritFromClassProc(node->name, StrActorAgent, inheritPath)) {
                             /// 这里将创建actor代理的回调放在s_createActorAgentProcDic里
                             inheritPath.insert(inheritPath.begin(), node->name);
@@ -1074,8 +1105,10 @@ namespace xhn {
                             "        return ret\n"
                             "    })\n";
                         }
+///=====================Test whether it is an actor agent
                         else {
                             inheritPath.clear();
+///=========================Test whether it is an gui agent
                             if (isInheritFromClassProc(node->name, StrGUIAgent, inheritPath)) {
                                 inheritPath.insert(inheritPath.begin(), node->name);
                                 
@@ -1148,6 +1181,47 @@ namespace xhn {
                                 "        ret.start()\n"
                                 "        return ret\n"
                                 "    })\n";
+                            }
+///=========================Test whether it is an gui agent
+                            else {
+                                inheritPath.clear();
+///=============================Test whether it is an gui list agent
+                                if (isInheritFromClassProc(node->name, StrGUIListAgent, inheritPath)) {
+                                    inheritPath.insert(inheritPath.begin(), node->name);
+                                    
+                                    for (auto i : inheritPath) {
+                                        GUILog("--%s\n", i.c_str());
+                                    }
+                                    
+                                    char mbuf[1024];
+                                    snprintf(mbuf, 1024,
+                                             "    s_createGUIListAgentProcDic[%c%s%c] = CreateGUIListAgentProc(proc:{ \n"
+                                             "        ( _ renderSys : UnsafeRawPointer, _ list : UnsafeRawPointer ) in\n"
+                                             "        var swiftList : VList? = nil\n"
+                                             "        if let listPtr = VEngine_GetSlotPtr(UnsafeMutableRawPointer(mutating:list)) {\n"
+                                             "            swiftList = bridgeToObject(ptr : listPtr) as VList\n"
+                                             "        } else {\n"
+                                             "            swiftList = VList(vList : UnsafeMutableRawPointer(mutating:list))\n"
+                                             "            let releaseHelper = ReleaseHelper()\n"
+                                             "            releaseHelper._blanker = swiftList\n"
+                                             "            releaseHelper._ptr = bridgeRetained(obj : swiftList!)\n"
+                                             "            VEngine_SetSlotPtr(UnsafeMutableRawPointer(mutating:list), \n"
+                                             "                               UnsafeMutableRawPointer(mutating:releaseHelper._ptr), \n"
+                                             "                               UnsafeMutableRawPointer(mutating:bridgeRetained(obj : releaseHelper)))\n"
+                                             "        }\n"
+                                             "        let ret = %s(list : swiftList!)\n",
+                                             '"', node->name.c_str(), '"',
+                                             node->name.c_str());
+                                    m_guiListAgentNameVector.push_back(node->name);
+                                    
+                                    bridgeFile += mbuf;
+                                    ///
+                                    bridgeFile +=
+                                    "        ret.start()\n"
+                                    "        return ret\n"
+                                    "    })\n";
+                                }
+///=============================Test whether it is an gui list agent
                             }
                         }
                     }
@@ -1701,6 +1775,7 @@ namespace xhn {
                                                                          const xhn::string& stateActionFile,
                                                                          const xhn::vector<xhn::static_string>&,
                                                                          const xhn::vector<xhn::static_string>&,
+                                                                         const xhn::vector<xhn::static_string>&,
                                                                          const xhn::vector<xhn::static_string>&)>& callback)
     {
         SwiftCommandLineUtil* sclu = [SwiftCommandLineUtil new];
@@ -1713,10 +1788,12 @@ namespace xhn {
                                   const xhn::string& stateActionFile,
                                   const xhn::vector<xhn::static_string>&,
                                   const xhn::vector<xhn::static_string>&,
+                                  const xhn::vector<xhn::static_string>&,
                                   const xhn::vector<xhn::static_string>&)> tmpCallback = callback;
         void (^objcCallback)(const xhn::string& objcBridgeFile,
                              const xhn::string& swiftBridgeFile,
                              const xhn::string& stateActionFile,
+                             const xhn::vector<xhn::static_string>&,
                              const xhn::vector<xhn::static_string>&,
                              const xhn::vector<xhn::static_string>&,
                              const xhn::vector<xhn::static_string>&)  = ^(const xhn::string& objcBridgeFile,
@@ -1724,9 +1801,10 @@ namespace xhn {
                                                                           const xhn::string& stateActionFile,
                                                                           const xhn::vector<xhn::static_string>& sceneNodeAgentNames,
                                                                           const xhn::vector<xhn::static_string>& guiAgentNames,
+                                                                          const xhn::vector<xhn::static_string>& guiListAgentNames,
                                                                           const xhn::vector<xhn::static_string>& actorAgentNames) {
             tmpCallback(objcBridgeFile, swiftBridgeFile, stateActionFile,
-                        sceneNodeAgentNames, guiAgentNames, actorAgentNames);
+                        sceneNodeAgentNames, guiAgentNames, guiListAgentNames, actorAgentNames);
         };
         [sclu parseSwiftSourceFiles:command
                              logDir:logDir
@@ -1772,6 +1850,7 @@ namespace xhn {
     void(^mSwiftParserCallback)(const xhn::string& objcBridgeFile,
                                 const xhn::string& swiftBridgeFile,
                                 const xhn::string& stateActionFile,
+                                const xhn::vector<xhn::static_string>&,
                                 const xhn::vector<xhn::static_string>&,
                                 const xhn::vector<xhn::static_string>&,
                                 const xhn::vector<xhn::static_string>&);
@@ -1837,6 +1916,7 @@ namespace xhn {
             }
             xhn::vector<xhn::static_string> sceneNodeAgentNameVector = swiftParser->GetSceneNodeAgentNameVector();
             xhn::vector<xhn::static_string> guiAgentNameVector = swiftParser->GetGUIAgentNameVector();
+            xhn::vector<xhn::static_string> guiListAgentNameVector = swiftParser->GetGUIListAgentNameVector();
             xhn::vector<xhn::static_string> actorAgentNameVector = swiftParser->GetActorAgentNameVector();
             ASTLog("%s\n", bridgeFile.c_str());
             ASTLog("%s\n", stateActionFile.c_str());
@@ -1850,7 +1930,7 @@ namespace xhn {
                 }
             }
             mSwiftParserCallback(objcBridgeFile, swiftBridgeFile, stateActionFile,
-                                 sceneNodeAgentNameVector, guiAgentNameVector, actorAgentNameVector);
+                                 sceneNodeAgentNameVector, guiAgentNameVector, guiListAgentNameVector, actorAgentNameVector);
             mSwiftParserCallback = nil;
         }
     }
@@ -1903,6 +1983,7 @@ namespace xhn {
                       callback:(void(^)(const xhn::string& objcBridgeFile,
                                         const xhn::string& swiftBridgeFile,
                                         const xhn::string& stateActionFile,
+                                        const xhn::vector<xhn::static_string>&,
                                         const xhn::vector<xhn::static_string>&,
                                         const xhn::vector<xhn::static_string>&,
                                         const xhn::vector<xhn::static_string>&))proc

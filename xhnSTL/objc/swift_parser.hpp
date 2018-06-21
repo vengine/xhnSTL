@@ -103,6 +103,8 @@ public:
     static const static_string StrActorAgent;
     static const static_string StrAction;
     static const static_string StrActionInterface;
+    
+    static const static_string StrGUIListAgent;
     enum ASTNodeType
     {
         SourceFileNode,
@@ -148,6 +150,7 @@ private:
 private:
     vector<static_string> m_sceneNodeAgentNameVector;
     vector<static_string> m_guiAgentNameVector;
+    vector<static_string> m_guiListAgentNameVector;
     vector<static_string> m_actorAgentNameVector;
 private:
     ASTReformatterPtr m_reformatter;
@@ -174,12 +177,14 @@ public:
                                                               const xhn::string& stateActionFile,
                                                               const vector<static_string>&,
                                                               const vector<static_string>&,
+                                                              const vector<static_string>&,
                                                               const vector<static_string>&)>& callback);
     SwiftParser(const string& logDir,
                 ASTReformatterPtr reformatter);
     ~SwiftParser();
     inline const vector<static_string>& GetSceneNodeAgentNameVector() const { return m_sceneNodeAgentNameVector; }
     inline const vector<static_string>& GetGUIAgentNameVector() const { return m_guiAgentNameVector; }
+    inline const vector<static_string>& GetGUIListAgentNameVector() const { return m_guiListAgentNameVector; }
     inline const vector<static_string>& GetActorAgentNameVector() const { return m_actorAgentNameVector; }
 };
     
