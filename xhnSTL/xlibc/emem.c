@@ -12,7 +12,7 @@
 #include "elog.h"
 #include "eassert.h"
 
-#define USE_C_MALLOC
+///#define USE_C_MALLOC
 ///#define FORCE_INITED_ALLOC
 #define CLEAR_MEMORY_WHEN_THE_ALLOCATE        0
 #define CLEAR_MEMORY_NODE_WHEN_THE_DEALLOCATE 0
