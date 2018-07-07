@@ -180,7 +180,7 @@ public:
         m_prepare_buffer = reinterpret_cast<T*>(old_next_buffer);
         AtomicStore32(1, &m_has_next_buffer);
     }
-    void test_and_swap_current_buffer_not_lock()
+    bool test_and_swap_current_buffer_not_lock()
     {
         if (AtomicLoad32(&m_has_next_buffer)) {
             void* old_next_buffer = nullptr;
@@ -198,6 +198,9 @@ public:
             }
             m_current_buffer = reinterpret_cast<T*>(old_next_buffer);
             AtomicStore32(0, &m_has_next_buffer);
+            return true;
+        } else {
+            return false;
         }
     }
 };
