@@ -58,6 +58,8 @@ euint xhn::create_uid()
 #include <uuid/uuid.h>
 #elif defined(ANDROID) || defined (__ANDROID__)
 #include <uuid/uuid.h>
+#elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
+#include <uuid/uuid.h>
 #endif
 xhn::string xhn::create_uuid_string()
 {
