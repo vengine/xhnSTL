@@ -276,6 +276,8 @@ void xhn::thread::wait_completed()
                 pthread_yield_np();
 #elif defined(ANDROID) || defined(__ANDROID__)
                 sched_yield();
+#elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
+                sched_yield();
 #else
 #error
 #endif
