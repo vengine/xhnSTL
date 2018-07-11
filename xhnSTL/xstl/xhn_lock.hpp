@@ -255,7 +255,7 @@ public:
 #elif defined(ANDROID) || defined(__ANDROID__)
                 sched_yield();
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
-                pthread_yield_np();
+                sched_yield();
 #else
 #error
 #endif
@@ -278,7 +278,7 @@ public:
 #elif defined(ANDROID) || defined(__ANDROID__)
                 sched_yield();
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
-                pthread_yield_np();
+                sched_yield();
 #else
 #error
 #endif
@@ -382,7 +382,7 @@ public:
 #elif defined(ANDROID) || defined(__ANDROID__)
                 sched_yield();
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
-                pthread_yield_np();
+                sched_yield();
 #else
 #error
 #endif
@@ -416,7 +416,7 @@ public:
 #elif defined(ANDROID) || defined(__ANDROID__)
                 sched_yield();
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
-                pthread_yield_np();
+                sched_yield();
 #else
 #error
 #endif
