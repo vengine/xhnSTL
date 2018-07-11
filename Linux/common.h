@@ -161,8 +161,6 @@ or
 
 #    include <pthread.h>
 
-#    define BIT_WIDTH 64
-
 #endif
 
 /**

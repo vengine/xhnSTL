@@ -12,7 +12,7 @@ INCLUDE_DIRECTORIES(./
                     ../xhnSTL/linux/
                     ../xhnSTL/xlibc/)
 
-add_definitions(-DLINUX -DBIT_WIDTH=32)
+add_definitions(-DLINUX -DBIT_WIDTH=64)
 ADD_LIBRARY(xhnSTL SHARED
     ../xhnSTL/xlibc/eassert.c
     ../xhnSTL/xlibc/elog.c
