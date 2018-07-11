@@ -62,4 +62,4 @@ ADD_LIBRARY(xhnSTL SHARED
     ../xhnSTL/linux/linux_file_manager.cpp
 )
 
-target_link_libraries(xhnSTL GLESv2 GLU EGL X11 m pthread uuid)
+target_link_libraries(xhnSTL m pthread uuid)
