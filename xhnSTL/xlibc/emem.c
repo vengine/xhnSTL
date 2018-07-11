@@ -44,6 +44,8 @@ _INLINE_ esint64 inc_mem_stamp(volatile esint64* mem_stamp)
     return __atomic_fetch_add(mem_stamp, 1, __ATOMIC_SEQ_CST) + 1;
 #elif defined(ANDROID) || defined(__ANDROID__)
     return __sync_fetch_and_add(mem_stamp, 1) + 1;
+#elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
+    return __sync_fetch_and_add(mem_stamp, 1) + 1;
 #else
 #error
 #endif
@@ -59,6 +61,8 @@ _INLINE_ esint64 load_ptr(volatile esint64* ptr)
     __atomic_load(ptr, &ret, __ATOMIC_ACQUIRE);
     return ret;
 #elif defined(ANDROID) || defined(__ANDROID__)
+    return __sync_fetch_and_add(ptr, 0);
+#elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
     return __sync_fetch_and_add(ptr, 0);
 #else
 #error
