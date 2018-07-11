@@ -187,6 +187,44 @@ inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile e
 {
     return AO_compare_and_swap((AO_t*)theValue, oldValue, newValue);
 }
+#elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
+inline esint32 AtomicIncrement(volatile esint32* i)
+{
+    return __sync_fetch_and_add(i, 1) + 1;
+}
+inline esint64 AtomicIncrement(volatile esint64* i)
+{
+    return __sync_fetch_and_add(i, 1) + 1;
+}
+inline esint32 AtomicDecrement(volatile esint32* i)
+{
+    return __sync_fetch_and_sub(i, 1) - 1;
+}
+inline esint64 AtomicDecrement(volatile esint64* i)
+{
+    return __sync_fetch_and_sub(i, 1) - 1;
+}
+inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
+{
+    return __sync_bool_compare_and_swap(theValue, oldValue, newValue);
+}
+inline bool AtomicCompareExchange(esint64 oldValue, esint64 newValue, volatile esint64* theValue)
+{
+    return __sync_bool_compare_and_swap(theValue, oldValue, newValue);
+}
+#if BIT_WIDTH == 32
+inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * volatile * theValue)
+{
+    return __sync_bool_compare_and_swap((volatile esint32*)theValue, (esint32)oldValue, (esint32)newValue);
+}
+#else
+inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void * volatile * theValue)
+{
+    return __sync_bool_compare_and_swap((volatile esint64*)theValue, (esint64)oldValue, (esint64)newValue);
+}
+#endif
+#else
+#error
 #endif
 
 #if defined (_WIN32) || defined (_WIN64)
