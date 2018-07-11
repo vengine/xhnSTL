@@ -161,7 +161,7 @@ or
 
 #    include <pthread.h>
 
-#    define BIT_WIDTH (sizeof(void*) * 8)
+#    define BIT_WIDTH 64
 
 #endif
 
