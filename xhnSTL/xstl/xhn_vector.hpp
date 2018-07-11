@@ -666,7 +666,7 @@ public:
         const_iterator i = begin();
         const_iterator e = end();
         for (; i != e; i++) {
-            update_hash_status(&status, (const char*)&*i, sizeof(*i));
+            ::update_hash_status(&status, (const char*)&*i, sizeof(*i));
         }
         return get_hash_value(&status);
     }
