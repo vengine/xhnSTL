@@ -1108,10 +1108,17 @@ namespace xhn {
                                 addActionsProc(i);
                                 inheritPath.pop_back();
                             }
-                            bridgeFile +=
-                            "        ret.start()\n"
-                            "        return ret\n"
-                            "    })\n";
+                            if (i > 0) {
+                                bridgeFile +=
+                                "        ret.start()\n"
+                                "        return ret\n"
+                                "    })\n";
+                            } else {
+                                bridgeFile +=
+                                "        assert(false, \"at least one action must be added\")\n"
+                                "        return ret\n"
+                                "    })\n";
+                            }
                         }
 ///=====================Test whether it is an actor agent
                         else {
