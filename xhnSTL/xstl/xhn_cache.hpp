@@ -102,7 +102,7 @@ namespace xhn
         const_iterator end() const {
             return base_type::m_node_allocator.m_node_buffer.begin() + base_type::m_node_allocator.m_top_pointer;
         }
-        void remove(iterator iter) { }
+        void erase(iterator iter) { }
     };
 }
 
