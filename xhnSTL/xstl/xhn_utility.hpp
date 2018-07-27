@@ -1079,13 +1079,13 @@ void sort_impl ( RandomAccessIterator first, RandomAccessIterator last, Compare&
 template <typename RandomAccessIterator>
 void sort ( RandomAccessIterator first, RandomAccessIterator last )
 {
-    std::sort(first, last);
+    std::sort<RandomAccessIterator>(first, last);
 }
     
 template <typename RandomAccessIterator, typename Compare>
 void sort ( RandomAccessIterator first, RandomAccessIterator last, Compare comp )
 {
-    std::sort(first, last, comp);
+    std::sort<RandomAccessIterator, Compare>(first, last, comp);
 }
     
 inline int med3(int x[], int a, int b, int c) {
