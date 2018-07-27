@@ -313,8 +313,8 @@ public:
     euint erase ( iterator &iter ) {
         return rbtree_type::_erase ( &m_rbtree, & ( *iter ) );
     }
-    iterator erase ( const_iterator &iter ) {
-        iterator ret ( iter->iter_next, 0 );
+    iterator remove ( iterator &iter ) {
+        iterator ret ( ( rbnode_type * ) iter->iter_next, 0 );
         rbtree_type::_erase ( &m_rbtree, & ( *iter ) );
         return ret;
     }
