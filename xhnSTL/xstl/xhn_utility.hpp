@@ -1088,14 +1088,6 @@ void sort ( RandomAccessIterator first, RandomAccessIterator last, Compare comp 
     std::sort(first, last, comp);
 }
     
-template <typename T>
-void swap(T& x, T& y) noexcept
-{
-    T t(move(x));
-    x = move(y);
-    y = move(t);
-}
-    
 inline int med3(int x[], int a, int b, int c) {
     return x[a] < x[b] ? (x[b] < x[c] ? b : x[a] < x[c] ? c : a)
     : x[b] > x[c] ? b : x[a] > x[c] ? c : a;
@@ -1308,7 +1300,7 @@ RandomAccessIterator filter(RandomAccessIterator first, RandomAccessIterator las
             last--;
         while (first < last && lessThan(*first, sifter))
             first++;
-        swap(*first, *last);
+        std::swap(*first, *last);
         first++;
         last--;
     }
