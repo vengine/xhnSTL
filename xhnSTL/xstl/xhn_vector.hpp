@@ -113,9 +113,11 @@ public:
         PREV,
         FRedirectProc<vector>,
         vector> base_type;
-        typedef T value_type;
+        typedef std::ptrdiff_t difference_type;
+        typedef typename remove_cv<T>::type value_type;
         typedef T *pointer;
         typedef T &reference;
+        typedef std::random_access_iterator_tag iterator_category;
         iterator ( vector<T, GET_ELEM_REAL_SIZE, NEXT, PREV> *owner, char *a, euint ele_real_size )
             : base_type
             ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), NEXT(), PREV(), FRedirectProc<vector>(), owner )
@@ -179,9 +181,11 @@ public:
         PREV,
         FRedirectProc<vector>,
         vector> base_type;
-        typedef T value_type;
+        typedef std::ptrdiff_t difference_type;
+        typedef typename remove_cv<T>::type value_type;
         typedef T *pointer;
         typedef T &reference;
+        typedef std::random_access_iterator_tag iterator_category;
         const_iterator ( vector<T, GET_ELEM_REAL_SIZE, NEXT, PREV> *owner, char *a, euint ele_real_size )
             : base_type
             ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), NEXT(), PREV(), FRedirectProc<vector>(), owner )
@@ -238,9 +242,11 @@ public:
         NEXT,
         FRedirectProc<vector>,
         vector> base_type;
-        typedef T value_type;
+        typedef std::ptrdiff_t difference_type;
+        typedef typename remove_cv<T>::type value_type;
         typedef T *pointer;
         typedef T &reference;
+        typedef std::random_access_iterator_tag iterator_category;
         reverse_iterator ( vector<T, GET_ELEM_REAL_SIZE, NEXT, PREV> *owner, char *a, euint ele_real_size )
         : base_type
         ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), PREV(), NEXT(), FRedirectProc<vector>(), owner )
@@ -268,7 +274,7 @@ public:
             tmp.redirect ( offs );
             return tmp;
         }
-        inline iterator operator - ( esint offs ) {
+        inline reverse_iterator operator - ( esint offs ) {
             reverse_iterator tmp = *this;
             tmp.redirect ( -offs );
             return tmp;
@@ -292,9 +298,11 @@ public:
         NEXT,
         FRedirectProc<vector>,
         vector> base_type;
-        typedef T value_type;
+        typedef std::ptrdiff_t difference_type;
+        typedef typename remove_cv<T>::type value_type;
         typedef T *pointer;
         typedef T &reference;
+        typedef std::random_access_iterator_tag iterator_category;
         const_reverse_iterator ( vector<T, GET_ELEM_REAL_SIZE, NEXT, PREV> *owner, char *a, euint ele_real_size )
         : base_type
         ( ( T * ) a, ele_real_size, FReadProc(), FWriteProc(), PREV(), NEXT(), FRedirectProc<vector>(), owner )

@@ -92,6 +92,9 @@ public:
     inline bool operator > ( const readwrite_iterator &rts ) const {
         return m_ptr > rts.m_ptr;
     }
+    inline bool operator >= ( const readwrite_iterator& rts ) const {
+        return m_ptr >= rts.m_ptr;
+    }
 };
 
 template <typename T, typename Readproc, typename Writeproc>

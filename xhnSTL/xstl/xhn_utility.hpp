@@ -1079,19 +1079,13 @@ void sort_impl ( RandomAccessIterator first, RandomAccessIterator last, Compare&
 template <typename RandomAccessIterator>
 void sort ( RandomAccessIterator first, RandomAccessIterator last )
 {
-    if (first == last)
-        return;
-    last--;
-    sort_impl(first, last, FLessThanProc<typename RandomAccessIterator::value_type>());
+    std::sort(first, last);
 }
     
 template <typename RandomAccessIterator, typename Compare>
 void sort ( RandomAccessIterator first, RandomAccessIterator last, Compare comp )
 {
-    if (first == last)
-        return;
-    last--;
-    sort_impl(first, last, comp);
+    std::sort(first, last, comp);
 }
     
 template <typename T>

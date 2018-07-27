@@ -55,6 +55,29 @@
     XCTAssert(path == newpath, @"error");
 }
 
+- (void) testXhnSort
+{
+    xhn::vector<int> array;
+    array.push_back(3);
+    array.push_back(0);
+    array.push_back(1);
+    xhn::sort(array.begin(), array.end());
+    XCTAssert(array.size() == 3, @"error");
+    XCTAssert(array[0] == 0, @"error");
+    XCTAssert(array[1] == 1, @"error");
+    XCTAssert(array[2] == 3, @"error");
+    
+    array.push_back(128);
+    array.push_back(23);
+    array.push_back(-88);
+    array.push_back(512);
+    array.push_back(-9999);
+    xhn::sort(array.begin(), array.end());
+    for (auto i : array) {
+        printf("%d\n", i);
+    }
+}
+
 - (void) testXhnString
 {
     std::string stdstr =
