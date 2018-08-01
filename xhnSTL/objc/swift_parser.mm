@@ -566,7 +566,7 @@ namespace xhn {
         bridgeFile += "    }\n";
         bridgeFile += "    if let strPrevStateKindValue = strPrevStateKind ,let strNextStateKindValue = strNextStateKind {\n";
         bridgeFile += "        let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
-        bridgeFile += "        result[0] = gagent.allowStateChange(strPrevStateKindValue, nextStateKind: strNextStateKindValue)\n";
+        bridgeFile += "        result[0] = gagent.allowStateChange(strPrevStateKindValue, kindOfNextState: strNextStateKindValue)\n";
         bridgeFile += "    } else {\n";
         bridgeFile += "        result[0] = false\n";
         bridgeFile += "    }\n";
