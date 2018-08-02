@@ -132,6 +132,7 @@
 		68FC12DB1BC9D31A00C8A0BE /* xhnSTLTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 68FC12DA1BC9D31A00C8A0BE /* xhnSTLTests.mm */; };
 		B101A21D1FA04C1200F83D37 /* xhn_triple_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B101A21B1FA04C1200F83D37 /* xhn_triple_buffer.cpp */; };
 		B101A21E1FA04C1200F83D37 /* xhn_triple_buffer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B101A21C1FA04C1200F83D37 /* xhn_triple_buffer.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B108A1DF21134AEE0003A27C /* xhn_open_hash_set.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B108A1DE21134AEE0003A27C /* xhn_open_hash_set.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B10D55A61CBE6D47003733D9 /* swift_parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B10D55A41CBE6D47003733D9 /* swift_parser.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B10D55A71CBE6D47003733D9 /* swift_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10D55A51CBE6D47003733D9 /* swift_parser.mm */; };
 		B11892701E6BE7AF00AD5279 /* cpu_x86_64.c in Sources */ = {isa = PBXBuildFile; fileRef = B118926E1E6BE7AF00AD5279 /* cpu_x86_64.c */; };
@@ -303,6 +304,7 @@
 		68FC12DC1BC9D31A00C8A0BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B101A21B1FA04C1200F83D37 /* xhn_triple_buffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_triple_buffer.cpp; sourceTree = "<group>"; };
 		B101A21C1FA04C1200F83D37 /* xhn_triple_buffer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_triple_buffer.hpp; sourceTree = "<group>"; };
+		B108A1DE21134AEE0003A27C /* xhn_open_hash_set.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_open_hash_set.hpp; sourceTree = "<group>"; };
 		B10D55A41CBE6D47003733D9 /* swift_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = swift_parser.hpp; sourceTree = "<group>"; };
 		B10D55A51CBE6D47003733D9 /* swift_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = swift_parser.mm; sourceTree = "<group>"; };
 		B118926E1E6BE7AF00AD5279 /* cpu_x86_64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_x86_64.c; sourceTree = "<group>"; };
@@ -464,6 +466,9 @@
 				68245C7D1BC9D8F80006E99D /* xhn_gc_values.h */,
 				68245C7E1BC9D8F80006E99D /* xhn_hash_map.hpp */,
 				68245C7F1BC9D8F80006E99D /* xhn_hash_set.hpp */,
+				B108A1DE21134AEE0003A27C /* xhn_open_hash_set.hpp */,
+				B1A89DB11CAF9B7000358DD4 /* xhn_dictionary.hpp */,
+				B19C547E1E7BD696009FC8A8 /* xhn_cache.hpp */,
 				68245C801BC9D8F80006E99D /* xhn_iterator.hpp */,
 				68245C851BC9D8F80006E99D /* xhn_lambda.hpp */,
 				68245C881BC9D8F80006E99D /* xhn_list.hpp */,
@@ -509,10 +514,8 @@
 				B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */,
 				B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */,
 				B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */,
-				B1A89DB11CAF9B7000358DD4 /* xhn_dictionary.hpp */,
 				B1A89DB51CAF9F2700358DD4 /* xhn_singly_linked_list.hpp */,
 				B17CCE6D1E683A5F002B1946 /* xhn_memory_pool.hpp */,
-				B19C547E1E7BD696009FC8A8 /* xhn_cache.hpp */,
 				B1229DC31F3557ED0082FB3E /* xhn_group.hpp */,
 				B1D6ADE81F4D4B1C00AB8F2F /* xhn_parallel.cpp */,
 				B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */,
@@ -653,6 +656,7 @@
 				68245D041BC9D8F90006E99D /* xhn_gc_values.h in Headers */,
 				68245CCB1BC9D8F90006E99D /* exception.h in Headers */,
 				B17CCE6E1E683CA0002B1946 /* xhn_memory_pool.hpp in Headers */,
+				B108A1DF21134AEE0003A27C /* xhn_open_hash_set.hpp in Headers */,
 				68245D301BC9D8F90006E99D /* xhn_string_base.hpp in Headers */,
 				68245CE61BC9D8F90006E99D /* xhn_atomic_operation.hpp in Headers */,
 				68245D121BC9D8F90006E99D /* xhn_list_template.hpp in Headers */,

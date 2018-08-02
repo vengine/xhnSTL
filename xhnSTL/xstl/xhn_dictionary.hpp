@@ -121,7 +121,11 @@ namespace xhn
     class dictionary : public RefObject
     {
     public:
-        singly_linked_list<hash_node<K, V>>* m_buckets;
+        typedef typename BUCKET_ALLOCATOR::pointer bucket_pointer;
+        typedef typename NODE_ALLOCATOR::value_type node_type;
+        typedef typename NODE_ALLOCATOR::pointer node_pointer;
+    public:
+        bucket_pointer m_buckets;
         euint32 m_hash_mask;
         euint32 m_num_buckets;
         euint32 m_rebuild_tolerance;
@@ -130,9 +134,7 @@ namespace xhn
         BUCKET_ALLOCATOR m_bucket_allocator;
         NODE_ALLOCATOR m_node_allocator;
         bool m_need_dealloc;
-    public:
-        typedef hash_node<K, V> node_type;
-        
+    
         template<typename N>
         struct FReadProc {
             void operator() ( N *from, N &to ) {
@@ -295,11 +297,11 @@ namespace xhn
             }
         };
     private:
-        void destroy_hash_node_list(singly_linked_list<hash_node<K, V>>* hash_node_list)
+        void destroy_hash_node_list(bucket_pointer hash_node_list)
         {
-            hash_node<K, V>* current_node = hash_node_list->begin();
+            node_pointer current_node = hash_node_list->begin();
             while (current_node) {
-                hash_node<K, V>* deleted_node = current_node;
+                node_pointer deleted_node = current_node;
                 current_node = hash_node_list->remove(current_node);
                 m_node_allocator.destroy(deleted_node);
                 m_node_allocator.deallocate(deleted_node, 1);
@@ -307,25 +309,25 @@ namespace xhn
         }
         void rebuild()
         {
-            singly_linked_list<hash_node<K, V>>* old_buckets = m_buckets;
+            bucket_pointer old_buckets = m_buckets;
             euint32 old_num_buckets = m_num_buckets;
             m_hash_mask <<= 3;
             m_hash_mask |= 0x7;
             m_rebuild_tolerance += 1;
             euint32 new_num_buckets = m_num_buckets << 3;
             
-            singly_linked_list<hash_node<K, V>>* new_buckets = m_bucket_allocator.allocate(new_num_buckets);
+            bucket_pointer new_buckets = m_bucket_allocator.allocate(new_num_buckets);
             for (euint32 i = 0; i < new_num_buckets; i++) {
                 m_bucket_allocator.construct(&new_buckets[i]);
             }
             
             for (euint32 i = 0; i < old_num_buckets; i++) {
-                singly_linked_list<hash_node<K, V>>* old_bucket = &old_buckets[i];
-                hash_node<K, V>* current_node = old_bucket->begin();
+                bucket_pointer old_bucket = &old_buckets[i];
+                node_pointer current_node = old_bucket->begin();
                 while (current_node) {
-                    hash_node<K, V>* node = current_node;
+                    node_pointer node = current_node;
                     current_node = current_node->m_iter_next;
-                    singly_linked_list<hash_node<K, V>>* new_bucket = &new_buckets[node->m_hash_value & m_hash_mask];
+                    bucket_pointer new_bucket = &new_buckets[node->m_hash_value & m_hash_mask];
                     euint32 count = 0;
                     if (new_bucket->begin()) {
                         count = new_bucket->begin()->m_count + 1;
@@ -342,11 +344,11 @@ namespace xhn
             m_num_buckets = new_num_buckets;
         }
     public:
-        hash_node<K, V>* find_hash_node ( const K &key ) const {
+        node_pointer find_hash_node ( const K &key ) const {
             euint32 hash_value = m_hash_proc(key);
             euint32 ukey = hash_value & m_hash_mask;
-            singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey];
-            hash_node<K, V>* current_node = bucket->begin();
+            bucket_pointer bucket = &m_buckets[ukey];
+            node_pointer current_node = bucket->begin();
             while (current_node) {
                 if (current_node->first == key)
                     return current_node;
@@ -395,7 +397,7 @@ namespace xhn
             }
         }
         V* find ( const K &key ) const {
-            hash_node<K, V>* node = find_hash_node( key );
+            node_pointer node = find_hash_node( key );
             if (node) {
                 return &node->second;
             }
@@ -403,109 +405,114 @@ namespace xhn
                 return nullptr;
             }
         }
-
-#define INSERT \
-            euint32 hash_value = m_hash_proc(key); \
-            euint32 ukey = hash_value & m_hash_mask; \
-            singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey]; \
-            hash_node<K, V>* current_node = bucket->begin(); \
-            while (current_node) { \
-                if (current_node->first == key) { \
-                    current_node->second = value; \
-                    return &current_node->second; \
-                } \
-                current_node = current_node->m_iter_next; \
-            } \
-            \
-            euint32 count = 0; \
-            hash_node<K, V>* head = bucket->begin(); \
-            if (head) { \
-                count = head->m_count; \
-            } \
-            hash_node<K, V>* node = m_node_allocator.allocate(1); \
-            m_node_allocator.construct(node, key, value); \
-            node->m_hash_table = this; \
-            node->m_bucket_index = ukey; \
-            \
-            bucket->add(node); \
-            \
-            node->m_hash_value = hash_value; \
-            node->m_count = count + 1; \
-            \
-            if (m_hash_mask != 0xffffffff && count > m_rebuild_tolerance) { \
-                rebuild(); \
-            } \
-            return &node->second; \
-
-#define INSERT2 \
-            euint32 hash_value = m_hash_proc(key); \
-            euint32 ukey = hash_value & m_hash_mask; \
-            singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey]; \
-            hash_node<K, V>* current_node = bucket->begin(); \
-            while (current_node) { \
-                if (current_node->first == key) { \
-                    current_node->second = value; \
-                    return current_node; \
-                } \
-                current_node = current_node->m_iter_next; \
-            } \
-            \
-            euint32 count = 0; \
-            hash_node<K, V>* head = bucket->begin(); \
-            if (head) { \
-                count = head->m_count; \
-            } \
-            hash_node<K, V>* node = m_node_allocator.allocate(1); \
-            m_node_allocator.construct(node, key, value); \
-            node->m_hash_table = this; \
-            node->m_bucket_index = ukey; \
-            \
-            bucket->add(node); \
-            \
-            node->m_hash_value = hash_value; \
-            node->m_count = count + 1; \
-            \
-            if (m_hash_mask != 0xffffffff && count > m_rebuild_tolerance) { \
-                rebuild(); \
-            } \
-            return node; \
+        
+        template <typename KK, typename VV>
+        V* _insert(KK key, VV value) {
+            euint32 hash_value = m_hash_proc(key);
+            euint32 ukey = hash_value & m_hash_mask;
+            bucket_pointer bucket = &m_buckets[ukey];
+            node_pointer current_node = bucket->begin();
+            while (current_node) {
+                if (current_node->first == key) {
+                    current_node->second = value;
+                    return &current_node->second;
+                }
+                current_node = current_node->m_iter_next;
+            }
+            
+            euint32 count = 0;
+            node_pointer head = bucket->begin();
+            if (head) {
+                count = head->m_count;
+            }
+            node_pointer node = m_node_allocator.allocate(1);
+            m_node_allocator.construct(node, key, value);
+            node->m_hash_table = this;
+            node->m_bucket_index = ukey;
+            
+            bucket->add(node);
+            
+            node->m_hash_value = hash_value;
+            node->m_count = count + 1;
+            
+            if (m_hash_mask != 0xffffffff && count > m_rebuild_tolerance) {
+                rebuild();
+            }
+            return &node->second;
+        }
+        
+        template <typename KK, typename VV>
+        node_pointer _insert_node(KK key, VV value) {
+            euint32 hash_value = m_hash_proc(key);
+            euint32 ukey = hash_value & m_hash_mask;
+            bucket_pointer bucket = &m_buckets[ukey];
+            node_pointer current_node = bucket->begin();
+            while (current_node) {
+                if (current_node->first == key) {
+                    current_node->second = value;
+                    return current_node;
+                }
+                current_node = current_node->m_iter_next;
+            }
+            
+            euint32 count = 0;
+            node_pointer head = bucket->begin();
+            if (head) {
+                count = head->m_count;
+            }
+            node_pointer node = m_node_allocator.allocate(1);
+            m_node_allocator.construct(node, key, value);
+            node->m_hash_table = this;
+            node->m_bucket_index = ukey;
+            
+            bucket->add(node);
+            
+            node->m_hash_value = hash_value;
+            node->m_count = count + 1;
+            
+            if (m_hash_mask != 0xffffffff && count > m_rebuild_tolerance) {
+                rebuild();
+            }
+            return node;
+        }
 
     public:
         
         V* insert ( const K &key, const V& value ) {
-            INSERT
+            return _insert(key, value);
         }
         V* insert ( K &&key, V&& value ) {
-            INSERT
+            return _insert(key, value);
         }
         V* insert ( const K &key, V&& value ) {
-            INSERT
+            return _insert(key, value);
         }
         V* insert ( K &&key, const V& value ) {
-            INSERT
+            return _insert(key, value);
         }
         
-        hash_node<K, V>* insert_node ( const K &key, const V& value ) {
-            INSERT2
+        node_pointer insert_node ( const K &key, const V& value ) {
+            return _insert_node(key, value);
         }
-        hash_node<K, V>* insert_node ( K &&key, V&& value ) {
-            INSERT2
+        node_pointer insert_node ( K &&key, V&& value ) {
+            return _insert_node(key, value);
         }
-        hash_node<K, V>* insert_node ( const K &key, V&& value ) {
-            INSERT2
+        node_pointer insert_node ( const K &key, V&& value ) {
+            return _insert_node(key, value);
         }
-        hash_node<K, V>* insert_node ( K &&key, const V& value ) {
-            INSERT2
+        node_pointer insert_node ( K &&key, const V& value ) {
+            return _insert_node(key, value);
         }
+        
         void remove ( const K &key ) {
             euint32 hash_value = m_hash_proc(key);
             euint32 ukey = hash_value & m_hash_mask;
-            singly_linked_list<hash_node<K, V>>* bucket = &m_buckets[ukey];
-            hash_node<K, V>* current_node = bucket->begin();
+            bucket_pointer bucket = &m_buckets[ukey];
+            node_pointer current_node = bucket->begin();
             while (current_node) {
                 if (current_node->first == key) {
                     euint32 count = 0;
-                    hash_node<K, V>* head = bucket->begin();
+                    node_pointer head = bucket->begin();
                     if (head) {
                         count = head->m_count - 1;
                     }
