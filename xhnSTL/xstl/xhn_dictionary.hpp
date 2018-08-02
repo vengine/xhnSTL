@@ -55,6 +55,15 @@ namespace xhn
         : m_hash_table(nullptr)
         , m_bucket_index(0)
         {}
+        inline void set_value(const V &value) {
+            second = value;
+        }
+        inline void set_value(V &&value) {
+            second = value;
+        }
+        inline V& get_value() {
+            return second;
+        }
     };
     
     template <typename K, typename V>
@@ -399,7 +408,7 @@ namespace xhn
         V* find ( const K &key ) const {
             node_pointer node = find_hash_node( key );
             if (node) {
-                return &node->second;
+                return &node->get_value();
             }
             else {
                 return nullptr;
@@ -414,8 +423,8 @@ namespace xhn
             node_pointer current_node = bucket->begin();
             while (current_node) {
                 if (current_node->first == key) {
-                    current_node->second = value;
-                    return &current_node->second;
+                    current_node->set_value( value );
+                    return &current_node->get_value( );
                 }
                 current_node = current_node->m_iter_next;
             }
@@ -438,7 +447,7 @@ namespace xhn
             if (m_hash_mask != 0xffffffff && count > m_rebuild_tolerance) {
                 rebuild();
             }
-            return &node->second;
+            return &node->get_value( );
         }
         
         template <typename KK, typename VV>
@@ -449,7 +458,7 @@ namespace xhn
             node_pointer current_node = bucket->begin();
             while (current_node) {
                 if (current_node->first == key) {
-                    current_node->second = value;
+                    current_node->set_value( value );
                     return current_node;
                 }
                 current_node = current_node->m_iter_next;
