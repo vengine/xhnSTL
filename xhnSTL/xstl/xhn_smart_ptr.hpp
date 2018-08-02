@@ -276,6 +276,9 @@ public:
     inline operator T* () {
         return (T*)m_ptr;
     }
+    inline euint32 hash_value() const {
+        return (euint32)m_ptr;
+    }
 
 	CheckoutHandle Checkout()
 	{
@@ -411,6 +414,9 @@ public:
     inline void Release() const {
         _decSelf();
         m_ptr = nullptr;
+    }
+    inline euint32 hash_value() const {
+        return (euint32)m_ptr;
     }
 };
 
