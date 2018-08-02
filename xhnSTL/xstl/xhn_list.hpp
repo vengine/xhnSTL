@@ -110,7 +110,7 @@ namespace xhn
         }
     };
 template< typename T, typename ALLOCATOR = FListNodeAllocator<T> >
-class list : public RefObject
+class list : public RefObjectBase, public MemObject
 {
 public:
     typedef list_node<T> node_type;

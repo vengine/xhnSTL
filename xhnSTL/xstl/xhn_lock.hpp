@@ -791,7 +791,7 @@ T::Instance T::Lock() \
 }
 
 #define LockedSingletonDecl(classname, data) \
-class classname : public RefObject \
+class classname : public RefObjectBase, public MemObject \
 { \
 private: \
 static xhn::SmartPtr<classname> s_singleton; \

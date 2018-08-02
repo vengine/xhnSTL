@@ -171,7 +171,7 @@ public:
 			AtomicIncrement(&ptr->ref_count);
 #if DEBUG_REFOBJECT
             if (ptr->inc_callback) {
-                ptr->inc_callback((RefObject*)ptr, this);
+                ptr->inc_callback((RefObjectBase*)ptr, this);
             }
 #endif
 		}
@@ -182,7 +182,7 @@ public:
 			if (!AtomicDecrement(&ptr->ref_count)) {
 #if DEBUG_REFOBJECT
                 if (ptr->dec_callback) {
-                    ptr->dec_callback((RefObject*)ptr, this);
+                    ptr->dec_callback((RefObjectBase*)ptr, this);
                 }
 #endif
                 m_delete_proc(ptr);
@@ -190,7 +190,7 @@ public:
 #if DEBUG_REFOBJECT
             else {
                 if (ptr->dec_callback) {
-                    ptr->dec_callback((RefObject*)ptr, this);
+                    ptr->dec_callback((RefObjectBase*)ptr, this);
                 }
             }
 #endif

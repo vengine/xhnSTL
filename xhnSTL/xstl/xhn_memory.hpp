@@ -208,7 +208,7 @@ public:
 ///
 /// WeakPtr : public WeakPtrBase
 
-class RefObject;
+class RefObjectBase;
 class WeakNode;
 class WeakNodeList;
 class WeakPtrBase
@@ -230,9 +230,9 @@ public:
     WeakPtrBase* m_weakPtr;
     WeakNode* m_next;
     WeakNode* m_prev;
-    RefObject* m_ptr;
+    RefObjectBase* m_ptr;
 public:
-    WeakNode(RefObject* ptr)
+    WeakNode(RefObjectBase* ptr)
     : m_weakPtr(NULL)
     , m_next(NULL)
     , m_prev(NULL)
@@ -256,14 +256,12 @@ public:
         DeleteAllNodes_Locked();
     }
 public:
-    WeakNode* NewNode_NotLocked(RefObject* ptr);
+    WeakNode* NewNode_NotLocked(RefObjectBase* ptr);
     void DeleteNode_HalfLocked(WeakNode* node);
     void DeleteAllNodes_Locked();
     void SetWeakPtr(WeakNode* node,
                     WeakPtrBase* ptr);
 };
-
-class RefObjectBase;
 
 /// \brief WeakCounter
 ///
@@ -289,8 +287,8 @@ public:
 	mutable volatile esint32 ref_count;
     mutable WeakCounter* weak_count;
 #if DEBUG_REFOBJECT
-    void (*inc_callback)(RefObject*, void*);
-    void (*dec_callback)(RefObject*, void*);
+    void (*inc_callback)(RefObjectBase*, void*);
+    void (*dec_callback)(RefObjectBase*, void*);
     void* debug_value;
 #endif
 	RefObjectBase()

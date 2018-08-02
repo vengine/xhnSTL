@@ -28,7 +28,7 @@
 namespace xhn
 {
 
-class concurrent_variable : public RefObject
+class concurrent_variable : public RefObjectBase, public MemObject
 {
     DeclareRootRTTI;
 public:
@@ -38,7 +38,7 @@ public:
 typedef SmartPtr<concurrent_variable> concurrent_variable_ptr;
 typedef dictionary<static_string, concurrent_variable_ptr> thread_local_variables;
     
-class concurrent : public RefObject
+class concurrent : public RefObjectBase, public MemObject
 {
 private:
     struct concurrent_thread : public MemObject

@@ -54,7 +54,7 @@ template < typename T,
            typename PREV = FVectorPrevProcUnaligned<T>,
            typename CTOR = FCtorProc<T>,
            typename DEST = FDestProc<T> >
-class vector : public RefObject
+class vector : public RefObjectBase, public MemObject
 {
 public:
     enum for_each_status

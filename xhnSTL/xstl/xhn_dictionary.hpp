@@ -127,7 +127,7 @@ namespace xhn
               typename EQUAL_PROC = FEqualProc<K>,
               typename BUCKET_ALLOCATOR = FHashBucketAllocator<K, V>,
               typename NODE_ALLOCATOR = FHashListNodeAllocator<K, V> >
-    class dictionary : public RefObject
+    class dictionary : public RefObjectBase, public MemObject
     {
     public:
         typedef typename BUCKET_ALLOCATOR::pointer bucket_pointer;

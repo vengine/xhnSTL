@@ -19,7 +19,7 @@
 #include "xhn_smart_ptr.hpp"
 namespace xhn
 {
-class operation_data : public RefObject
+class operation_data : public RefObjectBase, public MemObject
 {
     DeclareRootRTTI;
 };
@@ -44,7 +44,7 @@ public:
     virtual void cancel() = 0;
 };
     
-class operation_handle : public RefObject
+class operation_handle : public RefObjectBase, public MemObject
 {
 private:
     thread::task_ptr m_operation;
@@ -72,7 +72,7 @@ public:
 };
 typedef SmartPtr<operation_handle> operation_handle_ptr;
     
-class operation_manager : public RefObject
+class operation_manager : public RefObjectBase, public MemObject
 {
 private:
     static operation_manager* s_operation_manager;

@@ -26,7 +26,7 @@ typedef SmartPtr<wpath_node> wpath_node_ptr;
 #else
 typedef garbage_collector::mem_handle<wpath_node> wpath_node_ptr;
 #endif
-class wpath_node : public RefObject
+class wpath_node : public RefObjectBase, public MemObject
 {
 public:
 	wstring path_name;
@@ -55,12 +55,12 @@ typedef SmartPtr<path_node> path_node_ptr;
 typedef garbage_collector::mem_handle<path_node> path_node_ptr;
 #endif
 
-class walker : public RefObject
+class walker : public RefObjectBase, public MemObject
 {
 public:
     virtual void walk(path_node* node) = 0;
 };
-class path_node : public RefObject
+class path_node : public RefObjectBase, public MemObject
 {
 public:
     string path_name;

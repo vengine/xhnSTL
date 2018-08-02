@@ -25,7 +25,7 @@ namespace xhn
     /// \brief project
     ///
     /// project 是数据，routine 是执行过程，receipt 是回执
-class project : public RefObject
+class project : public RefObjectBase, public MemObject
 {
     DeclareRootRTTI;
 public:
@@ -61,7 +61,7 @@ public:
     /// \brief receipt
     ///
     /// project 是数据，routine 是执行过程，receipt 是回执
-class receipt : public RefObject
+class receipt : public RefObjectBase, public MemObject
 {
     DeclareRootRTTI;
 public:
@@ -72,7 +72,7 @@ typedef SmartPtr<receipt> receipt_ptr;
     /// \brief routine_agent
     ///
     ///
-class routine_agent : public RefObject
+class routine_agent : public RefObjectBase, public MemObject
 {
 public:
     virtual ~routine_agent() {}
@@ -82,7 +82,7 @@ typedef SmartPtr<routine_agent> routine_agent_ptr;
     /// \brief routine_pool
     ///
     ///
-class routine_pool : public RefObject
+class routine_pool : public RefObjectBase, public MemObject
 {
 public:
     SpinLock m_lock;

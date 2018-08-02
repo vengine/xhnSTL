@@ -123,7 +123,7 @@
     XCTAssert(a == 32, "a != 32");
 }
 
-class Test : public RefObject
+class Test : public RefObjectBase, public MemObject
 {
 public:
     int a;
@@ -1594,7 +1594,7 @@ void* AffinitProc(void*)
     VDELETE p;
 }
 
-class TestObject : public RefObject
+class TestObject : public RefObjectBase, public MemObject
 {
 };
 

@@ -28,7 +28,7 @@
 
 namespace xhn
 {
-    class search_duplicate_files_status : public RefObject
+    class search_duplicate_files_status : public RefObjectBase, public MemObject
     {
     public:
         enum status

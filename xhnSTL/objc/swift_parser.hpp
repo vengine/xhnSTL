@@ -49,7 +49,7 @@ public:
                                 Lambda<void (const xhn::string& versionInfo)>& callback);
 };
     
-class ASTReformatter : public RefObject
+class ASTReformatter : public RefObjectBase, public MemObject
 {
 public:
     virtual xhn::string Reformat(const char* strBuffer, euint length) = 0;

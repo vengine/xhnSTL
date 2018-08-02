@@ -25,7 +25,7 @@
 namespace xhn
 {
 	template< typename K, typename V, typename HASH_PROC = FHashProc<K> >
-	class hash_map : public RefObject
+	class hash_map : public RefObjectBase, public MemObject
 	{
 	public:
 		class bucket

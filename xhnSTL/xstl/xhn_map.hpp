@@ -113,7 +113,7 @@ template< typename K,
           typename V, 
 		  typename LessThanProc = FLessThanProc<K>,
 		  typename NodeAllocator = FMapNodeAllocator<K, V> >
-class map : public RefObject
+class map : public RefObjectBase, public MemObject
 {
 private:
 

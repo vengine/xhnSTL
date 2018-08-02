@@ -110,7 +110,7 @@ public:
 template< typename K, 
           typename LessThanProc = FLessThanProc<K>,
           typename NodeAllocator = FSetNodeAllocator<K> >
-class set : public RefObject
+class set : public RefObjectBase, public MemObject
 {
 private:
     rbtree<K, K, LessThanProc, NodeAllocator> m_rbtree;

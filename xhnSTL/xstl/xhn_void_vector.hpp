@@ -24,7 +24,7 @@
 #include "xhn_utility.hpp"
 namespace xhn
 {
-    class void_vector : public RefObject
+    class void_vector : public RefObjectBase, public MemObject
 	{
 	public:
 		struct FCharProc {

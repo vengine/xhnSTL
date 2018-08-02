@@ -26,10 +26,10 @@
 namespace xhn
 {
     
-class realtime_thread : public RefObject
+class realtime_thread : public RefObjectBase, public MemObject
 {
 public:
-    class realtime_task : public RefObject
+    class realtime_task : public RefObjectBase, public MemObject
     {
     public:
         virtual const static_string type() const = 0;
@@ -37,7 +37,7 @@ public:
         virtual void run_once(double elapsedTime) = 0;
     };
     typedef SmartPtr<realtime_task> realtime_task_ptr;
-    class realtime_task_pool : public RefObject
+    class realtime_task_pool : public RefObjectBase, public MemObject
     {
     private:
         SpinObject<vector<realtime_task_ptr>> m_tasks;

@@ -26,7 +26,7 @@ namespace xhn
 {
 class thread;
 typedef SmartPtr<thread> thread_ptr;
-class thread : public RefObject 
+class thread : public RefObjectBase, public MemObject
 {
 public:
     enum TaskStatus
@@ -53,7 +53,7 @@ public:
             (ref_ptr)addr <= (ref_ptr)m_begin_addr + (ref_ptr)m_size;
         }
     };
-	class task : public RefObject
+	class task : public RefObjectBase, public MemObject
 	{
 	public:
         virtual const static_string type() const = 0;

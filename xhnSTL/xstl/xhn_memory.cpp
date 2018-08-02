@@ -1,6 +1,6 @@
 #include "xhn_memory.hpp"
 
-WeakNode* WeakNodeList::NewNode_NotLocked(RefObject* ptr) {
+WeakNode* WeakNodeList::NewNode_NotLocked(RefObjectBase* ptr) {
     WeakNode* ret = VNEW
     WeakNode(ptr);
     ///Insert(ret);

@@ -24,7 +24,7 @@
 namespace xhn
 {
 template<typename T>
-class hash_set : public RefObject
+class hash_set : public RefObjectBase, public MemObject
 {
 public:
     class bucket

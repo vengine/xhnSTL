@@ -23,7 +23,7 @@ namespace xhn
     /// \brief concurrent_thread_pool
     ///
     ///
-class concurrent_thread_pool : public RefObject
+class concurrent_thread_pool : public RefObjectBase, public MemObject
 {
 public:
     vector<thread_ptr> m_threads;
@@ -41,7 +41,7 @@ class transaction_pool;
 typedef WeakPtr<transaction_pool> transaction_pool_weak_ptr;
 typedef SmartPtr<transaction_pool> transaction_pool_ptr;
 
-class transaction : public RefObject
+class transaction : public RefObjectBase, public MemObject
 {
     friend class SmartPtr<transaction>;
     friend class transaction_pool;
@@ -59,7 +59,7 @@ public:
 typedef SmartPtr<transaction> transaction_ptr;
     
     
-class transaction_pool : public RefObject
+class transaction_pool : public RefObjectBase, public MemObject
 {
     friend class transaction;
 public:

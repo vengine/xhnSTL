@@ -20,7 +20,7 @@ namespace xhn
 {
     [[deprecated]]
     template <typename LIST_NODE>
-    class list_base : public RefObject
+    class list_base : public RefObjectBase, public MemObject
     {
     protected:
         LIST_NODE* head;

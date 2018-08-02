@@ -67,7 +67,7 @@ namespace xhn
         void destroy(file_block* ptr) { ptr->~file_block(); }
     };
     /// file_implement 里面必须携带文件句柄
-    class file_implement : public RefObject
+    class file_implement : public RefObjectBase, public MemObject
     {
     public:
         virtual ~file_implement() {}
@@ -80,7 +80,7 @@ namespace xhn
         virtual euint64 get_size() = 0;
     };
     typedef xhn::SmartPtr<file_implement> file_implement_ptr;
-    class file_stream : public RefObject
+    class file_stream : public RefObjectBase, public MemObject
     {
         friend class file_block;
     private:
@@ -189,7 +189,7 @@ namespace xhn
     /// |-------- -------- -------- -------1| 读取1个bit
     /// |-------- -------- -------- --------| 读取1个bit
     
-    class bit_writer : public RefObject
+    class bit_writer : public RefObjectBase, public MemObject
     {
     public:
         file_stream_ptr m_file;
@@ -225,7 +225,7 @@ namespace xhn
     };
     typedef SmartPtr<bit_writer> bit_writer_ptr;
     
-    class bit_reader : public RefObject
+    class bit_reader : public RefObjectBase, public MemObject
     {
     public:
         file_stream_ptr m_file;
@@ -248,7 +248,7 @@ namespace xhn
     };
     typedef SmartPtr<bit_reader> bit_reader_ptr;
     
-    class path : public RefObject
+    class path : public RefObjectBase, public MemObject
     {
     public:
         string m_path;
@@ -256,7 +256,7 @@ namespace xhn
     };
     typedef SmartPtr<path> path_ptr;
     
-    class path_enumerator : public RefObject
+    class path_enumerator : public RefObjectBase, public MemObject
     {
     public:
         virtual ~path_enumerator() {}

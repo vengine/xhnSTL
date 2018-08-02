@@ -23,7 +23,7 @@ namespace xhn
     /// \brief state_data
     ///
     ///
-class state_data : public RefObject
+class state_data : public RefObjectBase, public MemObject
 {
     DeclareRootRTTI;
 public:
@@ -33,7 +33,7 @@ typedef SmartPtr<state_data> state_data_ptr;
     /// \brief state_argument
     ///
     ///
-class state_argument : public RefObject
+class state_argument : public RefObjectBase, public MemObject
 {
     DeclareRootRTTI;
 public:
@@ -47,7 +47,7 @@ typedef SmartPtr<state_machine> state_machine_ptr;
     /// \brief state
     ///
     ///
-class state : public RefObject
+class state : public RefObjectBase, public MemObject
 {
     DeclareRootRTTI;
 protected:
@@ -71,7 +71,7 @@ typedef SmartPtr<state> state_ptr;
     /// \brief state_machine
     ///
     ///
-class state_machine : public RefObject
+class state_machine : public RefObjectBase, public MemObject
 {
 private:
     map<static_string, state_ptr> m_states;
