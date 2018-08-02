@@ -18,6 +18,7 @@
 #include <xhnSTL/xhn_concurrent.hpp>
 #include <xhnSTL/xhn_stacktrace.hpp>
 #include <xhnSTL/xhn_realtime_thread.hpp>
+#include <xhnSTL/xhn_open_hash_set.hpp>
 #include <xhnSTL/cpu.h>
 #include <vector>
 #include <map>
@@ -2311,7 +2312,26 @@ public:
             xhn::thread::nano_sleep(1000000);
         }
     }
-    
+}
+
+- (void) testOpenHashSet
+{
+    xhn::open_hash_set<TestPtr> testSet;
+    TestPtr a = VNEW Test();
+    TestPtr b = VNEW Test();
+    a->a = 32;
+    b->a = 128;
+    testSet.insert(a);
+    testSet.insert(a);
+    testSet.insert(b);
+    testSet.insert(b);
+    auto iter = testSet.begin();
+    auto end = testSet.end();
+    for (; iter != end; iter++) {
+        TestPtr t = *iter;
+        printf("%d\n", t->a);
+    }
+    printf("here\n");
 }
 
 @end

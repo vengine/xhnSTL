@@ -276,7 +276,7 @@ public:
     inline operator T* () {
         return (T*)m_ptr;
     }
-    inline euint32 hash_value() const {
+    inline euint32 hash_value() {
         return (euint32)m_ptr;
     }
 
@@ -415,7 +415,7 @@ public:
         _decSelf();
         m_ptr = nullptr;
     }
-    inline euint32 hash_value() const {
+    inline euint32 hash_value() {
         return (euint32)m_ptr;
     }
 };
