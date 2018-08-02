@@ -47,7 +47,7 @@ typedef SmartPtr<state_machine> state_machine_ptr;
     /// \brief state
     ///
     ///
-class state : public RefObjectBase, public MemObject
+class state : public RefObject
 {
     DeclareRootRTTI;
 protected:
@@ -71,7 +71,7 @@ typedef SmartPtr<state> state_ptr;
     /// \brief state_machine
     ///
     ///
-class state_machine : public RefObjectBase, public MemObject
+class state_machine : public RefObject
 {
 private:
     map<static_string, state_ptr> m_states;
