@@ -128,7 +128,7 @@ public:
     {}
     virtual ~state_machine() {}
     virtual void init() = 0;
-    void update(double elapsedTime);
+    virtual void update(double elapsedTime);
     void goto_state(const static_string state_name);
     virtual void previous_state_switch(const xhn::static_string next_state_name) {}
     virtual void post_state_switch(const xhn::static_string prev_state_name) {}
