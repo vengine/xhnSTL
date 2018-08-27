@@ -525,10 +525,10 @@ namespace xhn {
         bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
         bridgeFile += "    gagent.update(elapsedTime[0])\n";
         bridgeFile += "}\n";
-        bridgeFile += "public func GotoGUIAgentState(agent : UnsafeRawPointer, stateKind : UnsafePointer<Int32>) {\n";
+        bridgeFile += "public func GotoGUIAgentState(agent : UnsafeRawPointer, kindOfState : UnsafePointer<Int32>) {\n";
         bridgeFile += "    let gagent = bridgeToObject(ptr: agent) as GUIAgent\n";
         bridgeFile += "    var strKindOfState : String? = nil\n";
-        bridgeFile += "    switch (stateKind[0])\n";
+        bridgeFile += "    switch (kindOfState[0])\n";
         bridgeFile += "    {\n";
         bridgeFile += "    case 0: strKindOfState = \"NormalState\"\n";
         bridgeFile += "    case 1: strKindOfState = \"HoveringState\"\n";
@@ -542,10 +542,10 @@ namespace xhn {
         bridgeFile += "    }\n";
         bridgeFile += "}\n";
         bridgeFile += "public func AllowGUIStateChange(agent : UnsafeRawPointer, \n";
-        bridgeFile += "                                prevStateKind : UnsafePointer<Int32>, nextStateKind : UnsafePointer<Int32>, \n";
+        bridgeFile += "                                prevKindOfState : UnsafePointer<Int32>, nextKindOfState : UnsafePointer<Int32>, \n";
         bridgeFile += "                                result : UnsafeMutablePointer<Bool> ) {\n";
         bridgeFile += "    var strKindOfPrevState : String? = nil\n";
-        bridgeFile += "    switch (prevStateKind[0])\n";
+        bridgeFile += "    switch (prevKindOfState[0])\n";
         bridgeFile += "    {\n";
         bridgeFile += "    case 0: strKindOfPrevState = \"NormalState\"\n";
         bridgeFile += "    case 1: strKindOfPrevState = \"HoveringState\"\n";
@@ -555,7 +555,7 @@ namespace xhn {
         bridgeFile += "    default: strKindOfPrevState = nil\n";
         bridgeFile += "    }\n";
         bridgeFile += "    var strKindOfNextState : String? = nil\n";
-        bridgeFile += "    switch (nextStateKind[0])\n";
+        bridgeFile += "    switch (nextKindOfState[0])\n";
         bridgeFile += "    {\n";
         bridgeFile += "    case 0: strKindOfNextState = \"NormalState\"\n";
         bridgeFile += "    case 1: strKindOfNextState = \"HoveringState\"\n";
