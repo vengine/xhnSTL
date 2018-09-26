@@ -154,13 +154,7 @@ typedef xhn::WeakPtr<Test> TestWeakPtr;
 
 #include <xhnSTL/xhn_vector.hpp>
 - (void) testVector1 {
-    xhn::vector<int> intArray( xhn::vector<int>(0) );
-    intArray.push_back(0);
-    intArray.push_back(1);
-    intArray.push_back(2);
-    intArray.push_back(3);
-    intArray.push_back(4);
-    intArray.push_back(5);
+    xhn::vector<int> intArray( {0, 1, 2, 3, 4, 5} );
     xhn::Lambda<void(int&, bool*)> proc([](int& i, bool* stop){
         printf("%d\n", i);
         *stop = true;

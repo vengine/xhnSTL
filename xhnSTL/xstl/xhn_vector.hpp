@@ -18,6 +18,7 @@
 #include "emem.h"
 #include "xhn_memory.hpp"
 #include <new>
+#include <initializer_list>
 
 #include "xhn_iterator.hpp"
 #include "xhn_utility.hpp"
@@ -711,6 +712,20 @@ public:
         m_totel_ele_count = v.m_totel_ele_count;
         m_curt_ele_count = v.m_curt_ele_count;
         v.m_begin_addr = NULL;
+    }
+    vector(std::initializer_list<T> il) {
+        euint cnt = il.size();
+        euint size = m_get_elem_real_size();
+        m_begin_addr = ( char * ) NMalloc ( size * cnt * 2 );
+        m_end_addr = m_begin_addr;
+        m_ele_real_size = size;
+        m_totel_ele_count = cnt * 2;
+        m_curt_ele_count = 0;
+        auto iter = il.begin();
+        auto end = il.end();
+        for (; iter != end; iter++) {
+            push_back(*iter);
+        }
     }
     template <class InputIterator>
     vector (InputIterator first, InputIterator last) {
