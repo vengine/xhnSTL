@@ -415,6 +415,10 @@ namespace xhn
             }
         }
         
+        node_pointer find_node ( const K &key ) const {
+            return find_hash_node( key );
+        }
+        
         template <typename KK, typename VV>
         V* _insert(KK key, VV value) {
             euint32 hash_value = m_hash_proc(key);
