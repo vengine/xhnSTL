@@ -645,8 +645,8 @@ public:
             return false;
     }
     vector& append (const vector& v) {
-        iterator i = v.begin();
-        iterator e = v.end();
+        const_iterator i = v.begin();
+        const_iterator e = v.end();
         for (; i != e; i++) {
             push_back(*i);
         }
