@@ -64,6 +64,9 @@ namespace xhn
         inline V& get_value() {
             return second;
         }
+        inline K get_key() {
+            return static_cast<K>(first);
+        }
     };
     
     template <typename K, typename V>
