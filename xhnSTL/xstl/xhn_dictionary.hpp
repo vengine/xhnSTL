@@ -64,7 +64,10 @@ namespace xhn
         inline V& get_value() {
             return second;
         }
-        inline K get_key() {
+        inline const V& get_value() const {
+            return second;
+        }
+        inline K get_key() const {
             return static_cast<K>(first);
         }
     };
