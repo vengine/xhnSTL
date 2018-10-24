@@ -11,7 +11,7 @@ NSString* swiftc = @"/Applications/Xcode.app/Contents/Developer/Toolchains/Xcode
 NSString* sdk = @"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
 NSString* usedVersion = @"4";
 
-#define USING_AST_LOG 1
+#define USING_AST_LOG 0
 
 #if USING_AST_LOG
 
