@@ -775,7 +775,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm -rf /Users/xhnsworks/vengine/VEngine/Mac/Editor/VEngineLogicDependencies/macOS/xhnSTLStatic.framework\nif [ ! -d \"/Users/xhnsworks/VEngineProjects/未命名项目/Frameworks/macOS\"]; then\n  rm -rf /Users/xhnsworks/VEngineProjects/未命名项目/Frameworks/macOS/xhnSTLStatic.framework\nfi\ncp -f -R ${BUILT_PRODUCTS_DIR}/xhnSTLStatic.framework /Users/xhnsworks/vengine/VEngine/Mac/Editor/VEngineLogicDependencies/macOS/\nif [ ! -d \"/Users/xhnsworks/VEngineProjects/未命名项目/Frameworks/macOS\"]; then\n  cp -f -R ${BUILT_PRODUCTS_DIR}/xhnSTLStatic.framework /Users/xhnsworks/VEngineProjects/未命名项目/Frameworks/macOS/\nfi";
+			shellScript = "rm -rf /Users/xhnsworks/vengine/VEngine/Mac/Editor/VEngineLogicDependencies/macOS/xhnSTLStatic.framework\nif [ ! -d \"/Users/xhnsworks/VEngineProjects/未命名项目/Frameworks/macOS\"]; then\n  rm -rf /Users/xhnsworks/VEngineProjects/未命名项目/Frameworks/macOS/xhnSTLStatic.framework\nfi\ncp -f -R ${BUILT_PRODUCTS_DIR}/xhnSTLStatic.framework /Users/xhnsworks/vengine/VEngine/Mac/Editor/VEngineLogicDependencies/macOS/\nif [ ! -d \"/Users/xhnsworks/VEngineProjects/未命名项目/Frameworks/macOS\"]; then\n  cp -f -R ${BUILT_PRODUCTS_DIR}/xhnSTLStatic.framework /Users/xhnsworks/VEngineProjects/未命名项目/Frameworks/macOS/\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

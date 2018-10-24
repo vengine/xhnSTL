@@ -11,7 +11,7 @@ NSString* swiftc = @"/Applications/Xcode.app/Contents/Developer/Toolchains/Xcode
 NSString* sdk = @"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
 NSString* usedVersion = @"4";
 
-#define USING_AST_LOG 0
+#define USING_AST_LOG 1
 
 #if USING_AST_LOG
 
@@ -817,8 +817,34 @@ namespace xhn {
                                     firstAction = mbuf;
                                 }
                                 i++;
+                            } else {
+                                if (!isInheritFromAction) {
+                                    snprintf(mbuf, 512,
+                                             "        ///   !isInheritFromAction\n");
+                                    bridgeFile += mbuf;
+                                }
+                                if (!isInheritFromActionInterface) {
+                                    snprintf(mbuf, 512,
+                                             "        ///   !isInheritFromActionInterface\n");
+                                    bridgeFile += mbuf;
+                                }
+                            }
+                        } else {
+                            if (StrClassDecl != child->nodetype) {
+                                snprintf(mbuf, 512,
+                                         "        ///   not a class node\n");
+                                bridgeFile += mbuf;
+                            }
+                            if (StrPublic != child->access && StrOpen != child->access) {
+                                snprintf(mbuf, 512,
+                                         "        ///   access right not public and not open\n");
+                                bridgeFile += mbuf;
                             }
                         }
+                    } else {
+                        snprintf(mbuf, 512,
+                                 "        ///   not found from childrenClassMap\n");
+                        bridgeFile += mbuf;
                     }
                 }
                 if (firstAction.size()) {
@@ -1933,7 +1959,7 @@ namespace xhn {
             xhn::vector<xhn::static_string> guiAgentNameVector = swiftParser->GetGUIAgentNameVector();
             xhn::vector<xhn::static_string> guiListAgentNameVector = swiftParser->GetGUIListAgentNameVector();
             xhn::vector<xhn::static_string> actorAgentNameVector = swiftParser->GetActorAgentNameVector();
-            ASTLog("%s\n", bridgeFile.c_str());
+            ASTLog("%s\n", swiftBridgeFile.c_str());
             ASTLog("%s\n", stateActionFile.c_str());
             delete swiftParser;
             self.parser = nil;
