@@ -192,6 +192,11 @@ namespace xhn {
                 if (xhn::string::npos != pos &&
                     pos + dotType.size() == strIntType.size()) {
                     strIntType = strIntType.substr(0, pos);
+                    ASTNode* parent = node->parent;
+                    while (parent && StrClassDecl == parent->nodetype) {
+                        strIntType = xhn::string(parent->name.c_str()) + "." + strIntType;
+                        parent = parent->parent;
+                    }
                     aliasMap[strIntType.c_str()] = node->type;
                     ASTLog("++:%s -> %s\n", strIntType.c_str(), node->type.c_str());
                 }
@@ -323,10 +328,16 @@ namespace xhn {
         }
         
         ///
+        auto aliIter = aliasMap.begin();
+        auto aliEnd = aliasMap.end();
+        for (; aliIter != aliEnd; aliIter++) {
+            ClassHierarchyLog("###%s -> %s\n", aliIter->first.c_str(), aliIter->second.c_str());
+        }
+        ///
         auto inhMapIter = inheritMap.begin();
         auto inhMapEnd = inheritMap.end();
         for (; inhMapIter != inhMapEnd; inhMapIter++) {
-            ASTLog("##%s : ", inhMapIter->first.c_str());
+            ClassHierarchyLog("##%s : ", inhMapIter->first.c_str());
             auto inhIter = inhMapIter->second.begin();
             auto inhEnd = inhMapIter->second.end();
             for (; inhIter != inhEnd; inhIter++) {
@@ -334,9 +345,9 @@ namespace xhn {
                 if (aliasiter != aliasMap.end()) {
                     *inhIter = aliasiter->second;
                 }
-                ASTLog("%s ", (*inhIter).c_str());
+                ClassHierarchyLog("%s ", (*inhIter).c_str());
             }
-            ASTLog("\n");
+            ClassHierarchyLog("\n");
         }
         vector<static_string> inheritPath;
         if (isInheritFromClassProc("TranslationScript.ZMoveState", "NSObject", inheritPath)) {
