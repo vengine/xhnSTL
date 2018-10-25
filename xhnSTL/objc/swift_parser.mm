@@ -187,15 +187,17 @@ namespace xhn {
         const string dotType(".Type");
         makeAliasMap = [&makeAliasMap, &aliasMap, &dotType](ASTNode* node) -> void {
             if (StrTypealias == node->nodetype) {
-                xhn::string strIntType = node->interfacetype.c_str();
+                string strIntType = node->interfacetype.c_str();
                 euint pos = strIntType.rfind(dotType);
-                if (xhn::string::npos != pos &&
+                if (string::npos != pos &&
                     pos + dotType.size() == strIntType.size()) {
                     strIntType = strIntType.substr(0, pos);
-                    ASTNode* parent = node->parent;
-                    while (parent && StrClassDecl == parent->nodetype) {
-                        strIntType = xhn::string(parent->name.c_str()) + "." + strIntType;
-                        parent = parent->parent;
+                    if (string::npos == strIntType.find(".")) {
+                        ASTNode* parent = node->parent;
+                        while (parent && StrClassDecl == parent->nodetype) {
+                            strIntType = xhn::string(parent->name.c_str()) + "." + strIntType;
+                            parent = parent->parent;
+                        }
                     }
                     aliasMap[strIntType.c_str()] = node->type;
                     ASTLog("++:%s -> %s\n", strIntType.c_str(), node->type.c_str());
