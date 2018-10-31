@@ -1542,7 +1542,7 @@ namespace xhn {
         for (auto& p : stateFuncClassMap) {
             char mbuf[512];
             snprintf(mbuf, 512,
-                     "    static open func _TtCC12VEngineLogic%s() -> (SceneNodeState & SceneNodeStateInterface) {\n"
+                     "    static public func _TtCC12VEngineLogic%s() -> (SceneNodeState & SceneNodeStateInterface) {\n"
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
@@ -1558,7 +1558,7 @@ namespace xhn {
         for (auto& p : guiStateFuncClassMap) {
             char mbuf[512];
             snprintf(mbuf, 512,
-                     "    static open func _TtCC12VEngineLogic%s() -> (GUIState & GUIStateInterface) {\n"
+                     "    static public func _TtCC12VEngineLogic%s() -> (GUIState & GUIStateInterface) {\n"
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
@@ -1574,7 +1574,7 @@ namespace xhn {
         for (auto& p : actionFuncClassMap) {
             char mbuf[512];
             snprintf(mbuf, 512,
-                     "    static open func _TtCC12VEngineLogic%s() -> (Action & AnimationInterface & ActionInterface) {\n"
+                     "    static public func _TtCC12VEngineLogic%s() -> (Action & AnimationInterface & ActionInterface) {\n"
                      "        return %s();\n"
                      "    }\n",
                      p.first.c_str(), p.second.c_str());
