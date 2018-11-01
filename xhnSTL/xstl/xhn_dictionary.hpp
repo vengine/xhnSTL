@@ -70,6 +70,9 @@ namespace xhn
         inline K get_key() const {
             return static_cast<K>(first);
         }
+        inline K* get_key_pointer() const {
+            return (K*)(&first);
+        }
     };
     
     template <typename K, typename V>
