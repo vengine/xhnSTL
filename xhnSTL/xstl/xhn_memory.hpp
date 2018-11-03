@@ -94,7 +94,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 	void* operator new( size_t nSize, void* ptr )
 	{
-		EDebugAssert(((ref_ptr)ptr % 16) == 0, "new object error");
+//        EDebugAssert(((ref_ptr)ptr % 16) == 0, "new object error");
 		return ptr;
 	}
 
