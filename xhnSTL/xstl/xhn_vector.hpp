@@ -418,11 +418,13 @@ public:
         return * ( ( T * ) m_begin_addr );
     }
     inline T &operator [] ( euint i ) {
+        EDebugAssert(i < size(), "subscript out of bounds");
         euint offs = m_ele_real_size * i;
         char *ptr = m_begin_addr + offs;
         return * ( ( T * ) ptr );
     }
     inline const T &operator [] ( euint i ) const {
+        EDebugAssert(i < size(), "subscript out of bounds");
         euint offs = m_ele_real_size * i;
         char *ptr = m_begin_addr + offs;
         return * ( ( T * ) ptr );
