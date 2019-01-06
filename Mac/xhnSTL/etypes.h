@@ -45,6 +45,9 @@ typedef euint* uptr;
 #define MAX_EUINT64 0xffffffffffffffff
 #define INVALID_UNSIGNED_INTEGER_64 ((euint64)-1)
 #define INVALID_UNSIGNED_INTEGER ((euint)-1)
+#define MAX_INT_SIZE 128
+typedef __int128_t esint128;
+typedef __uint128_t euint128;
 
 typedef enum _etype
 {

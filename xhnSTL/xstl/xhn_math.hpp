@@ -13,6 +13,8 @@
 
 #ifdef __cplusplus
 #include <math.h>
+#include "common.h"
+#include "etypes.h"
 
 namespace xhn {
     
@@ -173,8 +175,8 @@ long double assoc_legendrel( unsigned int n, unsigned int m, long double x )
     return A<long double>(n, m, x);
 }
     
-extern unsigned long factorial_table[21];
-inline unsigned long factorial(unsigned long n)
+extern euint64 factorial_table[21];
+inline euint64 factorial(unsigned int n)
 {
     if (n <= 20) {
         return factorial_table[n];
@@ -182,6 +184,39 @@ inline unsigned long factorial(unsigned long n)
         return 0xffffffffffffffff;
     }
 }
+    
+#if MAX_INT_SIZE > 64
+    
+inline void u128toa(euint128 v, char* s)
+{
+    char temp;
+    int i = 0, j = 0;
+    
+    while(v > 0) {
+        s[i++] = v % 10 + '0';
+        v /= 10;
+    }
+    s[i] = '\0';
+
+    i--;
+    while(j < i) {
+        temp = s[j];
+        s[j] = s[i];
+        s[i] = temp;
+        j++;
+        i--;
+    }
+}
+extern euint128 factorial_table128[35];
+inline euint128 factorial128(unsigned int n)
+{
+    if (n <= 34) {
+        return factorial_table128[n];
+    } else {
+        return static_cast<euint128>(-1);
+    }
+}
+#endif
 
 }
 #endif

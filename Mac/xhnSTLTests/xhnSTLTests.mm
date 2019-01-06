@@ -2407,6 +2407,13 @@ double assoc_legendre22(double x)
     XCTAssert(xhn::factorial(10) == 3628800, @"error");
     XCTAssert(xhn::factorial(15) == 1307674368000, @"error");
     XCTAssert(xhn::factorial(20) == 2432902008176640000, @"error");
+    char mbuf[128];
+    euint128 v = xhn::factorial128(34);
+    xhn::u128toa(v, mbuf);
+    printf("%s\n", mbuf);
+    v = static_cast<euint128>(-1);
+    xhn::u128toa(v, mbuf);
+    printf("%s\n", mbuf);
 }
 
 @end
