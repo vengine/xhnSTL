@@ -150,6 +150,7 @@
 		B1652CC720D303DD00566A2C /* xhn_realtime_thread.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1652CC520D303DD00566A2C /* xhn_realtime_thread.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B16D6A4620CE246A00A75E3D /* xhn_z.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B16D6A4420CE246900A75E3D /* xhn_z.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B16D6A4720CE246A00A75E3D /* xhn_z.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B16D6A4520CE246A00A75E3D /* xhn_z.cpp */; };
+		B175A4B821E2047C001A42F9 /* xhn_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B175A4B721E2047C001A42F9 /* xhn_math.cpp */; };
 		B179B33E1C895684001EED1A /* xhn_unique_identifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */; };
 		B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -324,6 +325,7 @@
 		B16A6E092093855400119FC2 /* ColladaTool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ColladaTool.hpp; sourceTree = "<group>"; };
 		B16D6A4420CE246900A75E3D /* xhn_z.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_z.hpp; sourceTree = "<group>"; };
 		B16D6A4520CE246A00A75E3D /* xhn_z.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_z.cpp; sourceTree = "<group>"; };
+		B175A4B721E2047C001A42F9 /* xhn_math.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_math.cpp; sourceTree = "<group>"; };
 		B179B33C1C895684001EED1A /* xhn_unique_identifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_unique_identifier.cpp; sourceTree = "<group>"; };
 		B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
@@ -530,6 +532,7 @@
 				B1652CC420D303DD00566A2C /* xhn_realtime_thread.cpp */,
 				B1652CC520D303DD00566A2C /* xhn_realtime_thread.hpp */,
 				B18DE07921E0659F003263AA /* xhn_math.hpp */,
+				B175A4B721E2047C001A42F9 /* xhn_math.cpp */,
 			);
 			name = xstl;
 			path = ../../xhnSTL/xstl;
@@ -837,6 +840,7 @@
 				68245CDB1BC9D8F90006E99D /* static_string.c in Sources */,
 				68245D1C1BC9D8F90006E99D /* xhn_operation_manager.cpp in Sources */,
 				B19A722A1F60D044008208C5 /* xhn_stacktrace.cpp in Sources */,
+				B175A4B821E2047C001A42F9 /* xhn_math.cpp in Sources */,
 				68245CE11BC9D8F90006E99D /* exception.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

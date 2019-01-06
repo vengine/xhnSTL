@@ -155,6 +155,7 @@
 		B16D6A4E20CE255100A75E3D /* xhn_z.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B16D6A4C20CE255100A75E3D /* xhn_z.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B16D6A4F20CE255100A75E3D /* xhn_z.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B16D6A4D20CE255100A75E3D /* xhn_z.cpp */; };
 		B175A4B621E1E6B0001A42F9 /* xhn_math.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B175A4B521E1E6B0001A42F9 /* xhn_math.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B175A4BA21E20666001A42F9 /* xhn_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B175A4B921E20665001A42F9 /* xhn_math.cpp */; };
 		B19BDBD4208EB2F70051716A /* xhn_atomic_bool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B19BDBD5208EB2F70051716A /* xhn_atomic_ptr.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1CED06D1F3224BF00FCA4D7 /* cpu_arm.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED06C1F3224BF00FCA4D7 /* cpu_arm.c */; };
@@ -323,6 +324,7 @@
 		B16D6A4C20CE255100A75E3D /* xhn_z.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_z.hpp; sourceTree = "<group>"; };
 		B16D6A4D20CE255100A75E3D /* xhn_z.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_z.cpp; sourceTree = "<group>"; };
 		B175A4B521E1E6B0001A42F9 /* xhn_math.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_math.hpp; sourceTree = "<group>"; };
+		B175A4B921E20665001A42F9 /* xhn_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_math.cpp; sourceTree = "<group>"; };
 		B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_bool.hpp; sourceTree = "<group>"; };
 		B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_ptr.hpp; sourceTree = "<group>"; };
 		B1CED06C1F3224BF00FCA4D7 /* cpu_arm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_arm.c; sourceTree = "<group>"; };
@@ -412,6 +414,7 @@
 		68245B481BC9D7680006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B175A4B921E20665001A42F9 /* xhn_math.cpp */,
 				B175A4B521E1E6B0001A42F9 /* xhn_math.hpp */,
 				B108A1ED2113783C0003A27C /* xhn_open_hash_set.hpp */,
 				B13945CA20D32C3600378FF1 /* xhn_realtime_thread.cpp */,
@@ -784,6 +787,7 @@
 				B1276EAF1FFD73DE0073914A /* xhn_stacktrace.cpp in Sources */,
 				68245BFC1BC9D7680006E99D /* xhn_library.cpp in Sources */,
 				68245C191BC9D7680006E99D /* xhn_state_machine.cpp in Sources */,
+				B175A4BA21E20666001A42F9 /* xhn_math.cpp in Sources */,
 				68245C1B1BC9D7680006E99D /* xhn_static_string.cpp in Sources */,
 				68245BAF1BC9D7680006E99D /* eassert.c in Sources */,
 				68245BB11BC9D7680006E99D /* elog.c in Sources */,

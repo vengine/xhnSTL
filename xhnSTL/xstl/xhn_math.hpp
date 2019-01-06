@@ -12,6 +12,7 @@
 #define XHN_MATH_HPP
 
 #ifdef __cplusplus
+#include <math.h>
 
 namespace xhn {
     
@@ -172,6 +173,16 @@ long double assoc_legendrel( unsigned int n, unsigned int m, long double x )
     return A<long double>(n, m, x);
 }
     
+extern unsigned long factorial_table[21];
+inline unsigned long factorial(unsigned long n)
+{
+    if (n <= 20) {
+        return factorial_table[n];
+    } else {
+        return 0xffffffffffffffff;
+    }
+}
+
 }
 #endif
 

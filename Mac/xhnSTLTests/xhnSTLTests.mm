@@ -2402,5 +2402,11 @@ double assoc_legendre22(double x)
         XCTAssert(xhn::float_equal(xhn::assoc_legendre(2, 2, a[i]), assoc_legendre22(a[i]), 0.01), @"error");
     }
 }
+- (void) testFactorial
+{
+    XCTAssert(xhn::factorial(10) == 3628800, @"error");
+    XCTAssert(xhn::factorial(15) == 1307674368000, @"error");
+    XCTAssert(xhn::factorial(20) == 2432902008176640000, @"error");
+}
 
 @end
