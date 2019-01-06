@@ -19,6 +19,7 @@
 #include <xhnSTL/xhn_stacktrace.hpp>
 #include <xhnSTL/xhn_realtime_thread.hpp>
 #include <xhnSTL/xhn_open_hash_set.hpp>
+#include <xhnSTL/xhn_math.hpp>
 #include <xhnSTL/cpu.h>
 #include <vector>
 #include <map>
@@ -2326,6 +2327,80 @@ public:
         printf("%d\n", t->a);
     }
     printf("here\n");
+}
+
+double legendre0(double x)
+{
+    return 1.0;
+}
+double legendre1(double x)
+{
+    return x;
+}
+double legendre2(double x)
+{
+    return 1.0 / 2.0 * (3.0 * x * x -
+                        1.0);
+}
+double legendre3(double x)
+{
+    return 1.0 / 2.0 * (5.0 * x * x * x -
+                        3.0 * x);
+}
+double legendre4(double x)
+{
+    return 1.0 / 8.0 * (35.0 * x * x * x * x -
+                        30.0 * x * x +
+                        3.0);
+}
+- (void) testLegendre
+{
+    double a[5] = {-1.0, -0.5, 0.0, 0.5, 1.0};
+    for (int i = 0; i < 5; i++) {
+        XCTAssert(xhn::float_equal(xhn::legendre(0, a[i]), legendre0(a[i]), 0.01), @"error");
+        XCTAssert(xhn::float_equal(xhn::legendre(1, a[i]), legendre1(a[i]), 0.01), @"error");
+        XCTAssert(xhn::float_equal(xhn::legendre(2, a[i]), legendre2(a[i]), 0.01), @"error");
+        XCTAssert(xhn::float_equal(xhn::legendre(3, a[i]), legendre3(a[i]), 0.01), @"error");
+        XCTAssert(xhn::float_equal(xhn::legendre(4, a[i]), legendre4(a[i]), 0.01), @"error");
+    }
+}
+
+double assoc_legendre00(double x)
+{
+    return 1.0;
+}
+double assoc_legendre10(double x)
+{
+    return x;
+}
+double assoc_legendre11(double x)
+{
+    return -pow(1.0 - x * x, 0.5);
+}
+double assoc_legendre20(double x)
+{
+    return 1.0 / 2.0 * (3.0 * x * x-
+                        1.0);
+}
+double assoc_legendre21(double x)
+{
+    return -3.0 * x * pow(1.0 - x * x, 0.5);
+}
+double assoc_legendre22(double x)
+{
+    return 3.0 * (1.0 - x * x);
+}
+- (void) testAssocLegendre
+{
+    double a[5] = {-1.0, -0.5, 0.0, 0.5, 1.0};
+    for (int i = 0; i < 5; i++) {
+        XCTAssert(xhn::float_equal(xhn::assoc_legendre(0, 0, a[i]), assoc_legendre00(a[i]), 0.01), @"error");
+        XCTAssert(xhn::float_equal(xhn::assoc_legendre(1, 0, a[i]), assoc_legendre10(a[i]), 0.01), @"error");
+        XCTAssert(xhn::float_equal(xhn::assoc_legendre(1, 1, a[i]), assoc_legendre11(a[i]), 0.01), @"error");
+        XCTAssert(xhn::float_equal(xhn::assoc_legendre(2, 0, a[i]), assoc_legendre20(a[i]), 0.01), @"error");
+        XCTAssert(xhn::float_equal(xhn::assoc_legendre(2, 1, a[i]), assoc_legendre21(a[i]), 0.01), @"error");
+        XCTAssert(xhn::float_equal(xhn::assoc_legendre(2, 2, a[i]), assoc_legendre22(a[i]), 0.01), @"error");
+    }
 }
 
 @end

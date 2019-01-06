@@ -154,6 +154,7 @@
 		B179B33F1C895684001EED1A /* xhn_unique_identifier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B179B39C1C8D108B001EED1A /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B17CCE6E1E683CA0002B1946 /* xhn_memory_pool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B17CCE6D1E683A5F002B1946 /* xhn_memory_pool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B18DE07A21E0659F003263AA /* xhn_math.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B18DE07921E0659F003263AA /* xhn_math.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B19A722A1F60D044008208C5 /* xhn_stacktrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B19A72281F60D044008208C5 /* xhn_stacktrace.cpp */; };
 		B19A722B1F60D044008208C5 /* xhn_stacktrace.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19A72291F60D044008208C5 /* xhn_stacktrace.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B19BDBB1208E92AD0051716A /* xhn_atomic_bool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19BDBB0208E92AD0051716A /* xhn_atomic_bool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -327,6 +328,7 @@
 		B179B33D1C895684001EED1A /* xhn_unique_identifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_unique_identifier.hpp; sourceTree = "<group>"; };
 		B179B39A1C8D108B001EED1A /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
 		B17CCE6D1E683A5F002B1946 /* xhn_memory_pool.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_memory_pool.hpp; sourceTree = "<group>"; };
+		B18DE07921E0659F003263AA /* xhn_math.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_math.hpp; sourceTree = "<group>"; };
 		B19A72281F60D044008208C5 /* xhn_stacktrace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_stacktrace.cpp; sourceTree = "<group>"; };
 		B19A72291F60D044008208C5 /* xhn_stacktrace.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_stacktrace.hpp; sourceTree = "<group>"; };
 		B19BDBB0208E92AD0051716A /* xhn_atomic_bool.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_bool.hpp; sourceTree = "<group>"; };
@@ -527,6 +529,7 @@
 				B101A21C1FA04C1200F83D37 /* xhn_triple_buffer.hpp */,
 				B1652CC420D303DD00566A2C /* xhn_realtime_thread.cpp */,
 				B1652CC520D303DD00566A2C /* xhn_realtime_thread.hpp */,
+				B18DE07921E0659F003263AA /* xhn_math.hpp */,
 			);
 			name = xstl;
 			path = ../../xhnSTL/xstl;
@@ -618,6 +621,7 @@
 				68245D341BC9D8F90006E99D /* xhn_thread_map.hpp in Headers */,
 				68245CDC1BC9D8F90006E99D /* static_string.h in Headers */,
 				B1652CC720D303DD00566A2C /* xhn_realtime_thread.hpp in Headers */,
+				B18DE07A21E0659F003263AA /* xhn_math.hpp in Headers */,
 				68245CE81BC9D8F90006E99D /* xhn_btree.hpp in Headers */,
 				68245D381BC9D8F90006E99D /* xhn_utility.hpp in Headers */,
 				68245CB41BC9D8F90006E99D /* apple_file_manager.h in Headers */,

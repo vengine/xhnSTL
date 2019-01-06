@@ -154,6 +154,7 @@
 		B1607BF91E7EBD5A00CBBDDD /* xhn_tuple.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1607BF51E7EBD5A00CBBDDD /* xhn_tuple.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B16D6A4E20CE255100A75E3D /* xhn_z.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B16D6A4C20CE255100A75E3D /* xhn_z.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B16D6A4F20CE255100A75E3D /* xhn_z.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B16D6A4D20CE255100A75E3D /* xhn_z.cpp */; };
+		B175A4B621E1E6B0001A42F9 /* xhn_math.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B175A4B521E1E6B0001A42F9 /* xhn_math.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B19BDBD4208EB2F70051716A /* xhn_atomic_bool.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B19BDBD5208EB2F70051716A /* xhn_atomic_ptr.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1CED06D1F3224BF00FCA4D7 /* cpu_arm.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED06C1F3224BF00FCA4D7 /* cpu_arm.c */; };
@@ -321,6 +322,7 @@
 		B1607BF51E7EBD5A00CBBDDD /* xhn_tuple.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_tuple.hpp; sourceTree = "<group>"; };
 		B16D6A4C20CE255100A75E3D /* xhn_z.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_z.hpp; sourceTree = "<group>"; };
 		B16D6A4D20CE255100A75E3D /* xhn_z.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_z.cpp; sourceTree = "<group>"; };
+		B175A4B521E1E6B0001A42F9 /* xhn_math.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_math.hpp; sourceTree = "<group>"; };
 		B19BDBD2208EB2F60051716A /* xhn_atomic_bool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_bool.hpp; sourceTree = "<group>"; };
 		B19BDBD3208EB2F60051716A /* xhn_atomic_ptr.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_atomic_ptr.hpp; sourceTree = "<group>"; };
 		B1CED06C1F3224BF00FCA4D7 /* cpu_arm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_arm.c; sourceTree = "<group>"; };
@@ -410,6 +412,7 @@
 		68245B481BC9D7680006E99D /* xstl */ = {
 			isa = PBXGroup;
 			children = (
+				B175A4B521E1E6B0001A42F9 /* xhn_math.hpp */,
 				B108A1ED2113783C0003A27C /* xhn_open_hash_set.hpp */,
 				B13945CA20D32C3600378FF1 /* xhn_realtime_thread.cpp */,
 				B13945CB20D32C3600378FF1 /* xhn_realtime_thread.hpp */,
@@ -621,6 +624,7 @@
 				68245BBF1BC9D7680006E99D /* list_base.h in Headers */,
 				68245BA71BC9D7680006E99D /* ObjCString.h in Headers */,
 				68245D3D1BC9E8CF0006E99D /* common.h in Headers */,
+				B175A4B621E1E6B0001A42F9 /* xhn_math.hpp in Headers */,
 				68245BBE1BC9D7680006E99D /* list.h in Headers */,
 				68245BC91BC9D7680006E99D /* stack.h in Headers */,
 				68245C1C1BC9D7680006E99D /* xhn_static_string.hpp in Headers */,

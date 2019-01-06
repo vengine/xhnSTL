@@ -96,6 +96,7 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTLStatic/xhn_parallel.hpp>
 #import <xhnSTLStatic/xhn_concurrent.hpp>
 #import <xhnSTLStatic/xhn_triple_buffer.hpp>
+#import <xhnSTLStatic/xhn_math.hpp>
 #import <xhnSTLStatic/asm_syntax_converter.hpp>
 #import <xhnSTLStatic/llvm_parser.hpp>
 #import <xhnSTLStatic/symbol_buffer.hpp>
