@@ -18,7 +18,8 @@
 
 namespace xhn {
     
-#define XHN_PI 3.14159265358979323846264338327950288 
+#define XHN_PI 3.14159265358979323846264338327950288
+#define XHN_E  2.718281828459045235360287471352662498
     
 // (n + 1) * P(n + 1, x) = (2 * n + 1) * x * P(n, x) - n * P(n - 1, x)
 //               (2 * n + 1) * x * P(n, x) - n * P(n - 1, x)
@@ -216,6 +217,37 @@ inline euint128 factorial128(unsigned int n)
         return static_cast<euint128>(-1);
     }
 }
+    
+inline float sigmoid(float x)
+{
+    return 1.0f / (1.0f + expf(-x));
+}
+
+inline double sigmoid(double x)
+{
+    return 1.0 / (1.0 + exp(-x));
+}
+    
+inline long double sigmoid(long double x)
+{
+    return static_cast<long double>(1.0) / (static_cast<long double>(1.0) + expl(-x));
+}
+    
+inline float derivative_sigmoid(float x)
+{
+    return sigmoid(x) * (1.0f - sigmoid(x));
+}
+
+inline double derivative_sigmoid(double x)
+{
+    return sigmoid(x) * (1.0 - sigmoid(x));
+}
+
+inline long double derivative_sigmoid(long double x)
+{
+    return sigmoid(x) * (static_cast<long double>(1.0) - sigmoid(x));
+}
+
 #endif
 
 }

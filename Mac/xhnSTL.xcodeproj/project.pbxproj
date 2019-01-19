@@ -165,6 +165,8 @@
 		B1CED0711F32268F00FCA4D7 /* cpu_common.c in Sources */ = {isa = PBXBuildFile; fileRef = B1CED0701F32268F00FCA4D7 /* cpu_common.c */; };
 		B1D6ADEA1F4D4B1C00AB8F2F /* xhn_parallel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1D6ADE81F4D4B1C00AB8F2F /* xhn_parallel.cpp */; };
 		B1D6ADEB1F4D4B1C00AB8F2F /* xhn_parallel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1EF5F5A21F1F92200BACA6B /* xhn_neural_network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1EF5F5821F1F92200BACA6B /* xhn_neural_network.cpp */; };
+		B1EF5F5B21F1F92200BACA6B /* xhn_neural_network.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1EF5F5921F1F92200BACA6B /* xhn_neural_network.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -340,6 +342,8 @@
 		B1CED0701F32268F00FCA4D7 /* cpu_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cpu_common.c; sourceTree = "<group>"; };
 		B1D6ADE81F4D4B1C00AB8F2F /* xhn_parallel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_parallel.cpp; sourceTree = "<group>"; };
 		B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_parallel.hpp; sourceTree = "<group>"; };
+		B1EF5F5821F1F92200BACA6B /* xhn_neural_network.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_neural_network.cpp; sourceTree = "<group>"; };
+		B1EF5F5921F1F92200BACA6B /* xhn_neural_network.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_neural_network.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -533,6 +537,8 @@
 				B1652CC520D303DD00566A2C /* xhn_realtime_thread.hpp */,
 				B18DE07921E0659F003263AA /* xhn_math.hpp */,
 				B175A4B721E2047C001A42F9 /* xhn_math.cpp */,
+				B1EF5F5821F1F92200BACA6B /* xhn_neural_network.cpp */,
+				B1EF5F5921F1F92200BACA6B /* xhn_neural_network.hpp */,
 			);
 			name = xstl;
 			path = ../../xhnSTL/xstl;
@@ -647,6 +653,7 @@
 				B10D55A61CBE6D47003733D9 /* swift_parser.hpp in Headers */,
 				68245CFA1BC9D8F90006E99D /* xhn_functor.hpp in Headers */,
 				68245CBE1BC9D8F90006E99D /* comparison_algorithm.h in Headers */,
+				B1EF5F5B21F1F92200BACA6B /* xhn_neural_network.hpp in Headers */,
 				68245CEE1BC9D8F90006E99D /* xhn_crypto.hpp in Headers */,
 				68245D241BC9D8F90006E99D /* xhn_recursive.hpp in Headers */,
 				68245CC11BC9D8F90006E99D /* eassert.h in Headers */,
@@ -789,6 +796,7 @@
 				B16D6A4720CE246A00A75E3D /* xhn_z.cpp in Sources */,
 				68245D2A1BC9D8F90006E99D /* xhn_state_machine.cpp in Sources */,
 				68245D2C1BC9D8F90006E99D /* xhn_static_string.cpp in Sources */,
+				B1EF5F5A21F1F92200BACA6B /* xhn_neural_network.cpp in Sources */,
 				68245CC01BC9D8F90006E99D /* eassert.c in Sources */,
 				68245CC21BC9D8F90006E99D /* elog.c in Sources */,
 				68245D311BC9D8F90006E99D /* xhn_thread.cpp in Sources */,
