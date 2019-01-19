@@ -47,9 +47,10 @@ public:
         VALUE_TYPE offset = delta / d;
         VALUE_TYPE lr = m_operator.learning_rate();
         VALUE_TYPE dr = m_operator.descending_rate();
+        VALUE_TYPE br = m_operator.biasing_rate();
         VALUE_TYPE net_value = m_total_inputted_values + m_bias;
         VALUE_TYPE bias_scale =
-        (net_value + offset) / net_value;
+        (net_value + offset * br) / net_value;
         VALUE_TYPE weight_scale =
         (net_value + offset * lr * static_cast<VALUE_TYPE>(0.5)) / net_value;
         VALUE_TYPE descent_scale =
