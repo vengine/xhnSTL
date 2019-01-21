@@ -31,35 +31,46 @@ private:
         , weight(w)
         {}
     };
+    struct outputted_neural_node
+    {
+        neural_node* node = nullptr;
+        euint index;
+        outputted_neural_node(neural_node* n, euint i)
+        : node(n)
+        , index(i)
+        {}
+    };
+private:
+    VALUE_TYPE m_ETotal_Out = static_cast<VALUE_TYPE>(0.0);
+    VALUE_TYPE m_Out_Net = static_cast<VALUE_TYPE>(0.0);
 private:
     vector<inputted_neural_node> m_inputted_nodes;
-    VALUE_TYPE m_bias = static_cast<VALUE_TYPE>(1.0);
+    vector<outputted_neural_node> m_outputted_nodes;
+    VALUE_TYPE m_bias = static_cast<VALUE_TYPE>(0.0);
     VALUE_TYPE m_total_inputted_values = static_cast<VALUE_TYPE>(0.0);
     VALUE_TYPE m_outputted_value = static_cast<VALUE_TYPE>(0.0);
     OPERATER m_operator;
 public:
-    void descend(VALUE_TYPE target_value)
+    void descend()
     {
         if (m_inputted_nodes.empty())
             return;
-        VALUE_TYPE d = m_operator.eval_derivative(m_outputted_value);
-        VALUE_TYPE delta = target_value - m_outputted_value;
-        VALUE_TYPE offset = delta / d;
         VALUE_TYPE lr = m_operator.learning_rate();
-        VALUE_TYPE dr = m_operator.descending_rate();
-        VALUE_TYPE br = m_operator.biasing_rate();
-        VALUE_TYPE net_value = m_total_inputted_values + m_bias;
-        VALUE_TYPE bias_scale =
-        (net_value + offset * br) / net_value;
-        VALUE_TYPE weight_scale =
-        (net_value + offset * lr * static_cast<VALUE_TYPE>(0.5)) / net_value;
-        VALUE_TYPE descent_scale =
-        (net_value + offset * dr * static_cast<VALUE_TYPE>(0.5)) / net_value;
-        m_bias *= bias_scale;
-        for (inputted_neural_node& node : m_inputted_nodes) {
-            node.weight *= weight_scale;
-            VALUE_TYPE target = node.node->m_outputted_value * descent_scale;
-            node.node->descend(target);
+        VALUE_TYPE ETotal_Out = static_cast<VALUE_TYPE>(0.0);
+        for (auto& outputted_node : m_outputted_nodes) {
+            ETotal_Out +=
+            outputted_node.node->m_ETotal_Out *
+            outputted_node.node->m_Out_Net *
+            outputted_node.node->m_inputted_nodes[outputted_node.index].weight;
+        }
+        VALUE_TYPE Out_Net = m_operator.eval_derivative(m_outputted_value);
+        m_ETotal_Out = ETotal_Out;
+        m_Out_Net = Out_Net;
+        for (auto& inputted_node : m_inputted_nodes) {
+            inputted_node.node->descend();
+            VALUE_TYPE ETotal_Wx =
+            ETotal_Out * Out_Net * inputted_node.node->m_outputted_value;
+            inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
         }
     }
     float forward_propagate()
@@ -74,13 +85,30 @@ public:
         m_outputted_value = m_operator.activate(sum + m_bias);
         return m_outputted_value;
     }
-    void add_inputted_node(neural_node& node)
-    {
+    void add_inputted_node(neural_node& node) {
         m_inputted_nodes.push_back(inputted_neural_node(&node, static_cast<VALUE_TYPE>(1.0)));
+        node.m_outputted_nodes.push_back(outputted_neural_node(this, m_inputted_nodes.size() - 1));
     }
-    void set_outputted_value(VALUE_TYPE value)
-    {
+    vector<inputted_neural_node>& get_inputted_nodes() {
+        return m_inputted_nodes;
+    }
+    void set_outputted_value(VALUE_TYPE value) {
         m_outputted_value = value;
+    }
+    VALUE_TYPE get_outputted_value() const {
+        return m_outputted_value;
+    }
+    void set_ETotal_Out(VALUE_TYPE ETotal_Out) {
+        m_ETotal_Out = ETotal_Out;
+    }
+    VALUE_TYPE get_ETotal_Out() const {
+        return m_ETotal_Out;
+    }
+    void set_Out_Net(VALUE_TYPE Out_Net) {
+        m_Out_Net = Out_Net;
+    }
+    VALUE_TYPE get_Out_Net() const {
+        return m_Out_Net;
     }
 };
     
@@ -90,6 +118,7 @@ class neural_node_layer
 private:
     vector< neural_node<VALUE_TYPE, OPERATER> > m_nodes;
     euint m_sizes[DIMENSION] = {0};
+    OPERATER m_operator;
 public:
     void initialize_layer(euint size)
     {
@@ -227,6 +256,31 @@ public:
         for (neural_node<VALUE_TYPE, OPERATER>& node : m_nodes) {
             for (neural_node<VALUE_TYPE, OPERATER>& inputted_node : inputted_layer.m_nodes) {
                 node.add_inputted_node(inputted_node);
+            }
+        }
+    }
+    void descend(const vector<VALUE_TYPE>& target_values) {
+        EDebugAssert(m_nodes.size() == target_values.size(),
+                     "the target values not same to number of nodes");
+        VALUE_TYPE lr = m_operator.learning_rate();
+        euint num = m_nodes.size();
+        for (euint i = 0; i < num; i++) {
+            // ∂ETotal / ∂Out
+            VALUE_TYPE ETotal_Out = - (target_values[i] - m_nodes[i].get_outputted_value());
+            // ∂Out / ∂Net
+            VALUE_TYPE Out_Net = m_operator.eval_derivative(m_nodes[i].get_outputted_value());
+            m_nodes[i].set_ETotal_Out(ETotal_Out);
+            m_nodes[i].set_Out_Net(Out_Net);
+        }
+        for (euint i = 0; i < num; i++) {
+            for (auto& inputted_node : m_nodes[i].get_inputted_nodes()) {
+                inputted_node.node->descend();
+            }
+            for (auto& inputted_node : m_nodes[i].get_inputted_nodes()) {
+                VALUE_TYPE Net_Wx = inputted_node.node->get_outputted_value();
+                VALUE_TYPE ETotal_Wx =
+                m_nodes[i].get_ETotal_Out() * m_nodes[i].get_Out_Net() * Net_Wx;
+                inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
             }
         }
     }
