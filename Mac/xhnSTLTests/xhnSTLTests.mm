@@ -2898,4 +2898,100 @@ void loadImage(xhn::neural_node_layer<double, NeuralNodeOperator, 2>& layer, dou
     }
 }
 
+- (void) testNeuralNodeNetwork
+{
+    double trainValue = 0.68;
+    xhn::vector<xhn::layer_config> configs;
+    configs.push_back({xhn::InitialConnection, 28, 28, 0, 0});
+    configs.push_back({xhn::ConvolutionConnection, 1, 1, 1, 1});
+    configs.push_back({xhn::ConvolutionConnection, 2, 1, 2, 1});
+    configs.push_back({xhn::ConvolutionConnection, 1, 2, 1, 2});
+    configs.push_back({xhn::FullConnection, 1, 1, 0, 0});
+    xhn::neural_node_network<double, NeuralNodeOperator, 2> network0;
+    xhn::neural_node_network<double, NeuralNodeOperator, 2> network1;
+    xhn::neural_node_network<double, NeuralNodeOperator, 2> network2;
+    xhn::neural_node_network<double, NeuralNodeOperator, 2> network3;
+    network0.setup_layers(configs);
+    network1.setup_layers(configs);
+    network2.setup_layers(configs);
+    network3.setup_layers(configs);
+    
+    xhn::vector<double> targets;
+    targets.push_back(trainValue);
+    
+    loadImage(*network0.get_inputted_layer(), image0);
+    loadImage(*network1.get_inputted_layer(), image1);
+    loadImage(*network2.get_inputted_layer(), image2);
+    loadImage(*network3.get_inputted_layer(), image3);
+    
+    for (int i = 0; i < 1000; i++) {
+        network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        network0.get_outputted_layer()->descend(targets);
+    }
+    
+    for (int i = 0; i < 1000; i++) {
+        network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        network1.get_outputted_layer()->descend(targets);
+    }
+    
+    for (int i = 0; i < 1000; i++) {
+        network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        network2.get_outputted_layer()->descend(targets);
+    }
+    
+    for (int i = 0; i < 1000; i++) {
+        network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        network3.get_outputted_layer()->descend(targets);
+    }
+    
+    {
+        loadImage(*network0.get_inputted_layer(), image0);
+        loadImage(*network1.get_inputted_layer(), image0);
+        loadImage(*network2.get_inputted_layer(), image0);
+        loadImage(*network3.get_inputted_layer(), image0);
+        double value0 = network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value1 = network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value2 = network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value3 = network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        printf("%.12f, %.12f, %.12f, %.12f\n",
+               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
+    }
+    {
+        loadImage(*network0.get_inputted_layer(), image1);
+        loadImage(*network1.get_inputted_layer(), image1);
+        loadImage(*network2.get_inputted_layer(), image1);
+        loadImage(*network3.get_inputted_layer(), image1);
+        double value0 = network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value1 = network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value2 = network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value3 = network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        printf("%.12f, %.12f, %.12f, %.12f\n",
+               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
+    }
+    {
+        loadImage(*network0.get_inputted_layer(), image2);
+        loadImage(*network1.get_inputted_layer(), image2);
+        loadImage(*network2.get_inputted_layer(), image2);
+        loadImage(*network3.get_inputted_layer(), image2);
+        double value0 = network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value1 = network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value2 = network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value3 = network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        printf("%.12f, %.12f, %.12f, %.12f\n",
+               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
+    }
+    {
+        loadImage(*network0.get_inputted_layer(), image3);
+        loadImage(*network1.get_inputted_layer(), image3);
+        loadImage(*network2.get_inputted_layer(), image3);
+        loadImage(*network3.get_inputted_layer(), image3);
+        double value0 = network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value1 = network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value2 = network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        double value3 = network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
+        printf("%.12f, %.12f, %.12f, %.12f\n",
+               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
+    }
+}
+
 @end

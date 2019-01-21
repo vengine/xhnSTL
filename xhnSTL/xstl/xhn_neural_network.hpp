@@ -113,7 +113,7 @@ public:
 };
     
 template <typename VALUE_TYPE, typename OPERATER, unsigned int DIMENSION>
-class neural_node_layer
+class neural_node_layer : public MemObject
 {
 private:
     vector< neural_node<VALUE_TYPE, OPERATER> > m_nodes;
@@ -291,6 +291,116 @@ public:
     neural_node<VALUE_TYPE, OPERATER>* get_node(euint x, euint y) {
         EDebugAssert(DIMENSION == 2, "different dimension!");
         return &m_nodes[y * m_sizes[0] + x];
+    }
+};
+    
+enum connection_method
+{
+    InitialConnection,
+    ConvolutionConnection,
+    FullConnection,
+    DirectConnection,
+};
+    
+struct layer_config
+{
+    connection_method method;
+    euint kernel_width;
+    euint kernel_height;
+    euint stride_x;
+    euint stride_y;
+};
+
+template <typename VALUE_TYPE, typename OPERATER, unsigned int DIMENSION>
+class neural_node_network
+{
+private:
+    vector<layer_config> m_layer_configs;
+    vector<neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>*> m_layers;
+public:
+    ~neural_node_network() {
+        clear();
+    }
+    void clear() {
+        for (auto* layer : m_layers) {
+            VDELETE layer;
+        }
+        m_layers.clear();
+        m_layer_configs.clear();
+    }
+    void setup_layers(const vector<layer_config>& configs) {
+        clear();
+        for (const layer_config& config : configs) {
+            switch (config.method)
+            {
+                case InitialConnection:
+                {
+                    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* layer =
+                    VNEW neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>();
+                    if (DIMENSION == 1) {
+                        layer->initialize_layer(config.kernel_width);
+                    } else if (DIMENSION == 2) {
+                        layer->initialize_layer(config.kernel_width,
+                                                config.kernel_height);
+                    } else {
+                        EDebugAssert(0, "different dimension!");
+                    }
+                    m_layers.push_back(layer);
+                }
+                    break;
+                case ConvolutionConnection:
+                {
+                    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* layer =
+                    VNEW neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>();
+                    if (DIMENSION == 1) {
+                        layer->setup_convolution_layer(*m_layers.back(),
+                                                       config.kernel_width,
+                                                       config.stride_x);
+                    } else if (DIMENSION == 2) {
+                        layer->setup_convolution_layer(*m_layers.back(),
+                                                       config.kernel_width,
+                                                       config.kernel_height,
+                                                       config.stride_x,
+                                                       config.stride_y);
+                    } else {
+                        EDebugAssert(0, "different dimension!");
+                    }
+                    m_layers.push_back(layer);
+                }
+                    break;
+                case FullConnection:
+                {
+                    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* layer =
+                    VNEW neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>();
+                    if (DIMENSION == 1) {
+                        layer->setup_full_connection_layer(*m_layers.back(),
+                                                           config.kernel_width);
+                    } else if (DIMENSION == 2) {
+                        layer->setup_full_connection_layer(*m_layers.back(),
+                                                           config.kernel_width,
+                                                           config.kernel_height);
+                    } else {
+                        EDebugAssert(0, "different dimension!");
+                    }
+                    m_layers.push_back(layer);
+                }
+                    break;
+                case DirectConnection:
+                {
+                    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* layer =
+                    VNEW neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>();
+                    layer->setup_direct_connection_layer(*m_layers.back());
+                    m_layers.push_back(layer);
+                }
+                    break;
+            }
+        }
+    }
+    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* get_inputted_layer() {
+        return m_layers.front();
+    }
+    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* get_outputted_layer() {
+        return m_layers.back();
     }
 };
     
