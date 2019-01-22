@@ -25,7 +25,7 @@ private:
     struct inputted_neural_node
     {
         neural_node* node = nullptr;
-        VALUE_TYPE weight = static_cast<VALUE_TYPE>(1.0);
+        VALUE_TYPE weight = static_cast<VALUE_TYPE>(0.0);
         inputted_neural_node(neural_node* n, VALUE_TYPE w)
         : node(n)
         , weight(w)
@@ -56,6 +56,7 @@ public:
         if (m_inputted_nodes.empty())
             return;
         VALUE_TYPE lr = m_operator.learning_rate();
+        VALUE_TYPE br = m_operator.biasing_rate();
         VALUE_TYPE ETotal_Out = static_cast<VALUE_TYPE>(0.0);
         for (auto& outputted_node : m_outputted_nodes) {
             ETotal_Out +=
@@ -70,7 +71,10 @@ public:
             inputted_node.node->descend();
             VALUE_TYPE ETotal_Wx =
             ETotal_Out * Out_Net * inputted_node.node->m_outputted_value;
+            VALUE_TYPE ETotal_Bx =
+            ETotal_Out * Out_Net;
             inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
+            inputted_node.node->m_bias = inputted_node.node->m_bias - br * ETotal_Bx;
         }
     }
     float forward_propagate()
@@ -86,7 +90,7 @@ public:
         return m_outputted_value;
     }
     void add_inputted_node(neural_node& node) {
-        m_inputted_nodes.push_back(inputted_neural_node(&node, static_cast<VALUE_TYPE>(1.0)));
+        m_inputted_nodes.push_back(inputted_neural_node(&node, static_cast<VALUE_TYPE>(0.0)));
         node.m_outputted_nodes.push_back(outputted_neural_node(this, m_inputted_nodes.size() - 1));
     }
     vector<inputted_neural_node>& get_inputted_nodes() {
@@ -97,6 +101,12 @@ public:
     }
     VALUE_TYPE get_outputted_value() const {
         return m_outputted_value;
+    }
+    void set_bias(VALUE_TYPE bias) {
+        m_bias = bias;
+    }
+    VALUE_TYPE get_bias() const {
+        return m_bias;
     }
     void set_ETotal_Out(VALUE_TYPE ETotal_Out) {
         m_ETotal_Out = ETotal_Out;
@@ -261,8 +271,11 @@ public:
     }
     void descend(const vector<VALUE_TYPE>& target_values) {
         EDebugAssert(m_nodes.size() == target_values.size(),
-                     "the target values not same to number of nodes");
+                     "%d != %d,the target values not same to number of nodes",
+                     static_cast<int>(m_nodes.size()),
+                     static_cast<int>(target_values.size()));
         VALUE_TYPE lr = m_operator.learning_rate();
+        VALUE_TYPE br = m_operator.biasing_rate();
         euint num = m_nodes.size();
         for (euint i = 0; i < num; i++) {
             // ∂ETotal / ∂Out
@@ -278,9 +291,13 @@ public:
             }
             for (auto& inputted_node : m_nodes[i].get_inputted_nodes()) {
                 VALUE_TYPE Net_Wx = inputted_node.node->get_outputted_value();
+                VALUE_TYPE Net_Bx = static_cast<VALUE_TYPE>(1.0);
                 VALUE_TYPE ETotal_Wx =
                 m_nodes[i].get_ETotal_Out() * m_nodes[i].get_Out_Net() * Net_Wx;
+                VALUE_TYPE ETotal_Bx =
+                m_nodes[i].get_ETotal_Out() * m_nodes[i].get_Out_Net() * Net_Bx;
                 inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
+                inputted_node.node->set_bias(inputted_node.node->get_bias() - br * ETotal_Bx);
             }
         }
     }
