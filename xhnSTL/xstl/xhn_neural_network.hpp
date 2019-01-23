@@ -69,13 +69,15 @@ public:
         m_Out_Net = Out_Net;
         for (auto& inputted_node : m_inputted_nodes) {
             inputted_node.node->descend();
+        }
+        for (auto& inputted_node : m_inputted_nodes) {
             VALUE_TYPE ETotal_Wx =
             ETotal_Out * Out_Net * inputted_node.node->m_outputted_value;
-            VALUE_TYPE ETotal_Bx =
-            ETotal_Out * Out_Net;
             inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
-            inputted_node.node->m_bias = inputted_node.node->m_bias - br * ETotal_Bx;
         }
+        VALUE_TYPE ETotal_Bx =
+        ETotal_Out * Out_Net;
+        m_bias = m_bias - br * ETotal_Bx;
     }
     float forward_propagate()
     {
@@ -289,16 +291,19 @@ public:
             for (auto& inputted_node : m_nodes[i].get_inputted_nodes()) {
                 inputted_node.node->descend();
             }
+        }
+        for (euint i = 0; i < num; i++) {
+            VALUE_TYPE ETotal_Out = m_nodes[i].get_ETotal_Out();
+            VALUE_TYPE Out_Net = m_nodes[i].get_Out_Net();
             for (auto& inputted_node : m_nodes[i].get_inputted_nodes()) {
                 VALUE_TYPE Net_Wx = inputted_node.node->get_outputted_value();
-                VALUE_TYPE Net_Bx = static_cast<VALUE_TYPE>(1.0);
                 VALUE_TYPE ETotal_Wx =
-                m_nodes[i].get_ETotal_Out() * m_nodes[i].get_Out_Net() * Net_Wx;
-                VALUE_TYPE ETotal_Bx =
-                m_nodes[i].get_ETotal_Out() * m_nodes[i].get_Out_Net() * Net_Bx;
+                ETotal_Out * Out_Net * Net_Wx;
                 inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
-                inputted_node.node->set_bias(inputted_node.node->get_bias() - br * ETotal_Bx);
             }
+            VALUE_TYPE ETotal_Bx =
+            ETotal_Out * Out_Net;
+            m_nodes[i].set_bias(m_nodes[i].get_bias() - br * ETotal_Bx);
         }
     }
     neural_node<VALUE_TYPE, OPERATER>* get_node(euint index) {
