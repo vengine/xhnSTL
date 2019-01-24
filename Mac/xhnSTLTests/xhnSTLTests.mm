@@ -2755,11 +2755,11 @@ public:
     }
     inline float learning_rate()
     {
-        return 0.25;
+        return 0.1;
     }
     inline float biasing_rate()
     {
-        return 0.45;
+        return 0.01;
     }
 };
 
@@ -2872,7 +2872,7 @@ public:
             if (i == j) {
                 targets[i].push_back(trainValue);
             } else {
-                targets[i].push_back(0.2);
+                targets[i].push_back(0.01);
             }
         }
     }
@@ -2880,7 +2880,7 @@ public:
     int succ[10] = {0};
     int fail[10] = {0};
     
-    for (int i = 0; i < 2000; i++) {
+    for (int i = 0; i < 30000; i++) {
         for (int j = 0; j < 10; j++) {
             loadImage(*network0.get_inputted_layer(), imageSet.GetImage(j));
             for (int k = 0; k < 10; k++) {
@@ -2917,6 +2917,8 @@ public:
         }
     }
     
+    int totalSuccCount = 0;
+    
     for (int i = 0; i < 10; i++) {
         int succCount = 0;
         for (int j = 0; j < 100; j++) {
@@ -2941,7 +2943,10 @@ public:
         
         
         printf("识别率 百分之 %d\n", succCount);
+        totalSuccCount += succCount;
     }
+    
+    printf("总识别率 百分之 %d\n", totalSuccCount / 10);
 }
 
 @end
