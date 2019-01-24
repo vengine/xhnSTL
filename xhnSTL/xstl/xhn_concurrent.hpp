@@ -36,7 +36,7 @@ public:
 };
     
 typedef SmartPtr<concurrent_variable> concurrent_variable_ptr;
-typedef dictionary<static_string, concurrent_variable_ptr> thread_local_variables;
+typedef dictionary<static_string, concurrent_variable_ptr> thread_local_variables_t;
     
 class concurrent : public RefObjectBase, public MemObject
 {
@@ -44,7 +44,7 @@ private:
     struct concurrent_thread : public MemObject
     {
         thread_ptr thread;
-        thread_local_variables thread_local_variables;
+        thread_local_variables_t thread_local_variables;
     };
 public:
     SpinLock m_lock;
@@ -79,7 +79,7 @@ public:
             VDELETE ct;
         }
     }
-    bool execute(Lambda<void (thread_local_variables&)> proc)
+    bool execute(Lambda<void (thread_local_variables_t&)> proc)
     {
         auto inst = m_lock.Lock();
         if (!m_unused_threads.empty()) {
@@ -118,6 +118,8 @@ public:
 #if defined(__APPLE__)
                 pthread_yield_np();
 #elif defined(ANDROID) || defined(__ANDROID__)
+                sched_yield();
+#elif defined(LINUX)
                 sched_yield();
 #else
 #error

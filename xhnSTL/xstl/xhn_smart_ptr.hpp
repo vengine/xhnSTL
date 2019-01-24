@@ -277,7 +277,7 @@ public:
         return (T*)m_ptr;
     }
     inline euint32 hash_value() {
-        return (euint32)m_ptr;
+        return *((euint32*)(&m_ptr));
     }
 
 	CheckoutHandle Checkout()

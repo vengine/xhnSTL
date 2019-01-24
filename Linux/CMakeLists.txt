@@ -32,6 +32,7 @@ ADD_LIBRARY(xhnSTL STATIC
     ../xhnSTL/xstl/rtti.cpp
     ../xhnSTL/xstl/xhn_btree.cpp
     ../xhnSTL/xstl/xhn_crypto.cpp
+    ../xhnSTL/xstl/xhn_concurrent.cpp
     ../xhnSTL/xstl/xhn_duplicate_finder.cpp
     ../xhnSTL/xstl/xhn_exception.cpp
     ../xhnSTL/xstl/xhn_file_stream.cpp
@@ -46,6 +47,8 @@ ADD_LIBRARY(xhnSTL STATIC
     ../xhnSTL/xstl/xhn_memory.cpp
     ../xhnSTL/xstl/xhn_operation.cpp
     ../xhnSTL/xstl/xhn_operation_manager.cpp
+    ../xhnSTL/xstl/xhn_parallel.cpp
+    ../xhnSTL/xstl/xhn_realtime_thread.cpp
     #../xhnSTL/xstl/xhn_path_tree.cpp
     ../xhnSTL/xstl/xhn_routine_pool.cpp
     ../xhnSTL/xstl/xhn_smart_ptr.cpp
@@ -55,8 +58,11 @@ ADD_LIBRARY(xhnSTL STATIC
     ../xhnSTL/xstl/xhn_thread.cpp
     ../xhnSTL/xstl/xhn_thread_map.cpp
     ../xhnSTL/xstl/xhn_thread_pool.cpp
+    ../xhnSTL/xstl/xhn_triple_buffer.cpp
     ../xhnSTL/xstl/xhn_unique_identifier.cpp
     ../xhnSTL/xstl/xhn_utility.cpp
+    ../xhnSTL/xstl/xhn_neural_network.cpp
+    ../xhnSTL/xstl/xhn_z.cpp
 
     ../xhnSTL/linux/LinuxString.cpp
     ../xhnSTL/linux/linux_file_manager.cpp
