@@ -16,7 +16,6 @@
 #include <xhnSTL/xhn_math.hpp>
 #include <xhnSTL/xhn_neural_network.hpp>
 #include <xhnSTL/cpu.h>
-#include <xhnSTL/http_downloader.h>
 #include <vector>
 #include <map>
 #include <unordered_map>
