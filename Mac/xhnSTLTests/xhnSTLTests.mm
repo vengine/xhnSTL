@@ -1,10 +1,4 @@
-//
-//  xhnSTLTests.m
-//  xhnSTLTests
-//
-//  Created by 徐海宁 on 15/10/11.
-//  Copyright © 2015年 徐 海宁. All rights reserved.
-//
+
 
 #import <XCTest/XCTest.h>
 #include <xhnSTL/xhn_thread.hpp>
@@ -22,6 +16,7 @@
 #include <xhnSTL/xhn_math.hpp>
 #include <xhnSTL/xhn_neural_network.hpp>
 #include <xhnSTL/cpu.h>
+#include <xhnSTL/http_downloader.h>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -40,11 +35,11 @@
 
 - (void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    //download_http("http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz");
+    //download_http("http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz");
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
@@ -1860,8 +1855,8 @@ ImplementRTTI(ThreadLocalVector, xhn::concurrent_variable);
 {
     xhn::concurrent concurrent(8);
     
-    xhn::Lambda<void (xhn::thread_local_variables&)>
-    createVariables([](xhn::thread_local_variables& variables){
+    xhn::Lambda<void (xhn::thread_local_variables_t&)>
+    createVariables([](xhn::thread_local_variables_t& variables){
         variables.insert("ThreadLocalVector", VNEW ThreadLocalVector);
     });
     concurrent.execute(createVariables);
@@ -1873,8 +1868,8 @@ ImplementRTTI(ThreadLocalVector, xhn::concurrent_variable);
     concurrent.execute(createVariables);
     concurrent.execute(createVariables);
     xhn::thread::micro_sleep(100);
-    xhn::Lambda<void (xhn::thread_local_variables&)>
-    testVariables([](xhn::thread_local_variables& variables){
+    xhn::Lambda<void (xhn::thread_local_variables_t&)>
+    testVariables([](xhn::thread_local_variables_t& variables){
         xhn::concurrent_variable_ptr* tlv = variables.find("ThreadLocalVector");
         if (tlv) {
             printf("ThreadLocalVector existed!\n");
@@ -2751,246 +2746,202 @@ double image9[] = {
 class NeuralNodeOperator
 {
 public:
-    inline double activate(double x)
+    inline float activate(float x)
     {
         return xhn::sigmoid(x);
     }
-    inline double eval_derivative(double x)
+    inline float eval_derivative(float x)
     {
         return xhn::derivative_sigmoid(x);
     }
-    inline double learning_rate()
+    inline float learning_rate()
     {
-        return 0.3;
+        return 0.25;
     }
-    inline double descending_rate()
+    inline float biasing_rate()
     {
-        return 0.35;
-    }
-    inline double biasing_rate()
-    {
-        return 0.3;
+        return 0.45;
     }
 };
 
-void loadImage(xhn::neural_node_layer<double, NeuralNodeOperator, 2>& layer, double* image)
+void loadImage(xhn::neural_node_layer<float, NeuralNodeOperator, 2>& layer, float* image)
 {
     for (euint y = 0; y < 28; y++) {
         for (euint x = 0; x < 28; x++) {
-            layer.get_node(x, y)->set_outputted_value(image[y * 28 + x]);
+            layer.get_node(x, y)->set_outputted_value(image[y * 28 + x] < 0.01 ? 0.01 : image[y * 28 + x]);
         }
     }
 }
 
-- (void) testNeuralNodeLayer
+void Swap(euint32& value)
 {
-    double trainValue = 0.68;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> inputLayer;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer0a;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer0b;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer0c;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer0d;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer1a;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer1b;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer1c;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer1d;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer2a;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer2b;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer2c;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> hideLayer2d;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> outputLayer0;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> outputLayer1;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> outputLayer2;
-    xhn::neural_node_layer<double, NeuralNodeOperator, 2> outputLayer3;
-    inputLayer.initialize_layer(28, 28);
-    
-    euint kernelWidth0 = 1;
-    euint kernelHeight0 = 1;
-
-    hideLayer0a.setup_convolution_layer(inputLayer, kernelWidth0, kernelHeight0, kernelWidth0, kernelHeight0);
-    hideLayer0b.setup_convolution_layer(inputLayer, kernelWidth0, kernelHeight0, kernelWidth0, kernelHeight0);
-    hideLayer0c.setup_convolution_layer(inputLayer, kernelWidth0, kernelHeight0, kernelWidth0, kernelHeight0);
-    hideLayer0d.setup_convolution_layer(inputLayer, kernelWidth0, kernelHeight0, kernelWidth0, kernelHeight0);
-    
-    euint kernelWidth1 = 2;
-    euint kernelHeight1 = 2;
-    
-    hideLayer1a.setup_convolution_layer(hideLayer0a, kernelWidth1, kernelHeight1, kernelWidth1, kernelHeight1);
-    hideLayer1b.setup_convolution_layer(hideLayer0b, kernelWidth1, kernelHeight1, kernelWidth1, kernelHeight1);
-    hideLayer1c.setup_convolution_layer(hideLayer0c, kernelWidth1, kernelHeight1, kernelWidth1, kernelHeight1);
-    hideLayer1d.setup_convolution_layer(hideLayer0d, kernelWidth1, kernelHeight1, kernelWidth1, kernelHeight1);
-    
-    euint kernelWidth2 = 2;
-    euint kernelHeight2 = 2;
-    
-    hideLayer2a.setup_convolution_layer(hideLayer1a, kernelWidth2, kernelHeight2, kernelWidth2, kernelHeight2);
-    hideLayer2b.setup_convolution_layer(hideLayer1b, kernelWidth2, kernelHeight2, kernelWidth2, kernelHeight2);
-    hideLayer2c.setup_convolution_layer(hideLayer1c, kernelWidth2, kernelHeight2, kernelWidth2, kernelHeight2);
-    hideLayer2d.setup_convolution_layer(hideLayer1d, kernelWidth2, kernelHeight2, kernelWidth2, kernelHeight2);
-    
-    outputLayer0.setup_full_connection_layer(hideLayer2a, 1, 1);
-    outputLayer1.setup_full_connection_layer(hideLayer2b, 1, 1);
-    outputLayer2.setup_full_connection_layer(hideLayer2c, 1, 1);
-    outputLayer3.setup_full_connection_layer(hideLayer2d, 1, 1);
-    
-    xhn::vector<double> targets;
-    targets.push_back(trainValue);
-    
-    loadImage(inputLayer, image0);
-    for (int i = 0; i < 1000; i++) {
-        outputLayer0.get_node(0, 0)->forward_propagate();
-        outputLayer0.descend(targets);
-    }
-    
-    loadImage(inputLayer, image1);
-    for (int i = 0; i < 1000; i++) {
-        outputLayer1.get_node(0, 0)->forward_propagate();
-        outputLayer1.descend(targets);
-    }
-    
-    loadImage(inputLayer, image2);
-    for (int i = 0; i < 1000; i++) {
-        outputLayer2.get_node(0, 0)->forward_propagate();
-        outputLayer2.descend(targets);
-    }
-    
-    loadImage(inputLayer, image3);
-    for (int i = 0; i < 1000; i++) {
-        outputLayer3.get_node(0, 0)->forward_propagate();
-        outputLayer3.descend(targets);
-    }
-    
+    euint8* ptr = (euint8*)&value;
     {
-        loadImage(inputLayer, image0);
-        double value0 = outputLayer0.get_node(0, 0)->forward_propagate();
-        double value1 = outputLayer1.get_node(0, 0)->forward_propagate();
-        double value2 = outputLayer2.get_node(0, 0)->forward_propagate();
-        double value3 = outputLayer3.get_node(0, 0)->forward_propagate();
-        printf("%.12f, %.12f, %.12f, %.12f\n",
-               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
+        euint8 tmp = ptr[0];
+        ptr[0] = ptr[3];
+        ptr[3] = tmp;
     }
     {
-        loadImage(inputLayer, image1);
-        double value0 = outputLayer0.get_node(0, 0)->forward_propagate();
-        double value1 = outputLayer1.get_node(0, 0)->forward_propagate();
-        double value2 = outputLayer2.get_node(0, 0)->forward_propagate();
-        double value3 = outputLayer3.get_node(0, 0)->forward_propagate();
-        printf("%.12f, %.12f, %.12f, %.12f\n",
-               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
-    }
-    {
-        loadImage(inputLayer, image2);
-        double value0 = outputLayer0.get_node(0, 0)->forward_propagate();
-        double value1 = outputLayer1.get_node(0, 0)->forward_propagate();
-        double value2 = outputLayer2.get_node(0, 0)->forward_propagate();
-        double value3 = outputLayer3.get_node(0, 0)->forward_propagate();
-        printf("%.12f, %.12f, %.12f, %.12f\n",
-               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
-    }
-    {
-        loadImage(inputLayer, image3);
-        double value0 = outputLayer0.get_node(0, 0)->forward_propagate();
-        double value1 = outputLayer1.get_node(0, 0)->forward_propagate();
-        double value2 = outputLayer2.get_node(0, 0)->forward_propagate();
-        double value3 = outputLayer3.get_node(0, 0)->forward_propagate();
-        printf("%.12f, %.12f, %.12f, %.12f\n",
-               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
+        euint8 tmp = ptr[1];
+        ptr[1] = ptr[2];
+        ptr[2] = tmp;
     }
 }
 
+class ImageSet
+{
+public:
+    xhn::vector<float*> m_images[10];
+    euint m_count = 0;
+public:
+    ~ImageSet()
+    {
+        Clear();
+    }
+    void Clear()
+    {
+        for (int i = 0; i < 10; i++) {
+            for (float* image : m_images[i]) {
+                free(image);
+            }
+            m_images[i].clear();
+        }
+    }
+    void Load(const char* labelsPath,
+              const char* imagesPath)
+    {
+        FILE* labels = fopen(labelsPath, "rb");
+        FILE* images = fopen(imagesPath, "rb");
+        
+        euint32 labelsMagic = 0;
+        euint32 numLabels = 0;
+        euint32 imagesMagic = 0;
+        euint32 numImages = 0;
+        euint32 numRows = 0;
+        euint32 numColumns = 0;
+        fread(&labelsMagic, 1, sizeof(labelsMagic), labels);
+        fread(&numLabels, 1, sizeof(numLabels), labels);
+        fread(&imagesMagic, 1, sizeof(imagesMagic), images);
+        fread(&numImages, 1, sizeof(numImages), images);
+        fread(&numRows, 1, sizeof(numRows), images);
+        fread(&numColumns, 1, sizeof(numColumns), images);
+        Swap(labelsMagic);
+        Swap(numLabels);
+        Swap(imagesMagic);
+        Swap(numImages);
+        Swap(numRows);
+        Swap(numColumns);
+        for (euint32 i = 0; i < numLabels; i++) {
+            euint8 label = 0;
+            euint8 pixel = 0;
+            fread(&label, 1, sizeof(label), labels);
+            float* image = (float*)malloc(sizeof(float) * numRows * numColumns);
+            for (int y = 0; y < numRows; y++) {
+                for (int x = 0; x < numColumns; x++) {
+                    fread(&pixel, 1, sizeof(pixel), images);
+                    image[y * numRows + x] = (float)pixel / 255.0;
+                }
+            }
+            m_images[label].push_back(image);
+        }
+        
+        fclose(labels);
+        fclose(images);
+    }
+    float* GetImage(int index) {
+        return m_images[index][m_count++ % m_images[index].size()];
+    }
+};
+
 - (void) testNeuralNodeNetwork
 {
-    double trainValue = 0.68;
+    float trainValue = 0.9;
     xhn::vector<xhn::layer_config> configs;
     configs.push_back({xhn::InitialConnection, 28, 28, 0, 0});
     configs.push_back({xhn::ConvolutionConnection, 1, 1, 1, 1});
-    configs.push_back({xhn::ConvolutionConnection, 2, 1, 2, 1});
-    configs.push_back({xhn::ConvolutionConnection, 1, 2, 1, 2});
-    configs.push_back({xhn::FullConnection, 1, 1, 0, 0});
-    xhn::neural_node_network<double, NeuralNodeOperator, 2> network0;
-    xhn::neural_node_network<double, NeuralNodeOperator, 2> network1;
-    xhn::neural_node_network<double, NeuralNodeOperator, 2> network2;
-    xhn::neural_node_network<double, NeuralNodeOperator, 2> network3;
+    configs.push_back({xhn::FullConnection, 10, 1, 0, 0});
+    xhn::neural_node_network<float, NeuralNodeOperator, 2> network0;
     network0.setup_layers(configs);
-    network1.setup_layers(configs);
-    network2.setup_layers(configs);
-    network3.setup_layers(configs);
     
-    xhn::vector<double> targets;
-    targets.push_back(trainValue);
+    ImageSet imageSet;
+    imageSet.Load("/Users/xhnsworks/Downloads/train-labels-idx1-ubyte",
+                  "/Users/xhnsworks/Downloads/train-images-idx3-ubyte");
     
-    loadImage(*network0.get_inputted_layer(), image0);
-    loadImage(*network1.get_inputted_layer(), image1);
-    loadImage(*network2.get_inputted_layer(), image2);
-    loadImage(*network3.get_inputted_layer(), image3);
-    
-    for (int i = 0; i < 1000; i++) {
-        network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        network0.get_outputted_layer()->descend(targets);
+    xhn::vector<float> targets[10];
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            if (i == j) {
+                targets[i].push_back(trainValue);
+            } else {
+                targets[i].push_back(0.2);
+            }
+        }
     }
     
-    for (int i = 0; i < 1000; i++) {
-        network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        network1.get_outputted_layer()->descend(targets);
+    int succ[10] = {0};
+    int fail[10] = {0};
+    
+    for (int i = 0; i < 2000; i++) {
+        for (int j = 0; j < 10; j++) {
+            loadImage(*network0.get_inputted_layer(), imageSet.GetImage(j));
+            for (int k = 0; k < 10; k++) {
+                network0.get_outputted_layer()->get_node(k, 0)->forward_propagate();
+            }
+            network0.get_outputted_layer()->descend(targets[j]);
+        }
+        if (i % 100 == 0) {
+            for (int j = 0; j < 10; j++) {
+                loadImage(*network0.get_inputted_layer(), imageSet.GetImage(j));
+                float value = network0.get_outputted_layer()->get_node(j, 0)->forward_propagate();
+                
+                float loss = fabsf(trainValue - value);
+                bool isFail = false;
+                for (int k = 0; k < 10; k++) {
+                    if (j != k) {
+                        float v = network0.get_outputted_layer()->get_node(k, 0)->forward_propagate();
+                        if (loss >= fabsf(trainValue - v)) {
+                            fail[j]++;
+                            isFail = true;
+                            break;
+                        }
+                    }
+                    
+                }
+                if (!isFail) {
+                    succ[j]++;
+                }
+            }
+            printf("///====\n");
+            for (int j = 0; j < 10; j++) {
+                printf("识别率 %.2f\n", (float)succ[j] / (float)(succ[j] + fail[j]));
+            }
+        }
     }
     
-    for (int i = 0; i < 1000; i++) {
-        network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        network2.get_outputted_layer()->descend(targets);
-    }
-    
-    for (int i = 0; i < 1000; i++) {
-        network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        network3.get_outputted_layer()->descend(targets);
-    }
-    
-    {
-        loadImage(*network0.get_inputted_layer(), image0);
-        loadImage(*network1.get_inputted_layer(), image0);
-        loadImage(*network2.get_inputted_layer(), image0);
-        loadImage(*network3.get_inputted_layer(), image0);
-        double value0 = network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value1 = network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value2 = network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value3 = network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        printf("%.12f, %.12f, %.12f, %.12f\n",
-               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
-    }
-    {
-        loadImage(*network0.get_inputted_layer(), image1);
-        loadImage(*network1.get_inputted_layer(), image1);
-        loadImage(*network2.get_inputted_layer(), image1);
-        loadImage(*network3.get_inputted_layer(), image1);
-        double value0 = network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value1 = network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value2 = network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value3 = network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        printf("%.12f, %.12f, %.12f, %.12f\n",
-               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
-    }
-    {
-        loadImage(*network0.get_inputted_layer(), image2);
-        loadImage(*network1.get_inputted_layer(), image2);
-        loadImage(*network2.get_inputted_layer(), image2);
-        loadImage(*network3.get_inputted_layer(), image2);
-        double value0 = network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value1 = network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value2 = network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value3 = network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        printf("%.12f, %.12f, %.12f, %.12f\n",
-               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
-    }
-    {
-        loadImage(*network0.get_inputted_layer(), image3);
-        loadImage(*network1.get_inputted_layer(), image3);
-        loadImage(*network2.get_inputted_layer(), image3);
-        loadImage(*network3.get_inputted_layer(), image3);
-        double value0 = network0.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value1 = network1.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value2 = network2.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        double value3 = network3.get_outputted_layer()->get_node(0, 0)->forward_propagate();
-        printf("%.12f, %.12f, %.12f, %.12f\n",
-               abs(trainValue - value0), abs(trainValue - value1), abs(trainValue - value2), abs(trainValue - value3));
+    for (int i = 0; i < 10; i++) {
+        int succCount = 0;
+        for (int j = 0; j < 100; j++) {
+            loadImage(*network0.get_inputted_layer(), imageSet.GetImage(i));
+            float value = network0.get_outputted_layer()->get_node(i, 0)->forward_propagate();
+            
+            float loss = fabsf(trainValue - value);
+            bool isFail = false;
+            for (int k = 0; k < 10; k++) {
+                if (i != k) {
+                    float v = network0.get_outputted_layer()->get_node(k, 0)->forward_propagate();
+                    if (loss >= fabsf(trainValue - v)) {
+                        isFail = true;
+                        break;
+                    }
+                }
+            }
+            if (!isFail) {
+                succCount++;
+            }
+        }
+        
+        
+        printf("识别率 百分之 %d\n", succCount);
     }
 }
 
