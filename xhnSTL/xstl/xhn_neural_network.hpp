@@ -92,7 +92,7 @@ public:
         return m_outputted_value;
     }
     void add_inputted_node(neural_node& node) {
-        m_inputted_nodes.push_back(inputted_neural_node(&node, static_cast<VALUE_TYPE>(0.0)));
+        m_inputted_nodes.push_back(inputted_neural_node(&node, static_cast<VALUE_TYPE>(1.0)));
         node.m_outputted_nodes.push_back(outputted_neural_node(this, m_inputted_nodes.size() - 1));
     }
     vector<inputted_neural_node>& get_inputted_nodes() {
