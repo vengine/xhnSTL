@@ -2856,9 +2856,9 @@ public:
 {
     float trainValue = 0.9;
     xhn::vector<xhn::layer_config> configs;
-    configs.push_back({xhn::InitialConnection, 28, 28, 0, 0, 0});
-    configs.push_back({xhn::ConvolutionConnection, 1, 1, 1, 1, 0});
-    configs.push_back({xhn::FullConnection, 10, 1, 0, 0, 0});
+    configs.push_back({xhn::InitialConnection, xhn::InitAsZero, 28, 28, 0, 0, 0});
+    configs.push_back({xhn::ConvolutionConnection, xhn::InitAsZero, 1, 1, 1, 1, 0});
+    configs.push_back({xhn::FullConnection, xhn::InitAsZero, 10, 1, 0, 0, 0});
     xhn::neural_node_network<float, 2, NeuralNodeOperator, NeuralNodeOperator> network0;
     network0.setup_layers(configs);
     

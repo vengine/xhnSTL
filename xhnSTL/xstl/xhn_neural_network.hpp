@@ -59,6 +59,22 @@ public:
         }
     }
 };
+    
+enum connection_method
+{
+    InitialConnection,
+    ConvolutionConnection,
+    FullConnection,
+    DirectConnection,
+};
+
+enum init_method
+{
+    InitAsZero,
+    InitAsOne,
+    InitAsRandomHalfToOne,
+    InitAsRandomZeroToHalf,
+};
 
 template <typename VALUE_TYPE, typename OPERATER0, typename OPERATER1>
 class neural_node : public operator_base<VALUE_TYPE, OPERATER0, OPERATER1>
@@ -138,8 +154,29 @@ public:
         m_outputted_value = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::activate(sum + m_bias);
         return m_outputted_value;
     }
-    void add_inputted_node(neural_node& node) {
-        m_inputted_nodes.push_back(inputted_neural_node(&node, static_cast<VALUE_TYPE>(0.0)));
+    void add_inputted_node(neural_node& node, init_method weight_init_method) {
+        VALUE_TYPE weight = static_cast<VALUE_TYPE>(0.0);
+        switch (weight_init_method)
+        {
+            case InitAsZero:
+                weight = static_cast<VALUE_TYPE>(0.0);
+                break;
+            case InitAsOne:
+                weight = static_cast<VALUE_TYPE>(1.0);
+                break;
+            case InitAsRandomHalfToOne:
+                weight = static_cast<VALUE_TYPE>(rand()) /
+                         static_cast<VALUE_TYPE>(RAND_MAX) *
+                         static_cast<VALUE_TYPE>(0.5) +
+                         static_cast<VALUE_TYPE>(0.5);
+                break;
+            case InitAsRandomZeroToHalf:
+                weight = static_cast<VALUE_TYPE>(rand()) /
+                static_cast<VALUE_TYPE>(RAND_MAX) *
+                static_cast<VALUE_TYPE>(0.5);
+                break;
+        }
+        m_inputted_nodes.push_back(inputted_neural_node(&node, weight_init_method));
         node.m_outputted_nodes.push_back(outputted_neural_node(this, m_inputted_nodes.size() - 1));
     }
     vector<inputted_neural_node>& get_inputted_nodes() {
@@ -198,6 +235,7 @@ public:
         m_nodes.resize(width * height);
     }
     void setup_convolution_layer(neural_node_layer& inputted_layer,
+                                 init_method weight_init_method,
                                  euint kernel_size,
                                  euint stride)
     {
@@ -221,13 +259,15 @@ public:
                 m_nodes[x].add_inputted_node
                 (
                     inputted_layer.m_nodes
-                    [x * stride + i]
+                    [x * stride + i],
+                    weight_init_method
                 );
             }
             if (remain > kernel_size) remain -= kernel_size;
         }
     }
     void setup_convolution_layer(neural_node_layer& inputted_layer,
+                                 init_method weight_init_method,
                                  euint kernel_width,
                                  euint kernel_height,
                                  euint stride_x,
@@ -271,7 +311,8 @@ public:
                             [
                                 (y * stride_y + i) * inputted_layer.m_sizes[0] +
                                 (x * stride_x + j)
-                            ]
+                            ],
+                            weight_init_method
                         );
                     }
                 }
@@ -280,7 +321,8 @@ public:
             if (remain_y > kernel_height) remain_y -= kernel_height;
         }
     }
-    void setup_direct_connection_layer(neural_node_layer& inputted_layer)
+    void setup_direct_connection_layer(neural_node_layer& inputted_layer,
+                                       init_method weight_init_method)
     {
         m_nodes.clear();
         m_nodes.resize(inputted_layer.m_nodes.size());
@@ -289,10 +331,12 @@ public:
         }
         euint num = m_nodes.size();
         for (euint i = 0; i < num; i++) {
-            m_nodes[i].add_inputted_node(inputted_layer.m_nodes[i]);
+            m_nodes[i].add_inputted_node(inputted_layer.m_nodes[i],
+                                         weight_init_method);
         }
     }
     void setup_full_connection_layer(neural_node_layer& inputted_layer,
+                                     init_method weight_init_method,
                                      euint size)
     {
         EDebugAssert(DIMENSION == 1, "different dimension!");
@@ -301,11 +345,12 @@ public:
         m_nodes.resize(size);
         for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& node : m_nodes) {
             for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& inputted_node : inputted_layer.m_nodes) {
-                node.add_inputted_node(inputted_node);
+                node.add_inputted_node(inputted_node, weight_init_method);
             }
         }
     }
     void setup_full_connection_layer(neural_node_layer& inputted_layer,
+                                     init_method weight_init_method,
                                      euint width,
                                      euint height)
     {
@@ -316,7 +361,7 @@ public:
         m_nodes.resize(width * height);
         for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& node : m_nodes) {
             for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& inputted_node : inputted_layer.m_nodes) {
-                node.add_inputted_node(inputted_node);
+                node.add_inputted_node(inputted_node, weight_init_method);
             }
         }
     }
@@ -365,17 +410,10 @@ public:
     }
 };
     
-enum connection_method
-{
-    InitialConnection,
-    ConvolutionConnection,
-    FullConnection,
-    DirectConnection,
-};
-    
 struct layer_config
 {
-    connection_method method;
+    connection_method conn_method;
+    init_method weight_init_method;
     euint kernel_width;
     euint kernel_height;
     euint stride_x;
@@ -403,7 +441,7 @@ public:
     void setup_layers(const vector<layer_config>& configs) {
         clear();
         for (const layer_config& config : configs) {
-            switch (config.method)
+            switch (config.conn_method)
             {
                 case InitialConnection:
                 {
@@ -426,10 +464,12 @@ public:
                     VNEW neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>(config.op_code);
                     if (DIMENSION == 1) {
                         layer->setup_convolution_layer(*m_layers.back(),
+                                                       config.weight_init_method,
                                                        config.kernel_width,
                                                        config.stride_x);
                     } else if (DIMENSION == 2) {
                         layer->setup_convolution_layer(*m_layers.back(),
+                                                       config.weight_init_method,
                                                        config.kernel_width,
                                                        config.kernel_height,
                                                        config.stride_x,
@@ -446,9 +486,11 @@ public:
                     VNEW neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>(config.op_code);
                     if (DIMENSION == 1) {
                         layer->setup_full_connection_layer(*m_layers.back(),
+                                                           config.weight_init_method,
                                                            config.kernel_width);
                     } else if (DIMENSION == 2) {
                         layer->setup_full_connection_layer(*m_layers.back(),
+                                                           config.weight_init_method,
                                                            config.kernel_width,
                                                            config.kernel_height);
                     } else {
@@ -461,7 +503,8 @@ public:
                 {
                     neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>* layer =
                     VNEW neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>(config.op_code);
-                    layer->setup_direct_connection_layer(*m_layers.back());
+                    layer->setup_direct_connection_layer(*m_layers.back(),
+                                                         config.weight_init_method);
                     m_layers.push_back(layer);
                 }
                     break;
