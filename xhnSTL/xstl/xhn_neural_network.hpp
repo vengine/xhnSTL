@@ -17,9 +17,51 @@
 #include "xhn_vector.hpp"
 
 namespace xhn {
+    
+template <typename VALUE_TYPE, typename OPERATER0, typename OPERATER1>
+class operator_base
+{
+public:
+    euint m_op_code;
+    OPERATER0 m_operator0;
+    OPERATER1 m_operator1;
+    operator_base(euint op_code)
+    : m_op_code(op_code)
+    {}
+    VALUE_TYPE get_learning_rate()
+    {
+        if (0 == m_op_code) {
+            return m_operator0.learning_rate();
+        } else {
+            return m_operator1.learning_rate();
+        }
+    }
+    VALUE_TYPE get_biasing_rate()
+    {
+        if (0 == m_op_code) {
+            return m_operator0.biasing_rate();
+        } else {
+            return m_operator1.biasing_rate();
+        }
+    }
+    VALUE_TYPE activate(VALUE_TYPE x) {
+        if (0 == m_op_code) {
+            return m_operator0.activate(x);
+        } else {
+            return m_operator1.activate(x);
+        }
+    }
+    VALUE_TYPE eval_derivative(VALUE_TYPE x) {
+        if (0 == m_op_code) {
+            return m_operator0.eval_derivative(x);
+        } else {
+            return m_operator1.eval_derivative(x);
+        }
+    }
+};
 
-template <typename VALUE_TYPE, typename OPERATER>
-class neural_node
+template <typename VALUE_TYPE, typename OPERATER0, typename OPERATER1>
+class neural_node : public operator_base<VALUE_TYPE, OPERATER0, OPERATER1>
 {
 private:
     struct inputted_neural_node
@@ -49,14 +91,19 @@ private:
     VALUE_TYPE m_bias = static_cast<VALUE_TYPE>(0.0);
     VALUE_TYPE m_total_inputted_values = static_cast<VALUE_TYPE>(0.0);
     VALUE_TYPE m_outputted_value = static_cast<VALUE_TYPE>(0.0);
-    OPERATER m_operator;
 public:
+    neural_node()
+    : operator_base<VALUE_TYPE, OPERATER0, OPERATER1>(0)
+    {}
+    neural_node(euint op_code)
+    : operator_base<VALUE_TYPE, OPERATER0, OPERATER1>(op_code)
+    {}
     void descend()
     {
         if (m_inputted_nodes.empty())
             return;
-        VALUE_TYPE lr = m_operator.learning_rate();
-        VALUE_TYPE br = m_operator.biasing_rate();
+        VALUE_TYPE lr = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_learning_rate();
+        VALUE_TYPE br = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_biasing_rate();
         VALUE_TYPE ETotal_Out = static_cast<VALUE_TYPE>(0.0);
         for (auto& outputted_node : m_outputted_nodes) {
             ETotal_Out +=
@@ -64,7 +111,7 @@ public:
             outputted_node.node->m_Out_Net *
             outputted_node.node->m_inputted_nodes[outputted_node.index].weight;
         }
-        VALUE_TYPE Out_Net = m_operator.eval_derivative(m_outputted_value);
+        VALUE_TYPE Out_Net = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::eval_derivative(m_outputted_value);
         m_ETotal_Out = ETotal_Out;
         m_Out_Net = Out_Net;
         for (auto& inputted_node : m_inputted_nodes) {
@@ -88,11 +135,11 @@ public:
             sum += node.node->forward_propagate() * node.weight;
         }
         m_total_inputted_values = sum;
-        m_outputted_value = m_operator.activate(sum + m_bias);
+        m_outputted_value = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::activate(sum + m_bias);
         return m_outputted_value;
     }
     void add_inputted_node(neural_node& node) {
-        m_inputted_nodes.push_back(inputted_neural_node(&node, static_cast<VALUE_TYPE>(1.0)));
+        m_inputted_nodes.push_back(inputted_neural_node(&node, static_cast<VALUE_TYPE>(0.0)));
         node.m_outputted_nodes.push_back(outputted_neural_node(this, m_inputted_nodes.size() - 1));
     }
     vector<inputted_neural_node>& get_inputted_nodes() {
@@ -124,14 +171,16 @@ public:
     }
 };
     
-template <typename VALUE_TYPE, typename OPERATER, unsigned int DIMENSION>
-class neural_node_layer : public MemObject
+template <typename VALUE_TYPE, unsigned int DIMENSION, typename OPERATER0, typename OPERATER1>
+class neural_node_layer : public MemObject, public operator_base<VALUE_TYPE, OPERATER0, OPERATER1>
 {
 private:
-    vector< neural_node<VALUE_TYPE, OPERATER> > m_nodes;
+    vector< neural_node<VALUE_TYPE, OPERATER0, OPERATER1> > m_nodes;
     euint m_sizes[DIMENSION] = {0};
-    OPERATER m_operator;
 public:
+    neural_node_layer(euint op_code)
+    : operator_base<VALUE_TYPE, OPERATER0, OPERATER1>(op_code)
+    {}
     void initialize_layer(euint size)
     {
         EDebugAssert(DIMENSION == 1, "different dimension!");
@@ -250,8 +299,8 @@ public:
         m_sizes[0] = size;
         m_nodes.clear();
         m_nodes.resize(size);
-        for (neural_node<VALUE_TYPE, OPERATER>& node : m_nodes) {
-            for (neural_node<VALUE_TYPE, OPERATER>& inputted_node : inputted_layer.m_nodes) {
+        for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& node : m_nodes) {
+            for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& inputted_node : inputted_layer.m_nodes) {
                 node.add_inputted_node(inputted_node);
             }
         }
@@ -265,8 +314,8 @@ public:
         m_sizes[1] = height;
         m_nodes.clear();
         m_nodes.resize(width * height);
-        for (neural_node<VALUE_TYPE, OPERATER>& node : m_nodes) {
-            for (neural_node<VALUE_TYPE, OPERATER>& inputted_node : inputted_layer.m_nodes) {
+        for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& node : m_nodes) {
+            for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& inputted_node : inputted_layer.m_nodes) {
                 node.add_inputted_node(inputted_node);
             }
         }
@@ -276,14 +325,14 @@ public:
                      "%d != %d,the target values not same to number of nodes",
                      static_cast<int>(m_nodes.size()),
                      static_cast<int>(target_values.size()));
-        VALUE_TYPE lr = m_operator.learning_rate();
-        VALUE_TYPE br = m_operator.biasing_rate();
+        VALUE_TYPE lr = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_learning_rate();
+        VALUE_TYPE br = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_biasing_rate();
         euint num = m_nodes.size();
         for (euint i = 0; i < num; i++) {
             // ∂ETotal / ∂Out
             VALUE_TYPE ETotal_Out = - (target_values[i] - m_nodes[i].get_outputted_value());
             // ∂Out / ∂Net
-            VALUE_TYPE Out_Net = m_operator.eval_derivative(m_nodes[i].get_outputted_value());
+            VALUE_TYPE Out_Net = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::eval_derivative(m_nodes[i].get_outputted_value());
             m_nodes[i].set_ETotal_Out(ETotal_Out);
             m_nodes[i].set_Out_Net(Out_Net);
         }
@@ -306,11 +355,11 @@ public:
             m_nodes[i].set_bias(m_nodes[i].get_bias() - br * ETotal_Bx);
         }
     }
-    neural_node<VALUE_TYPE, OPERATER>* get_node(euint index) {
+    neural_node<VALUE_TYPE, OPERATER0, OPERATER1>* get_node(euint index) {
         EDebugAssert(DIMENSION == 1, "different dimension!");
         return &m_nodes[index];
     }
-    neural_node<VALUE_TYPE, OPERATER>* get_node(euint x, euint y) {
+    neural_node<VALUE_TYPE, OPERATER0, OPERATER1>* get_node(euint x, euint y) {
         EDebugAssert(DIMENSION == 2, "different dimension!");
         return &m_nodes[y * m_sizes[0] + x];
     }
@@ -331,14 +380,15 @@ struct layer_config
     euint kernel_height;
     euint stride_x;
     euint stride_y;
+    euint op_code;
 };
 
-template <typename VALUE_TYPE, typename OPERATER, unsigned int DIMENSION>
+template <typename VALUE_TYPE, unsigned int DIMENSION, typename OPERATER0, typename OPERATER1>
 class neural_node_network
 {
 private:
     vector<layer_config> m_layer_configs;
-    vector<neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>*> m_layers;
+    vector<neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>*> m_layers;
 public:
     ~neural_node_network() {
         clear();
@@ -357,8 +407,8 @@ public:
             {
                 case InitialConnection:
                 {
-                    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* layer =
-                    VNEW neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>();
+                    neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>* layer =
+                    VNEW neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>(config.op_code);
                     if (DIMENSION == 1) {
                         layer->initialize_layer(config.kernel_width);
                     } else if (DIMENSION == 2) {
@@ -372,8 +422,8 @@ public:
                     break;
                 case ConvolutionConnection:
                 {
-                    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* layer =
-                    VNEW neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>();
+                    neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>* layer =
+                    VNEW neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>(config.op_code);
                     if (DIMENSION == 1) {
                         layer->setup_convolution_layer(*m_layers.back(),
                                                        config.kernel_width,
@@ -392,8 +442,8 @@ public:
                     break;
                 case FullConnection:
                 {
-                    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* layer =
-                    VNEW neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>();
+                    neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>* layer =
+                    VNEW neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>(config.op_code);
                     if (DIMENSION == 1) {
                         layer->setup_full_connection_layer(*m_layers.back(),
                                                            config.kernel_width);
@@ -409,8 +459,8 @@ public:
                     break;
                 case DirectConnection:
                 {
-                    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* layer =
-                    VNEW neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>();
+                    neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>* layer =
+                    VNEW neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>(config.op_code);
                     layer->setup_direct_connection_layer(*m_layers.back());
                     m_layers.push_back(layer);
                 }
@@ -418,10 +468,10 @@ public:
             }
         }
     }
-    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* get_inputted_layer() {
+    neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>* get_inputted_layer() {
         return m_layers.front();
     }
-    neural_node_layer<VALUE_TYPE, OPERATER, DIMENSION>* get_outputted_layer() {
+    neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>* get_outputted_layer() {
         return m_layers.back();
     }
 };
