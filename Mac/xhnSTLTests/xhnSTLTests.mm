@@ -2949,4 +2949,100 @@ public:
     printf("总识别率 百分之 %d\n", totalSuccCount / 10);
 }
 
+class ReLuNeuralNodeOperator
+{
+public:
+    inline float activate(float x)
+    {
+        if (x >= 0.0f) {
+            return x;
+        } else {
+            return 0.0f;
+        }
+    }
+    inline float eval_derivative(float x)
+    {
+        if (x > 0.0f)
+            return 1.0f;
+        else
+            return 0.0f;
+    }
+    inline float learning_rate()
+    {
+        return 0.005f;
+    }
+    inline float biasing_rate()
+    {
+        return 0.005f;
+    }
+};
+
+class SigmNeuralNodeOperator
+{
+public:
+    inline float activate(float x)
+    {
+        return xhn::sigmoid(x);
+    }
+    inline float eval_derivative(float x)
+    {
+        return xhn::derivative_sigmoid(x);
+    }
+    inline float learning_rate()
+    {
+        return 0.005;
+    }
+    inline float biasing_rate()
+    {
+        return 0.005;
+    }
+};
+
+- (void) testNeuralNodeNetwork2
+{
+    xhn::vector<xhn::layer_config> configs;
+    configs.push_back({xhn::InitialConnection, xhn::InitAsOne, 1, 0, 0, 0, 1});
+    configs.push_back({xhn::FullConnection, xhn::InitAsRandomZeroToHalf, 8, 0, 0, 0, 1});
+    configs.push_back({xhn::FullConnection, xhn::InitAsOne, 1, 0, 0, 0, 1});
+    xhn::neural_node_network<float, 1, ReLuNeuralNodeOperator, SigmNeuralNodeOperator> network0;
+    network0.setup_layers(configs);
+    
+    xhn::vector<float> targets;
+    targets.resize(1);
+    for (int i = 0; i < 1000; i++)
+    for (float j = 0.0f; j <= 1.0f; j += 0.001f) {
+        targets[0] = 0.99f - j;
+        network0.get_inputted_layer()->get_node(0)->set_outputted_value(j);
+        network0.get_outputted_layer()->get_node(0)->forward_propagate();
+        network0.get_outputted_layer()->descend(targets);
+        
+//        targets[0] = 0.5f;
+//        network0.get_inputted_layer()->get_node(0)->set_outputted_value(0.5f);
+//        network0.get_outputted_layer()->get_node(0)->forward_propagate();
+//        network0.get_outputted_layer()->descend(targets);
+//
+//        targets[0] = 0.1f;
+//        network0.get_inputted_layer()->get_node(0)->set_outputted_value(0.9f);
+//        network0.get_outputted_layer()->get_node(0)->forward_propagate();
+//        network0.get_outputted_layer()->descend(targets);
+        
+//        targets[0] = 0.9f;
+//        network0.get_inputted_layer()->get_node(0)->set_outputted_value(0.5f);
+//        network0.get_outputted_layer()->get_node(0)->forward_propagate();
+//        network0.get_outputted_layer()->descend(targets);
+//
+//        targets[0] = 0.1f;
+//        network0.get_inputted_layer()->get_node(0)->set_outputted_value(1.0f);
+//        network0.get_outputted_layer()->get_node(0)->forward_propagate();
+//        network0.get_outputted_layer()->descend(targets);
+    }
+    
+    
+    for (float j = 0.0f; j <= 1.0f; j += 0.1f) {
+        network0.get_inputted_layer()->get_node(0)->set_outputted_value(j);
+        float value = network0.get_outputted_layer()->get_node(0)->forward_propagate();
+        printf("func(%f) = %f\n", j, value);
+    }
+}
+
 @end

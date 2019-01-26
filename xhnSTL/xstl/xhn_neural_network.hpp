@@ -58,6 +58,12 @@ public:
             return m_operator1.eval_derivative(x);
         }
     }
+    void set_op_code(euint op_code) {
+        m_op_code = op_code;
+    }
+    euint get_op_code() {
+        return m_op_code;
+    }
 };
     
 enum connection_method
@@ -74,6 +80,8 @@ enum init_method
     InitAsOne,
     InitAsRandomHalfToOne,
     InitAsRandomZeroToHalf,
+    InitAsRandomNegativeHalfToHalf,
+    InitAsRandomNegativeOneToOne,
 };
 
 template <typename VALUE_TYPE, typename OPERATER0, typename OPERATER1>
@@ -175,6 +183,17 @@ public:
                 static_cast<VALUE_TYPE>(RAND_MAX) *
                 static_cast<VALUE_TYPE>(0.5);
                 break;
+            case InitAsRandomNegativeHalfToHalf:
+                weight = static_cast<VALUE_TYPE>(rand()) /
+                static_cast<VALUE_TYPE>(RAND_MAX) -
+                static_cast<VALUE_TYPE>(0.5);
+                break;
+            case InitAsRandomNegativeOneToOne:
+                weight = static_cast<VALUE_TYPE>(rand()) /
+                static_cast<VALUE_TYPE>(RAND_MAX) *
+                static_cast<VALUE_TYPE>(2.0) -
+                static_cast<VALUE_TYPE>(1.0);
+                break;
         }
         m_inputted_nodes.push_back(inputted_neural_node(&node, weight_init_method));
         node.m_outputted_nodes.push_back(outputted_neural_node(this, m_inputted_nodes.size() - 1));
@@ -252,6 +271,9 @@ public:
         m_sizes[0] = num;
         m_nodes.clear();
         m_nodes.resize(num);
+        for (auto& node : m_nodes) {
+            node.set_op_code(operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_op_code());
+        }
         
         euint remain = inputted_layer.m_sizes[0];
         for (euint x = 0; x < num; x++) {
@@ -298,6 +320,9 @@ public:
         m_sizes[1] = num_y;
         m_nodes.clear();
         m_nodes.resize(num_x * num_y);
+        for (auto& node : m_nodes) {
+            node.set_op_code(operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_op_code());
+        }
         
         euint remain_y = inputted_layer.m_sizes[1];
         for (euint y = 0; y < num_y; y++) {
@@ -326,6 +351,9 @@ public:
     {
         m_nodes.clear();
         m_nodes.resize(inputted_layer.m_nodes.size());
+        for (auto& node : m_nodes) {
+            node.set_op_code(operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_op_code());
+        }
         for (euint i = 0; i < DIMENSION; i++) {
             m_sizes[i] = inputted_layer.m_sizes[i];
         }
@@ -343,6 +371,9 @@ public:
         m_sizes[0] = size;
         m_nodes.clear();
         m_nodes.resize(size);
+        for (auto& node : m_nodes) {
+            node.set_op_code(operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_op_code());
+        }
         for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& node : m_nodes) {
             for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& inputted_node : inputted_layer.m_nodes) {
                 node.add_inputted_node(inputted_node, weight_init_method);
@@ -359,6 +390,9 @@ public:
         m_sizes[1] = height;
         m_nodes.clear();
         m_nodes.resize(width * height);
+        for (auto& node : m_nodes) {
+            node.set_op_code(operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_op_code());
+        }
         for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& node : m_nodes) {
             for (neural_node<VALUE_TYPE, OPERATER0, OPERATER1>& inputted_node : inputted_layer.m_nodes) {
                 node.add_inputted_node(inputted_node, weight_init_method);
@@ -370,8 +404,7 @@ public:
                      "%d != %d,the target values not same to number of nodes",
                      static_cast<int>(m_nodes.size()),
                      static_cast<int>(target_values.size()));
-        VALUE_TYPE lr = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_learning_rate();
-        VALUE_TYPE br = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::get_biasing_rate();
+        
         euint num = m_nodes.size();
         for (euint i = 0; i < num; i++) {
             // ∂ETotal / ∂Out
@@ -387,6 +420,8 @@ public:
             }
         }
         for (euint i = 0; i < num; i++) {
+            VALUE_TYPE lr = m_nodes[i].get_learning_rate();
+            VALUE_TYPE br = m_nodes[i].get_biasing_rate();
             VALUE_TYPE ETotal_Out = m_nodes[i].get_ETotal_Out();
             VALUE_TYPE Out_Net = m_nodes[i].get_Out_Net();
             for (auto& inputted_node : m_nodes[i].get_inputted_nodes()) {
