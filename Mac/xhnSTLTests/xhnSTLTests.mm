@@ -3111,4 +3111,101 @@ public:
     }
 }
 
+void SetupNeuralNetwork(xhn::neural_node_network<float, 1, ReLuNeuralNodeOperator, SigmNeuralNodeOperator>& network)
+{
+    xhn::vector<xhn::layer_config> configs;
+    configs.push_back({xhn::InitialConnection, xhn::InitAsOne, 1, 0, 0, 0, 0});
+    configs.push_back({xhn::FullConnection, xhn::InitAsRandomNegativeOneToOne, 8, 0, 0, 0, 0});
+    configs.push_back({xhn::FullConnection, xhn::InitAsRandomNegativeOneToOne, 4, 0, 0, 0, 0});
+    configs.push_back({xhn::FullConnection, xhn::InitAsRandomNegativeOneToOne, 1, 0, 0, 0, 0});
+    network.setup_layers(configs);
+}
+
+void TrainNeuralNetwork(xhn::neural_node_network<float, 1, ReLuNeuralNodeOperator, SigmNeuralNodeOperator>& network,
+                        float a, float b)
+{
+    xhn::vector<float> targets;
+    targets.resize(1);
+    for (int i = 0; i < 1000; i++) {
+        for (float j = 0.0f; j <= 1.0f; j += 0.001f) {
+            targets[0] = (1.0f - j) * a + j * b;
+            network.get_inputted_layer()->get_node(0)->set_outputted_value(j);
+            network.get_outputted_layer()->get_node(0)->forward_propagate();
+            network.get_outputted_layer()->descend(targets);
+        }
+    }
+}
+
+- (void) testNeuralNodeNetwork3
+{
+    xhn::logger<xhn::CLoggerImpl> logger;
+    
+    xhn::neural_node_network<float, 1, ReLuNeuralNodeOperator, SigmNeuralNodeOperator> network0;
+    xhn::neural_node_network<float, 1, ReLuNeuralNodeOperator, SigmNeuralNodeOperator> network1;
+    
+    SetupNeuralNetwork(network0);
+    SetupNeuralNetwork(network1);
+    
+    TrainNeuralNetwork(network0, 0.9f, 0.1f);
+    TrainNeuralNetwork(network1, 0.1f, 0.9f);
+    
+    for (float j = 0.0f; j <= 1.01f; j += 0.1f) {
+        network0.get_inputted_layer()->get_node(0)->set_outputted_value(j);
+        network1.get_inputted_layer()->get_node(0)->set_outputted_value(j);
+        float value0 = network0.get_outputted_layer()->get_node(0)->forward_propagate();
+        float value1 = network1.get_outputted_layer()->get_node(0)->forward_propagate();
+        printf("func(%f) = %f\n", j, value0 * value1);
+    }
+}
+
+- (void) testNeuralNodeNetwork4
+{
+    xhn::vector<xhn::layer_config> configs;
+    configs.push_back({xhn::InitialConnection, xhn::InitAsOne, 8, 0, 0, 0, 0});
+    configs.push_back({xhn::FullConnection, xhn::InitAsOne, 8, 0, 0, 0, 0});
+    configs.push_back({xhn::FullConnection, xhn::InitAsOne, 1, 0, 0, 0, 0});
+    xhn::neural_node_network<float, 1, ReLuNeuralNodeOperator, SigmNeuralNodeOperator> network0;
+    network0.setup_layers(configs);
+    
+    xhn::vector<float> inputs[8];
+    xhn::vector<float> targets[8];
+    for (int i = 0; i < 8; i++) {
+        inputs[i].resize(8);
+        targets[i].resize(1);
+        for (int j = 0; j < 8; j++) {
+            if (i == j) {
+                inputs[i][j] = 0.9f;
+            } else {
+                inputs[i][j] = 0.05f;
+            }
+        }
+    }
+    targets[0][0] = 0.1f;
+    targets[1][0] = 0.2f;
+    targets[2][0] = 0.3f;
+    targets[3][0] = 0.4f;
+    targets[4][0] = 0.4f;
+    targets[5][0] = 0.3f;
+    targets[6][0] = 0.2f;
+    targets[7][0] = 0.1f;
+    
+    for (int i = 0; i < 1000; i++) {
+        for (int j = 0; j < 8; j++) {
+            for (int k = 0; k < 8; k++) {
+                network0.get_inputted_layer()->get_node(k)->set_outputted_value(inputs[j][k]);
+            }
+            network0.get_outputted_layer()->get_node(0)->forward_propagate();
+            network0.get_outputted_layer()->descend(targets[j]);
+        }
+    }
+    
+    for (int j = 0; j < 8; j++) {
+        for (int k = 0; k < 8; k++) {
+            network0.get_inputted_layer()->get_node(k)->set_outputted_value(inputs[j][k]);
+        }
+        float value = network0.get_outputted_layer()->get_node(0)->forward_propagate();
+        printf("%f\n", value);
+    }
+}
+
 @end
