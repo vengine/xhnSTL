@@ -3006,12 +3006,32 @@ public:
 
 - (void) testNeuralNodeNetwork2
 {
+    xhn::logger<xhn::CLoggerImpl> logger;
     xhn::vector<xhn::layer_config> configs;
     configs.push_back({xhn::InitialConnection, xhn::InitAsOne, 1, 0, 0, 0, 1});
     configs.push_back({xhn::FullConnection, xhn::InitAsRandomZeroToHalf, 8, 0, 0, 0, 1});
     configs.push_back({xhn::FullConnection, xhn::InitAsOne, 1, 0, 0, 0, 1});
     xhn::neural_node_network<float, 1, ReLuNeuralNodeOperator, SigmNeuralNodeOperator> network0;
     network0.setup_layers(configs);
+    
+//
+//    logger.log("Layer0:");
+//    {
+//        auto* layer = network0.get_layer(0);
+//        layer->get_node(0)->log(logger);
+//    }
+//    logger.log("Layer1:");
+//    {
+//        auto* layer = network0.get_layer(1);
+//        for (euint i = 0; i < 8; i++) {
+//            layer->get_node(i)->log(logger);
+//        }
+//    }
+//    logger.log("Layer2:");
+//    {
+//        auto* layer = network0.get_layer(2);
+//        layer->get_node(0)->log(logger);
+//    }
     
     xhn::vector<float> targets;
     targets.resize(1);
@@ -3042,7 +3062,7 @@ public:
 //        network0.get_outputted_layer()->get_node(0)->forward_propagate();
 //        network0.get_outputted_layer()->descend(targets);
     }
-    xhn::logger<xhn::CLoggerImpl> logger;
+    //xhn::logger<xhn::CLoggerImpl> logger;
     logger.log("Layer0:\n");
     {
         auto* layer = network0.get_layer(0);

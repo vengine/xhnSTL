@@ -15,17 +15,24 @@
 
 #include "common.h"
 #include "etypes.h"
+#include "xhn_string.hpp"
 
 namespace xhn {
     
 class CLoggerImpl
 {
+private:
+    string m_buffer;
 public:
-    void put(char c) const {
-        putc(c, stdout);
+    void put(char c) {
+        m_buffer += c;
     }
-    void flush(const char* str) const {
-        while (*str) { putc(*str, stdout); str++; }
+    void append(const char* str) {
+        m_buffer += str;
+    }
+    void flush(const string& indentation) {
+        printf("%s%s\n", indentation.c_str(), m_buffer.c_str());
+        m_buffer = "";
     }
 };
     
@@ -33,18 +40,19 @@ template <typename IMPL>
 class logger
 {
 private:
+    string m_indentation;
     IMPL m_impl;
 private:
     void print_int(char* mbuf, int len, int i) const
     {
         snprintf(mbuf, len, "%d", i);
     }
-    void print_float(char* mbuf, int len, float f) const
+    void print_float(char* mbuf, int len, double f) const
     {
         snprintf(mbuf, len, "%f", f);
     }
 public:
-    void log( const char* format, ...) const
+    void log( const char* format, ...)
     {
         va_list arg;
         
@@ -61,15 +69,15 @@ public:
                     char mbuf[256];
                     int i = va_arg(arg, int);
                     print_int(mbuf, 256, i);
-                    m_impl.flush(mbuf);
+                    m_impl.append(mbuf);
                 } else if( *(format+1) == 'f') {
                     char mbuf[256];
-                    float f = va_arg(arg, float);
+                    double f = va_arg(arg, double);
                     print_float(mbuf, 256, f);
-                    m_impl.flush(mbuf);
+                    m_impl.append(mbuf);
                 } else if( *(format+1) == 's' ) {
                     char* str = va_arg(arg, char*);
-                    m_impl.flush(str);
+                    m_impl.append(str);
                 }
                 
                 format += 2;
@@ -79,6 +87,16 @@ public:
         }
         
         va_end (arg);
+        flush();
+    }
+    void push() {
+        m_indentation += "  ";
+    }
+    void pop() {
+        m_indentation = m_indentation.substr(0, m_indentation.size() - 2);
+    }
+    void flush() {
+        m_impl.flush(m_indentation);
     }
 };
     

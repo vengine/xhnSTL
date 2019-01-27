@@ -163,6 +163,29 @@ public:
         m_outputted_value = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::activate(sum + m_bias);
         return m_outputted_value;
     }
+    template <typename LOGGER>
+    float logged_forward_propagate(LOGGER& l)
+    {
+        if (m_inputted_nodes.empty())
+            return m_outputted_value;
+        VALUE_TYPE sum = static_cast<VALUE_TYPE>(0.0);
+        l.log("SUM == %f {", sum);
+        l.push();
+        for (inputted_neural_node& node : m_inputted_nodes) {
+            l.push();
+            VALUE_TYPE fg = node.node->template logged_forward_propagate<LOGGER>(l);
+            l.pop();
+            VALUE_TYPE w = node.weight;
+            sum += fg * w;
+            l.log("SUM(%f) += FG(%f) * W(%f)", sum, fg, w);
+        }
+        l.pop();
+        l.log("}");
+        m_total_inputted_values = sum;
+        m_outputted_value = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::activate(sum + m_bias);
+        l.log("OUT(%f) += ACT(SUM(%f) + B(%f))", m_outputted_value, sum, m_bias);
+        return m_outputted_value;
+    }
     void add_inputted_node(neural_node& node, init_method weight_init_method) {
         VALUE_TYPE weight = static_cast<VALUE_TYPE>(0.0);
         switch (weight_init_method)
@@ -180,7 +203,8 @@ public:
                          static_cast<VALUE_TYPE>(0.5);
                 break;
             case InitAsRandomZeroToHalf:
-                weight = static_cast<VALUE_TYPE>(rand()) /
+                weight =
+                static_cast<VALUE_TYPE>(rand()) /
                 static_cast<VALUE_TYPE>(RAND_MAX) *
                 static_cast<VALUE_TYPE>(0.5);
                 break;
@@ -196,7 +220,7 @@ public:
                 static_cast<VALUE_TYPE>(1.0);
                 break;
         }
-        m_inputted_nodes.push_back(inputted_neural_node(&node, weight_init_method));
+        m_inputted_nodes.push_back(inputted_neural_node(&node, weight));
         node.m_outputted_nodes.push_back(outputted_neural_node(this, m_inputted_nodes.size() - 1));
     }
     vector<inputted_neural_node>& get_inputted_nodes() {
@@ -227,13 +251,14 @@ public:
         return m_Out_Net;
     }
     template <typename LOGGER>
-    void log(const LOGGER& l) {
-        l.log("Node:\n    ");
+    void log(LOGGER& l) {
+        l.log("Node:");
+        l.push();
         for (auto& inputted_node : m_inputted_nodes) {
             l.log("W:%f ", inputted_node.weight);
         }
-        l.log("\n    ");
-        l.log("B:%f\n", m_bias);
+        l.pop();
+        l.log("B:%f", m_bias);
     }
 };
     
