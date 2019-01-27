@@ -2975,11 +2975,11 @@ public:
     }
     inline float learning_rate()
     {
-        return 0.005f;
+        return 0.05f;
     }
     inline float biasing_rate()
     {
-        return 0.005f;
+        return 0.05f;
     }
 };
 
@@ -2996,11 +2996,11 @@ public:
     }
     inline float learning_rate()
     {
-        return 0.005;
+        return 0.5;
     }
     inline float biasing_rate()
     {
-        return 0.005;
+        return 0.5;
     }
 };
 
@@ -3008,9 +3008,10 @@ public:
 {
     xhn::logger<xhn::CLoggerImpl> logger;
     xhn::vector<xhn::layer_config> configs;
-    configs.push_back({xhn::InitialConnection, xhn::InitAsOne, 1, 0, 0, 0, 1});
-    configs.push_back({xhn::FullConnection, xhn::InitAsRandomZeroToHalf, 8, 0, 0, 0, 1});
-    configs.push_back({xhn::FullConnection, xhn::InitAsOne, 1, 0, 0, 0, 1});
+    configs.push_back({xhn::InitialConnection, xhn::InitAsOne, 1, 0, 0, 0, 0});
+    configs.push_back({xhn::FullConnection, xhn::InitAsRandomNegativeOneToOne, 8, 0, 0, 0, 0});
+    configs.push_back({xhn::FullConnection, xhn::InitAsRandomNegativeOneToOne, 4, 0, 0, 0, 0});
+    configs.push_back({xhn::FullConnection, xhn::InitAsRandomNegativeOneToOne, 1, 0, 0, 0, 0});
     xhn::neural_node_network<float, 1, ReLuNeuralNodeOperator, SigmNeuralNodeOperator> network0;
     network0.setup_layers(configs);
     
@@ -3037,7 +3038,7 @@ public:
     targets.resize(1);
     for (int i = 0; i < 1000; i++)
     for (float j = 0.0f; j <= 1.0f; j += 0.001f) {
-        targets[0] = 0.99f - j;
+        targets[0] = (1.0f - j) * 0.9f + j * 0.05f;
         network0.get_inputted_layer()->get_node(0)->set_outputted_value(j);
         network0.get_outputted_layer()->get_node(0)->forward_propagate();
         network0.get_outputted_layer()->descend(targets);
@@ -3063,22 +3064,44 @@ public:
 //        network0.get_outputted_layer()->descend(targets);
     }
     //xhn::logger<xhn::CLoggerImpl> logger;
-    logger.log("Layer0:\n");
+//    logger.log("Layer0:");
+//    {
+//        logger.push();
+//        auto* layer = network0.get_layer(0);
+//        layer->get_node(0)->log(logger);
+//        logger.pop();
+//    }
+//    logger.log("Layer1:");
+//    {
+//        logger.push();
+//        auto* layer = network0.get_layer(1);
+//        for (euint i = 0; i < 8; i++) {
+//            layer->get_node(i)->log(logger);
+//        }
+//        logger.pop();
+//    }
+//    logger.log("Layer2:");
+//    {
+//        logger.push();
+//        auto* layer = network0.get_layer(2);
+//        layer->get_node(0)->log(logger);
+//        logger.pop();
+//    }
     {
         auto* layer = network0.get_layer(0);
-        layer->get_node(0)->log(logger);
+        layer->log(logger);
     }
-    logger.log("Layer1:\n");
     {
         auto* layer = network0.get_layer(1);
-        for (euint i = 0; i < 8; i++) {
-            layer->get_node(i)->log(logger);
-        }
+        layer->log(logger);
     }
-    logger.log("Layer2:\n");
     {
         auto* layer = network0.get_layer(2);
-        layer->get_node(0)->log(logger);
+        layer->log(logger);
+    }
+    {
+        auto* layer = network0.get_layer(3);
+        layer->log(logger);
     }
     
     for (float j = 0.0f; j <= 1.0f; j += 0.1f) {

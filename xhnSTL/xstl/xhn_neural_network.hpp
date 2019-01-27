@@ -478,6 +478,15 @@ public:
         EDebugAssert(DIMENSION == 2, "different dimension!");
         return &m_nodes[y * m_sizes[0] + x];
     }
+    template <typename LOGGER>
+    void log(LOGGER& l) {
+        l.log("Layer:");
+        l.push();
+        for (auto& node : m_nodes) {
+            node.log(l);
+        }
+        l.pop();
+    }
 };
     
 struct layer_config
