@@ -15,6 +15,7 @@
 #include "common.h"
 #include "etypes.h"
 #include "xhn_vector.hpp"
+#include "xhn_logger.hpp"
 
 namespace xhn {
     
@@ -224,6 +225,15 @@ public:
     }
     VALUE_TYPE get_Out_Net() const {
         return m_Out_Net;
+    }
+    template <typename LOGGER>
+    void log(const LOGGER& l) {
+        l.log("Node:\n    ");
+        for (auto& inputted_node : m_inputted_nodes) {
+            l.log("W:%f ", inputted_node.weight);
+        }
+        l.log("\n    ");
+        l.log("B:%f\n", m_bias);
     }
 };
     
@@ -551,6 +561,9 @@ public:
     }
     neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>* get_outputted_layer() {
         return m_layers.back();
+    }
+    neural_node_layer<VALUE_TYPE, DIMENSION, OPERATER0, OPERATER1>* get_layer(euint index) {
+        return m_layers[index];
     }
 };
     

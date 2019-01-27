@@ -167,6 +167,7 @@
 		B1D6ADEB1F4D4B1C00AB8F2F /* xhn_parallel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1EF5F5A21F1F92200BACA6B /* xhn_neural_network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1EF5F5821F1F92200BACA6B /* xhn_neural_network.cpp */; };
 		B1EF5F5B21F1F92200BACA6B /* xhn_neural_network.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1EF5F5921F1F92200BACA6B /* xhn_neural_network.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1FA8C4E21FD5DB90002C22E /* xhn_logger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B1FA8C4C21FD5DB90002C22E /* xhn_logger.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -344,6 +345,7 @@
 		B1D6ADE91F4D4B1C00AB8F2F /* xhn_parallel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xhn_parallel.hpp; sourceTree = "<group>"; };
 		B1EF5F5821F1F92200BACA6B /* xhn_neural_network.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = xhn_neural_network.cpp; sourceTree = "<group>"; };
 		B1EF5F5921F1F92200BACA6B /* xhn_neural_network.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_neural_network.hpp; sourceTree = "<group>"; };
+		B1FA8C4C21FD5DB90002C22E /* xhn_logger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xhn_logger.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -539,6 +541,7 @@
 				B175A4B721E2047C001A42F9 /* xhn_math.cpp */,
 				B1EF5F5821F1F92200BACA6B /* xhn_neural_network.cpp */,
 				B1EF5F5921F1F92200BACA6B /* xhn_neural_network.hpp */,
+				B1FA8C4C21FD5DB90002C22E /* xhn_logger.hpp */,
 			);
 			name = xstl;
 			path = ../../xhnSTL/xstl;
@@ -614,6 +617,7 @@
 				68245CE21BC9D8F90006E99D /* map.hpp in Headers */,
 				68245CE01BC9D8F90006E99D /* utility.h in Headers */,
 				68245CFE1BC9D8F90006E99D /* xhn_gc_array.h in Headers */,
+				B1FA8C4E21FD5DB90002C22E /* xhn_logger.hpp in Headers */,
 				68245D071BC9D8F90006E99D /* xhn_iterator.hpp in Headers */,
 				68245CD31BC9D8F90006E99D /* prime.h in Headers */,
 				B1607BEB1E7E423A00CBBDDD /* asm_syntax_converter.hpp in Headers */,

@@ -15,6 +15,7 @@
 #include <xhnSTL/xhn_open_hash_set.hpp>
 #include <xhnSTL/xhn_math.hpp>
 #include <xhnSTL/xhn_neural_network.hpp>
+#include <xhnSTL/xhn_logger.hpp>
 #include <xhnSTL/cpu.h>
 #include <vector>
 #include <map>
@@ -2410,6 +2411,11 @@ double assoc_legendre22(double x)
     xhn::u128toa(v, mbuf);
     printf("%s\n", mbuf);
 }
+- (void) testLogger
+{
+    xhn::logger<xhn::CLoggerImpl> logger;
+    logger.log("a(%f), b(%s), c(%d)\n", 0.15, "aa", 12);
+}
 
 - (void) testSigmoid
 {
@@ -3036,7 +3042,24 @@ public:
 //        network0.get_outputted_layer()->get_node(0)->forward_propagate();
 //        network0.get_outputted_layer()->descend(targets);
     }
-    
+    xhn::logger<xhn::CLoggerImpl> logger;
+    logger.log("Layer0:\n");
+    {
+        auto* layer = network0.get_layer(0);
+        layer->get_node(0)->log(logger);
+    }
+    logger.log("Layer1:\n");
+    {
+        auto* layer = network0.get_layer(1);
+        for (euint i = 0; i < 8; i++) {
+            layer->get_node(i)->log(logger);
+        }
+    }
+    logger.log("Layer2:\n");
+    {
+        auto* layer = network0.get_layer(2);
+        layer->get_node(0)->log(logger);
+    }
     
     for (float j = 0.0f; j <= 1.0f; j += 0.1f) {
         network0.get_inputted_layer()->get_node(0)->set_outputted_value(j);
