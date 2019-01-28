@@ -16,6 +16,7 @@
 #include "common.h"
 #include "etypes.h"
 #include "xhn_string.hpp"
+#include <cstdarg>
 
 namespace xhn {
     
