@@ -116,6 +116,11 @@ private:
     VALUE_TYPE m_bias = static_cast<VALUE_TYPE>(0.0);
     VALUE_TYPE m_total_inputted_values = static_cast<VALUE_TYPE>(0.0);
     VALUE_TYPE m_outputted_value = static_cast<VALUE_TYPE>(0.0);
+private:
+    euint m_connected_inputted_node_index = INVALID_UNSIGNED_INTEGER;
+    bool m_is_allowed_only_one_connected_inputted_node = false;
+    bool m_is_allowed_update_weights = true;
+    bool m_is_allowed_update_bias = true;
 public:
     neural_node()
     : operator_base<VALUE_TYPE, OPERATER0, OPERATER1>(0)
@@ -139,17 +144,25 @@ public:
         VALUE_TYPE Out_Net = operator_base<VALUE_TYPE, OPERATER0, OPERATER1>::eval_derivative(m_outputted_value);
         m_ETotal_Out = ETotal_Out;
         m_Out_Net = Out_Net;
-        for (auto& inputted_node : m_inputted_nodes) {
-            inputted_node.node->descend();
+        if (!m_is_allowed_only_one_connected_inputted_node) {
+            for (auto& inputted_node : m_inputted_nodes) {
+                inputted_node.node->descend();
+            }
+        } else {
+            m_inputted_nodes[m_connected_inputted_node_index].node->descend();
         }
-        for (auto& inputted_node : m_inputted_nodes) {
-            VALUE_TYPE ETotal_Wx =
-            ETotal_Out * Out_Net * inputted_node.node->m_outputted_value;
-            inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
+        if (m_is_allowed_update_weights) {
+            for (auto& inputted_node : m_inputted_nodes) {
+                VALUE_TYPE ETotal_Wx =
+                ETotal_Out * Out_Net * inputted_node.node->m_outputted_value;
+                inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
+            }
         }
-        VALUE_TYPE ETotal_Bx =
-        ETotal_Out * Out_Net;
-        m_bias = m_bias - br * ETotal_Bx;
+        if (m_is_allowed_update_bias) {
+            VALUE_TYPE ETotal_Bx =
+            ETotal_Out * Out_Net;
+            m_bias = m_bias - br * ETotal_Bx;
+        }
     }
     float forward_propagate()
     {
@@ -249,6 +262,18 @@ public:
     }
     VALUE_TYPE get_Out_Net() const {
         return m_Out_Net;
+    }
+    euint get_connected_inputted_node_index() const {
+        return m_connected_inputted_node_index;
+    }
+    bool is_allowed_only_one_connected_inputted_node() const {
+        return m_is_allowed_only_one_connected_inputted_node;
+    }
+    bool is_allowed_update_weights() const {
+        return m_is_allowed_update_weights;
+    }
+    bool is_allowed_update_bias() const {
+        return m_is_allowed_update_bias;
     }
     template <typename LOGGER>
     void log(LOGGER& l) {
@@ -459,15 +484,19 @@ public:
             VALUE_TYPE br = m_nodes[i].get_biasing_rate();
             VALUE_TYPE ETotal_Out = m_nodes[i].get_ETotal_Out();
             VALUE_TYPE Out_Net = m_nodes[i].get_Out_Net();
-            for (auto& inputted_node : m_nodes[i].get_inputted_nodes()) {
-                VALUE_TYPE Net_Wx = inputted_node.node->get_outputted_value();
-                VALUE_TYPE ETotal_Wx =
-                ETotal_Out * Out_Net * Net_Wx;
-                inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
+            if (m_nodes[i].is_allowed_update_weights()) {
+                for (auto& inputted_node : m_nodes[i].get_inputted_nodes()) {
+                    VALUE_TYPE Net_Wx = inputted_node.node->get_outputted_value();
+                    VALUE_TYPE ETotal_Wx =
+                    ETotal_Out * Out_Net * Net_Wx;
+                    inputted_node.weight = inputted_node.weight - lr * ETotal_Wx;
+                }
             }
-            VALUE_TYPE ETotal_Bx =
-            ETotal_Out * Out_Net;
-            m_nodes[i].set_bias(m_nodes[i].get_bias() - br * ETotal_Bx);
+            if (m_nodes[i].is_allowed_update_bias()) {
+                VALUE_TYPE ETotal_Bx =
+                ETotal_Out * Out_Net;
+                m_nodes[i].set_bias(m_nodes[i].get_bias() - br * ETotal_Bx);
+            }
         }
     }
     neural_node<VALUE_TYPE, OPERATER0, OPERATER1>* get_node(euint index) {
