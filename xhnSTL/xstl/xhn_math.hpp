@@ -20,6 +20,32 @@ namespace xhn {
     
 #define XHN_PI 3.14159265358979323846264338327950288
 #define XHN_E  2.718281828459045235360287471352662498
+
+template<unsigned N, unsigned M>
+class pow{ 
+public:
+    enum{ value = N * pow< N, M - 1 >::value };
+};
+
+template<unsigned N>
+class pow< N, 0 >{ 
+public:
+    enum{ value = 1 };
+};
+
+template<unsigned N>
+class log2
+{
+public:
+    enum { value = log2< N / 2 >::value + 1 };
+};
+
+template<> 
+class log2< 1 >
+{
+public:
+    enum { value = 0 };
+};
     
 // (n + 1) * P(n + 1, x) = (2 * n + 1) * x * P(n, x) - n * P(n - 1, x)
 //               (2 * n + 1) * x * P(n, x) - n * P(n - 1, x)
