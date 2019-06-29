@@ -61,6 +61,7 @@ public:
         m_bit_count++;
         if (8 == m_bit_count) {
             result.push_back(m_temp_byte);
+            
             m_temp_byte = 0;
             m_bit_count = 0;
         }
@@ -87,6 +88,14 @@ public:
             }
         }
     }
+
+    void flush(vector<euint8>& result) {
+        if (m_bit_count) {
+            result.push_back(m_temp_byte);
+            m_temp_byte = 0;
+            m_bit_count = 0;
+        }
+    }
 };
 
 template <typename T, bool IS_LITTLE_ENDIAN>
@@ -95,14 +104,16 @@ class bit_stream_decoder
 public:
     euint8 m_temp_byte = 0;
     euint8 m_remainder_bits = 0;
-    euint m_offset = 0;
+    euint m_byte_offset = 0;
 public:
     bool read_bit(const vector<euint8>& stream) {
         if (!m_remainder_bits) {
-            m_temp_byte = stream[m_offset++];
+            if (stream.size() <= m_byte_offset)
+                return false;
+            m_temp_byte = stream[m_byte_offset++];
             m_remainder_bits = 8;
         }
-        return m_temp_byte << (1 << (8 - (m_remainder_bits--) - 1));
+        return m_temp_byte & (1 << (8 - (m_remainder_bits--)));
     }
     void read_value_in_bits(const vector<euint8>& stream, euint num_bits, T& result)
     {
@@ -114,7 +125,7 @@ public:
         for (euint i = 0; i < num_bytes; i++) {
             euint8 byte = 0;
             for (euint j = 0; j < 8; j++) {
-                if (read_bit(stream)) byte |= (1 << j);
+                if (read_bit(stream)) { byte |= (1 << j); }
                 bit_count++;
                 if (bit_count == num_bits) {
                     if (IS_LITTLE_ENDIAN) {
@@ -131,6 +142,14 @@ public:
                 result_ptr[sizeof(T) - i - 1] = byte;
             }
         }
+    }
+    void seek(const vector<euint8>& stream, euint bit_offset) {
+        m_byte_offset = bit_offset / 8;
+        m_remainder_bits = 8 - bit_offset % 8;
+        if (m_byte_offset < stream.size())
+            m_temp_byte = stream[m_byte_offset++];
+        else
+            m_temp_byte = 0;
     }
 };
 
