@@ -44,6 +44,7 @@ euint read_stream(const vector<euint8>& stream, euint offset, T& result)
             result_ptr[sizeof(T) - i - 1] = stream[i + offset];
         }
     }
+    return sizeof(T);
 }
 
 template <typename T, bool IS_LITTLE_ENDIAN>
