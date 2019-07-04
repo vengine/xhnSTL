@@ -274,6 +274,24 @@ inline long double derivative_sigmoid(long double x)
     return sigmoid(x) * (static_cast<long double>(1.0) - sigmoid(x));
 }
 
+template <typename REAL, unsigned N>
+struct determinant
+{
+    REAL a[N][N];
+    REAL e[N];
+    void evaluate_once(REAL x[N])
+    {
+        for (unsigned i = 0; i < N; i++) {
+            REAL sum = static_cast<REAL>(0);
+            for (unsigned j = 0; j < N; j++) {
+                if (i == j) continue;
+                sum += a[i][j] / a[i][i] * x[j];
+            }
+            x[i] = e[i] / a[i][i] - sum;
+        }
+    }
+};
+
 #endif
 
 }
