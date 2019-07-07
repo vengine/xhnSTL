@@ -154,6 +154,56 @@ public:
     }
 };
 
+static euint32 encode_uint(euint32 number, euint8* result) 
+{
+    euint32 index = 0;
+    if ((number > 0x7f) != 0) {
+        result[index++] = (euint8)(number | 0x80);
+        number >>= 7;
+        if (number > 0x7f) {
+            result[index++] = (euint8)(number | 0x80);
+            number >>= 7;
+            if (number > 0x7f) {
+                result[index++] = (euint8)(number | 0x80);
+                number >>= 7;
+                if (number > 0x7f) {
+                    result[index++] = (euint8)(number | 0x80);
+                    number >>= 7;
+                }
+            }
+        }
+    } 
+    result[index++] = (euint8) number;
+    return index;
+}
+
+static euint32 decode_uint(euint8* stream, euint32& result) 
+{
+    euint32 index = 1;
+    euint32 byte = stream[0] & 0xff;
+    result = byte & 0x7f;
+    if (byte & 0x80) {
+        byte = stream[index++] & 0xff;
+        result |= (byte & 0x7f) << 7;
+        if (byte & 0x80) {
+            byte = stream[index++] & 0xff;
+            result |= (byte & 0x7f) << 14;
+            if (byte & 0x80) {
+                byte = stream[index++] & 0xff;
+                result |= (byte & 0x7f) << 21;
+                if (byte & 0x80) {
+                    byte = stream[index++] & 0xff;
+                    result |= (byte & 0x7f) << 28;
+                    if (byte & 0x80) {
+                        return 0;
+                    }
+                }
+            }
+        }
+    }
+    return index;
+}
+
 }
 
 #endif
