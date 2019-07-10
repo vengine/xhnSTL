@@ -158,7 +158,7 @@ static euint32 encode_uint(euint32 number, euint8* result)
 {
     euint32 index = 0;
     for (euint i = 0; i < 4; i++) {
-        if ((number > 0x7f) != 0) {
+        if (number > 0x7f) {
             result[index++] = (euint8)(number | 0x80);
             number >>= 7;
         } else {
@@ -176,6 +176,37 @@ static euint32 decode_uint(euint8* stream, euint32& result)
     for (euint i = 0; i < 5; i++) {
         euint32 byte = stream[index] & 0xff;
         result |= (byte & 0x7f) << (i * 7);
+        if (byte & 0x80) {
+            index++;
+        } else {
+            break;
+        }
+    }
+    return index + 1;
+}
+
+static euint32 encode_uint(euint64 number, euint8* result) 
+{
+    euint32 index = 0;
+    for (euint i = 0; i < 8; i++) {
+        if (number > 0x7f) {
+            result[index++] = (euint8)(number | 0x80);
+            number >>= 7;
+        } else {
+            break;
+        }
+    }
+    result[index++] = (euint8) number;
+    return index;
+}
+
+static euint32 decode_uint(euint8* stream, euint64& result) 
+{
+    euint32 index = 0;
+    result = 0;
+    for (euint i = 0; i < 9; i++) {
+        euint64 byte = stream[index] & 0xff;
+        result |= (byte & static_cast<euint64>(0x7f)) << static_cast<euint64>(i * 7);
         if (byte & 0x80) {
             index++;
         } else {
