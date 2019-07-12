@@ -2908,7 +2908,7 @@ public:
     int succ[10] = {0};
     int fail[10] = {0};
     
-    for (int i = 0; i < 30000; i++) {
+    for (int i = 0; i < 1500; i++) {
         for (int j = 0; j < 10; j++) {
             loadImage(*network0.get_inputted_layer(), imageSet.GetImage(j));
             for (int k = 0; k < 10; k++) {

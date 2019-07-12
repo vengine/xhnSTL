@@ -134,6 +134,7 @@ namespace xhn
               unsigned INITIAL_REBUILD_TOLERANCE = 2,
               typename HASH_PROC = FHashProc<K>,
               typename EQUAL_PROC = FEqualProc<K>,
+              typename TOLERANCE_INC_PROC = FRegularToleranceIncProc,
               typename BUCKET_ALLOCATOR = FHashBucketAllocator<K, V>,
               typename NODE_ALLOCATOR = FHashListNodeAllocator<K, V> >
     class dictionary : public RefObjectBase, public MemObject
@@ -149,6 +150,7 @@ namespace xhn
         euint32 m_rebuild_tolerance;
         HASH_PROC m_hash_proc;
         EQUAL_PROC m_equal_proc;
+        TOLERANCE_INC_PROC m_tolerance_inc_proc;
         BUCKET_ALLOCATOR m_bucket_allocator;
         NODE_ALLOCATOR m_node_allocator;
         bool m_need_dealloc;
@@ -331,7 +333,7 @@ namespace xhn
             euint32 old_num_buckets = m_num_buckets;
             m_hash_mask <<= 3;
             m_hash_mask |= 0x7;
-            m_rebuild_tolerance += 1;
+            m_rebuild_tolerance = m_tolerance_inc_proc(m_rebuild_tolerance);
             euint32 new_num_buckets = m_num_buckets << 3;
             
             bucket_pointer new_buckets = m_bucket_allocator.allocate(new_num_buckets);

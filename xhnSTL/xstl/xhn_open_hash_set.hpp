@@ -114,6 +114,7 @@ namespace xhn
     2,
     FHashProc<K>,
     FEqualProc<K>,
+    FRegularToleranceIncProc,
     FHashSetBucketAllocator<K>,
     FHashSetListNodeAllocator<K> >
     {
@@ -126,6 +127,7 @@ namespace xhn
         2,
         FHashProc<K>,
         FEqualProc<K>,
+        FRegularToleranceIncProc,
         FHashSetBucketAllocator<K>,
         FHashSetListNodeAllocator<K> > base_type;
         
