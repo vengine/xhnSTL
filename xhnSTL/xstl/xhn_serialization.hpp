@@ -169,7 +169,7 @@ static euint32 encode_uint(euint32 number, euint8* result)
     return index;
 }
 
-static euint32 decode_uint(euint8* stream, euint32& result) 
+static euint32 decode_uint(const euint8* stream, euint32& result) 
 {
     euint32 index = 0;
     result = 0;
@@ -200,7 +200,7 @@ static euint32 encode_uint(euint64 number, euint8* result)
     return index;
 }
 
-static euint32 decode_uint(euint8* stream, euint64& result) 
+static euint32 decode_uint(const euint8* stream, euint64& result) 
 {
     euint32 index = 0;
     result = 0;
