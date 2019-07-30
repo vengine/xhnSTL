@@ -370,7 +370,7 @@ namespace xhn
             bucket_pointer bucket = &m_buckets[ukey];
             node_pointer current_node = bucket->begin();
             while (current_node) {
-                if (current_node->first == key)
+                if ( m_equal_proc(current_node->first, key) )
                     return current_node;
                 current_node = current_node->m_iter_next;
             }
@@ -437,7 +437,7 @@ namespace xhn
             bucket_pointer bucket = &m_buckets[ukey];
             node_pointer current_node = bucket->begin();
             while (current_node) {
-                if (current_node->first == key) {
+                if ( m_equal_proc(current_node->first, key) ) {
                     current_node->set_value( value );
                     return &current_node->get_value( );
                 }
@@ -472,7 +472,7 @@ namespace xhn
             bucket_pointer bucket = &m_buckets[ukey];
             node_pointer current_node = bucket->begin();
             while (current_node) {
-                if (current_node->first == key) {
+                if ( m_equal_proc(current_node->first, key) ) {
                     current_node->set_value( value );
                     return current_node;
                 }
@@ -534,7 +534,7 @@ namespace xhn
             bucket_pointer bucket = &m_buckets[ukey];
             node_pointer current_node = bucket->begin();
             while (current_node) {
-                if (current_node->first == key) {
+                if ( m_equal_proc(current_node->first, key) ) {
                     euint32 count = 0;
                     node_pointer head = bucket->begin();
                     if (head) {
