@@ -57,6 +57,7 @@ namespace xhn
     2,
     FHashProc<K>,
     FEqualProc<K>,
+    FFasterToleranceIncProc,
     FHashBucketAllocator<K, V>,
     FCacheHashListNodeAllocator<K, V, CACHE_SIZE> >
     {
@@ -75,6 +76,7 @@ namespace xhn
         2,
         FHashProc<K>,
         FEqualProc<K>,
+        FFasterToleranceIncProc,
         FHashBucketAllocator<K, V>,
         FCacheHashListNodeAllocator<K, V, CACHE_SIZE> > base_type;
     public:

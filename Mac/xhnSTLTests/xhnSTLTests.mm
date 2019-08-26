@@ -7,6 +7,7 @@
 #include <xhnSTL/xhn_atomic_ptr.hpp>
 #include <xhnSTL/xhn_smart_ptr.hpp>
 #include <xhnSTL/xhn_vector.hpp>
+#include <xhnSTL/xhn_tuple.hpp>
 #include <xhnSTL/xhn_group.hpp>
 #include <xhnSTL/xhn_parallel.hpp>
 #include <xhnSTL/xhn_concurrent.hpp>
@@ -41,6 +42,27 @@
 
 - (void)tearDown {
     [super tearDown];
+}
+
+struct FTestTupleProc
+{
+    void operator() (int i)
+    {
+        printf("%d\n", i);
+    }
+    void operator() (float f)
+    {
+        printf("%f\n", f);
+    }
+};
+
+- (void) testTuple
+{
+    xhn::tuple<int, float> t = xhn::make_tuple<int, float>(1, 0.1f);
+    xhn::get<0>(t) = 1;
+    xhn::get<1>(t) = 0.1f;
+    FTestTupleProc proc;
+    t.for_each(proc);
 }
 
 - (void) testUrl
@@ -2886,7 +2908,7 @@ public:
     int succ[10] = {0};
     int fail[10] = {0};
     
-    for (int i = 0; i < 30000; i++) {
+    for (int i = 0; i < 1500; i++) {
         for (int j = 0; j < 10; j++) {
             loadImage(*network0.get_inputted_layer(), imageSet.GetImage(j));
             for (int k = 0; k < 10; k++) {

@@ -78,6 +78,12 @@ public:
         base_type::operator<(move(static_cast<const base_type&>(other)))
         && (m_value < other.m_value);
     }
+    template <typename PROC>
+    void for_each(PROC& proc)
+    {
+        proc(m_value);
+        base_type::for_each(proc);
+    }
 };
 /// 只有一个T参数的tuple继承自空参数的empty_tuple
 template<typename T>
@@ -116,6 +122,11 @@ public:
     bool operator<(const this_type&& other) const
     {
         return m_value < other.m_value;
+    }
+    template <typename PROC>
+    void for_each(PROC& proc)
+    {
+        proc(m_value);
     }
 };
 

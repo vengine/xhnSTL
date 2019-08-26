@@ -867,6 +867,20 @@ struct FCharFormat
         }
     };
     
+    struct FRegularToleranceIncProc
+    {
+        euint32 operator() (euint32 tolerance) const {
+            return tolerance * 2;
+        }
+    };
+    
+    struct FFasterToleranceIncProc
+    {
+        euint32 operator() (euint32 tolerance) const {
+            return tolerance + 1;
+        }
+    };
+    
     struct FStrLenProc {
         size_t operator() (const char* str) const {
             return strlen(str);
