@@ -696,12 +696,12 @@ public:
         m_totel_ele_count = 32;
         m_curt_ele_count = 0;
     }
-    vector(int) {
+    vector(int count) {
         euint size = m_get_elem_real_size();
-        m_begin_addr = ( char * ) NMalloc ( size * 32 );
+        m_begin_addr = ( char * ) NMalloc ( size * count );
         m_end_addr = m_begin_addr;
         m_ele_real_size = size;
-        m_totel_ele_count = 32;
+        m_totel_ele_count = count;
         m_curt_ele_count = 0;
     }
 	vector(const vector& v) {
