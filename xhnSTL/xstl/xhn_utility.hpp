@@ -1018,10 +1018,10 @@ struct FCharFormat
         typename conditional<is_pointer<T>::value,
 #if USING_STRING_OLD
         typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base_old<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc, FCharAllocator<char>>,
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base_old<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc, FCharAllocator<wchar_t>>, void*>::type
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base_old<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc, FCharAllocator<wchar_t>>, typename remove_const<T>::type>::type
 #else
         typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, char>::value, string_base<char, 1, FStrLenProc, FStrCmpProc, FDefaultStrProc, FCharAllocator<char>>,
-        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc, FCharAllocator<wchar_t>>, void*>::type
+        typename conditional<is_same<typename remove_cv<typename remove_pointer<T>::type>::type, wchar_t>::value, string_base<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc, FCharAllocator<wchar_t>>, typename remove_const<T>::type>::type
 #endif
         >::type,
         T

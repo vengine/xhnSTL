@@ -140,6 +140,8 @@ namespace xhn
     class dictionary : public RefObjectBase, public MemObject
     {
     public:
+        typedef typename remove_const< K >::type key_type;
+        typedef typename remove_const< V >::type value_type;
         typedef typename BUCKET_ALLOCATOR::pointer bucket_pointer;
         typedef typename NODE_ALLOCATOR::value_type node_type;
         typedef typename NODE_ALLOCATOR::pointer node_pointer;
@@ -364,7 +366,7 @@ namespace xhn
             m_num_buckets = new_num_buckets;
         }
     public:
-        node_pointer find_hash_node ( const K &key ) const {
+        node_pointer find_hash_node ( const key_type &key ) const {
             euint32 hash_value = m_hash_proc(key);
             euint32 ukey = hash_value & m_hash_mask;
             bucket_pointer bucket = &m_buckets[ukey];
@@ -416,7 +418,7 @@ namespace xhn
                 m_bucket_allocator.deallocate(m_buckets, m_num_buckets);
             }
         }
-        V* find ( const K &key ) const {
+        V* find ( const key_type & key ) const {
             node_pointer node = find_hash_node( key );
             if (node) {
                 return &node->get_value();
@@ -426,7 +428,7 @@ namespace xhn
             }
         }
         
-        node_pointer find_node ( const K &key ) const {
+        node_pointer find_node ( const key_type &key ) const {
             return find_hash_node( key );
         }
         
@@ -502,33 +504,33 @@ namespace xhn
 
     public:
         
-        V* insert ( const K &key, const V& value ) {
+        V* insert ( const key_type &key, const V& value ) {
             return _insert(key, value);
         }
         V* insert ( K &&key, V&& value ) {
             return _insert(key, value);
         }
-        V* insert ( const K &key, V&& value ) {
+        V* insert ( const key_type &key, V&& value ) {
             return _insert(key, value);
         }
         V* insert ( K &&key, const V& value ) {
             return _insert(key, value);
         }
         
-        node_pointer insert_node ( const K &key, const V& value ) {
+        node_pointer insert_node ( const key_type &key, const V& value ) {
             return _insert_node(key, value);
         }
         node_pointer insert_node ( K &&key, V&& value ) {
             return _insert_node(key, value);
         }
-        node_pointer insert_node ( const K &key, V&& value ) {
+        node_pointer insert_node ( const key_type &key, V&& value ) {
             return _insert_node(key, value);
         }
         node_pointer insert_node ( K &&key, const V& value ) {
             return _insert_node(key, value);
         }
         
-        void remove ( const K &key ) {
+        void remove ( const key_type &key ) {
             euint32 hash_value = m_hash_proc(key);
             euint32 ukey = hash_value & m_hash_mask;
             bucket_pointer bucket = &m_buckets[ukey];
