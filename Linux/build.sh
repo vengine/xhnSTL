@@ -99,6 +99,7 @@ cp ../xhnSTL/xstl/xhn_vector.hpp xhnSTL/xhn_vector.hpp
 cp ../xhnSTL/xstl/xhn_void_vector.hpp xhnSTL/xhn_void_vector.hpp
 cp ../xhnSTL/xstl/xhn_neural_network.hpp xhnSTL/xhn_neural_network.hpp
 cp ../xhnSTL/xstl/xhn_logger.hpp xhnSTL/xhn_logger.hpp
+cp ../xhnSTL/xstl/xhn_stacktrace.hpp xhnSTL/xhn_stacktrace.hpp
 
 cp common.h xhnSTL/common.h
 cp etypes.h xhnSTL/etypes.h

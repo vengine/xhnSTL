@@ -188,6 +188,7 @@ inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile e
     return AO_compare_and_swap((AO_t*)theValue, oldValue, newValue);
 }
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
+#define MemBarrier __atomic_thread_fence(__ATOMIC_SEQ_CST)
 inline esint32 AtomicIncrement(volatile esint32* i)
 {
     return __sync_fetch_and_add(i, 1) + 1;
