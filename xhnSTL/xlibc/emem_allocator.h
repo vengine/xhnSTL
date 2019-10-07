@@ -117,7 +117,13 @@ bool MemPoolFunc(check)(struct MemPoolDef(mem_pool)* _self)
 		var v = List_get_value(iter);
 		mem_pool_node* node = (mem_pool_node*)v.vptr_var;
 		MemPoolNode n = {node};
+#if BIT_WIDTH == 32
 		if (n.self->mem_list == (void*)0xffffffff)
+#elif BIT_WIDTH == 64
+		if (n.self->mem_list == (void*)0xffffffffffffffff)
+#else
+#error
+#endif
 			return false;
 		if (!MemPoolNode_check(n))
 			return false;

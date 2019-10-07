@@ -343,7 +343,7 @@ bool MemPoolNode_is_hotspot(MemPoolNode _self, volatile esint64* _mem_stamp)
 {
     esint64 c = load_ptr(&_self.self->mem_stamp);
     esint64 s = load_ptr(_mem_stamp);
-    if (s - c < MemPoolNode_number_of_chunks(_self) * 2) {
+    if (s - c < (esint64)(MemPoolNode_number_of_chunks(_self)) * (esint64)(2)) {
         return true;
     }
     else {
@@ -355,7 +355,7 @@ bool MemPoolNode_is_coldspot(MemPoolNode _self, volatile esint64* _mem_stamp)
 {
     esint64 c = load_ptr(&_self.self->mem_stamp);
     esint64 s = load_ptr(_mem_stamp);
-    if (s - c > MemPoolNode_number_of_chunks(_self) * 10) {
+    if (s - c > (esint64)(MemPoolNode_number_of_chunks(_self)) * (esint64)(10)) {
         return true;
     }
     else {

@@ -149,7 +149,7 @@ public:
         else {
             memcpy( m_data.data1.m_str, str, (count + 1) * sizeof(C) );
             set_using_data1( true );
-            set_data1_size( count );
+            set_data1_size( static_cast<euint8>(count) );
         }
         set_own_str( true );
     }
