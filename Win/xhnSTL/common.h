@@ -174,15 +174,17 @@ or
 
 ///#    define USE_LOG_SYSTEM
 
-#    ifdef _WIN32
-#        include <pthread.h>
-#        include <windows.h>
-#        define BIT_WIDTH 32
 
-#    elif defined (_WIN64)
+
+#    if defined (_WIN64)
 #        include <pthread.h>
 #        include <windows.h>
 #        define BIT_WIDTH 64
+
+#    elif defined (_WIN32)
+#        include <pthread.h>
+#        include <windows.h>
+#        define BIT_WIDTH 32
 
 #    elif defined(__APPLE__)
 #        include <pthread.h>

@@ -26,6 +26,9 @@ _INLINE_ void ELock_Init(ELock* lock) {
     *lock = 0;
 }
      **/
+#define ELock_try(lock) \
+    ((volatile std::atomic_int64_t*)lock)->fetch_add(0)
+
 _INLINE_ void ELock_lock(ELock* lock) {
 	while (InterlockedCompareExchange((LONG volatile *)lock, (LONG)1, (LONG)0) == (LONG)1)
 	{}

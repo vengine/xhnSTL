@@ -256,6 +256,8 @@ public:
                 sched_yield();
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
                 sched_yield();
+#elif defined(_WIN32) ||defined(_WIN64)
+				sched_yield();
 #else
 #error
 #endif
@@ -279,6 +281,8 @@ public:
                 sched_yield();
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
                 sched_yield();
+#elif defined(_WIN32) ||defined(_WIN64)
+				sched_yield();
 #else
 #error
 #endif
@@ -383,6 +387,8 @@ public:
                 sched_yield();
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
                 sched_yield();
+#elif defined(_WIN32) ||defined(_WIN64)
+				sched_yield();
 #else
 #error
 #endif
@@ -417,6 +423,8 @@ public:
                 sched_yield();
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
                 sched_yield();
+#elif defined(_WIN32) ||defined(_WIN64)
+				sched_yield();
 #else
 #error
 #endif

@@ -278,6 +278,8 @@ void xhn::thread::wait_completed()
                 sched_yield();
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
                 sched_yield();
+#elif defined(_WIN32) || defined(_WIN64)
+		        sched_yield();
 #else
 #error
 #endif
@@ -426,7 +428,12 @@ xhn::thread::thread()
 #endif
 #endif
     vptr base = (void *) malloc(1024 * 1024);
+#if defined(_WIN32) || defined(_WIN64)
+	pthread_attr_setstacksize(&thread_attr, 1024 * 1024);
+	status = pthread_attr_setstackaddr(&thread_attr, base);
+#else
     status = pthread_attr_setstack(&thread_attr, base, 1024 * 1024);
+#endif
     EDebugAssert (!status, "Set stack");
     status = pthread_attr_getstacksize (&thread_attr, &stack_size);
     EDebugAssert (!status, "Get stack size");

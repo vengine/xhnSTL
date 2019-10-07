@@ -15,15 +15,43 @@
 #include "etypes.h"
 #if defined (_WIN32) || defined (_WIN64)
 #include <windows.h>
-#include <xatomic.h>
+//#include <xatomic.h>
+#include <atomic>
+//#include <xxatomic>
+
 inline esint32 AtomicIncrement(volatile esint32* i)
 {
-	return InterlockedIncrement((volatile LONG*)i);
+	volatile std::atomic_int32_t*  ai = (volatile std::atomic_int32_t*)i;
+	return ai->fetch_add(1);
 }
 inline esint32 AtomicDecrement(volatile esint32* i)
 {
-	return InterlockedDecrement((volatile LONG*)i);
+	volatile std::atomic_int32_t* ai = (volatile std::atomic_int32_t*)i;
+	return ai->fetch_sub(1);
 }
+inline esint64 AtomicIncrement(volatile esint64* i)
+{
+	volatile std::atomic_int64_t* ai = (volatile std::atomic_int64_t*)i;
+	return ai->fetch_add(1);
+}
+inline esint64 AtomicDecrement(volatile esint64* i)
+{
+	volatile std::atomic_int64_t* ai = (volatile std::atomic_int64_t*)i;
+	return ai->fetch_sub(1);
+}
+inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
+{
+	//return InterlockedExchange((volatile LONG*)theValue, newValue) == newValue;
+	volatile std::atomic_int32_t* ai = (volatile std::atomic_int32_t*)theValue;
+	return ai->compare_exchange_strong(oldValue, newValue);
+}
+inline bool AtomicCompareExchange(esint64 oldValue, esint64 newValue, volatile esint64* theValue)
+{
+	//return InterlockedExchange64((volatile LONG64*)theValue, newValue) == newValue;
+	volatile std::atomic_int64_t* ai = (volatile std::atomic_int64_t*)theValue;
+	return ai->compare_exchange_strong(oldValue, newValue);
+}
+
 #elif defined (__APPLE__)
 #define USING_BUILTIN_ATOMIC 1
 #if USING_BUILTIN_ATOMIC

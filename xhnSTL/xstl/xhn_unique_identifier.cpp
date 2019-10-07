@@ -60,9 +60,35 @@ euint xhn::create_uid()
 #include <uuid/uuid.h>
 #elif defined(LINUX) && !defined(AO_ATOMIC_OPS_H)
 #include <uuid/uuid.h>
+#elif defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
 #endif
 xhn::string xhn::create_uuid_string()
 {
+#if defined(_WIN32) || defined(_WIN64)
+	GUID guid;
+	CoCreateGuid(&guid);
+	char mbuf[256];
+	char* strbuf = mbuf;
+	int remainder = 256;
+	unsigned char* p = guid.Data4;
+	for (euint i = 0; i < sizeof(guid.Data4); i++, p++)
+	{
+		int len = snprintf(strbuf, remainder, "%02X", *p);
+		strbuf += len;
+		remainder -= len;
+		if (i == 3 ||
+			i == 5 ||
+			i == 7 ||
+			i == 9) {
+			int len = snprintf(strbuf, remainder, "-");
+			strbuf += len;
+			remainder -= len;
+		}
+	}
+	xhn::string ret(mbuf);
+	return ret;
+#else
     char mbuf[256];
     char* strbuf = mbuf;
     int remainder = 256;
@@ -87,5 +113,6 @@ xhn::string xhn::create_uuid_string()
     
     xhn::string ret(mbuf);
     return ret;
+#endif
 }
 

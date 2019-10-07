@@ -14,6 +14,8 @@
 #include "ObjCString.h"
 #elif defined(LINUX)
 #include "LinuxString.hpp"
+#elif defined(_WIN32) || defined(_WIN64)
+#include "WinString.hpp"
 #endif
 
 wchar_t get_char(euint i)

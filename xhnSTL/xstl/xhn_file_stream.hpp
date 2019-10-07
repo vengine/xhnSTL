@@ -315,7 +315,7 @@ namespace xhn
         virtual void delete_file(const xhn::wstring& path) = 0;
         virtual euint64 file_size(const xhn::wstring& path) = 0;
         virtual euint64 file_size(const xhn::string& path) = 0;
-        virtual file_stream_ptr open(file_implement_ptr interface, const xhn::wstring& path);
+        virtual file_stream_ptr open(file_implement_ptr _interface, const xhn::wstring& path);
         virtual xhn::wstring get_home_dir() = 0;
         virtual void get_resource_dirs(xhn::vector<xhn::wstring>& result) = 0;
         virtual void get_system_font_dirs(xhn::vector<xhn::wstring>& result) = 0;

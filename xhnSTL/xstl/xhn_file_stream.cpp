@@ -704,6 +704,17 @@ xhn::file_manager* xhn::file_manager::get()
     }
     return s_LinuxFileManager;
 }
+#elif defined(_WIN32) || defined(_WIN64)
+#include "win_file_manager.hpp"
+static WinFileManager* s_WinFileManager = NULL;
+
+xhn::file_manager* xhn::file_manager::get()
+{
+	if (!s_WinFileManager) {
+		s_WinFileManager = VNEW WinFileManager;
+	}
+	return s_WinFileManager;
+}
 #else
 #error
 #endif
