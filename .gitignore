@@ -106,3 +106,5 @@ Linux/libxhnSTL\.a
 
 /Linux/CMakeFiles/*
 /Linux/xhnSTL/*
+
+/Win/include/*

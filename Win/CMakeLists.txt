@@ -72,4 +72,11 @@ ADD_LIBRARY(xhnSTL STATIC
    ../xhnSTL/win/win_file_manager.cpp
 )
 
+
+add_custom_command(TARGET xhnSTL
+  PRE_BUILD 
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/copy_headers.sh
+  COMMENT "This command will be executed before build target xhnSTL"
+)
+
 target_link_libraries(xhnSTL m pthread uuid)
