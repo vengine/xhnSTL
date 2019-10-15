@@ -47,7 +47,7 @@ struct MemPoolDef(mem_pool)* MemPoolFunc(new)(native_memory_allocator* _alloc, e
 	node = MemPoolNode_new(_alloc, _chk_size, ret->num_chunk_per_mem_block);
 
 	v.vptr_var = node.self;
-#pragma mark ResortMemPoolChain
+//#pragma mark ResortMemPoolChain
 	List_push_back(ret->mem_pool_chain, v);
 
 	///ret->num_chunk_per_mem_block *= 2;
@@ -163,7 +163,7 @@ void* MemPoolFunc(alloc)(struct MemPoolDef(mem_pool)* _self,
     /// 如果当前的内存池空了，则将内存池扔到末尾去
 	if (MemPoolNode_empty(node))
 	{
-#pragma mark ResortMemPoolChain
+//#pragma mark ResortMemPoolChain
 		List_throw_back(_self->mem_pool_chain, iter);
 		iter = List_begin(_self->mem_pool_chain);
 		v = List_get_value(iter);
@@ -175,7 +175,7 @@ void* MemPoolFunc(alloc)(struct MemPoolDef(mem_pool)* _self,
 			euint num_chks = _self->num_chunk_per_mem_block;
 			node = MemPoolNode_new(_self->native_allocator, chk_size, num_chks);
 			v.vptr_var = node.self;
-#pragma mark ResortMemPoolChain
+//#pragma mark ResortMemPoolChain
 			List_push_front(_self->mem_pool_chain, v);
 			///_self->num_chunk_per_mem_block *= 2;
 #ifdef ALLOW_CONCURRENT
@@ -206,7 +206,7 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
          !MemPoolNode_is_coldspot(node, &_self->mem_stamp)) &&
         List_count(_self->mem_pool_chain) > 5 &&
         List_begin(_self->mem_pool_chain) != _iter) {
-#pragma mark ResortMemPoolChain
+//#pragma mark ResortMemPoolChain
         List_remove(_self->mem_pool_chain, _iter);
 #ifdef ALLOW_CONCURRENT
         ELock_unlock(&_self->elock);
@@ -215,7 +215,7 @@ void MemPoolFunc(free)(struct MemPoolDef(mem_pool)* _self,
         return;
     }
     
-#pragma mark ResortMemPoolChain
+//#pragma mark ResortMemPoolChain
     if (MemPoolNode_is_hotspot(node, &_self->mem_stamp) ||
         MemPoolNode_is_coldspot(node, &_self->mem_stamp)) {
 	    List_throw_front(_self->mem_pool_chain, _iter);
