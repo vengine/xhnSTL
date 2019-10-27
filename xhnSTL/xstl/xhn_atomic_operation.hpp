@@ -52,6 +52,12 @@ inline bool AtomicCompareExchange(esint64 oldValue, esint64 newValue, volatile e
 	return ai->compare_exchange_strong(oldValue, newValue);
 }
 
+inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void* volatile* theValue)
+{
+	volatile std::atomic<void*>* ai = (volatile std::atomic<void*>*)theValue;
+	return ai->compare_exchange_strong(oldValue, newValue);
+}
+
 #elif defined (__APPLE__)
 #define USING_BUILTIN_ATOMIC 1
 #if USING_BUILTIN_ATOMIC
