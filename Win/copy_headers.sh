@@ -25,6 +25,7 @@ cp ../xhnSTL/xlibc/stack.h                                      include/xhnSTL/s
 cp ../xhnSTL/xlibc/static_string.h                           include/xhnSTL/static_string.h
 cp ../xhnSTL/xlibc/tree.h                                        include/xhnSTL/tree.h
 cp ../xhnSTL/xlibc/utility.h                                     include/xhnSTL/utility.h
+cp ../xhnSTL/xlibc/cpu.h                                       include/xhnSTL/cpu.h
 
 cp ../xhnSTL/xstl/map.hpp                                    include/xhnSTL/map.hpp
 cp ../xhnSTL/xstl/rtti.hpp                                      include/xhnSTL/rtti.hpp
