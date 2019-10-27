@@ -57,6 +57,7 @@ inline bool AtomicCompareExchangePtr(void* oldValue, void* newValue, void* volat
 	volatile std::atomic<void*>* ai = (volatile std::atomic<void*>*)theValue;
 	return ai->compare_exchange_strong(oldValue, newValue);
 }
+#define MemBarrier std::atomic_thread_fence(std::memory_order_seq_cst)
 
 #elif defined (__APPLE__)
 #define USING_BUILTIN_ATOMIC 1
