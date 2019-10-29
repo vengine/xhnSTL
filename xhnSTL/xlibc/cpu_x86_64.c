@@ -9,12 +9,21 @@
  */
 
 #include "cpu.h"
+#if defined(_WIN32) || defined(_WIN64)
+#include <emmintrin.h>
+#endif
 
 void nanopause(euint n)
 {
+#if defined(_WIN32) || defined(_WIN64)
+	for (euint i = 0; i < n; i++) {
+		_mm_pause();
+	}
+#else
     for (euint i = 0; i < n; i++) {
         __asm__ __volatile__("pause");
     }
+#endif
 }
 /**
  * Copyright (c) 2011-2013 Xu Haining

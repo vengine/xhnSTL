@@ -31,6 +31,8 @@ ADD_LIBRARY(xhnSTL STATIC
     ../xhnSTL/xlibc/tree.c
     ../xhnSTL/xlibc/sha256.c
     ../xhnSTL/xlibc/utility.c
+    ../xhnSTL/xlibc/cpu_x86_64.c
+    ../xhnSTL/xlibc/cpu_common.c
 
     ../xhnSTL/xstl/exception.cpp
     ../xhnSTL/xstl/rtti.cpp
