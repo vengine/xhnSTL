@@ -548,13 +548,19 @@ bool xhn::bit_reader::read_byte(euint8* output)
 ///  file_manager                                                            ///
 ///==========================================================================///
 
-#if defined(__APPLE__) || defined(LINUX)
+
 xhn::wstring xhn::file_manager::get_upper_directory(const wstring& path)
 {
     wstring ret;
     wstring tmp = path;
     transform(tmp.begin(), tmp.end(), tmp.begin(), FWCharFormat());
+#if defined(__APPLE__) || defined(LINUX)
     if (tmp.size() && tmp[tmp.size() - 1] == L'/') {
+#elif defined(_WIN32) || defined(_WIN64)
+	if (tmp.size() && tmp[tmp.size() - 1] == L'\\') {
+#else
+#error
+#endif
         tmp[tmp.size() - 1] = 0;
         tmp.resize(tmp.size() - 1);
     }
@@ -565,7 +571,13 @@ xhn::wstring xhn::file_manager::get_upper_directory(const wstring& path)
     euint lastSlash = (euint)-1;
     bool foundSlash = false;
     for (; iter != end; iter++) {
+#if defined(__APPLE__) || defined(LINUX)
         if (*iter == L'/') {
+#elif defined(_WIN32) || defined(_WIN64)
+		if (*iter == L'\\') {
+#else
+#error
+#endif
             if (!foundSlash) {
                 foundSlash = true;
                 ret[count] = *iter;
@@ -595,7 +607,13 @@ xhn::string xhn::file_manager::get_upper_directory(const xhn::string& path)
     string ret;
     string tmp = path;
     transform(tmp.begin(), tmp.end(), tmp.begin(), FCharFormat());
+#if defined(__APPLE__) || defined(LINUX)
     if (tmp.size() && tmp[tmp.size() - 1] == '/') {
+#elif defined(_WIN32) || defined(_WIN64)
+	if (tmp.size() && tmp[tmp.size() - 1] == '\\') {
+#else
+#error
+#endif
         tmp[tmp.size() - 1] = 0;
         tmp.resize(tmp.size() - 1);
     }
@@ -606,7 +624,13 @@ xhn::string xhn::file_manager::get_upper_directory(const xhn::string& path)
     euint lastSlash = (euint)-1;
     bool foundSlash = false;
     for (; iter != end; iter++) {
+#if defined(__APPLE__) || defined(LINUX)
         if (*iter == '/') {
+#elif defined(_WIN32) || defined(_WIN64)
+		if (*iter == '\\') {
+#else
+#error
+#endif
             if (!foundSlash) {
                 foundSlash = true;
                 ret[count] = *iter;
@@ -630,8 +654,6 @@ xhn::string xhn::file_manager::get_upper_directory(const xhn::string& path)
     }
     return ret;
 }
-
-#endif
 
 void xhn::file_manager::force_create_file(const xhn::wstring& path)
 {
