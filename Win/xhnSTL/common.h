@@ -124,7 +124,7 @@ or
 #    ifdef DLL_EXPORT
 #        define API_EXPORT __declspec(dllexport)
 #    else
-#        define API_EXPORT
+#        define API_EXPORT __declspec(dllimport)
 #    endif
 
 #    define MARK_GLSL_VERSION
