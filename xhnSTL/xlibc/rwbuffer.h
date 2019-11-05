@@ -21,11 +21,11 @@ typedef struct _rw_buffer* RWBuffer;
 
 #define GetRealSize(type, size) size + ( sizeof(type) - (size % sizeof(type)) )
 
-API_EXPORT RWBuffer RWBuffer_new(native_memory_allocator* allocator, euint buffer_size);
-API_EXPORT void RWBuffer_delete(native_memory_allocator* allocator, RWBuffer _self);
-API_EXPORT bool RWBuffer_Read(RWBuffer _self, euint* result, euint* read_size);
-API_EXPORT bool RWBuffer_Write(RWBuffer _self, const euint* from, const euint write_size);
-API_EXPORT bool RWBuffer_IsEmpty(RWBuffer _self);
+RWBuffer RWBuffer_new(native_memory_allocator* allocator, euint buffer_size);
+void RWBuffer_delete(native_memory_allocator* allocator, RWBuffer _self);
+bool RWBuffer_Read(RWBuffer _self, euint* result, euint* read_size);
+bool RWBuffer_Write(RWBuffer _self, const euint* from, const euint write_size);
+bool RWBuffer_IsEmpty(RWBuffer _self);
 #ifdef __cplusplus
 }
 #endif

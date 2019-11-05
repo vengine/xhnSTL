@@ -26,10 +26,10 @@ void TestLogFunction();
 extern void (*GetHomeDirectory)(char* output, int outlen);
 extern ELock g_elog_lock;
 #define ELOG_BUFFER_SIZE 4096 * 2
-API_EXPORT void ELog_Init(void);
-API_EXPORT void ELog_Release(void);
+void ELog_Init(void);
+void ELog_Release(void);
 extern char g_elog_buffer[ELOG_BUFFER_SIZE];
-API_EXPORT void ELog_write(void);
+void ELog_write(void);
     
 #if DEBUG
 
@@ -49,8 +49,8 @@ struct elogger
     FILE* logFile;
 };
     
-API_EXPORT void ELog2_Init(struct elogger* logger);
-API_EXPORT void ELog2_write(struct elogger* logger);
+void ELog2_Init(struct elogger* logger);
+void ELog2_write(struct elogger* logger);
     
 #if DEBUG
     

@@ -30,13 +30,13 @@ extern "C"
 extern native_memory_allocator g_DefaultMemoryAllcator;
 
 /// 必须确保所有分配出来的内存都是经过初始化的
-API_EXPORT void TestInit(void);
+void TestInit(void);
 /// 必须在启动多线程系统前完成引导
-API_EXPORT void MInit(void);
+void MInit(void);
 
-API_EXPORT vptr _Malloc(euint _size, const char* _file, euint32 _line);
-API_EXPORT vptr _SMalloc(euint _size, const char* _file, euint32 _line);
-API_EXPORT void _Mfree(vptr _ptr, const char* _file, euint32 _line);
+vptr _Malloc(euint _size, const char* _file, euint32 _line);
+vptr _SMalloc(euint _size, const char* _file, euint32 _line);
+void _Mfree(vptr _ptr, const char* _file, euint32 _line);
 
 void* TestAlloc(euint _size);
 void TestFree(void* _ptr);
@@ -45,68 +45,68 @@ void TestFree(void* _ptr);
 #define SMalloc(s) _SMalloc(s, __FILE__, __LINE__)
 #define Mfree(p) _Mfree(p, __FILE__, __LINE__)
 
-API_EXPORT void Mlog(void);
-API_EXPORT void Mprint(void);
-API_EXPORT bool MCheck(void);
-API_EXPORT void MCheck2(void* checker, FnCheckMemory fnCheckMem);
+void Mlog(void);
+void Mprint(void);
+bool MCheck(void);
+void MCheck2(void* checker, FnCheckMemory fnCheckMem);
 
-API_EXPORT euint32 ETestMark(void);
-API_EXPORT bool ETest(vptr ptr);
-API_EXPORT vptr Ealloc(euint _size);
-API_EXPORT vptr SEalloc(euint _size);
-API_EXPORT void Efree(vptr _ptr);
-API_EXPORT const char* Minfo(vptr _ptr, euint32* _line);
-API_EXPORT euint Msize(vptr _ptr);
+euint32 ETestMark(void);
+bool ETest(vptr ptr);
+vptr Ealloc(euint _size);
+vptr SEalloc(euint _size);
+void Efree(vptr _ptr);
+const char* Minfo(vptr _ptr, euint32* _line);
+euint Msize(vptr _ptr);
 
 typedef struct _mem_pool_node_
 {
     struct _mem_pool_node* self;
 } MemPoolNode;
-API_EXPORT MemPoolNode MemPoolNode_new(native_memory_allocator* _alloc, euint _chk_size, euint _num_chks);
-API_EXPORT void MemPoolNode_delete(MemPoolNode _self);
-API_EXPORT void* MemPoolNode_alloc(MemPoolNode _self, volatile esint64* _mem_stamp, bool _is_safe_alloc);
-API_EXPORT bool MemPoolNode_free(MemPoolNode _self, void* _ptr);
-API_EXPORT bool MemPoolNode_is_hotspot(MemPoolNode _self, volatile esint64* _mem_stamp);
-API_EXPORT bool MemPoolNode_is_coldspot(MemPoolNode _self, volatile esint64* _mem_stamp);
-API_EXPORT bool MemPoolNode_empty(MemPoolNode _self);
-API_EXPORT bool MemPoolNode_full(MemPoolNode _self);
-API_EXPORT bool MemPoolNode_is_from(MemPoolNode _self, void* _ptr);
-API_EXPORT euint MemPoolNode_number_of_chunks(MemPoolNode _self);
+MemPoolNode MemPoolNode_new(native_memory_allocator* _alloc, euint _chk_size, euint _num_chks);
+void MemPoolNode_delete(MemPoolNode _self);
+void* MemPoolNode_alloc(MemPoolNode _self, volatile esint64* _mem_stamp, bool _is_safe_alloc);
+bool MemPoolNode_free(MemPoolNode _self, void* _ptr);
+bool MemPoolNode_is_hotspot(MemPoolNode _self, volatile esint64* _mem_stamp);
+bool MemPoolNode_is_coldspot(MemPoolNode _self, volatile esint64* _mem_stamp);
+bool MemPoolNode_empty(MemPoolNode _self);
+bool MemPoolNode_full(MemPoolNode _self);
+bool MemPoolNode_is_from(MemPoolNode _self, void* _ptr);
+euint MemPoolNode_number_of_chunks(MemPoolNode _self);
 
 typedef struct mem_pool mem_pool;
 
-API_EXPORT mem_pool* MemPool_new(native_memory_allocator* _alloc, euint _chk_size);
-API_EXPORT void MemPool_delete(mem_pool* _self);
-API_EXPORT void* MemPool_alloc(mem_pool* _self,
+mem_pool* MemPool_new(native_memory_allocator* _alloc, euint _chk_size);
+void MemPool_delete(mem_pool* _self);
+void* MemPool_alloc(mem_pool* _self,
                                Iterator* _iter,
                                bool _is_safe_alloc);
-API_EXPORT void* MemPool_salloc(mem_pool* _self, Iterator* _iter);
-API_EXPORT void MemPool_free(mem_pool* _self,
+void* MemPool_salloc(mem_pool* _self, Iterator* _iter);
+void MemPool_free(mem_pool* _self,
                              Iterator _iter,
                              void* _ptr);
-API_EXPORT euint MemPool_chunk_size(mem_pool* _self);
+euint MemPool_chunk_size(mem_pool* _self);
 
 typedef struct mem_allocator mem_allocator;
 
-API_EXPORT mem_allocator* MemAllocator_new(native_memory_allocator* _alloc);
-API_EXPORT void MemAllocator_delete(mem_allocator* _self);
-API_EXPORT void* MemAllocator_alloc(mem_allocator* _self, euint _size, bool _is_safe_alloc);
-API_EXPORT void* MemAllocator_salloc(mem_allocator* _self, euint _size);
-API_EXPORT void MemAllocator_free(mem_allocator* _self, void* _ptr);
-API_EXPORT void MemAllocator_log(mem_allocator* _self);
-API_EXPORT bool MemAllocator_check(mem_allocator* _self);
-API_EXPORT euint MemAllocator_get_alloced_mem_size(mem_allocator* _self);
+mem_allocator* MemAllocator_new(native_memory_allocator* _alloc);
+void MemAllocator_delete(mem_allocator* _self);
+void* MemAllocator_alloc(mem_allocator* _self, euint _size, bool _is_safe_alloc);
+void* MemAllocator_salloc(mem_allocator* _self, euint _size);
+void MemAllocator_free(mem_allocator* _self, void* _ptr);
+void MemAllocator_log(mem_allocator* _self);
+bool MemAllocator_check(mem_allocator* _self);
+euint MemAllocator_get_alloced_mem_size(mem_allocator* _self);
 
 typedef struct Unlocked_mem_allocator Unlocked_mem_allocator;
 
-API_EXPORT Unlocked_mem_allocator* UnlockedMemAllocator_new(native_memory_allocator* _alloc);
-API_EXPORT void UnlockedMemAllocator_delete(Unlocked_mem_allocator* _self);
-API_EXPORT void* UnlockedMemAllocator_alloc(Unlocked_mem_allocator* _self, euint _size, bool _is_safe_alloc);
-API_EXPORT void* UnlockedMemAllocator_salloc(Unlocked_mem_allocator* _self, euint _size);
-API_EXPORT void UnlockedMemAllocator_free(Unlocked_mem_allocator* _self, void* _ptr);
-API_EXPORT void UnlockedMemAllocator_log(Unlocked_mem_allocator* _self);
-API_EXPORT bool UnlockedMemAllocator_check(Unlocked_mem_allocator* _self);
-API_EXPORT euint UnlockedMemAllocator_get_alloced_mem_size(Unlocked_mem_allocator* _self);
+Unlocked_mem_allocator* UnlockedMemAllocator_new(native_memory_allocator* _alloc);
+void UnlockedMemAllocator_delete(Unlocked_mem_allocator* _self);
+void* UnlockedMemAllocator_alloc(Unlocked_mem_allocator* _self, euint _size, bool _is_safe_alloc);
+void* UnlockedMemAllocator_salloc(Unlocked_mem_allocator* _self, euint _size);
+void UnlockedMemAllocator_free(Unlocked_mem_allocator* _self, void* _ptr);
+void UnlockedMemAllocator_log(Unlocked_mem_allocator* _self);
+bool UnlockedMemAllocator_check(Unlocked_mem_allocator* _self);
+euint UnlockedMemAllocator_get_alloced_mem_size(Unlocked_mem_allocator* _self);
 #ifdef __cplusplus
 }
 #endif

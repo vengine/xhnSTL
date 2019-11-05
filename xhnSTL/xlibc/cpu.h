@@ -34,16 +34,16 @@ CPU_SET(int num, cpu_set_t *cs) { cs->count |= (1 << num); }
 static inline int
 CPU_ISSET(int num, cpu_set_t *cs) { return (cs->count & (1 << num)); }
     
-API_EXPORT int sched_getaffinity(pid_t pid, size_t cpu_size, cpu_set_t *cpu_set);
-API_EXPORT int pthread_setaffinity_np(pthread_t thread, size_t cpu_size,
-                                      cpu_set_t *cpu_set);
+int sched_getaffinity(pid_t pid, size_t cpu_size, cpu_set_t *cpu_set);
+int pthread_setaffinity_np(pthread_t thread, size_t cpu_size,
+                           cpu_set_t *cpu_set);
     
 #endif
     
-API_EXPORT euint32 number_of_cores(void);
-API_EXPORT euint32 number_of_physicalcores(void);
+euint32 number_of_cores(void);
+euint32 number_of_physicalcores(void);
     
-API_EXPORT void nanopause(euint n);
+void nanopause(euint n);
 #ifdef __cplusplus
 }
 #endif
