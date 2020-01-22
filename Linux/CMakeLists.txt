@@ -13,7 +13,7 @@ INCLUDE_DIRECTORIES(./
                     ../xhnSTL/xlibc/)
 
 add_definitions(-DLINUX -DBIT_WIDTH=64)
-ADD_LIBRARY(xhnSTL STATIC
+ADD_LIBRARY(xhnSTL SHARED
     ../xhnSTL/xlibc/eassert.c
     ../xhnSTL/xlibc/elog.c
     ../xhnSTL/xlibc/emem.c
