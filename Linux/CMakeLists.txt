@@ -68,4 +68,10 @@ ADD_LIBRARY(xhnSTL STATIC
     ../xhnSTL/linux/linux_file_manager.cpp
 )
 
-target_link_libraries(xhnSTL m pthread uuid)
+target_link_libraries(xhnSTL m ${CMAKE_THREAD_LIBS_INIT} uuid)
+
+add_custom_command(TARGET VEngine
+  PRE_BUILD 
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/copy_headers.sh
+  COMMENT "This command will be executed before build target VEngine"
+)
