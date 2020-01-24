@@ -73,11 +73,10 @@ euint32 number_of_physicalcores()
 }
 #elif defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
+#include <assert.h>
 euint32 number_of_cores()
 {
-    euint32 registers[4];
     unsigned logicalcpucount;
-    unsigned physicalcpucount;
 
     SYSTEM_INFO systeminfo;
     GetSystemInfo( &systeminfo );
@@ -85,38 +84,39 @@ euint32 number_of_cores()
     logicalcpucount = systeminfo.dwNumberOfProcessors;
     return logicalcpucount;
 }
+
+// 这段代码来自于 https://stackoverflow.com/questions/150355/programmatically-find-the-number-of-cores-on-a-machine
 euint32 number_of_physicalcores()
 {
-    euint32 registers[4];
-    unsigned logicalcpucount;
-    unsigned physicalcpucount;
+	DWORD length = 0;
+	const BOOL result_first = GetLogicalProcessorInformationEx(RelationProcessorCore, NULL, &length);
+	assert(GetLastError() == ERROR_INSUFFICIENT_BUFFER);
 
-    SYSTEM_INFO systeminfo;
-    GetSystemInfo( &systeminfo );
+	unsigned char buffer = (unsigned char*)malloc(length);
+	const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX info =
+	(const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)(buffer);
 
-    logicalcpucount = systeminfo.dwNumberOfProcessors;
-    __asm__ __volatile__ ("cpuid " :
-                          "=a" (registers[0]),
-                          "=b" (registers[1]),
-                          "=c" (registers[2]),
-                          "=d" (registers[3])
-                          : "a" (1), "c" (0));
-    unsigned CPUFeatureSet = registers[3];
-    bool hyperthreading = CPUFeatureSet & (1 << 28);
-    if (hyperthreading){
-        physicalcpucount = logicalcpucount / 2;
-    } else {
-        physicalcpucount = logicalcpucount;
-    }
-    return physicalcpucount;
+	const BOOL result_second = GetLogicalProcessorInformationEx(RelationProcessorCore, info, &length);
+	assert(result_second != FALSE);
+
+	size_t nb_physical_cores = 0;
+	size_t offset = 0;
+	do {
+		const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX current_info =
+		(const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)(buffer + offset);
+		offset += current_info->Size;
+		++nb_physical_cores;
+	} while (offset < length);
+
+	free(buffer);
+
+	return nb_physical_cores;
 }
 #elif defined(LINUX)
 #include <unistd.h>
 euint32 number_of_cores()
 {
-    euint32 registers[4];
     unsigned logicalcpucount;
-    unsigned physicalcpucount;
 
     logicalcpucount = sysconf( _SC_NPROCESSORS_ONLN );
     return logicalcpucount;
