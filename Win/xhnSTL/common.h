@@ -195,6 +195,20 @@ or
 #        endif
 #    endif
 
+static int print_log(const char* format, ...)
+{
+	static char s_printf_buf[1024];
+	va_list args;
+	va_start(args, format);
+	_vsnprintf(s_printf_buf, sizeof(s_printf_buf), format, args);
+	va_end(args);
+	OutputDebugStringA(s_printf_buf);
+	return 0;
+}
+
+#define printf(format, ...) \
+    print_log(format, __VA_ARGS__)
+
 #endif
 
 /**
