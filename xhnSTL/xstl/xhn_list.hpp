@@ -630,7 +630,7 @@ public:
     void pop_back() {
         if (m_tail) {
             node_type* tmp = m_tail;
-            m_tail = m_head->m_iter_prev;
+            m_tail = m_tail->m_iter_prev;
             if (!m_tail) {
                 m_head = NULL;
             }
