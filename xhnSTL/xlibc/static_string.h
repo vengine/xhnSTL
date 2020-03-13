@@ -15,7 +15,7 @@ typedef struct
 {
     const char* str;
 } static_string;
-static_string to_static_string(const char* str);
+XHN_EXPORT static_string to_static_string(const char* str);
 #endif
 /**
  * Copyright (c) 2011-2013 Xu Haining

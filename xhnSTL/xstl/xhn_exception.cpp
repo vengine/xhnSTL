@@ -52,8 +52,10 @@ const char* Exception::what() {
 }
 
 ImplementRootRTTI(Exception);
+ImplementRTTI(ResourceException, Exception);
 ImplementRTTI(ThreadException, Exception);
 ImplementRTTI(FunctionException, Exception);
+ImplementRTTI(OpenGLException, Exception);
 ImplementRTTI(ObjectException, Exception);
 ImplementRTTI(MemoryException, Exception);
 

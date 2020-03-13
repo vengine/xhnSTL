@@ -19,33 +19,33 @@ extern "C"
 #define STACK_INITIAL_LENGTH 4
 struct _stack;
 typedef struct _stack* Stack;
-Stack Stack_new(etype _value_type);
-Stack Stack_Init(Stack _stk, etype _value_type);
-void Stack_Dest(Stack _stk);
-void Stack_push(Stack _stk, var _data);
-bool Stack_pop(Stack _stk, var* _to);
-bool Stack_get_top(Stack _stk, var* _to);
-void Stack_clear(Stack _stk);
-void Stack_resize(Stack _stk, euint _size);
-euint Stack_count(Stack _stk);
-var* Stack_find(Stack _stk, euint _i);
+XHN_EXPORT Stack Stack_new(etype _value_type);
+XHN_EXPORT Stack Stack_Init(Stack _stk, etype _value_type);
+XHN_EXPORT void Stack_Dest(Stack _stk);
+XHN_EXPORT void Stack_push(Stack _stk, var _data);
+XHN_EXPORT bool Stack_pop(Stack _stk, var* _to);
+XHN_EXPORT bool Stack_get_top(Stack _stk, var* _to);
+XHN_EXPORT void Stack_clear(Stack _stk);
+XHN_EXPORT void Stack_resize(Stack _stk, euint _size);
+XHN_EXPORT euint Stack_count(Stack _stk);
+XHN_EXPORT var* Stack_find(Stack _stk, euint _i);
 
 struct _fixed_stack;
 typedef struct _fixed_stack* FixedStack;
-FixedStack FixedStack_new(euint _value_size);
-void FixedStack_Dest(FixedStack _stk);
-void FixedStack_push(FixedStack _stk, void* _data);
-bool FixedStack_pop(FixedStack _stk, void* _to);
-bool FixedStack_get_top(FixedStack _stk, void* _to);
-void* FixedStack_get_top_ptr(FixedStack _stk);
-bool FixedStack_walk_begin(FixedStack _stk, void* _to, euint* _top_ptr);
-bool FixedStack_walk(FixedStack _stk, void* _to, euint* _top_ptr);
-void FixedStack_clear(FixedStack _stk);
-void FixedStack_resize(FixedStack _stk, euint _size);
-euint FixedStack_count(FixedStack _stk);
-void* FixedStack_find(FixedStack _stk, euint _i);
+XHN_EXPORT FixedStack FixedStack_new(euint _value_size);
+XHN_EXPORT void FixedStack_Dest(FixedStack _stk);
+XHN_EXPORT void FixedStack_push(FixedStack _stk, void* _data);
+XHN_EXPORT bool FixedStack_pop(FixedStack _stk, void* _to);
+XHN_EXPORT bool FixedStack_get_top(FixedStack _stk, void* _to);
+XHN_EXPORT void* FixedStack_get_top_ptr(FixedStack _stk);
+XHN_EXPORT bool FixedStack_walk_begin(FixedStack _stk, void* _to, euint* _top_ptr);
+XHN_EXPORT bool FixedStack_walk(FixedStack _stk, void* _to, euint* _top_ptr);
+XHN_EXPORT void FixedStack_clear(FixedStack _stk);
+XHN_EXPORT void FixedStack_resize(FixedStack _stk, euint _size);
+XHN_EXPORT euint FixedStack_count(FixedStack _stk);
+XHN_EXPORT void* FixedStack_find(FixedStack _stk, euint _i);
 
-void FixedStack_test(void);
+XHN_EXPORT void FixedStack_test(void);
 #ifdef __cplusplus
 }
 #endif

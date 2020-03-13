@@ -24,11 +24,11 @@ typedef struct _numeral_extract_status
     int has_float_flag;
     int is_corrupted;
 } numeral_extract_status;
-void NES_init(numeral_extract_status* _self);
-void NES_add_char(numeral_extract_status* _self, char c);
-void NES_reset(numeral_extract_status* _self);
-bool to_int(const char* str, int* result);
-bool to_double(const char* str, double* result);
+XHN_EXPORT void NES_init(numeral_extract_status* _self);
+XHN_EXPORT void NES_add_char(numeral_extract_status* _self, char c);
+XHN_EXPORT void NES_reset(numeral_extract_status* _self);
+XHN_EXPORT bool to_int(const char* str, int* result);
+XHN_EXPORT bool to_double(const char* str, double* result);
 #ifdef __cplusplus
 }
 #endif

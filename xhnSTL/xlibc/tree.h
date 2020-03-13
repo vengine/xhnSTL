@@ -19,24 +19,24 @@ extern "C"
 #endif
 typedef void (*DataDestProc)(var);
 
-Tree Tree_new(etype _key_type, etype _value_type, MALLOC _alc, MFREE _fre);
-Tree Tree_Init(struct _tree* _tree, etype _key_type, etype _value_type, MALLOC _alc, MFREE _fre);
-void Tree_Dest(Tree _tree);
-void Tree_remove(Tree _tree, var _key);
-Iterator Tree_insert(Tree _tree, var _key, var _data);
-Iterator Tree_replace(Tree _tree, var _key, var _data);
-Iterator Tree_force_find(Tree _tree, var _key);
-Iterator Tree_find(Tree _tree, var _key, var* _to);
-var Tree_get_key(Iterator _i);
-var Tree_get_value(Iterator _i);
-void Tree_set_value(Iterator _i, var _data);
-Iterator Tree_next(Iterator _i);
-Iterator Tree_prev(Iterator _i);
-Iterator Tree_begin(Tree _tree);
-Iterator Tree_end(Tree _tree);
-euint Tree_count(Tree _tree);
+XHN_EXPORT Tree Tree_new(etype _key_type, etype _value_type, MALLOC _alc, MFREE _fre);
+XHN_EXPORT Tree Tree_Init(struct _tree* _tree, etype _key_type, etype _value_type, MALLOC _alc, MFREE _fre);
+XHN_EXPORT void Tree_Dest(Tree _tree);
+XHN_EXPORT void Tree_remove(Tree _tree, var _key);
+XHN_EXPORT Iterator Tree_insert(Tree _tree, var _key, var _data);
+XHN_EXPORT Iterator Tree_replace(Tree _tree, var _key, var _data);
+XHN_EXPORT Iterator Tree_force_find(Tree _tree, var _key);
+XHN_EXPORT Iterator Tree_find(Tree _tree, var _key, var* _to);
+XHN_EXPORT var Tree_get_key(Iterator _i);
+XHN_EXPORT var Tree_get_value(Iterator _i);
+XHN_EXPORT void Tree_set_value(Iterator _i, var _data);
+XHN_EXPORT Iterator Tree_next(Iterator _i);
+XHN_EXPORT Iterator Tree_prev(Iterator _i);
+XHN_EXPORT Iterator Tree_begin(Tree _tree);
+XHN_EXPORT Iterator Tree_end(Tree _tree);
+XHN_EXPORT euint Tree_count(Tree _tree);
 
-void Tree_set_key_compare_proc(Tree _tree, KEY_COMPARE _proc);
+XHN_EXPORT void Tree_set_key_compare_proc(Tree _tree, KEY_COMPARE _proc);
 #ifdef __cplusplus
 }
 #endif

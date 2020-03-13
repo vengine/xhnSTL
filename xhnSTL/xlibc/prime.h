@@ -12,7 +12,7 @@
 #define PRIME_H
 #include "common.h"
 #include "etypes.h"
-extern euint64 s_primes[500];
+XHN_EXPORT euint64 s_primes[500];
 
 #endif /* defined(__ecg__prime__) */
 

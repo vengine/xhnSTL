@@ -10,14 +10,16 @@
 
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
+#include "common.h"
+#include "etypes.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <setjmp.h>
 #include <signal.h>
 
-extern jmp_buf s_jmp_buf;
-extern const char* s_exce_info;
-extern int s_exce_id;
+extern XHN_EXPORT jmp_buf s_jmp_buf;
+extern XHN_EXPORT const char* s_exce_info;
+extern XHN_EXPORT int s_exce_id;
 #ifndef __cplusplus
 #define TRY(i) \
 signal(SIGSEGV, SIGSEGV_handle); \
@@ -35,8 +37,8 @@ if (0) catch_exception##i:
 #define GET_EXCE_ID \
 ( s_exce_id )
 
-extern void SIGSEGV_handle(int s);
-extern void throw_exception(int id, const char* what);
+extern XHN_EXPORT void SIGSEGV_handle(int s);
+extern XHN_EXPORT void throw_exception(int id, const char* what);
 
 #endif
 

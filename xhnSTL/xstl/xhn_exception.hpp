@@ -26,7 +26,7 @@
 **/
 namespace xhn {
 class ExceptionBody;
-class Exception : public std::exception
+class XHN_EXPORT Exception : public std::exception
 {
     DeclareRootRTTI;
 public:
@@ -38,7 +38,7 @@ public:
 };
 /// 对于不同的异常有不同的处理方案
 /// 资源异常的话给予默认资源，并报错
-class ResourceException : public Exception
+class XHN_EXPORT ResourceException : public Exception
 {
     DeclareRTTI;
 public:
@@ -47,7 +47,7 @@ public:
 	{}
 };
 /// 线程异常包括取消线程等一般不catch
-class ThreadException : public Exception
+class XHN_EXPORT ThreadException : public Exception
 {
     DeclareRTTI;
 public:
@@ -56,7 +56,7 @@ public:
 	{}
 };
 /// 函数异常比较严重，直接退出程序
-class FunctionException : public Exception
+class XHN_EXPORT FunctionException : public Exception
 {
 	DeclareRTTI;
 public:
@@ -65,7 +65,7 @@ public:
 	{}
 };
 /// OpenGL异常只是显示错误，静默式报告错误即可
-class OpenGLException : public Exception
+class XHN_EXPORT OpenGLException : public Exception
 {
     DeclareRTTI;
 public:
@@ -73,7 +73,7 @@ public:
         : Exception(file, line, msg)
 	{}
 };
-class ObjectException : public Exception
+class XHN_EXPORT ObjectException : public Exception
 {
 	DeclareRTTI;
 public:
@@ -81,7 +81,7 @@ public:
     : Exception(file, line, msg)
 	{}
 };
-class MemoryException : public Exception
+class XHN_EXPORT MemoryException : public Exception
 {
 	DeclareRTTI
 public:
@@ -92,7 +92,7 @@ public:
 
 
 /// 函数的输入参数为非法
-class FunctionArgumentException : public FunctionException
+class XHN_EXPORT FunctionArgumentException : public FunctionException
 {
     DeclareRTTI;
 public:
@@ -101,7 +101,7 @@ public:
     {}
 };
 /// 函数执行过程的异常
-class FunctionExecutionException : public FunctionException
+class XHN_EXPORT FunctionExecutionException : public FunctionException
 {
     DeclareRTTI;
 public:
@@ -110,7 +110,7 @@ public:
     {}
 };
 /// 无效操作
-class InvalidOperationException : public FunctionExecutionException
+class XHN_EXPORT InvalidOperationException : public FunctionExecutionException
 {
     DeclareRTTI;
 public:
@@ -119,7 +119,7 @@ public:
     {}
 };
 /// 非预期值异常
-class UnexpectedValueException : public FunctionExecutionException
+class XHN_EXPORT UnexpectedValueException : public FunctionExecutionException
 {
     DeclareRTTI;
 public:
@@ -128,7 +128,7 @@ public:
     {}
 };
 /// 进入不该进入的条件分支
-class UndesiredBranch : public FunctionExecutionException
+class XHN_EXPORT UndesiredBranch : public FunctionExecutionException
 {
 	DeclareRTTI;
 public:
@@ -137,7 +137,7 @@ public:
 	{}
 };
 /// 函数结果不是期望值
-class FunctionResultException : public FunctionException
+class XHN_EXPORT FunctionResultException : public FunctionException
 {
     DeclareRTTI;
 public:
@@ -145,7 +145,7 @@ public:
     : FunctionException(file, line, msg)
     {}
 };
-class SubscriptOutOfBounds : public FunctionExecutionException
+class XHN_EXPORT SubscriptOutOfBounds : public FunctionExecutionException
 {
     DeclareRTTI;
 public:
@@ -154,7 +154,7 @@ public:
     {}
 };
 /// switch case里的枚举值是无效的
-class InvalidEnumerationException : public FunctionExecutionException
+class XHN_EXPORT InvalidEnumerationException : public FunctionExecutionException
 {
     DeclareRTTI;
 public:
@@ -163,7 +163,7 @@ public:
     {}
 };
 /// 对象名已存在
-class ObjectNameAlreadyExistedException : public ObjectException
+class XHN_EXPORT ObjectNameAlreadyExistedException : public ObjectException
 {
     DeclareRTTI;
 public:
@@ -171,7 +171,7 @@ public:
 		: ObjectException(file, line, msg)
 	{}
 };
-class ObjectAlreadyExistedException : public ObjectException
+class XHN_EXPORT ObjectAlreadyExistedException : public ObjectException
 {
     DeclareRTTI;
 public:
@@ -180,7 +180,7 @@ public:
 	{}
 };
 
-class ObjectUninitializedException : public ObjectException
+class XHN_EXPORT ObjectUninitializedException : public ObjectException
 {
 	DeclareRTTI;
 public:
@@ -188,7 +188,7 @@ public:
 		: ObjectException(file, line, msg)
 	{}
 };
-class ObjectSubscriptOutOfRange : public ObjectException
+class XHN_EXPORT ObjectSubscriptOutOfRange : public ObjectException
 {
 	DeclareRTTI;
 public:
@@ -196,7 +196,7 @@ public:
     : ObjectException(file, line, msg)
 	{}
 };
-class ObjectNotExistedException : public ObjectException
+class XHN_EXPORT ObjectNotExistedException : public ObjectException
 {
     DeclareRTTI;
 public:
@@ -206,7 +206,7 @@ public:
 };
 
 /// 无效内存分配异常
-class InvalidMemoryAllocException : public MemoryException
+class XHN_EXPORT InvalidMemoryAllocException : public MemoryException
 {
     DeclareRTTI
 public:
@@ -214,7 +214,7 @@ public:
 		: MemoryException(file, line, msg)
 	{}
 };
-class InvalidMemoryFreeException : public MemoryException
+class XHN_EXPORT InvalidMemoryFreeException : public MemoryException
 {
 	DeclareRTTI
 public:

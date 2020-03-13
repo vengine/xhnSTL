@@ -19,7 +19,7 @@
 #include "xhn_file_stream.hpp"
 #include "xhn_btree.hpp"
 #include "xhn_lock.hpp"
-void WinFileInit();
+void XHN_EXPORT WinFileInit();
 
 class FilenameArray
 {
@@ -33,13 +33,13 @@ enum FileDirectory
     UsrDirectory,
 };
 
-void GetFilenames(FileDirectory dir, FilenameArray* filenames);
+void XHN_EXPORT GetFilenames(FileDirectory dir, FilenameArray* filenames);
 
-void GetPaths(const char* baseFolder,
+void XHN_EXPORT GetPaths(const char* baseFolder,
               xhn::vector<xhn::string>& subFolders,
               xhn::vector<xhn::string>& paths);
 
-class WinFile : public xhn::file_stream
+class XHN_EXPORT WinFile : public xhn::file_stream
 {
     friend class WinFileManager;
 private:
@@ -64,7 +64,7 @@ public:
     virtual const euint8& operator[] (euint64 pos) const;
 };
 
-class WinFileManager : public xhn::file_manager
+class XHN_EXPORT WinFileManager : public xhn::file_manager
 {
 public:
 	WinFileManager();

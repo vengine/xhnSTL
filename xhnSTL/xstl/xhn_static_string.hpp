@@ -36,7 +36,7 @@ struct string_info
     }
 };
     
-class static_string
+class XHN_EXPORT static_string
 {
 private:
     static hash_set< pair<string, string_info> >* s_static_string_set;

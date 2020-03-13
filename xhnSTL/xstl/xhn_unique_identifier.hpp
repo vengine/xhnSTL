@@ -19,8 +19,8 @@
 
 namespace xhn
 {
-    euint create_uid();
-    string create_uuid_string();
+	XHN_EXPORT euint create_uid();
+	XHN_EXPORT string create_uuid_string();
 }
 
 #endif

@@ -40,10 +40,10 @@ int pthread_setaffinity_np(pthread_t thread, size_t cpu_size,
     
 #endif
     
-euint32 number_of_cores(void);
-euint32 number_of_physicalcores(void);
+XHN_EXPORT euint32 number_of_cores(void);
+XHN_EXPORT euint32 number_of_physicalcores(void);
     
-void nanopause(euint n);
+XHN_EXPORT void nanopause(euint n);
 #ifdef __cplusplus
 }
 #endif

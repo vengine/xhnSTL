@@ -23,7 +23,7 @@ namespace xhn
     /// \brief concurrent_thread_pool
     ///
     ///
-class concurrent_thread_pool : public RefObjectBase, public MemObject
+class XHN_EXPORT concurrent_thread_pool : public RefObjectBase, public MemObject
 {
 public:
     vector<thread_ptr> m_threads;

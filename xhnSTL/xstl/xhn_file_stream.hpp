@@ -33,7 +33,7 @@ namespace xhn
 {
     class file_stream;
     class FFileBlockAllocator;
-    class file_block :
+    class XHN_EXPORT file_block :
     public btree_node<
     euint64,
     euint64,
@@ -120,7 +120,7 @@ namespace xhn
     };
     typedef xhn::SmartPtr<file_stream> file_stream_ptr;
     
-    class filer : public file_stream
+    class XHN_EXPORT filer : public file_stream
     {
     public:
         file_implement_ptr m_implement;
@@ -141,7 +141,7 @@ namespace xhn
         virtual const euint8& operator[] (euint64 pos)const;
     };
     
-    class console_output_device : public file_implement
+    class XHN_EXPORT console_output_device : public file_implement
     {
     public:
         virtual bool open(const xhn::wstring& path);
@@ -153,7 +153,7 @@ namespace xhn
         virtual euint64 get_size();
     };
     
-    class memory_output_device : public file_implement
+    class XHN_EXPORT memory_output_device : public file_implement
     {
     public:
         euint8* m_buffer;
@@ -189,7 +189,7 @@ namespace xhn
     /// |-------- -------- -------- -------1| 读取1个bit
     /// |-------- -------- -------- --------| 读取1个bit
     
-    class bit_writer : public RefObjectBase, public MemObject
+    class XHN_EXPORT bit_writer : public RefObjectBase, public MemObject
     {
     public:
         file_stream_ptr m_file;
@@ -225,7 +225,7 @@ namespace xhn
     };
     typedef SmartPtr<bit_writer> bit_writer_ptr;
     
-    class bit_reader : public RefObjectBase, public MemObject
+    class XHN_EXPORT bit_reader : public RefObjectBase, public MemObject
     {
     public:
         file_stream_ptr m_file;
@@ -264,7 +264,7 @@ namespace xhn
     };
     typedef SmartPtr<path_enumerator> path_enumerator_ptr;
     
-    class folder_information : public operation_data
+    class XHN_EXPORT folder_information : public operation_data
     {
         DeclareRTTI;
     public:
@@ -302,7 +302,7 @@ namespace xhn
         }
     };
     
-    class file_manager : public MemObject
+    class XHN_EXPORT file_manager : public MemObject
     {
     public:
         virtual ~file_manager() {}

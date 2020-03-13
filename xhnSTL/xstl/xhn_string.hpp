@@ -22,7 +22,7 @@
 
 namespace xhn
 {
-void itowa(wchar_t* wbuf, euint i);
+XHN_EXPORT void itowa(wchar_t* wbuf, euint i);
     
 #if USING_STRING_OLD
     
@@ -36,10 +36,10 @@ typedef string_base<wchar_t, 1, FWStrLenProc, FWStrCmpProc, FDefaultWStrProc, FC
     
 #endif
     
-string to_url(const string& utf8_path);
-string to_utf8_path(const string& url);
+XHN_EXPORT string to_url(const string& utf8_path);
+XHN_EXPORT string to_utf8_path(const string& url);
 
-class Utf8
+class XHN_EXPORT Utf8
 {
 private:
 	string m_utf8;
@@ -57,7 +57,7 @@ public:
 	inline operator const string&() const { return m_utf8; }
 };
 
-class Unicode
+class XHN_EXPORT Unicode
 {
 private:
 	wstring m_unicode;

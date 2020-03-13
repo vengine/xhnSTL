@@ -28,9 +28,9 @@ struct _sha256
   euint8 buffer[64];
 };
 typedef struct _sha256* Sha256;
-void Sha256_Init(Sha256 _self);
-void Sha256_Update(Sha256 _self, const euint8 *data, euint size);
-void Sha256_Final(Sha256 _self, euint8 *digest);
+XHN_EXPORT void Sha256_Init(Sha256 _self);
+XHN_EXPORT void Sha256_Update(Sha256 _self, const euint8 *data, euint size);
+XHN_EXPORT void Sha256_Final(Sha256 _self, euint8 *digest);
 
 #ifdef __cplusplus
 }

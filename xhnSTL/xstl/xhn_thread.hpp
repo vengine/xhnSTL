@@ -26,7 +26,7 @@ namespace xhn
 {
 class thread;
 typedef SmartPtr<thread> thread_ptr;
-class thread : public RefObjectBase, public MemObject
+class XHN_EXPORT thread : public RefObjectBase, public MemObject
 {
 public:
     enum TaskStatus
