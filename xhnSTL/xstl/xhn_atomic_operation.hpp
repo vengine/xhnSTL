@@ -22,22 +22,22 @@
 inline esint32 AtomicIncrement(volatile esint32* i)
 {
 	volatile std::atomic_int32_t*  ai = (volatile std::atomic_int32_t*)i;
-	return ai->fetch_add(1);
+	return ai->fetch_add(1) + 1;
 }
 inline esint32 AtomicDecrement(volatile esint32* i)
 {
 	volatile std::atomic_int32_t* ai = (volatile std::atomic_int32_t*)i;
-	return ai->fetch_sub(1);
+	return ai->fetch_sub(1) - 1;
 }
 inline esint64 AtomicIncrement(volatile esint64* i)
 {
 	volatile std::atomic_int64_t* ai = (volatile std::atomic_int64_t*)i;
-	return ai->fetch_add(1);
+	return ai->fetch_add(1) + 1;
 }
 inline esint64 AtomicDecrement(volatile esint64* i)
 {
 	volatile std::atomic_int64_t* ai = (volatile std::atomic_int64_t*)i;
-	return ai->fetch_sub(1);
+	return ai->fetch_sub(1) - 1;
 }
 inline bool AtomicCompareExchange(esint32 oldValue, esint32 newValue, volatile esint32* theValue)
 {
