@@ -477,14 +477,21 @@ public:
     inline void resize(euint n) {
         reserve(n);
         euint curt_count = _get_size();
-		if (curt_count >= n)
-			return;
-        euint d = n - curt_count;
-        for (euint i = 0; i < d; i++) {
-            m_ctor((T*)m_end_addr);
-            m_end_addr += m_ele_real_size;
-        }
-        m_curt_ele_count = n;
+		if (curt_count > n) {
+			char* src_ptr = m_end_addr = m_begin_addr + m_ele_real_size * n;
+			for (euint i = n; i < curt_count; i++) {
+				m_dest((T*)src_ptr);
+				src_ptr += m_ele_real_size;
+			}
+			m_curt_ele_count = n;
+		} else if (curt_count < n) {
+			euint d = n - curt_count;
+			for (euint i = 0; i < d; i++) {
+				m_ctor((T*)m_end_addr);
+				m_end_addr += m_ele_real_size;
+			}
+			m_curt_ele_count = n;
+		}
     }
 	inline void erase(iterator i) {
 		if ((ref_ptr)i.m_ptr >= (ref_ptr)m_begin_addr && (ref_ptr)i.m_ptr < (ref_ptr)m_end_addr) {
