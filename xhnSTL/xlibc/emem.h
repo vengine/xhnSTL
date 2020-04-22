@@ -32,7 +32,7 @@ extern XHN_EXPORT native_memory_allocator g_DefaultMemoryAllcator;
 /// 必须确保所有分配出来的内存都是经过初始化的
 XHN_EXPORT void TestInit(void);
 /// 必须在启动多线程系统前完成引导
-void MInit(void);
+XHN_EXPORT void MInit(void);
 
 XHN_EXPORT vptr _Malloc(euint _size, const char* _file, euint32 _line);
 XHN_EXPORT vptr _SMalloc(euint _size, const char* _file, euint32 _line);
