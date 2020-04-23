@@ -374,7 +374,7 @@ public:
     inline T* operator = (const Handle ptr)
     {
         m_ptr = ptr.m_ptr;
-        return m_ptr;
+        return (T*)m_ptr;
     }
     inline bool operator < (const Handle& ptr) const
     {
