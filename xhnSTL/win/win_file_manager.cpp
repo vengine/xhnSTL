@@ -54,10 +54,10 @@ void CollectFilesInDirectory(LPCSTR szPath, xhn::vector<xhn::string>& subDirs, x
 
 			CHAR szFullFilePath[MAX_PATH];
 			lstrcpyA(szFullFilePath, szPath);
+			lstrcatA(szFullFilePath, "\\");
 			lstrcatA(szFullFilePath, FindFileData.cFileName);
 
 			if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-				lstrcatA(szFullFilePath, "\\");
 				subDirs.push_back(szFullFilePath);
 
 				CollectFilesInDirectory(szFullFilePath, subDirs, subFiles);
@@ -68,6 +68,7 @@ void CollectFilesInDirectory(LPCSTR szPath, xhn::vector<xhn::string>& subDirs, x
 
 		} while (FindNextFileA(hListFile, &FindFileData));
 	}
+	FindClose(hListFile);
 }
 
 
@@ -111,30 +112,69 @@ bool WinFileManager::is_exist(const xhn::string& path, bool& is_directory)
 }
 bool WinFileManager::create_directory(const xhn::wstring& dir)
 {
-    return false;
+	return CreateDirectoryW(dir.c_str(), nullptr);
 }
 bool WinFileManager::create_file(const xhn::wstring& path)
 {
-    return false;
+	HANDLE handle =
+		CreateFileW(
+			path.c_str(),
+			GENERIC_READ | GENERIC_WRITE,
+			FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
+			nullptr,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			nullptr);
+	if (INVALID_HANDLE_VALUE != handle) {
+		CloseHandle(handle);
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 xhn::file_stream_ptr WinFileManager::open(const xhn::wstring& path)
 {
-    return nullptr;
+	WinFile* file = VNEW WinFile;
+	file->m_path = path;
+	_wfopen_s(&file->m_fileHandle, path.c_str(), L"rb");
+	file->m_needSynchronizeFile = true;
+    return file;
 }
 xhn::file_stream_ptr WinFileManager::create_and_open(const xhn::wstring& path)
 {
-    return nullptr;
+	create_file(path);
+	return open(path);
 }
 void WinFileManager::delete_file(const xhn::wstring& path)
 {
+	DeleteFileW(path.c_str());
 }
 euint64 WinFileManager::file_size(const xhn::wstring& path)
 {
-    return 0;
+	WIN32_FILE_ATTRIBUTE_DATA fileAttrs;
+	if (GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &fileAttrs)) {
+		euint64 ret = fileAttrs.nFileSizeHigh;
+		ret <<= 32;
+		ret |= static_cast<euint64>(fileAttrs.nFileSizeLow);
+		return ret;
+	}
+	else {
+		return 0;
+	}
 }
 euint64 WinFileManager::file_size(const xhn::string& path)
 {
-    return 0;
+	WIN32_FILE_ATTRIBUTE_DATA fileAttrs;
+	if (GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &fileAttrs)) {
+		euint64 ret = fileAttrs.nFileSizeHigh;
+		ret <<= 32;
+		ret |= static_cast<euint64>(fileAttrs.nFileSizeLow);
+		return ret;
+	}
+	else {
+		return 0;
+	}
 }
 xhn::wstring WinFileManager::get_home_dir()
 {
@@ -162,6 +202,42 @@ unsigned long get_file_size(const char *path)
 
 void _get_folder_information(char const*path, xhn::folder_information& info)
 {
+	WIN32_FIND_DATAA FindFileData;
+	HANDLE hListFile;
+	CHAR szFilePath[MAX_PATH];
+
+	lstrcpyA(szFilePath, path);
+	lstrcatA(szFilePath, "\\*");
+
+
+	hListFile = FindFirstFileA(szFilePath, &FindFileData);
+	if (hListFile != INVALID_HANDLE_VALUE) {
+		do
+		{
+
+			if (lstrcmpA(FindFileData.cFileName, ".") == 0 ||
+				lstrcmpA(FindFileData.cFileName, "..") == 0) {
+				continue;
+			}
+
+			CHAR szFullFilePath[MAX_PATH];
+			lstrcpyA(szFullFilePath, path);
+			lstrcatA(szFullFilePath, "\\");
+			lstrcatA(szFullFilePath, FindFileData.cFileName);
+
+			if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+				info.collect_folder(szFullFilePath);
+				info.m_num_folders++;
+				_get_folder_information(szFullFilePath, info);
+			}
+			else {
+				info.collect_filename(szFullFilePath);
+				info.m_num_files++;
+			}
+
+		} while (FindNextFileA(hListFile, &FindFileData) && !info.m_cancel_flag);
+	}
+	FindClose(hListFile);
 }
 
 bool WinFileManager::get_folder_information(const xhn::wstring& path, xhn::folder_information& info)
@@ -170,12 +246,12 @@ bool WinFileManager::get_folder_information(const xhn::wstring& path, xhn::folde
     xhn::string strPath = utf8;
     _get_folder_information(strPath.c_str(), info);
 
-    return false;
+    return true;
 }
 bool WinFileManager::get_folder_information(const xhn::string& path, xhn::folder_information& info)
 {
     _get_folder_information(path.c_str(), info);
-    return false;
+    return true;
 }
 void WinFileManager::set_access_permission(const xhn::wstring& path, euint32 accessPermisson)
 {
@@ -190,23 +266,28 @@ WinFile::~WinFile()
 
 euint64 WinFile::read(euint8* buffer, euint64 size)
 {
-    return 0;
+	return fread(buffer, size, 1, m_fileHandle);
 }
 euint64 WinFile::write(const euint8* buffer, euint64 size)
 {
-    return 0;
+	return fwrite(buffer, size, 1, m_fileHandle);
 }
 euint64 WinFile::get_size()
 {
-    return 0;
+	euint64 pos = ftell(m_fileHandle);
+	fseek(m_fileHandle, 0, SEEK_END);
+	euint64 size = ftell(m_fileHandle);
+	fseek(m_fileHandle, pos, SEEK_SET);
+	return size;
 }
 euint64 WinFile::get_pos()
 {
-    return 0;
+    return ftell(m_fileHandle);
 }
 euint64 WinFile::set_pos(euint64 pos)
 {
-    return 0;
+	fseek(m_fileHandle, pos, SEEK_SET);
+    return ftell(m_fileHandle);
 }
 void WinFile::set_base_offset(euint64 offs)
 {
