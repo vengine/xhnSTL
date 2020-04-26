@@ -92,6 +92,7 @@ public:
         }
         Dest();
         m_weak_count = ptr.m_weak_count;
+		return *this;
     }
     WeakPtr()
     : m_weak_count(nullptr)
