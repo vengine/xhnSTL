@@ -262,6 +262,9 @@ bool WinFileManager::is_non_sandbox_dir(const xhn::wstring& path)
 }
 WinFile::~WinFile()
 {
+	if (m_fileHandle) {
+		fclose(m_fileHandle);
+	}
 }
 
 euint64 WinFile::read(euint8* buffer, euint64 size)
