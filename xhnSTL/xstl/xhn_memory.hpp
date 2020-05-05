@@ -117,7 +117,7 @@ public:
 class RefSpinLock
 {
 private:
-	ELock m_lock;
+	mutable ELock m_lock;
 public:
 #ifdef DEBUG
     #ifdef __APPLE__
@@ -174,7 +174,7 @@ public:
     : m_lock(0)
     #endif
 	{}
-	inline Instance Lock()
+	inline Instance Lock() const
 	{
         ELock_lock(&m_lock);
 		return Instance(&m_lock);
@@ -271,7 +271,7 @@ class WeakCounter : public MemObject
 public:
     volatile RefObjectBase* ref_object;
     volatile esint32 weak_count;
-    RefSpinLock lock;
+    RefSpinLock content_lock;
     WeakCounter(RefObjectBase* object)
     : ref_object(object)
     , weak_count(0)
@@ -318,7 +318,7 @@ public:
         EDebugAssert(weak_count, "weak count must be not null");
         volatile bool must_delete_count = false;
         {
-            RefSpinLock::Instance inst = weak_count->lock.Lock();
+            RefSpinLock::Instance content_inst = weak_count->content_lock.Lock();
             weak_count->ref_object = nullptr;
             if (!weak_count->weak_count) {
                 must_delete_count = true;
@@ -330,7 +330,7 @@ public:
         }
 	}
     inline const RefObjectBase& operator = (RefObjectBase& obj) {
-        EDebugAssert(0, "RefObject can not perform assign operation");
+        EDebugAssert(0, "RefObjectBase can not perform assign operation");
         return *this;
     }
     inline esint32 GetRefCount() const {

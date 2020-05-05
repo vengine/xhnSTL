@@ -57,55 +57,63 @@ class WeakPtr
     friend class xhn::SmartPtr<T, DELETE_PROC, GARBAGE_COLLECTOR>;
     friend class WeakNodeList;
 private:
+	RefSpinLock m_count_lock;
     mutable WeakCounter* m_weak_count;
 private:
     void Dest() {
-        volatile bool must_delete_count = false;
+		volatile bool must_delete_count = false;
+		RefSpinLock::Instance count_inst = m_count_lock.Lock();
         if (m_weak_count) {
-            RefSpinLock::Instance inst = m_weak_count->lock.Lock();
+            RefSpinLock::Instance content_inst = m_weak_count->content_lock.Lock();
             if (!AtomicDecrement(&m_weak_count->weak_count)) {
                 if (!m_weak_count->ref_object) {
-                    must_delete_count = true;
+					must_delete_count = true;
                 }
             }
         }
-        if (must_delete_count) {
-            delete m_weak_count;
-        }
+		if (must_delete_count) {
+			delete m_weak_count;
+		}
         m_weak_count = nullptr;
     }
 public:
     WeakPtr(const WeakPtr& ptr) {
+		RefSpinLock::Instance ptr_count_inst = ptr.m_count_lock.Lock();
         if (ptr.m_weak_count) {
-            RefSpinLock::Instance count_inst = ptr.m_weak_count->lock.Lock();
+            RefSpinLock::Instance content_inst = ptr.m_weak_count->content_lock.Lock();
             AtomicIncrement(&ptr.m_weak_count->weak_count);
-            m_weak_count = ptr.m_weak_count;
+			m_weak_count = ptr.m_weak_count;
         }
         else {
             m_weak_count = nullptr;
         }
     }
+	WeakPtr()
+		: m_weak_count(nullptr)
+	{
+	}
+	~WeakPtr()
+	{
+		Dest();
+	}
+public:
     const WeakPtr& operator = (const WeakPtr& ptr) {
+		RefSpinLock::Instance ptr_count_inst = ptr.m_count_lock.Lock();
         if (ptr.m_weak_count) {
-            RefSpinLock::Instance count_inst = ptr.m_weak_count->lock.Lock();
             AtomicIncrement(&ptr.m_weak_count->weak_count);
         }
         Dest();
-        m_weak_count = ptr.m_weak_count;
+		{
+			RefSpinLock::Instance count_inst = m_count_lock.Lock();
+			m_weak_count = ptr.m_weak_count;
+		}
 		return *this;
-    }
-    WeakPtr()
-    : m_weak_count(nullptr)
-    {
-    }
-    ~WeakPtr()
-    {
-        Dest();
     }
     inline xhn::SmartPtr<T, DELETE_PROC, GARBAGE_COLLECTOR> ToStrongPtr() const {
         xhn::SmartPtr<T, DELETE_PROC, GARBAGE_COLLECTOR> ret;
+		RefSpinLock::Instance count_inst = m_count_lock.Lock();
         if (m_weak_count) {
-            RefSpinLock::Instance inst = m_weak_count->lock.Lock();
+            RefSpinLock::Instance content_inst = m_weak_count->content_lock.Lock();
             ret = (T*)m_weak_count->ref_object;
         }
         return ret;
@@ -322,7 +330,10 @@ public:
         if (m_ptr) {
             AtomicIncrement(&m_ptr->weak_count->weak_count);
             result.Dest();
-            result.m_weak_count = m_ptr->weak_count;
+			{
+				RefSpinLock::Instance count_inst = result.m_count_lock.Lock();
+				result.m_weak_count = m_ptr->weak_count;
+			}
         }
         else {
             result.Dest();
