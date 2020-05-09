@@ -143,8 +143,11 @@ xhn::file_stream_ptr WinFileManager::open(const xhn::wstring& path)
 }
 xhn::file_stream_ptr WinFileManager::create_and_open(const xhn::wstring& path)
 {
-	create_file(path);
-	return open(path);
+	WinFile* file = VNEW WinFile;
+	file->m_path = path;
+	_wfopen_s(&file->m_fileHandle, path.c_str(), L"w+");
+	file->m_needSynchronizeFile = false;
+	return file;
 }
 void WinFileManager::delete_file(const xhn::wstring& path)
 {
