@@ -69,24 +69,50 @@ xhn::string xhn::create_uuid_string()
 	GUID guid;
 	CoCreateGuid(&guid);
 	char mbuf[256];
+	char result[256];
 	char* strbuf = mbuf;
 	int remainder = 256;
-	unsigned char* p = guid.Data4;
+	unsigned char* p = (unsigned char*)&guid.Data1;
+	for (euint i = 0; i < sizeof(guid.Data1); i++, p++)
+	{
+		int len = snprintf(strbuf, remainder, "%02X", *p);
+		strbuf += len;
+		remainder -= len;
+	}
+	p = (unsigned char*)& guid.Data2;
+	for (euint i = 0; i < sizeof(guid.Data2); i++, p++)
+	{
+		int len = snprintf(strbuf, remainder, "%02X", *p);
+		strbuf += len;
+		remainder -= len;
+	}
+	p = (unsigned char*)& guid.Data3;
+	for (euint i = 0; i < sizeof(guid.Data3); i++, p++)
+	{
+		int len = snprintf(strbuf, remainder, "%02X", *p);
+		strbuf += len;
+		remainder -= len;
+	}
+	p = guid.Data4;
 	for (euint i = 0; i < sizeof(guid.Data4); i++, p++)
 	{
 		int len = snprintf(strbuf, remainder, "%02X", *p);
 		strbuf += len;
 		remainder -= len;
+	}
+	euint i = 0,j = 0;
+	while (mbuf[i]) {
+		result[j++] = mbuf[i];
 		if (i == 3 ||
 			i == 5 ||
 			i == 7 ||
 			i == 9) {
-			int len = snprintf(strbuf, remainder, "-");
-			strbuf += len;
-			remainder -= len;
-		}
+			result[j++] = '-';
+        }
+		i++;
 	}
-	xhn::string ret(mbuf);
+	result[j] = 0;
+	xhn::string ret(result);
 	return ret;
 #else
     char mbuf[256];
