@@ -119,10 +119,10 @@ or
 
 #    define SELF (*_self.self)
 
-#    ifdef DLL_EXPORT
-#        define API_EXPORT __declspec(dllexport)
+#    ifdef XHN_DLL_EXPORT
+#        define XHN_EXPORT __declspec(dllexport)
 #    else
-#        define API_EXPORT
+#        define XHN_EXPORT
 #    endif
 
 #    define MARK_GLSL_VERSION
