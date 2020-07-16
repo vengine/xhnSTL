@@ -197,7 +197,7 @@ or
 
 static int print_log(const char* format, ...)
 {
-	static char s_printf_buf[1024];
+	static char s_printf_buf[4096];
 	va_list args;
 	va_start(args, format);
 	_vsnprintf(s_printf_buf, sizeof(s_printf_buf), format, args);
