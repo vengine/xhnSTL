@@ -8,7 +8,7 @@ ENDIF (NOT CMAKE_BUILD_TYPE)
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 #MESSAGE("CMAKE_CXX_FLAGS_DEBUG="+${CMAKE_CXX_FLAGS_DEBUG})
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(INFO
@@ -16,6 +16,9 @@ set(INFO
 )
 
 set(PUB_HEADERS
+    ../xhnSTL/common.h
+    ../xhnSTL/etypes.h
+
     ../../xhnSTL/xlibc/array.h
     ../../xhnSTL/xlibc/comparison_algorithm.h
     ../../xhnSTL/xlibc/container.h
@@ -78,6 +81,7 @@ set(PUB_HEADERS
     ../../xhnSTL/xstl/xhn_memory_pool.hpp
     ../../xhnSTL/xstl/xhn_memory.hpp
     ../../xhnSTL/xstl/xhn_neural_network.hpp
+    ../../xhnSTL/xstl/xhn_open_hash_set.hpp
     ../../xhnSTL/xstl/xhn_operation_manager.hpp
     ../../xhnSTL/xstl/xhn_operation.hpp
     ../../xhnSTL/xstl/xhn_pair.hpp
@@ -98,11 +102,14 @@ set(PUB_HEADERS
     ../../xhnSTL/xstl/xhn_string_base.hpp
     ../../xhnSTL/xstl/xhn_string.hpp
     ../../xhnSTL/xstl/xhn_thread_map.hpp
+    ../../xhnSTL/xstl/xhn_thread_pool.hpp
     ../../xhnSTL/xstl/xhn_thread.hpp
     ../../xhnSTL/xstl/xhn_triple_buffer.hpp
+    ../../xhnSTL/xstl/xhn_tuple.hpp
     ../../xhnSTL/xstl/xhn_unique_identifier.hpp
     ../../xhnSTL/xstl/xhn_utility.hpp
     ../../xhnSTL/xstl/xhn_vector.hpp
+    ../../xhnSTL/xstl/xhn_void_vector.hpp
     ../../xhnSTL/xstl/xhn_z.hpp
 )
 
@@ -170,6 +177,9 @@ ADD_LIBRARY(xhnSTL SHARED
     ../../xhnSTL/objc/ObjCPropertys.m
     ../../xhnSTL/objc/apple_file_manager.mm
 
+    ../xhnSTL/common.h
+    ../xhnSTL/etypes.h
+
     ../../xhnSTL/xlibc/array.h
     ../../xhnSTL/xlibc/comparison_algorithm.h
     ../../xhnSTL/xlibc/container.h
@@ -232,6 +242,7 @@ ADD_LIBRARY(xhnSTL SHARED
     ../../xhnSTL/xstl/xhn_memory_pool.hpp
     ../../xhnSTL/xstl/xhn_memory.hpp
     ../../xhnSTL/xstl/xhn_neural_network.hpp
+    ../../xhnSTL/xstl/xhn_open_hash_set.hpp
     ../../xhnSTL/xstl/xhn_operation_manager.hpp
     ../../xhnSTL/xstl/xhn_operation.hpp
     ../../xhnSTL/xstl/xhn_pair.hpp
@@ -252,11 +263,14 @@ ADD_LIBRARY(xhnSTL SHARED
     ../../xhnSTL/xstl/xhn_string_base.hpp
     ../../xhnSTL/xstl/xhn_string.hpp
     ../../xhnSTL/xstl/xhn_thread_map.hpp
+    ../../xhnSTL/xstl/xhn_thread_pool.hpp
     ../../xhnSTL/xstl/xhn_thread.hpp
     ../../xhnSTL/xstl/xhn_triple_buffer.hpp
+    ../../xhnSTL/xstl/xhn_tuple.hpp
     ../../xhnSTL/xstl/xhn_unique_identifier.hpp
     ../../xhnSTL/xstl/xhn_utility.hpp
     ../../xhnSTL/xstl/xhn_vector.hpp
+    ../../xhnSTL/xstl/xhn_void_vector.hpp
     ../../xhnSTL/xstl/xhn_z.hpp
 )
 
