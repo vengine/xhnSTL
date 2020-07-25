@@ -19,6 +19,9 @@ set(PUB_HEADERS
     ../xhnSTL/common.h
     ../xhnSTL/etypes.h
 
+    ../../xhnSTL/objc/apple_file_manager.h
+    ../../xhnSTL/objc/Singleton.h
+
     ../../xhnSTL/xlibc/array.h
     ../../xhnSTL/xlibc/comparison_algorithm.h
     ../../xhnSTL/xlibc/container.h
@@ -179,6 +182,9 @@ ADD_LIBRARY(xhnSTL SHARED
 
     ../xhnSTL/common.h
     ../xhnSTL/etypes.h
+
+    ../../xhnSTL/objc/apple_file_manager.h
+    ../../xhnSTL/objc/Singleton.h
 
     ../../xhnSTL/xlibc/array.h
     ../../xhnSTL/xlibc/comparison_algorithm.h
