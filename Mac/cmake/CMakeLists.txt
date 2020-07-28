@@ -21,6 +21,8 @@ set(PUB_HEADERS
 
     ../../xhnSTL/objc/apple_file_manager.h
     ../../xhnSTL/objc/Singleton.h
+    ../../xhnSTL/objc/ObjCPropertys.h
+    ../../xhnSTL/objc/ObjCString.h
 
     ../../xhnSTL/xlibc/array.h
     ../../xhnSTL/xlibc/comparison_algorithm.h
@@ -161,7 +163,7 @@ ADD_LIBRARY(xhnSTL SHARED
     ../../xhnSTL/xstl/xhn_operation_manager.cpp
     ../../xhnSTL/xstl/xhn_parallel.cpp
     ../../xhnSTL/xstl/xhn_realtime_thread.cpp
-    #../../xhnSTL/xstl/xhn_path_tree.cpp
+    ../../xhnSTL/xstl/xhn_path_tree.cpp
     ../../xhnSTL/xstl/xhn_routine_pool.cpp
     ../../xhnSTL/xstl/xhn_smart_ptr.cpp
     ../../xhnSTL/xstl/xhn_state_machine.cpp
@@ -185,6 +187,8 @@ ADD_LIBRARY(xhnSTL SHARED
 
     ../../xhnSTL/objc/apple_file_manager.h
     ../../xhnSTL/objc/Singleton.h
+    ../../xhnSTL/objc/ObjCPropertys.h
+    ../../xhnSTL/objc/ObjCString.h
 
     ../../xhnSTL/xlibc/array.h
     ../../xhnSTL/xlibc/comparison_algorithm.h

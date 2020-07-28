@@ -150,11 +150,11 @@ or
         }
 #    endif
 
-#    if defined(_MSC_VER)
-#        define ALIGN_FLAG(n) __declspec(align(n))
-#    elif defined(__APPLE__)
+//#    if defined(_MSC_VER)
+//#        define ALIGN_FLAG(n) __declspec(align(n))
+//#    elif defined(__APPLE__)
 #        define ALIGN_FLAG(n) __attribute__((aligned(n)))
-#    endif
+//#    endif
 
 #    ifdef __cplusplus
 #        define VNEW new(__FILE__, __LINE__)
