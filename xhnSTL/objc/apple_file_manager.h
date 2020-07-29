@@ -19,6 +19,9 @@
 #include "xhn_file_stream.hpp"
 #include "xhn_btree.hpp"
 #include "xhn_lock.hpp"
+
+#define fopen64 fopen
+
 void AppleFileInit();
 
 class FilenameArray
