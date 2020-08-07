@@ -15,8 +15,8 @@ enum ErrorID
     Err0 = 10,
     ErrorIDMax,
 };
-void ESignalInit();
-int ESetJmp();
+void ESignalInit(void);
+int ESetJmp(void);
 void ERaise(int s);
 #endif
 
