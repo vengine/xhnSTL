@@ -82,6 +82,7 @@ cp ../xhnSTL/xstl/xhn_state_machine.hpp                              include/xhn
 cp ../xhnSTL/xstl/xhn_static_string.hpp                                 include/xhnSTL/xhn_static_string.hpp
 cp ../xhnSTL/xstl/xhn_string.hpp                                           include/xhnSTL/xhn_string.hpp
 cp ../xhnSTL/xstl/xhn_string_base.hpp                                  include/xhnSTL/xhn_string_base.hpp
+cp ../xhnSTL/xstl/xhn_serialization.hpp                                  include/xhnSTL/xhn_serialization.hpp
 cp ../xhnSTL/xstl/xhn_thread.hpp                                          include/xhnSTL/xhn_thread.hpp
 cp ../xhnSTL/xstl/xhn_thread_map.hpp                                 include/xhnSTL/xhn_thread_map.hpp
 cp ../xhnSTL/xstl/xhn_thread_pool.hpp                                 include/xhnSTL/xhn_thread_pool.hpp
