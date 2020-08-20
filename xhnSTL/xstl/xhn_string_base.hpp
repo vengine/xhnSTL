@@ -768,7 +768,7 @@ public:
         C *tmp = m_char_allocator.allocate ( newSize + 1 );
         memset( tmp, 0, (newSize + 1) * sizeof(C) );
         if (_size) {
-            memcpy(tmp, _str, _size * sizeof(C));
+            memcpy(tmp, _str, newSize > _size ? _size * sizeof(C) : newSize * sizeof(C));
         }
         if (!get_using_data1()) {
             m_char_allocator.deallocate ( m_data.data0.m_str );
