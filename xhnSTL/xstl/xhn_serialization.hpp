@@ -152,6 +152,9 @@ public:
         else
             m_temp_byte = 0;
     }
+	bool is_end(const vector<euint8>& stream) const {
+		return !m_remainder_bits && stream.size() <= m_byte_offset;
+	}
 };
 
 static euint32 encode_uint(euint32 number, euint8* result) 
