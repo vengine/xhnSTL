@@ -92,7 +92,7 @@ euint32 number_of_physicalcores()
 	const BOOL result_first = GetLogicalProcessorInformationEx(RelationProcessorCore, NULL, &length);
 	assert(GetLastError() == ERROR_INSUFFICIENT_BUFFER);
 
-	unsigned char buffer = (unsigned char*)malloc(length);
+	unsigned char* buffer = (unsigned char*)malloc(length);
 	const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX info =
 	(const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)(buffer);
 
