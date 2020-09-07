@@ -176,7 +176,7 @@ private:
             memcpy( m_data.data1.m_str, str, size * sizeof(C) );
             m_data.data1.m_str[size] = 0;
             set_using_data1( true );
-            set_data1_size( size );
+            set_data1_size( static_cast<euint8>(size) );
         }
     }
 public:
@@ -194,7 +194,7 @@ public:
             memcpy( m_data.data1.m_str, str.get(), size * sizeof(C) );
             m_data.data1.m_str[size] = 0;
             set_using_data1( true );
-            set_data1_size( size );
+            set_data1_size( static_cast<euint8>(size) );
         }
     }
     string_base ( const string_base &str )
@@ -380,7 +380,7 @@ public:
         else {
             memcpy ( m_data.data1.m_str, str, (count + 1) * sizeof(C) );
             set_using_data1( true );
-            set_data1_size( count );
+            set_data1_size( static_cast<euint8>(count) );
         }
         return *this;
     }
@@ -467,7 +467,7 @@ public:
                 ret.set_using_data1( true );
                 memcpy ( ret.m_data.data1.m_str, m_data.data1.m_str, get_data1_size() * sizeof(C) );
                 memcpy ( &ret.m_data.data1.m_str[get_data1_size()], str, (count + 1) * sizeof(C) );
-                ret.set_data1_size( new_size );
+                ret.set_data1_size( static_cast<euint8>(new_size) );
             }
         }
         else {
@@ -494,7 +494,7 @@ public:
             else {
                 set_using_data1( true );
                 memcpy ( &m_data.data1.m_str[get_data1_size()], str.m_data.data1.m_str, (str.get_data1_size() + 1) * sizeof(C) );
-                set_data1_size( new_size );
+                set_data1_size( static_cast<euint8>(new_size) );
             }
         }
         else if (get_using_data1() && !str.get_using_data1()) {
@@ -544,7 +544,7 @@ public:
             else {
                 set_using_data1( true );
                 memcpy ( &m_data.data1.m_str[get_data1_size()], str, (count + 1) * sizeof(C) );
-                set_data1_size( new_size );
+                set_data1_size( static_cast<euint8>(new_size) );
             }
         }
         else {

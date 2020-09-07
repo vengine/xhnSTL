@@ -6,7 +6,7 @@
 
 char* string_convert_to_utf8(const char* input)
 {
-    int len = strlen(input);
+    size_t len = strlen(input);
     char* ret = (char*)malloc(len + 1);
     memcpy(ret, input, len + 1);
     return ret;

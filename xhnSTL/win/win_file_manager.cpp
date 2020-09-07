@@ -280,20 +280,20 @@ euint64 WinFile::write(const euint8* buffer, euint64 size)
 }
 euint64 WinFile::get_size()
 {
-	euint64 pos = ftell(m_fileHandle);
-	fseek(m_fileHandle, 0, SEEK_END);
-	euint64 size = ftell(m_fileHandle);
-	fseek(m_fileHandle, pos, SEEK_SET);
+	euint64 pos = _ftelli64(m_fileHandle);
+	_fseeki64(m_fileHandle, 0, SEEK_END);
+	euint64 size = _ftelli64(m_fileHandle);
+	_fseeki64(m_fileHandle, pos, SEEK_SET);
 	return size;
 }
 euint64 WinFile::get_pos()
 {
-    return ftell(m_fileHandle);
+    return _ftelli64(m_fileHandle);
 }
 euint64 WinFile::set_pos(euint64 pos)
 {
-	fseek(m_fileHandle, pos, SEEK_SET);
-    return ftell(m_fileHandle);
+	_fseeki64(m_fileHandle, pos, SEEK_SET);
+    return _ftelli64(m_fileHandle);
 }
 void WinFile::set_base_offset(euint64 offs)
 {

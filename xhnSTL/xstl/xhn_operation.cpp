@@ -121,7 +121,7 @@ bool xhn::search_duplicate_files_operation::run()
 }
 float xhn::search_duplicate_files_operation::get_progress_rate()
 {
-    return (double)m_proced_size / (double)m_totel_size;
+    return (float)m_proced_size / (float)m_totel_size;
 }
 void xhn::search_duplicate_files_operation::send_data(operation_handle* handle)
 {

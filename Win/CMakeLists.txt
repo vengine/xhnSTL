@@ -8,6 +8,8 @@ ENDIF (NOT CMAKE_BUILD_TYPE)
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 #MESSAGE("CMAKE_CXX_FLAGS_DEBUG="+${CMAKE_CXX_FLAGS_DEBUG})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251 /wd4275 /wd4819 /wd4099")
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -90,7 +92,5 @@ add_custom_command(TARGET xhnSTL
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/copy_headers.sh
   COMMENT "This command will be executed before build target xhnSTL"
 )
-
-
 
 target_link_libraries(xhnSTL pthreadVC2 uuid)

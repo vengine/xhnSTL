@@ -110,7 +110,7 @@ euint32 number_of_physicalcores()
 
 	free(buffer);
 
-	return nb_physical_cores;
+	return (euint32)(nb_physical_cores);
 }
 #elif defined(LINUX) && !defined(ANDROID)
 #include <unistd.h>

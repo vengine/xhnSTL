@@ -66,7 +66,11 @@ namespace xhn
             m_file = fopen(path.c_str(), "rb");
         }
         inline void Seek(euint64 offs) {
+#if defined(_WIN32) || defined(_WIN64)
+			_fseeki64(m_file, (euint)offs, SEEK_SET);
+#else
             fseek(m_file, (euint)offs, SEEK_SET);
+#endif
         }
         inline void Read(void* buf, euint64 size) {
             fread(buf, 1, (euint)size, m_file);
