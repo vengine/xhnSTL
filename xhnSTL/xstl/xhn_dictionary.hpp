@@ -576,6 +576,9 @@ namespace xhn
         const_iterator end() const {
             return const_iterator ( nullptr, 0 );
         }
+		void force_rebuild() {
+			rebuild();
+		}
     };
 }
 
