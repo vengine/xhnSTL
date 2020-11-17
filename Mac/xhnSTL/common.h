@@ -103,7 +103,7 @@ or
 #        define FORCE_ALIGN_ARG_POINTER
 #    endif
 
-#    define USING_SSE
+//#    define USING_SSE
 #    define USAGE_UCS2
 #    undef  USAGE_UCS4
 
