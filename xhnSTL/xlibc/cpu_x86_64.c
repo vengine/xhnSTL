@@ -20,9 +20,14 @@ void nanopause(euint n)
 		_mm_pause();
 	}
 #else
+    pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+    pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+    pthread_mutex_lock(&lock);
     for (euint i = 0; i < n; i++) {
-        __asm__ __volatile__("pause");
+        //__asm__ __volatile__("pause");
+        pthread_cond_wait(&cond, &lock);
     }
+    pthread_mutex_unlock(&lock);
 #endif
 }
 /**
