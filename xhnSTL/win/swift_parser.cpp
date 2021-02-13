@@ -8,9 +8,10 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 #include <Shellapi.h>
-const wchar_t* swiftc = L"C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin\swiftc";
-const wchar_t* sdk = L"C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk";
+const wchar_t* swiftc = L"C:\\Library\\Developer\\Toolchains\\unknown-Asserts-development.xctoolchain\\usr\\bin\\swiftc";
+const wchar_t* sdk = L"C:\\Library\\Developer\\Platforms\\Windows.platform\\Developer\\SDKs\\Windows.sdk";
 const wchar_t* usedVersion = L"4";
 BOOL ExecuteCommandLine(const std::wstring & command,
     DWORD & exitCode,
@@ -144,7 +145,8 @@ namespace xhn {
     void SwiftVerisonInfoParser::GetSwiftVersion(const string& logDir,
                                                  Lambda<void (const xhn::string& versionInfo)>& callback)
     {
-        std::wstring command = swiftc + L" - v";
+        std::wstring command = swiftc;
+        command += L" -v";
         DWORD exitCode = 0;
         std::vector<std::string> outputs;
         ExecuteCommandLine(
@@ -1872,9 +1874,9 @@ namespace xhn {
         command += L" -sdk ";
         command += sdk;
         command += L" ";
-        command += xhn::wstring(uniImportPaths);
+        command += xhn::wstring(uniImportPaths).c_str();
         command += L" ";
-        command += xhn::wstring(uniPaths);
+        command += xhn::wstring(uniPaths).c_str();
         DWORD exitCode = 0;
         std::vector<std::string> outputs;
         ExecuteCommandLine(

@@ -20,7 +20,8 @@ INCLUDE_DIRECTORIES(./
                     ../pthread/include/
                    ../xhnSTL/win/
                     ../xhnSTL/xstl/
-                    ../xhnSTL/xlibc/)
+                    ../xhnSTL/xlibc/
+                    ../xhnSTL/objc/)
 
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     add_definitions(-D_CRT_SECURE_NO_WARNINGS -DNOMINMAX -D_WIN64 -DHAVE_STRUCT_TIMESPEC -DDEBUG=1 -DXHN_DLL_EXPORT)
