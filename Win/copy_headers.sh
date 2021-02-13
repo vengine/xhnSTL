@@ -95,6 +95,8 @@ cp ../xhnSTL/xstl/xhn_neural_network.hpp                         include/xhnSTL/
 cp ../xhnSTL/xstl/xhn_logger.hpp                                        include/xhnSTL/xhn_logger.hpp
 cp ../xhnSTL/xstl/xhn_stacktrace.hpp                                  include/xhnSTL/xhn_stacktrace.hpp
 
+cp ../xhnSTL/objc/swift_parser.hpp                                      include/xhnSTL/swift_parser.hpp
+
 cp ./xhnSTL/common.h                                                                       include/xhnSTL/common.h
 cp ./xhnSTL/etypes.h                                                                          include/xhnSTL/etypes.h
 

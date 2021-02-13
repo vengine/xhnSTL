@@ -83,6 +83,7 @@ ADD_LIBRARY(xhnSTL SHARED
 
    ../xhnSTL/win/WinString.cpp
    ../xhnSTL/win/win_file_manager.cpp
+   ../xhnSTL/win/swift_parser.cpp
 )
 #set_target_properties(xhnSTL PROPERTIES ENABLE_EXPORTS 1)
 #set_target_properties(xhnSTL PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)
