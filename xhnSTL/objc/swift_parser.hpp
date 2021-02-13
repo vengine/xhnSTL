@@ -56,7 +56,7 @@ public:
 };
 typedef xhn::SmartPtr<ASTReformatter> ASTReformatterPtr;
 
-class SwiftParser : public MemObject, public Parser
+class XHN_EXPORT SwiftParser : public MemObject, public Parser
 {
     DeclareRTTI;
 public:
@@ -172,9 +172,9 @@ public:
     static void ParseSwifts(const string& logDir,
                             ASTReformatterPtr reformatter,
                             const string& importPaths,
-                            const string& paths, Lambda<void (const xhn::string& objcBridgeFile,
-                                                              const xhn::string& swiftBridgeFile,
-                                                              const xhn::string& stateActionFile,
+                            const string& paths, Lambda<void (const string& objcBridgeFile,
+                                                              const string& swiftBridgeFile,
+                                                              const string& stateActionFile,
                                                               const vector<static_string>&,
                                                               const vector<static_string>&,
                                                               const vector<static_string>&,
