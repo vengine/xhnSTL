@@ -143,7 +143,7 @@ namespace xhn {
     }
     
     void SwiftVerisonInfoParser::GetSwiftVersion(const string& logDir,
-                                                 Lambda<void (const xhn::string& versionInfo)>& callback)
+                                                 Lambda<void (const string& versionInfo)>& callback)
     {
         std::wstring command = swiftc;
         command += L" -v";
@@ -154,7 +154,7 @@ namespace xhn {
             exitCode,
             outputs
         );
-        xhn::string versionInfo;
+        string versionInfo;
         for (const std::string& output : outputs) {
             versionInfo += output.c_str();
             versionInfo += "\n";
@@ -230,7 +230,7 @@ namespace xhn {
                     if (string::npos == strIntType.find(".")) {
                         ASTNode* parent = node->parent;
                         while (parent && StrClassDecl == parent->nodetype) {
-                            strIntType = xhn::string(parent->name.c_str()) + "." + strIntType;
+                            strIntType = string(parent->name.c_str()) + "." + strIntType;
                             parent = parent->parent;
                         }
                     }
@@ -440,7 +440,7 @@ namespace xhn {
                                                       vector<static_string>&)>& isInheritFromClassProc,
                                          BridgeFileLanguage language)
     {
-        xhn::string bridgeFile;
+        string bridgeFile;
         bridgeFile =  "open class SwiftCallbackHandle\n";
         bridgeFile += "{\n";
         bridgeFile += "    var callback : () -> Void\n";
@@ -693,14 +693,14 @@ namespace xhn {
         /// 继承路径，用来判断一个类是否继承自另一个类或接口的依据
         /// 例：RegularSceneNodeAgent 继承自 SceneNodeAgent，SceneNodeAgent 继承自 NSObject
         /// 则 inheritPath[2] = NSObject， inheritPath[1] = SceneNodeAgent，inheritPath[0] = RegularSceneNodeAgent
-        xhn::vector<xhn::static_string> inheritPath;
+        vector<static_string> inheritPath;
         
         /// 通过这个i可以知道加入的state有多少个
         auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile, language](int& i) {
-            xhn::vector<xhn::static_string> stateInheritPath;
+            vector<static_string> stateInheritPath;
             char mbuf[512];
-            xhn::string firstState;
-            xhn::static_string agentClassName = inheritPath.back();
+            string firstState;
+            static_string agentClassName = inheritPath.back();
             
             ASTNode* node = nullptr;
             auto nodeIter = classMap.find(agentClassName);
@@ -719,7 +719,7 @@ namespace xhn {
                 auto childEnd = childClassIter->second.end();
                 /// 遍历子类
                 for (; childIter != childEnd; childIter++) {
-                    xhn::static_string childClassName = *childIter;
+                    static_string childClassName = *childIter;
                     ///
                     snprintf(mbuf, 512,
                              "        /// childClassName = %s\n", childClassName.c_str());
@@ -737,18 +737,18 @@ namespace xhn {
                             bool isInheritFromState = false;
                             bool isInheritFromStateInterface = false;
                             
-                            xhn::string fullClassName = node->name.c_str();
+                            string fullClassName = node->name.c_str();
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
                             snprintf(mbuf, 512, "%lld", node->name.size());
-                            xhn::string stateFuncName = mbuf;
+                            string stateFuncName = mbuf;
                             stateFuncName += node->name.c_str();
                             snprintf(mbuf, 512, "%lld", child->name.size());
                             stateFuncName += mbuf;
                             stateFuncName += child->name.c_str();
                             
-                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            static_string strFullClassName = fullClassName.c_str();
                             stateInheritPath.clear();
                             isInheritFromState = isInheritFromClassProc(strFullClassName, StrSceneNodeState, stateInheritPath);
                             stateInheritPath.clear();
@@ -792,10 +792,10 @@ namespace xhn {
         
         /// 通过这个i可以知道加入的action有多少个
         auto addActionsProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile, language](int& i) {
-            xhn::vector<xhn::static_string> actionInheritPath;
+            vector<static_string> actionInheritPath;
             char mbuf[512];
-            xhn::string firstAction;
-            xhn::static_string agentClassName = inheritPath.back();
+            string firstAction;
+            static_string agentClassName = inheritPath.back();
             
             ASTNode* node = nullptr;
             auto nodeIter = classMap.find(agentClassName);
@@ -814,7 +814,7 @@ namespace xhn {
                 auto childEnd = childClassIter->second.end();
                 /// 遍历子类
                 for (; childIter != childEnd; childIter++) {
-                    xhn::static_string childClassName = *childIter;
+                    static_string childClassName = *childIter;
                     ///
                     snprintf(mbuf, 512,
                              "        /// childClassName = %s\n", childClassName.c_str());
@@ -830,18 +830,18 @@ namespace xhn {
                             bool isInheritFromAction = false;
                             bool isInheritFromActionInterface = false;
                             
-                            xhn::string fullClassName = node->name.c_str();
+                            string fullClassName = node->name.c_str();
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
                             snprintf(mbuf, 512, "%lld", node->name.size());
-                            xhn::string actionFuncName = mbuf;
+                            string actionFuncName = mbuf;
                             actionFuncName += node->name.c_str();
                             snprintf(mbuf, 512, "%lld", child->name.size());
                             actionFuncName += mbuf;
                             actionFuncName += child->name.c_str();
                             
-                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            static_string strFullClassName = fullClassName.c_str();
                             actionInheritPath.clear();
                             isInheritFromAction = isInheritFromClassProc(strFullClassName, StrAction, actionInheritPath);
                             actionInheritPath.clear();
@@ -904,15 +904,15 @@ namespace xhn {
             }
         };
         
-        auto addGUIStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile](xhn::static_string& normalState,
-                                                                                                                   xhn::static_string& hoveringState,
-                                                                                                                   xhn::static_string& selectedState,
-                                                                                                                   xhn::static_string& pressedState,
-                                                                                                                   xhn::static_string& draggingState) {
-            xhn::vector<xhn::static_string> guiStateInheritPath;
+        auto addGUIStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &bridgeFile](static_string& normalState,
+                                                                                                                   static_string& hoveringState,
+                                                                                                                   static_string& selectedState,
+                                                                                                                   static_string& pressedState,
+                                                                                                                   static_string& draggingState) {
+            vector<static_string> guiStateInheritPath;
             char mbuf[512];
-            xhn::string firstAction;
-            xhn::static_string agentClassName = inheritPath.back();
+            string firstAction;
+            static_string agentClassName = inheritPath.back();
             
             GUILog("Agent:%s\n", agentClassName.c_str());
             
@@ -946,7 +946,7 @@ namespace xhn {
                 auto childEnd = childClassIter->second.end();
                 /// 遍历子类
                 for (; childIter != childEnd; childIter++) {
-                    xhn::static_string childClassName = *childIter;
+                    static_string childClassName = *childIter;
                     ///
                     snprintf(mbuf, 512,
                              "        /// childClassName = %s\n", childClassName.c_str());
@@ -984,18 +984,18 @@ namespace xhn {
                             bool isInheritFromGUIState = false;
                             bool isInheritFromGUIStateInterface = false;
                             
-                            xhn::string fullClassName = node->name.c_str();
+                            string fullClassName = node->name.c_str();
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
                             snprintf(mbuf, 512, "%lld", node->name.size());
-                            xhn::string stateFuncName = mbuf;
+                            string stateFuncName = mbuf;
                             stateFuncName += node->name.c_str();
                             snprintf(mbuf, 512, "%lld", child->name.size());
                             stateFuncName += mbuf;
                             stateFuncName += child->name.c_str();
                             
-                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            static_string strFullClassName = fullClassName.c_str();
                             guiStateInheritPath.clear();
                             isInheritFromGUIState = isInheritFromClassProc(strFullClassName, StrGUIState, guiStateInheritPath);
                             guiStateInheritPath.clear();
@@ -1012,18 +1012,18 @@ namespace xhn {
                             if (isInheritFromGUIState && isInheritFromGUIStateInterface) {
                                 /// 这里要判断状态的类型
                                 /// NormalState、HoveringState、SelectedState、PressedState、DraggingState
-                                xhn::string tmpFullClassName = strFullClassName.c_str();
+                                string tmpFullClassName = strFullClassName.c_str();
                                 euint pos = tmpFullClassName.rfind(".");
 #if USING_AST_LOG
-                                if (xhn::string::npos != pos) {
+                                if (string::npos != pos) {
                                     GUILog("  Has A Dot:\n");
                                 }
                                 else {
                                     GUILog("  Has Not A Dot:\n");
                                 }
 #endif
-                                if (xhn::string::npos != pos) {
-                                    xhn::string stateName = tmpFullClassName.substr(pos + 1, tmpFullClassName.size() - pos - 1);
+                                if (string::npos != pos) {
+                                    string stateName = tmpFullClassName.substr(pos + 1, tmpFullClassName.size() - pos - 1);
                                     ///
                                     snprintf(mbuf, 512,
                                              "        /// stateName = %s\n", stateName.c_str());
@@ -1083,8 +1083,8 @@ namespace xhn {
                     parentNode = parentNode->parent;
                 }
             }
-            xhn::Lambda<void (vector<ASTNode*>&, xhn::string)> printNodes;
-            printNodes = [&printNodes](vector<ASTNode*>& children, xhn::string indentation){
+            Lambda<void (vector<ASTNode*>&, string)> printNodes;
+            printNodes = [&printNodes](vector<ASTNode*>& children, string indentation){
                 for (auto c : children) {
                     ASTNodeLog("%sT:%s, N:%s\n", indentation.c_str(), c->nodetype.c_str(), c->name.c_str());
                     if (c->children) {
@@ -1228,22 +1228,22 @@ namespace xhn {
                                 bridgeFile += mbuf;
                                 ///
                                 /// 这里配置
-                                xhn::static_string normalState = xhn::static_string::empty_string;
-                                xhn::static_string hoveringState = xhn::static_string::empty_string;
-                                xhn::static_string selectedState = xhn::static_string::empty_string;
-                                xhn::static_string pressedState = xhn::static_string::empty_string;
-                                xhn::static_string draggingState = xhn::static_string::empty_string;
+                                static_string normalState = static_string::empty_string;
+                                static_string hoveringState = static_string::empty_string;
+                                static_string selectedState = static_string::empty_string;
+                                static_string pressedState = static_string::empty_string;
+                                static_string draggingState = static_string::empty_string;
                                 
                                 while (inheritPath.size()) {
                                     addGUIStatesProc(normalState, hoveringState, selectedState, pressedState, draggingState);
                                     inheritPath.pop_back();
                                 }
                                 
-                                EAssert(xhn::static_string::empty_string != normalState &&
-                                        xhn::static_string::empty_string != hoveringState &&
-                                        xhn::static_string::empty_string != selectedState &&
-                                        xhn::static_string::empty_string != pressedState &&
-                                        xhn::static_string::empty_string != draggingState, "gui state member are incomplete!, %s, %s, %s, %s, %s",
+                                EAssert(static_string::empty_string != normalState &&
+                                        static_string::empty_string != hoveringState &&
+                                        static_string::empty_string != selectedState &&
+                                        static_string::empty_string != pressedState &&
+                                        static_string::empty_string != draggingState, "gui state member are incomplete!, %s, %s, %s, %s, %s",
                                         normalState.c_str(), hoveringState.c_str(), selectedState.c_str(), pressedState.c_str(), draggingState.c_str());
                                 ///
                                 snprintf(mbuf, 512, "        let normalState = SwiftGUIStates._TtCC12VEngineLogic%s()\n", normalState.c_str());
@@ -1340,10 +1340,10 @@ namespace xhn {
         vector<static_string> inheritPath;
         
         auto addStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &stateFuncClassMap]() {
-            xhn::vector<xhn::static_string> stateInheritPath;
+            vector<static_string> stateInheritPath;
             char mbuf[512];
-            xhn::string firstState;
-            xhn::static_string agentClassName = inheritPath.back();
+            string firstState;
+            static_string agentClassName = inheritPath.back();
             
             ASTNode* node = nullptr;
             auto nodeIter = classMap.find(agentClassName);
@@ -1356,7 +1356,7 @@ namespace xhn {
                 auto childIter = childClassIter->second.begin();
                 auto childEnd = childClassIter->second.end();
                 for (; childIter != childEnd; childIter++) {
-                    xhn::static_string childClassName = *childIter;
+                    static_string childClassName = *childIter;
                     
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
@@ -1367,18 +1367,18 @@ namespace xhn {
                             bool isInheritFromState = false;
                             bool isInheritFromStateInterface = false;
                             
-                            xhn::string fullClassName = node->name.c_str();
+                            string fullClassName = node->name.c_str();
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
                             snprintf(mbuf, 512, "%lld", node->name.size());
-                            xhn::string stateFuncName = mbuf;
+                            string stateFuncName = mbuf;
                             stateFuncName += node->name.c_str();
                             snprintf(mbuf, 512, "%lld", child->name.size());
                             stateFuncName += mbuf;
                             stateFuncName += child->name.c_str();
                             
-                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            static_string strFullClassName = fullClassName.c_str();
                             stateInheritPath.clear();
                             isInheritFromState = isInheritFromClassProc(strFullClassName, StrSceneNodeState, stateInheritPath);
                             stateInheritPath.clear();
@@ -1394,10 +1394,10 @@ namespace xhn {
         };
         
         auto addGUIStatesProc = [&inheritPath, &childrenClassMap, &classMap, &isInheritFromClassProc, &guiStateFuncClassMap]() {
-            xhn::vector<xhn::static_string> guiStateInheritPath;
+            vector<static_string> guiStateInheritPath;
             char mbuf[512];
-            xhn::string firstAction;
-            xhn::static_string agentClassName = inheritPath.back();
+            string firstAction;
+            static_string agentClassName = inheritPath.back();
             
             ASTNode* node = nullptr;
             auto nodeIter = classMap.find(agentClassName);
@@ -1412,7 +1412,7 @@ namespace xhn {
                 auto childEnd = childClassIter->second.end();
                 /// 遍历子类
                 for (; childIter != childEnd; childIter++) {
-                    xhn::static_string childClassName = *childIter;
+                    static_string childClassName = *childIter;
                     
                     /// 找到子类名对应的ASTNode
                     auto childNodeIter = classMap.find(childClassName);
@@ -1427,18 +1427,18 @@ namespace xhn {
                             bool isInheritFromGUIState = false;
                             bool isInheritFromGUIStateInterface = false;
                             
-                            xhn::string fullClassName = node->name.c_str();
+                            string fullClassName = node->name.c_str();
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
                             snprintf(mbuf, 512, "%lld", node->name.size());
-                            xhn::string stateFuncName = mbuf;
+                            string stateFuncName = mbuf;
                             stateFuncName += node->name.c_str();
                             snprintf(mbuf, 512, "%lld", child->name.size());
                             stateFuncName += mbuf;
                             stateFuncName += child->name.c_str();
                             
-                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            static_string strFullClassName = fullClassName.c_str();
                             guiStateInheritPath.clear();
                             isInheritFromGUIState = isInheritFromClassProc(strFullClassName, StrGUIState, guiStateInheritPath);
                             guiStateInheritPath.clear();
@@ -1470,7 +1470,7 @@ namespace xhn {
                 auto childIter = childClassIter->second.begin();
                 auto childEnd = childClassIter->second.end();
                 for (; childIter != childEnd; childIter++) {
-                    xhn::static_string childClassName = *childIter;
+                    static_string childClassName = *childIter;
                     
                     auto childNodeIter = classMap.find(childClassName);
                     if (childNodeIter != classMap.end()) {
@@ -1481,18 +1481,18 @@ namespace xhn {
                             bool isInheritFromAction = false;
                             bool isInheritFromActionInterface = false;
                             
-                            xhn::string fullClassName = node->name.c_str();
+                            string fullClassName = node->name.c_str();
                             fullClassName += ".";
                             fullClassName += child->name.c_str();
                             
                             snprintf(mbuf, 512, "%lld", node->name.size());
-                            xhn::string actionFuncName = mbuf;
+                            string actionFuncName = mbuf;
                             actionFuncName += node->name.c_str();
                             snprintf(mbuf, 512, "%lld", child->name.size());
                             actionFuncName += mbuf;
                             actionFuncName += child->name.c_str();
                             
-                            xhn::static_string strFullClassName = fullClassName.c_str();
+                            static_string strFullClassName = fullClassName.c_str();
                             
                             actionInheritPath.clear();
                             isInheritFromAction = isInheritFromClassProc(strFullClassName, StrAction, actionInheritPath);
@@ -1626,7 +1626,7 @@ namespace xhn {
     }
     void SwiftParser::Parse(const char* strBuffer, euint length)
     {
-        xhn::string parsedString;
+        string parsedString;
         const char* parsedBuffer = strBuffer;
         euint parsedLength = length;
         if (m_reformatter) {
@@ -1640,7 +1640,7 @@ namespace xhn {
         auto reduce = [this]()
         {
             if (m_isNodeType) {
-                xhn::static_string symbol = m_symbolBuffer.GetSymbol();
+                static_string symbol = m_symbolBuffer.GetSymbol();
                 m_symbolBuffer.bufferTop = 0;
                 if (StrSourceFile == symbol) {
                     m_roots.push_back(m_nodeStack.back());
@@ -1655,7 +1655,7 @@ namespace xhn {
                 m_isName = true;
             }
             else if (m_isAccess) {
-                xhn::static_string symbol = m_symbolBuffer.GetSymbol();
+                static_string symbol = m_symbolBuffer.GetSymbol();
                 m_symbolBuffer.bufferTop = 0;
                 if (m_nodeStack.size()) {
                     m_nodeStack.back()->access = symbol;
@@ -1663,7 +1663,7 @@ namespace xhn {
                 m_isAccess = false;
             }
             else if (m_isDecl) {
-                xhn::static_string symbol = m_symbolBuffer.GetSymbol();
+                static_string symbol = m_symbolBuffer.GetSymbol();
                 m_symbolBuffer.bufferTop = 0;
                 if (m_nodeStack.size()) {
                     m_nodeStack.back()->decl = symbol;
@@ -1671,7 +1671,7 @@ namespace xhn {
                 m_isDecl = false;
             }
             else if (m_isType) {
-                xhn::static_string symbol = m_symbolBuffer.GetSymbol();
+                static_string symbol = m_symbolBuffer.GetSymbol();
                 m_symbolBuffer.bufferTop = 0;
                 if (m_nodeStack.size()) {
                     if (!m_isInterface) {
@@ -1685,7 +1685,7 @@ namespace xhn {
                 m_isType = false;
             }
             else {
-                xhn::static_string symbol = m_symbolBuffer.GetSymbol();
+                static_string symbol = m_symbolBuffer.GetSymbol();
                 if (StrInherits == symbol) {
                     m_isInherits = true;
                 }
@@ -1707,11 +1707,11 @@ namespace xhn {
             }
         };
         auto reduceInherit = [this]() {
-            xhn::static_string symbol = m_symbolBuffer.GetSymbol();
-            if (xhn::static_string::empty_string != symbol) {
+            static_string symbol = m_symbolBuffer.GetSymbol();
+            if (static_string::empty_string != symbol) {
                 if (m_nodeStack.size()) {
                     if (!m_nodeStack.back()->inherits) {
-                        m_nodeStack.back()->inherits = VNEW xhn::vector<xhn::static_string>();
+                        m_nodeStack.back()->inherits = VNEW vector<static_string>();
                     }
                     m_nodeStack.back()->inherits->push_back(symbol);
                 }
@@ -1734,7 +1734,7 @@ namespace xhn {
                         if (m_nodeStack.size()) {
                             ASTNode* parentNode = m_nodeStack.back();
                             if (!parentNode->children) {
-                                parentNode->children = VNEW xhn::vector<ASTNode*>();
+                                parentNode->children = VNEW vector<ASTNode*>();
                             }
                             parentNode->children->push_back(currentNode);
                             currentNode->parent = parentNode;
@@ -1781,7 +1781,7 @@ namespace xhn {
                     }
                     else {
                         if (m_isName) {
-                            xhn::static_string symbol = m_symbolBuffer.GetSymbol();
+                            static_string symbol = m_symbolBuffer.GetSymbol();
                             if (m_nodeStack.size()) {
                                 m_nodeStack.back()->name = symbol;
                                 ASTLog("NODETYPE=%s NAME=%s\n",
@@ -1858,25 +1858,25 @@ namespace xhn {
     void SwiftParser::ParseSwifts(const string& logDir,
                                   ASTReformatterPtr reformatter,
                                   const string& importPaths,
-                                  const string& paths, xhn::Lambda<void (const xhn::string& objcBridgeFile,
-                                                                         const xhn::string& swiftBridgeFile,
-                                                                         const xhn::string& stateActionFile,
-                                                                         const xhn::vector<xhn::static_string>&,
-                                                                         const xhn::vector<xhn::static_string>&,
-                                                                         const xhn::vector<xhn::static_string>&,
-                                                                         const xhn::vector<xhn::static_string>&)>& callback)
+                                  const string& paths, Lambda<void (const string& objcBridgeFile,
+                                                                         const string& swiftBridgeFile,
+                                                                         const string& stateActionFile,
+                                                                         const vector<static_string>&,
+                                                                         const vector<static_string>&,
+                                                                         const vector<static_string>&,
+                                                                         const vector<static_string>&)>& callback)
     {
-        xhn::Unicode uniImportPaths(importPaths.c_str());
-        xhn::Unicode uniPaths(paths.c_str());
+        Unicode uniImportPaths(importPaths.c_str());
+        Unicode uniPaths(paths.c_str());
         std::wstring command = swiftc;
         command += L" -swift-version ";
         command += usedVersion;
         command += L" -sdk ";
         command += sdk;
         command += L" ";
-        command += xhn::wstring(uniImportPaths).c_str();
+        command += wstring(uniImportPaths).c_str();
         command += L" ";
-        command += xhn::wstring(uniPaths).c_str();
+        command += wstring(uniPaths).c_str();
         DWORD exitCode = 0;
         std::vector<std::string> outputs;
         ExecuteCommandLine(
