@@ -12,8 +12,8 @@
 #include <string>
 #include <vector>
 #include <Shellapi.h>
-const wchar_t* swiftc = L"C:\\Library\\Developer\\Toolchains\\unknown-Asserts-development.xctoolchain\\usr\\bin\\swiftc";
-const wchar_t* sdk = L"C:\\Library\\Developer\\Platforms\\Windows.platform\\Developer\\SDKs\\Windows.sdk";
+const wchar_t* swiftc = L"/C/Library/Developer/Toolchains/unknown-Asserts-development.xctoolchain/usr/bin/swiftc";
+const wchar_t* sdk = L"/C/Library/Developer/Platforms/Windows.platform/Developer/SDKs/Windows.sdk";
 const wchar_t* usedVersion = L"4";
 namespace xhn {
 wstring ToMingwFormat(wchar_t* path) {
@@ -35,6 +35,18 @@ wstring ToMingwFormat(wchar_t* path) {
         i++;
     }
     return ret;
+}
+string ToWindowsFormat(const string path) {
+    string tmp = path;
+    tmp[0] = tmp[1];
+    tmp[1] = ':';
+    transform(tmp.begin(), tmp.end(), tmp.begin(), [](char c) -> char {
+        if (c == '/')
+            return '\\';
+        else
+            return c;
+    });
+    return tmp;
 }
 BOOL ExecuteCommandLine(
     const wstring & command,
@@ -79,7 +91,7 @@ BOOL ExecuteCommandLine(
     return TRUE;
 }
 }
-#define USING_AST_LOG 0
+#define USING_AST_LOG 1
 #if USING_AST_LOG
 #define AST_BUFFER_SIZE (1024 * 512)
 #define COMMAND_BUFFER_SIZE (1024)
@@ -1869,7 +1881,13 @@ namespace xhn {
         command += usedVersion;
         command += L" -sdk ";
         command += sdk;
-        command += L" -dump-ast ";
+        command += L" -I ";
+        command += sdk;
+        command += L"/usr/lib/swift";
+        command += L" -L ";
+        command += sdk;
+        command += L"/usr/lib/swift/windows";
+        command += L" -dump-ast -module-name VEngineLogic ";
         command += wstring(uniImportPaths).c_str();
         command += L" ";
         command += wstring(uniPaths).c_str();
@@ -1880,7 +1898,14 @@ namespace xhn {
         );
         SwiftParser* parser = VNEW SwiftParser(logDir, reformatter);
         parser->BeginParse();
-        parser->Parse(outputs.c_str(), outputs.size());
+        euint remainderedSize = outputs.size();
+        const char* s = outputs.c_str();
+        while (remainderedSize) {
+            euint blockSize = remainderedSize > 4096 ? 4096 : remainderedSize;
+            parser->Parse(s, blockSize);
+            remainderedSize -= blockSize;
+            s = s + blockSize;
+        }
         string objcBridgeFile;
         string swiftBridgeFile;
         string stateActionFile;
@@ -1907,11 +1932,11 @@ namespace xhn {
     , m_reformatter(reformatter)
     {
 #if USING_AST_LOG
-        s_ASTLogFile = fopen((logDir + "/swiftParseLog.txt").c_str(), "wb");
-        s_ASTNodeLogFile = fopen((logDir + "/swiftParseNodeLog.txt").c_str(), "wb");
-        s_ClassHierarchyLogFile = fopen((logDir + "/swiftParserClassHierarchyLog.txt").c_str(), "wb");
-        s_GUILogFile = fopen((logDir + "/swiftParseGUILog.txt").c_str(), "wb");
-        s_ASTFile = fopen((logDir + "/swiftParseAst.txt").c_str(), "wb");
+        s_ASTLogFile = fopen(ToWindowsFormat(logDir + "/swiftParseLog.txt").c_str(), "wb");
+        s_ASTNodeLogFile = fopen(ToWindowsFormat(logDir + "/swiftParseNodeLog.txt").c_str(), "wb");
+        s_ClassHierarchyLogFile = fopen(ToWindowsFormat(logDir + "/swiftParserClassHierarchyLog.txt").c_str(), "wb");
+        s_GUILogFile = fopen(ToWindowsFormat(logDir + "/swiftParseGUILog.txt").c_str(), "wb");
+        s_ASTFile = fopen(ToWindowsFormat(logDir + "/swiftParseAst.txt").c_str(), "wb");
 #endif
     }
     SwiftParser::~SwiftParser()
