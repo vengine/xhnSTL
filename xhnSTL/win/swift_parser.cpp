@@ -2,6 +2,8 @@
 #include "swift_parser.hpp"
 #include "utility.h"
 #include "xhn_lock.hpp"
+#include "xhn_unique_identifier.hpp"
+#include "xhn_string.hpp"
 #include <windows.h>
 #include <stdio.h>
 #include <iostream>
@@ -13,68 +15,69 @@
 const wchar_t* swiftc = L"C:\\Library\\Developer\\Toolchains\\unknown-Asserts-development.xctoolchain\\usr\\bin\\swiftc";
 const wchar_t* sdk = L"C:\\Library\\Developer\\Platforms\\Windows.platform\\Developer\\SDKs\\Windows.sdk";
 const wchar_t* usedVersion = L"4";
-BOOL ExecuteCommandLine(const std::wstring & command,
-    DWORD & exitCode,
-    std::vector<std::string> & stdOutLines)
-{
-    BOOL bSuccess = FALSE;
-    exitCode = 0;
-    stdOutLines.clear();
-    HANDLE g_hChildStd_OUT_Rd = NULL;
-    HANDLE g_hChildStd_OUT_Wr = NULL;
-    SECURITY_ATTRIBUTES saAttr;
-    saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-    saAttr.bInheritHandle = TRUE;
-    saAttr.lpSecurityDescriptor = NULL;
-    bSuccess = CreatePipe(&g_hChildStd_OUT_Rd,
-    &g_hChildStd_OUT_Wr, &saAttr, 0);
-    if (!bSuccess) return bSuccess;
-    bSuccess = SetHandleInformation(g_hChildStd_OUT_Rd,
-        HANDLE_FLAG_INHERIT, 0);
-    if (!bSuccess) return bSuccess;
-    PROCESS_INFORMATION piProcInfo;
-    STARTUPINFOW siStartInfo;
-    ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
-    ZeroMemory(&siStartInfo, sizeof(STARTUPINFOW));
-    siStartInfo.cb = sizeof(STARTUPINFOW);
-    siStartInfo.hStdError = g_hChildStd_OUT_Wr;
-    siStartInfo.hStdOutput = g_hChildStd_OUT_Wr;
-    siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
-    wchar_t commandBuffer[256];
-    _snwprintf(commandBuffer, 256, L"%s", command.c_str());
-    bSuccess = CreateProcessW(NULL,
-        commandBuffer,
-        NULL,
-        NULL,
-        TRUE,
-        0,
-        NULL,
-        NULL,
-        &siStartInfo,
-        &piProcInfo);
-    if (!bSuccess) return bSuccess;
-    WaitForSingleObject(piProcInfo.hProcess, (DWORD)(-1L));
-    GetExitCodeProcess(piProcInfo.hProcess, &exitCode);
-    CloseHandle(piProcInfo.hProcess);
-    CloseHandle(piProcInfo.hThread);
-    DWORD bytesInPipe = 0;
-    while (bytesInPipe == 0) {
-        bSuccess = PeekNamedPipe(g_hChildStd_OUT_Rd, NULL, 0, NULL,
-            &bytesInPipe, NULL);
-        if (!bSuccess) return bSuccess;
+namespace xhn {
+wstring ToMingwFormat(wchar_t* path) {
+    wstring ret = L"/";
+    int64_t i = 0;
+    while (path[i]) {
+        wchar_t c = path[i];
+        switch (c)
+        {
+        case L':':
+            break;
+        case L'\\':
+            ret += L'/';
+            break;
+        default:
+            ret += c;
+            break;
+        }
+        i++;
     }
-    if (bytesInPipe == 0) return TRUE;
-    DWORD dwRead = 0;
-    CHAR * pipeContents = new CHAR[bytesInPipe];
-    bSuccess = ReadFile(g_hChildStd_OUT_Rd, pipeContents,
-    bytesInPipe, &dwRead, NULL);
-    if (!bSuccess || dwRead == 0) return FALSE;
-    std::stringstream stream(pipeContents);
-    std::string str;
-    while (getline(stream, str))
-        stdOutLines.push_back(str);
-    delete[] pipeContents;
+    return ret;
+}
+BOOL ExecuteCommandLine(
+    const wstring & command,
+    string & stdOutLines)
+{
+    wchar_t temppath[256];
+    DWORD n = GetTempPathW(256, temppath);
+    string uuid = create_uuid_string() + ".txt";
+    Unicode uniUuid(uuid.c_str());
+    wstring tempDir = wstring(temppath) + L"\\";
+    wstring tempPath = tempDir + wstring(uniUuid);
+    wstring mingwTempDir = ToMingwFormat(temppath) + L"/";
+    wstring mingwTempPath = mingwTempDir + wstring(uniUuid);
+    wstring args = L"/C C:\\msys64\\usr\\bin\\env MSYSTEM=MINGW64 C:\\msys64\\usr\\bin\\bash -l -c ";
+    args += L"\"";
+    args += command;
+    args += L" > ";
+    args += mingwTempPath;
+    args += L" 2>&1 ";
+    args += L"\"";
+    SHELLEXECUTEINFOW execInfo;
+    execInfo.cbSize = sizeof(execInfo);
+    execInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+    execInfo.hwnd = nullptr;
+    execInfo.lpVerb = nullptr;
+    execInfo.lpFile = L"C:\\Windows\\System32\\cmd.exe";
+    execInfo.lpParameters = args.c_str();
+    execInfo.lpDirectory = nullptr;
+    execInfo.nShow = SW_SHOW;
+    execInfo.hInstApp = nullptr;
+    ShellExecuteExW(&execInfo);
+    WaitForSingleObject(execInfo.hProcess, INFINITE);
+    CloseHandle(execInfo.hProcess);
+    FILE* file = _wfopen(tempPath.c_str(), L"rb");
+    _fseeki64(file, 0, SEEK_END);
+    int64_t size = _ftelli64(file);
+    _fseeki64(file, 0, SEEK_SET);
+    stdOutLines.resize(size);
+    fread(&stdOutLines[0], 1, size, file);
+    fclose(file);
+    DeleteFileW(tempPath.c_str());
     return TRUE;
+}
 }
 #define USING_AST_LOG 0
 #if USING_AST_LOG
@@ -145,20 +148,13 @@ namespace xhn {
     void SwiftVerisonInfoParser::GetSwiftVersion(const string& logDir,
                                                  Lambda<void (const string& versionInfo)>& callback)
     {
-        std::wstring command = swiftc;
+        wstring command = swiftc;
+        string versionInfo;
         command += L" -v";
-        DWORD exitCode = 0;
-        std::vector<std::string> outputs;
         ExecuteCommandLine(
             command,
-            exitCode,
-            outputs
+            versionInfo
         );
-        string versionInfo;
-        for (const std::string& output : outputs) {
-            versionInfo += output.c_str();
-            versionInfo += "\n";
-        }
         callback(versionInfo);
     }
     
@@ -1868,22 +1864,34 @@ namespace xhn {
     {
         Unicode uniImportPaths(importPaths.c_str());
         Unicode uniPaths(paths.c_str());
-        std::wstring command = swiftc;
+        wstring command = swiftc;
         command += L" -swift-version ";
         command += usedVersion;
         command += L" -sdk ";
         command += sdk;
-        command += L" ";
+        command += L" -dump-ast ";
         command += wstring(uniImportPaths).c_str();
         command += L" ";
         command += wstring(uniPaths).c_str();
-        DWORD exitCode = 0;
-        std::vector<std::string> outputs;
+        string outputs;
         ExecuteCommandLine(
             command,
-            exitCode,
             outputs
         );
+        SwiftParser* parser = VNEW SwiftParser(logDir, reformatter);
+        parser->BeginParse();
+        parser->Parse(outputs.c_str(), outputs.size());
+        string objcBridgeFile;
+        string swiftBridgeFile;
+        string stateActionFile;
+        parser->EndParse(swiftBridgeFile, stateActionFile, Swift);
+        vector<static_string> sceneNodeAgentNameVector = parser->GetSceneNodeAgentNameVector();
+        vector<static_string> guiListAgentNameVector = parser->GetGUIListAgentNameVector();
+        vector<static_string> guiAgentNameVector = parser->GetGUIAgentNameVector();
+        vector<static_string> actorAgentNameVector = parser->GetActorAgentNameVector();
+        callback(objcBridgeFile, swiftBridgeFile, stateActionFile,
+            sceneNodeAgentNameVector, guiAgentNameVector, guiListAgentNameVector, actorAgentNameVector);
+        VDELETE parser;
     }
     SwiftParser::SwiftParser(const string& logDir,
                              ASTReformatterPtr reformatter)
