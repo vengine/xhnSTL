@@ -1869,6 +1869,8 @@ namespace xhn {
                              ASTReformatterPtr reformatter)
     : m_isApostropheBlock(false)
     , m_isQuotationBlock(false)
+	, m_isBracketBlock(false)
+	, m_isBraceBlock(false)
     , m_isNodeType(false)
     , m_isName(false)
     , m_isInterface(false)

@@ -138,8 +138,15 @@ private:
 private:
     vector<ASTNode*> m_nodeStack;
     SymbolBuffer m_symbolBuffer;
+	///< 单引号
     bool m_isApostropheBlock;
+	///< 双引号
     bool m_isQuotationBlock;
+	///< parentheses 小括号 
+	///< brackets 中括号 
+	///< braces 大括号
+	bool m_isBracketBlock;
+	bool m_isBraceBlock;
     bool m_isNodeType;
     bool m_isName;
     bool m_isInterface;

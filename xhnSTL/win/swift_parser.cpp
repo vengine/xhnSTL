@@ -91,7 +91,7 @@ BOOL ExecuteCommandLine(
     return TRUE;
 }
 }
-#define USING_AST_LOG 1
+#define USING_AST_LOG 0
 #if USING_AST_LOG
 #define AST_BUFFER_SIZE (1024 * 512)
 #define COMMAND_BUFFER_SIZE (1024)
@@ -1922,6 +1922,8 @@ namespace xhn {
                              ASTReformatterPtr reformatter)
     : m_isApostropheBlock(false)
     , m_isQuotationBlock(false)
+	, m_isBracketBlock(false)
+	, m_isBraceBlock(false)
     , m_isNodeType(false)
     , m_isName(false)
     , m_isInterface(false)
