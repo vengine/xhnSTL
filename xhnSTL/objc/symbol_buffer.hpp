@@ -15,13 +15,14 @@
 
 #include "utility.h"
 
+#define SYMBOL_BUFFER_SIZE 1024
 namespace xhn
 {
 
 class SymbolBuffer
 {
 public:
-    char buffer[1024];
+    char buffer[SYMBOL_BUFFER_SIZE];
     int bufferTop;
 public:
     SymbolBuffer()
@@ -32,9 +33,16 @@ public:
     
     void AddCharacter(char c)
     {
-        buffer[bufferTop] = c;
-        bufferTop++;
-        buffer[bufferTop] = 0;
+		if (bufferTop < SYMBOL_BUFFER_SIZE - 1) {
+			buffer[bufferTop] = c;
+			bufferTop++;
+			buffer[bufferTop] = 0;
+		}
+		else {
+			buffer[bufferTop - 3] = '.';
+			buffer[bufferTop - 2] = '.';
+			buffer[bufferTop - 1] = '.';
+		}
     }
     
     bool IsInteger()

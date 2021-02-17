@@ -71,6 +71,7 @@ public:
     static const static_string StrImportDecl;
     static const static_string StrFuncDecl;
     static const static_string StrDeclRefExpr;
+	static const static_string StrRange;
     static const static_string StrInherits;
     static const static_string StrAccess;
     static const static_string StrPrivate;
@@ -121,6 +122,7 @@ public:
         static_string decl;
         static_string type;
         static_string interfacetype;
+		static_string range;
         SmartPtr<vector<static_string>> inherits;
         SmartPtr<vector<ASTNode*>> children;
         ASTNode* parent;
@@ -142,18 +144,20 @@ private:
     bool m_isApostropheBlock;
 	///< Ë«ÒýºÅ
     bool m_isQuotationBlock;
-	///< parentheses Ð¡À¨ºÅ 
-	///< brackets ÖÐÀ¨ºÅ 
-	///< braces ´óÀ¨ºÅ
-	bool m_isBracketBlock;
-	bool m_isBraceBlock;
     bool m_isNodeType;
-    bool m_isName;
     bool m_isInterface;
+	bool m_isRange;
     bool m_isInherits;
     bool m_isAccess;
     bool m_isDecl;
     bool m_isType;
+	///< parentheses Ð¡À¨ºÅ 
+	///< brackets ÖÐÀ¨ºÅ 
+	///< braces ´óÀ¨ºÅ
+	euint32 m_bracketsCount;
+	euint32 m_bracesCount;
+private:
+	esint32 m_parenthesesCount = 0;
 private:
     vector<static_string> m_sceneNodeAgentNameVector;
     vector<static_string> m_guiAgentNameVector;

@@ -98,23 +98,28 @@ BOOL ExecuteCommandLine(
 #define ASTLog(fmt,...) { \
 int size = \
 snprintf(s_ASTBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
-fwrite(s_ASTBuffer, 1, size, s_ASTLogFile); }
+fwrite(s_ASTBuffer, 1, size, s_ASTLogFile); } \
+fflush(s_ASTLogFile);
 #define ASTNodeLog(fmt,...) { \
 int size = \
 snprintf(s_ASTNodeBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
-fwrite(s_ASTNodeBuffer, 1, size, s_ASTNodeLogFile); }
+fwrite(s_ASTNodeBuffer, 1, size, s_ASTNodeLogFile); } \
+fflush(s_ASTNodeLogFile);
 #define ClassHierarchyLog(fmt,...) { \
 int size = \
 snprintf(s_ClassHierarchyBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
-fwrite(s_ClassHierarchyBuffer, 1, size, s_ClassHierarchyLogFile); }
+fwrite(s_ClassHierarchyBuffer, 1, size, s_ClassHierarchyLogFile); } \
+fflush(s_ClassHierarchyLogFile);
 #define GUILog(fmt,...) { \
 int size = \
 snprintf(s_GUIBuffer,AST_BUFFER_SIZE,fmt,##__VA_ARGS__); \
-fwrite(s_GUIBuffer, 1, size, s_GUILogFile); }
+fwrite(s_GUIBuffer, 1, size, s_GUILogFile); } \
+fflush(s_GUILogFile);
 #define COMMANDLog(fmt,...) { \
 int size = \
 snprintf(s_COMMANDBuffer,COMMAND_BUFFER_SIZE,fmt,##__VA_ARGS__); \
-fwrite(s_COMMANDBuffer, 1, size, s_COMMANDFile); }
+fwrite(s_COMMANDBuffer, 1, size, s_COMMANDFile); } \
+fflush(s_COMMANDFile);
 static char s_ASTBuffer[AST_BUFFER_SIZE];
 static FILE* s_ASTLogFile = nullptr;
 static char s_ASTNodeBuffer[AST_BUFFER_SIZE];
@@ -138,6 +143,20 @@ namespace xhn {
     ImplementRootRTTI(Parser);
     ImplementRTTI(SwiftVerisonInfoParser, Parser);
     ImplementRTTI(SwiftParser, Parser);
+#if DEBUG
+	void TestString(const string& s) {
+		const char* ss = s.c_str();
+		for (euint i = 0; ss[i]; i++) {
+			EDebugAssert(ss[i] != '\n' && ss[i] != '\r', "error");
+		}
+	};
+	void TestString(const static_string& s) {
+		const char* ss = s.c_str();
+		for (euint i = 0; ss[i]; i++) {
+			EDebugAssert(ss[i] != '\n' && ss[i] != '\r', "error");
+		}
+	};
+#endif
     
     void SwiftVerisonInfoParser::BeginParse()
     {
@@ -175,6 +194,7 @@ namespace xhn {
     const static_string SwiftParser::StrImportDecl("import_decl");
     const static_string SwiftParser::StrFuncDecl("func_decl");
     const static_string SwiftParser::StrDeclRefExpr("declref_expr");
+	const static_string SwiftParser::StrRange("range");
     const static_string SwiftParser::StrInherits("inherits:");
     const static_string SwiftParser::StrAccess("access");
     const static_string SwiftParser::StrPrivate("private");
@@ -243,6 +263,9 @@ namespace xhn {
                         }
                     }
                     aliasMap[strIntType.c_str()] = node->type;
+#if DEBUG
+                    TestString(node->type);
+#endif
                     ASTLog("++:%s -> %s\n", strIntType.c_str(), node->type.c_str());
                 }
             }
@@ -267,6 +290,10 @@ namespace xhn {
                     auto inhIter = node->inherits->begin();
                     auto inhEnd = node->inherits->end();
                     for (; inhIter != inhEnd; inhIter++) {
+#if DEBUG
+                        TestString(nodePath);
+                        TestString(*inhIter);
+#endif
                         inheritMap[nodePath.c_str()].push_back(*inhIter);
                     }
                 }
@@ -343,7 +370,6 @@ namespace xhn {
                         return true;
                     }
                     vector<static_string> path(inheritPath);
-                    ///path.push_back(_class);
                     if (isInheritFromClassProc(*inhIter, parentClass, path)) {
                         inheritPath = path;
                         inheritPath.insert(inheritPath.begin(), (*inhIter));
@@ -376,13 +402,13 @@ namespace xhn {
         auto aliIter = aliasMap.begin();
         auto aliEnd = aliasMap.end();
         for (; aliIter != aliEnd; aliIter++) {
-            ClassHierarchyLog("###%s -> %s\n", aliIter->first.c_str(), aliIter->second.c_str());
+            ClassHierarchyLog("ALIAS: %s -> %s\n", aliIter->first.c_str(), aliIter->second.c_str());
         }
         ///
         auto inhMapIter = inheritMap.begin();
         auto inhMapEnd = inheritMap.end();
         for (; inhMapIter != inhMapEnd; inhMapIter++) {
-            ClassHierarchyLog("##%s : ", inhMapIter->first.c_str());
+            ClassHierarchyLog("INHERIT: %s : ", inhMapIter->first.c_str());
             auto inhIter = inhMapIter->second.begin();
             auto inhEnd = inhMapIter->second.end();
             for (; inhIter != inhEnd; inhIter++) {
@@ -390,7 +416,7 @@ namespace xhn {
                 if (aliasiter != aliasMap.end()) {
                     *inhIter = aliasiter->second;
                 }
-                ClassHierarchyLog("%s ", (*inhIter).c_str());
+                ClassHierarchyLog("(%s) ", (*inhIter).c_str());
             }
             ClassHierarchyLog("\n");
         }
@@ -765,16 +791,11 @@ namespace xhn {
                             if (isInheritFromState && isInheritFromStateInterface) {
                                 /// 真正开始添加state了
                                 snprintf(mbuf, 512,
-//                                         "        let state%dName = swiftClassStringFromPath(%c%s%c)\n"
-                                         ///"        id state%d = [[swiftClassFromPath(@%c%s%c) alloc] init];\n"
                                          "        let state%d = SwiftStates._TtCC12VEngineLogic%s()\n"
                                          "        let state%dName = getClassName(type(of:state%d))\n"
                                          "        ret.setState(state%dName, state:state%d)\n",
-//                                         i, '"', fullClassName.c_str(), '"',
-                                        
                                          i, stateFuncName.c_str(),
-                                          i, i,
-                                         ///i, '"', fullClassName.c_str(), '"',
+                                         i, i,
                                          i, i);
                                 bridgeFile += mbuf;
                                 
@@ -1647,9 +1668,20 @@ namespace xhn {
         
         auto reduce = [this]()
         {
-            if (m_isNodeType) {
-                static_string symbol = m_symbolBuffer.GetSymbol();
-                m_symbolBuffer.bufferTop = 0;
+		    static_string symbol = m_symbolBuffer.GetSymbol();
+			m_symbolBuffer.bufferTop = 0;
+			/// 有可能在name前接range属性
+			if (StrRange == symbol) {
+			    m_isRange = true;
+			}
+			else if (m_isRange) {
+			    ASTLog("RANGE=%s\n", symbol.c_str());
+				if (m_nodeStack.size()) {
+                    m_nodeStack.back()->range = symbol;
+                }
+			    m_isRange = false;
+			}
+            else if (m_isNodeType) {
                 if (StrSourceFile == symbol) {
                     m_roots.push_back(m_nodeStack.back());
                 }
@@ -1660,27 +1692,20 @@ namespace xhn {
                     }
                 }
                 m_isNodeType = false;
-                m_isName = true;
             }
             else if (m_isAccess) {
-                static_string symbol = m_symbolBuffer.GetSymbol();
-                m_symbolBuffer.bufferTop = 0;
                 if (m_nodeStack.size()) {
                     m_nodeStack.back()->access = symbol;
                 }
                 m_isAccess = false;
             }
             else if (m_isDecl) {
-                static_string symbol = m_symbolBuffer.GetSymbol();
-                m_symbolBuffer.bufferTop = 0;
                 if (m_nodeStack.size()) {
                     m_nodeStack.back()->decl = symbol;
                 }
                 m_isDecl = false;
             }
             else if (m_isType) {
-                static_string symbol = m_symbolBuffer.GetSymbol();
-                m_symbolBuffer.bufferTop = 0;
                 if (m_nodeStack.size()) {
                     if (!m_isInterface) {
                         m_nodeStack.back()->type = symbol;
@@ -1692,30 +1717,28 @@ namespace xhn {
                 }
                 m_isType = false;
             }
+            else if (StrInherits == symbol) {
+                m_isInherits = true;
+            }
+            else if (StrAccess == symbol) {
+                m_isAccess = true;
+            }
+            else if (StrDecl == symbol) {
+                m_isDecl = true;
+            }
+            else if (StrType == symbol) {
+                m_isType = true;
+            }
+            else if (StrInterface == symbol) {
+                m_isInterface = true;
+            }
             else {
-                static_string symbol = m_symbolBuffer.GetSymbol();
-                if (StrInherits == symbol) {
-                    m_isInherits = true;
-                }
-                else if (StrAccess == symbol) {
-                    m_isAccess = true;
-                }
-                else if (StrDecl == symbol) {
-                    m_isDecl = true;
-                }
-                else if (StrType == symbol) {
-                    m_isType = true;
-                }
-                else if (StrInterface == symbol) {
-                    m_isInterface = true;
-                }
-                else {
-                    ASTLog("SYMBOL=%s\n", symbol.c_str());
-                }
+                ASTLog("SYMBOL=%s\n", symbol.c_str());
             }
         };
         auto reduceInherit = [this]() {
             static_string symbol = m_symbolBuffer.GetSymbol();
+			m_symbolBuffer.bufferTop = 0;
             if (static_string::empty_string != symbol) {
                 if (m_nodeStack.size()) {
                     if (!m_nodeStack.back()->inherits) {
@@ -1727,17 +1750,20 @@ namespace xhn {
         };
         while (count < parsedLength) {
             char c = parsedBuffer[count];
-//            ASTLog("%c, m_isNodeType %d, m_isName %d, m_isInterface %d, m_isApostropheBlock %d, m_isQuotationBlock %d\n",
-//                   c,   m_isNodeType,    m_isName,    m_isInterface,    m_isApostropheBlock,    m_isQuotationBlock);
             switch (c)
             {
                 case '\0':
                     break;
                 case '(':
                     if (!m_isApostropheBlock &&
-                        !m_isQuotationBlock) {
+                        !m_isQuotationBlock &&
+						!m_bracketsCount &&
+						!m_bracesCount) {
+#if USING_AST_LOG
+						m_parenthesesCount++;
+						COMMANDLog("(%d", m_parenthesesCount);
+#endif
                         m_symbolBuffer.bufferTop = 0;
-                        m_isName = false;
                         ASTNode* currentNode = VNEW ASTNode();
                         if (m_nodeStack.size()) {
                             ASTNode* parentNode = m_nodeStack.back();
@@ -1758,20 +1784,28 @@ namespace xhn {
                     break;
                 case ')':
                     if (!m_isApostropheBlock &&
-                        !m_isQuotationBlock) {
-                        m_isName = false;
+                        !m_isQuotationBlock &&
+						!m_bracketsCount &&
+						!m_bracesCount) {
+#if USING_AST_LOG
+						m_parenthesesCount--;
+						COMMANDLog(")%d", m_parenthesesCount);
+#endif
                         reduce();
                         m_symbolBuffer.bufferTop = 0;
 #if USING_AST_LOG
+						assert(m_nodeStack.size());
                         ASTNode* currentNode = m_nodeStack.back();
                         ASTNode* parentNode = currentNode->parent;
-                        ASTLog("NODETYPE=%s, NAME=%s, ACCESS=%s, DECL=%s, TYPE=%s, INTERFACETYPE=%s\n",
+                        ASTLog("NODETYPE=%s, NAME=%s, ACCESS=%s, DECL=%s, TYPE=%s, INTERFACETYPE=%s, RANGE=%s\n",
                                currentNode->nodetype.c_str(),
                                currentNode->name.c_str(),
                                currentNode->access.c_str(),
                                currentNode->decl.c_str(),
                                currentNode->type.c_str(),
-                               currentNode->interfacetype.c_str());
+                               currentNode->interfacetype.c_str(),
+							   currentNode->range.c_str()
+						);
                         if (parentNode) {
                             ASTLog("%s <- %s\n", parentNode->nodetype.c_str(), currentNode->nodetype.c_str());
                         }
@@ -1783,26 +1817,60 @@ namespace xhn {
                         m_symbolBuffer.AddCharacter(c);
                     }
                     break;
+				case '[':
+					if (!m_isApostropheBlock &&
+						!m_isQuotationBlock) {
+						reduce();
+						m_bracketsCount++;
+					}
+					else {
+						m_symbolBuffer.AddCharacter(c);
+					}
+				    break;
+				case ']':
+					if (!m_isApostropheBlock &&
+						!m_isQuotationBlock) {
+						m_bracketsCount--;
+					}
+					else {
+						m_symbolBuffer.AddCharacter(c);
+					}
+				    break;
+				case '{':
+					if (!m_isApostropheBlock &&
+						!m_isQuotationBlock) {
+						reduce();
+						m_bracesCount++;
+					}
+					else {
+						m_symbolBuffer.AddCharacter(c);
+					}
+				    break;
+				case '}':
+					if (!m_isApostropheBlock &&
+						!m_isQuotationBlock) {
+						m_bracesCount--;
+					}
+					else {
+						m_symbolBuffer.AddCharacter(c);
+					}
+				    break;
                 case 0x22: /// 双引号
                     if (!m_isQuotationBlock) {
                         m_isQuotationBlock = true;
                     }
                     else {
-                        if (m_isName) {
-                            static_string symbol = m_symbolBuffer.GetSymbol();
-                            if (m_nodeStack.size()) {
-                                m_nodeStack.back()->name = symbol;
-                                ASTLog("NODETYPE=%s NAME=%s\n",
-                                       m_nodeStack.back()->nodetype.c_str(), m_nodeStack.back()->name.c_str());
-                            }
-                            m_isName = false;
-                        }
+						static_string symbol = m_symbolBuffer.GetSymbol();
+						if (m_nodeStack.size()) {
+							m_nodeStack.back()->name = symbol;
+							ASTLog("NODETYPE=%s NAME=%s\n",
+								m_nodeStack.back()->nodetype.c_str(), m_nodeStack.back()->name.c_str());
+						}
                         m_symbolBuffer.bufferTop = 0;
                         m_isQuotationBlock = false;
                     }
                     break;
                 case 0x27: /// 单引号
-                    m_isName = false;
                     if (!m_isApostropheBlock) {
                         m_isApostropheBlock = true;
                     }
@@ -1811,31 +1879,32 @@ namespace xhn {
                         m_isApostropheBlock = false;
                     }
                     break;
+				case ' ':
+					COMMANDLog(" ");
                 case '=':
-                case ' ':
-                    if (m_isName && !m_isQuotationBlock) {
-                        m_isName = false;
-                    }
                     if (m_isApostropheBlock ||
-                        m_isQuotationBlock) {
+                        m_isQuotationBlock ||
+						m_bracketsCount ||
+						m_bracesCount) {
                         m_symbolBuffer.AddCharacter(c);
                     }
                     else {
                         reduce();
-                        m_symbolBuffer.bufferTop = 0;
                     }
                     break;
+				case '\r':
+					COMMANDLog("\r");
+					break;
                 case '\n':
-                    if (m_isName && !m_isQuotationBlock) {
-                        m_isName = false;
-                    }
+					COMMANDLog("\n");
                     if (m_isApostropheBlock ||
-                        m_isQuotationBlock) {
+                        m_isQuotationBlock ||
+						m_bracketsCount ||
+						m_bracesCount) {
                         m_symbolBuffer.AddCharacter(c);
                     }
                     else {
                         reduce();
-                        m_symbolBuffer.bufferTop = 0;
                     }
                     if (m_isInherits) {
                         reduceInherit();
@@ -1847,16 +1916,10 @@ namespace xhn {
                         reduceInherit();
                     }
                     else {
-                        if (m_isName && !m_isQuotationBlock) {
-                            m_isName = false;
-                        }
                         m_symbolBuffer.AddCharacter(c);
                     }
                     break;
                 default:
-                    if (m_isName && !m_isQuotationBlock) {
-                        m_isName = false;
-                    }
                     m_symbolBuffer.AddCharacter(c);
                     break;
             }
@@ -1922,15 +1985,15 @@ namespace xhn {
                              ASTReformatterPtr reformatter)
     : m_isApostropheBlock(false)
     , m_isQuotationBlock(false)
-	, m_isBracketBlock(false)
-	, m_isBraceBlock(false)
     , m_isNodeType(false)
-    , m_isName(false)
     , m_isInterface(false)
+	, m_isRange(false)
     , m_isInherits(false)
     , m_isAccess(false)
     , m_isDecl(false)
     , m_isType(false)
+	, m_bracketsCount(0)
+	, m_bracesCount(0)
     , m_reformatter(reformatter)
     {
 #if USING_AST_LOG
@@ -1939,6 +2002,7 @@ namespace xhn {
         s_ClassHierarchyLogFile = fopen(ToWindowsFormat(logDir + "/swiftParserClassHierarchyLog.txt").c_str(), "wb");
         s_GUILogFile = fopen(ToWindowsFormat(logDir + "/swiftParseGUILog.txt").c_str(), "wb");
         s_ASTFile = fopen(ToWindowsFormat(logDir + "/swiftParseAst.txt").c_str(), "wb");
+        s_COMMANDFile = fopen(ToWindowsFormat(logDir + "/swiftCommand.txt").c_str(), "wb");
 #endif
     }
     SwiftParser::~SwiftParser()
@@ -1949,6 +2013,7 @@ namespace xhn {
         fclose(s_ClassHierarchyLogFile);
         fclose(s_GUILogFile);
         fclose(s_ASTFile);
+        fclose(s_COMMANDFile);
 #endif
     }
 }
