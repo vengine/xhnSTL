@@ -90,6 +90,7 @@ public:
     void Clear()
     {
         bufferTop = 0;
+		buffer[0] = 0;
     }
 };
 
