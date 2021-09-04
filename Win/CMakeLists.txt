@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 2.6)
-PROJECT(xhnSTL C CXX)
+cmake_minimum_required (VERSION 3.15)
+PROJECT(xhnSTL LANGUAGES C CXX)
 
 IF (NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE "Debug")
@@ -8,10 +8,18 @@ ENDIF (NOT CMAKE_BUILD_TYPE)
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 #MESSAGE("CMAKE_CXX_FLAGS_DEBUG="+${CMAKE_CXX_FLAGS_DEBUG})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251 /wd4275 /wd4819 /wd4099")
+#message("CMAKE_GENERATOR = "${CMAKE_GENERATOR})
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(VSPrefixPos)
+string(FIND ${CMAKE_GENERATOR} "Visual Studio" VSPrefixPos REVERSE)
+message("VSPrefixPos = "${VSPrefixPos})
+
+if (VSPrefixPos STREQUAL "0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251 /wd4275 /wd4819 /wd4099")
+endif ()
+
+#set(CMAKE_CXX_STANDARD 14)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../pthread/lib/x64)
 
@@ -86,8 +94,10 @@ ADD_LIBRARY(xhnSTL SHARED
    ../xhnSTL/win/win_file_manager.cpp
    ../xhnSTL/win/swift_parser.cpp
 )
+
 #set_target_properties(xhnSTL PROPERTIES ENABLE_EXPORTS 1)
 #set_target_properties(xhnSTL PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)
+set_property(TARGET xhnSTL PROPERTY CXX_STANDARD 14)
 
 add_custom_command(TARGET xhnSTL
   PRE_BUILD 
