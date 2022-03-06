@@ -77,7 +77,13 @@ public:
     inline T &operator*() {
         return *m_ptr;
     }
+    inline T& operator*() const {
+        return *m_ptr;
+    }
     inline T *operator->() {
+        return m_ptr;
+    }
+    inline T* operator->() const {
         return m_ptr;
     }
 	inline bool is_valid() {

@@ -274,7 +274,11 @@ inline esint32 AtomicLoad32(const volatile esint32* ptr)
     
 #else
     _Value = *ptr;
+#if _MSVC_STL_VERSION < 143
     _Compiler_barrier();
+#else
+    _ReadWriteBarrier();
+#endif
 #endif
     
     return (_Value);
@@ -286,7 +290,11 @@ inline void AtomicStore32(esint32 value, volatile esint32 *result)
     __iso_volatile_store32(result, value);
     
 #else
+#if _MSVC_STL_VERSION < 143
     _Compiler_barrier();
+#else
+    _ReadWriteBarrier();
+#endif
     *result = value;
 #endif
 }
