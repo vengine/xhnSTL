@@ -427,6 +427,16 @@ namespace xhn
                 return nullptr;
             }
         }
+
+        V* get_or_create( const key_type& key ) {
+            node_pointer node = find_hash_node(key);
+            if (node) {
+                return &node->get_value();
+            }
+            else {
+                return insert( key, V() );
+            }
+        }
         
         node_pointer find_node ( const key_type &key ) const {
             return find_hash_node( key );
