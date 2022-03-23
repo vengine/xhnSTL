@@ -437,6 +437,17 @@ namespace xhn
                 return insert( key, V() );
             }
         }
+
+        template <class ...ARGS>
+        V* get_or_create( const key_type& key, ARGS... datas ) {
+            node_pointer node = find_hash_node(key);
+            if (node) {
+                return &node->get_value();
+            }
+            else {
+                return insert( key, V(datas...) );
+            }
+        }
         
         node_pointer find_node ( const key_type &key ) const {
             return find_hash_node( key );
