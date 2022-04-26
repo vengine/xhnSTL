@@ -333,10 +333,14 @@ namespace xhn
         {
             bucket_pointer old_buckets = m_buckets;
             euint32 old_num_buckets = m_num_buckets;
+            euint32 new_num_buckets = m_num_buckets << 3;
+            m_rebuild_tolerance = m_tolerance_inc_proc(m_rebuild_tolerance);
+            if (new_num_buckets <= old_num_buckets) {
+                return;
+            }
+
             m_hash_mask <<= 3;
             m_hash_mask |= 0x7;
-            m_rebuild_tolerance = m_tolerance_inc_proc(m_rebuild_tolerance);
-            euint32 new_num_buckets = m_num_buckets << 3;
             
             bucket_pointer new_buckets = m_bucket_allocator.allocate(new_num_buckets);
             for (euint32 i = 0; i < new_num_buckets; i++) {
