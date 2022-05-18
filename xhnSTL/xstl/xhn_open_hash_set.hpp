@@ -109,12 +109,16 @@ namespace xhn
         size_type max_size() const                                             { return static_cast<size_type>(-1) / sizeof(value_type); }
     };
     
-    template <typename K>
+    template < typename K,
+               unsigned INITIAL_REBUILD_TOLERANCE = 2,
+               typename HASH_PROC = FHashProc<K>,
+               typename EQUAL_PROC = FEqualProc<K>,
+               typename TOLERANCE_INC_PROC = FRegularToleranceIncProc >
     class open_hash_set : public dictionary<K, K,
-    2,
-    FHashProc<K>,
-    FEqualProc<K>,
-    FRegularToleranceIncProc,
+    INITIAL_REBUILD_TOLERANCE,
+    HASH_PROC,
+    EQUAL_PROC,
+    TOLERANCE_INC_PROC,
     FHashSetBucketAllocator<K>,
     FHashSetListNodeAllocator<K> >
     {
@@ -124,10 +128,10 @@ namespace xhn
         typedef typename FHashSetListNodeAllocator<K>::pointer node_pointer;
         typedef
         dictionary<K, K,
-        2,
-        FHashProc<K>,
-        FEqualProc<K>,
-        FRegularToleranceIncProc,
+        INITIAL_REBUILD_TOLERANCE,
+        HASH_PROC,
+        EQUAL_PROC,
+        TOLERANCE_INC_PROC,
         FHashSetBucketAllocator<K>,
         FHashSetListNodeAllocator<K> > base_type;
         
