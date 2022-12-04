@@ -19,6 +19,7 @@
 #include "xhn_string.hpp"
 #include "xhn_utility.hpp"
 #include "xhn_pair.hpp"
+#include "xhn_dictionary.hpp"
 namespace xhn
 {
     
@@ -35,42 +36,42 @@ struct string_info
         m_size != info.m_size;
     }
 };
+
+struct FCityHashProc
+{
+    euint32 operator() (const string& v) const {
+        euint32 size = (euint32)v.size();
+        euint32 hash_value = calc_cityhash32 ( v.c_str(), size );
+        return hash_value;
+    }
+};
     
 class XHN_EXPORT static_string
 {
 private:
-    static hash_set< pair<string, string_info> >* s_static_string_set;
+    static dictionary< string, string_info, 2, FCityHashProc >* s_static_string_set;
 private:
-    pair<string, string_info>* m_entry;
+    dictionary< string, string_info, 2, FCityHashProc >::node_pointer m_entry;
 public:
     static const static_string empty_string;
 public:
 	static void dest();
     static_string ( const char *str ) {
         if (!s_static_string_set) {
-            s_static_string_set = VNEW hash_set< pair<string, string_info> >;
+            s_static_string_set = VNEW dictionary< string, string_info, 2, FCityHashProc >;
         }
-        
-        euint32 size = (euint32)strlen(str);
-		euint32 hash_value = calc_cityhash32 ( str, size );
-        string_info info = { hash_value, size };
-        pair< string, string_info > entry = make_pair(string(str), info);
-		hash_set<pair<string, string_info>>::bucket& b = s_static_string_set->get_bucket(_hash(entry));
-		{
-			SpinLock::Instance inst = b.m_lock.Lock();
-			list<pair<string, string_info>>::iterator iter = b.begin();
-			list<pair<string, string_info>>::iterator end = b.end();
-			for (; iter != end; iter++) {
-				if (strcmp(iter->first.c_str(),str) == 0) {
-                    m_entry = &*iter;
-                    EDebugAssert(m_entry, "entry must be nonnull");
-					return;
-				}
-			}
-		}
 
-		const pair<string, string_info> &v = s_static_string_set->insert ( entry );
-        m_entry = (pair<string, string_info>*)&v;
+        euint32 size = (euint32)strlen(str);
+        euint32 hash_value = calc_cityhash32 ( str, size );
+        string_info info = { hash_value, size };
+        string value = str;
+        auto node = s_static_string_set->find_hash_node( value );
+        if (node) {
+            m_entry = node;
+        }
+        else {
+            m_entry = s_static_string_set->_insert_node( value, info );
+        }
         EDebugAssert(m_entry, "entry must be nonnull");
     }
     static_string ( const static_string& str ) {
@@ -83,22 +84,34 @@ public:
     }
     static_string () {
         if (!s_static_string_set) {
-            s_static_string_set = VNEW hash_set< pair<string, string_info> >;
+            s_static_string_set = new dictionary< string, string_info, 2, FCityHashProc >;
         }
         string value ( "" );
         string_info info = { 0, 0, };
-        const pair<string, string_info> &v = s_static_string_set->insert ( make_pair(value, info) );
-        m_entry = (pair<string, string_info>*)&v;
+        
+        auto node = s_static_string_set->find_hash_node( value );
+        if (node) {
+            m_entry = node;
+        }
+        else {
+            m_entry = s_static_string_set->_insert_node( value, info );
+        }
         EDebugAssert(m_entry, "entry must be nonnull");
     }
     static_string (int) {
         if (!s_static_string_set) {
-            s_static_string_set = VNEW hash_set< pair<string, string_info> >;
+            s_static_string_set = new dictionary< string, string_info, 2, FCityHashProc >;
         }
         string value ( "" );
         string_info info = { 0, 0, };
-        const pair<string, string_info> &v = s_static_string_set->insert ( make_pair(value, info) );
-        m_entry = (pair<string, string_info>*)&v;
+        
+        auto node = s_static_string_set->find_hash_node( value );
+        if (node) {
+            m_entry = node;
+        }
+        else {
+            m_entry = s_static_string_set->_insert_node( value, info );
+        }
         EDebugAssert(m_entry, "entry must be nonnull");
     }
     const char *c_str() const {

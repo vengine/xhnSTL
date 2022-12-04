@@ -15,7 +15,9 @@ void nanopause(euint n)
     euint i = 0;
     for (; i < n; i++) {
 #if defined(__APPLE__)
-        __asm__ __volatile__("yield");
+#if !defined(TARGET_IPHONE_SIMULATOR)
+        //__asm__ __volatile__("yield");
+#endif
 #else
         __asm__ __volatile__("nop");
 #endif

@@ -10,7 +10,7 @@
 
 #include "xhn_static_string.hpp"
 
-xhn::hash_set< xhn::pair<xhn::string, xhn::string_info> >* xhn::static_string::s_static_string_set = nullptr;
+xhn::dictionary< xhn::string, xhn::string_info, 2, xhn::FCityHashProc >* xhn::static_string::s_static_string_set = nullptr;
 
 const xhn::static_string xhn::static_string::empty_string("");
 
