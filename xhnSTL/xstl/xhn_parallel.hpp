@@ -58,7 +58,7 @@ public:
                 Lambda<thread::TaskStatus ()>
                 proc([a, b, &func, &worked_thread_count]() -> thread::TaskStatus {
                     func(a, b);
-                    AtomicDecrement(&worked_thread_count);
+                    AtomicDecrement64(&worked_thread_count);
                     return thread::Completed;
                 });
                 t->add_lambda_task(proc);
