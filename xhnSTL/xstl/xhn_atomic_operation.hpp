@@ -29,12 +29,12 @@ inline esint32 AtomicDecrement(volatile esint32* i)
 	volatile std::atomic_int32_t* ai = (volatile std::atomic_int32_t*)i;
 	return ai->fetch_sub(1) - 1;
 }
-inline esint64 AtomicIncrement(volatile esint64* i)
+inline esint64 AtomicIncrement64(volatile esint64* i)
 {
 	volatile std::atomic_int64_t* ai = (volatile std::atomic_int64_t*)i;
 	return ai->fetch_add(1) + 1;
 }
-inline esint64 AtomicDecrement(volatile esint64* i)
+inline esint64 AtomicDecrement64(volatile esint64* i)
 {
 	volatile std::atomic_int64_t* ai = (volatile std::atomic_int64_t*)i;
 	return ai->fetch_sub(1) - 1;
@@ -103,7 +103,7 @@ inline esint64 AtomicIncrement64(volatile esint64* i)
     ///return ret;
 #endif
 }
-inline esint64 AtomicDecrement(volatile esint64* i)
+inline esint64 AtomicDecrement64(volatile esint64* i)
 {
 #if !USING_BUILTIN_ATOMIC
 	return OSAtomicDecrement64Barrier(i);
@@ -176,7 +176,7 @@ inline esint32 AtomicIncrement(volatile esint32* i)
 {
     return __sync_fetch_and_add(i, 1) + 1;
 }
-inline esint64 AtomicIncrement(volatile esint64* i)
+inline esint64 AtomicIncrement64(volatile esint64* i)
 {
     return __sync_fetch_and_add(i, 1) + 1;
 }
@@ -184,7 +184,7 @@ inline esint32 AtomicDecrement(volatile esint32* i)
 {
     return __sync_fetch_and_sub(i, 1) - 1;
 }
-inline esint64 AtomicDecrement(volatile esint64* i)
+inline esint64 AtomicDecrement64(volatile esint64* i)
 {
     return __sync_fetch_and_sub(i, 1) - 1;
 }
