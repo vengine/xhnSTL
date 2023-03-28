@@ -137,6 +137,8 @@ static inline void ELock_unlock(ELock* lock) {
 #define ELock_try(lock) \
 __sync_fetch_and_add(lock, 0)
 
+#else
+#error
 #endif
 
 #ifdef __cplusplus

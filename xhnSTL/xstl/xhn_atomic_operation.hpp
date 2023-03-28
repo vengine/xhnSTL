@@ -228,7 +228,11 @@ inline esint32 AtomicIncrement(volatile esint32* i)
 {
     return __sync_fetch_and_add(i, 1) + 1;
 }
-inline esint64 AtomicIncrement(volatile esint64* i)
+inline esint32 AtomicIncrement32(volatile esint32* i)
+{
+    return __sync_fetch_and_add(i, 1) + 1;
+}
+inline esint64 AtomicIncrement64(volatile esint64* i)
 {
     return __sync_fetch_and_add(i, 1) + 1;
 }
@@ -236,7 +240,11 @@ inline esint32 AtomicDecrement(volatile esint32* i)
 {
     return __sync_fetch_and_sub(i, 1) - 1;
 }
-inline esint64 AtomicDecrement(volatile esint64* i)
+inline esint32 AtomicDecrement32(volatile esint32* i)
+{
+    return __sync_fetch_and_sub(i, 1) - 1;
+}
+inline esint64 AtomicDecrement64(volatile esint64* i)
 {
     return __sync_fetch_and_sub(i, 1) - 1;
 }
