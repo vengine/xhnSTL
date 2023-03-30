@@ -34,7 +34,7 @@ inline double s_to_us(double s)
 
 class VTime
 {
-    friend class TimeCheckpoint;
+    friend struct TimeCheckpoint;
 private:
     double m_nanoTime;
 public:
