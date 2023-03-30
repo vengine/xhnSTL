@@ -1,7 +1,11 @@
 cmake_minimum_required (VERSION 2.6)
 PROJECT(xhnSTL C CXX)
 # Initialize CXXFLAGS.
-set(CMAKE_CXX_FLAGS                "-Wall -std=c++17 -g -gdwarf-4 -fsanitize=address")
+if (SANITIZE)
+  SET(CMAKE_CXX_FLAGS "-Wall -std=c++17 -g -gdwarf-4 -fsanitize=address")
+else()
+  SET(CMAKE_CXX_FLAGS "-Wall -std=c++17 -g -gdwarf-4")
+endif()
 set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
 #set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
 #set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
