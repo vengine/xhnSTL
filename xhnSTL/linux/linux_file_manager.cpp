@@ -411,6 +411,11 @@ void _get_folder_information(char const*path, xhn::folder_information& info)
             info.collect_folder(file_path);
             _get_folder_information(file_path, info);
         }
+        else
+        {
+            info.m_num_files++;
+            info.collect_filename(file_path);
+        }
         
         /*判断是否为普通文件*/
         if(S_ISREG(s_buf.st_mode))
