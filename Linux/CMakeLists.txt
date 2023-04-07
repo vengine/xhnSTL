@@ -11,7 +11,7 @@ set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
 #set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
 #set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
-INCLUDE_DIRECTORIES(./
+INCLUDE_DIRECTORIES(private
                     ../xhnSTL/xstl/
                     ../xhnSTL/linux/
                     ../xhnSTL/xlibc/)

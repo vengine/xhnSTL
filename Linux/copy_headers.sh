@@ -95,8 +95,8 @@ cp ../xhnSTL/xstl/xhn_logger.hpp                                        xhnSTL/x
 cp ../xhnSTL/xstl/xhn_stacktrace.hpp                                  xhnSTL/xhn_stacktrace.hpp
 cp ../xhnSTL/xstl/xhn_serialization.hpp                                  xhnSTL/xhn_serialization.hpp
 
-cp common.h xhnSTL/common.h
-cp etypes.h xhnSTL/etypes.h
+cp private/common.h xhnSTL/common.h
+cp private/etypes.h xhnSTL/etypes.h
 
 #mv ./*.so ./../../
 
