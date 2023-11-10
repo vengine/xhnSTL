@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.9)
 PROJECT(xhnSTL)
 
-IF (NOT CMAKE_BUILD_TYPE)
-    SET(CMAKE_BUILD_TYPE "Debug")
-ENDIF (NOT CMAKE_BUILD_TYPE)
+#IF (NOT CMAKE_BUILD_TYPE)
+#    SET(CMAKE_BUILD_TYPE "Debug")
+#ENDIF (NOT CMAKE_BUILD_TYPE)
 
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
+#SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 #MESSAGE("CMAKE_CXX_FLAGS_DEBUG="+${CMAKE_CXX_FLAGS_DEBUG})
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(INFO
@@ -287,6 +287,12 @@ ADD_LIBRARY(xhnSTL SHARED
 target_link_libraries(xhnSTL stdc++ "-framework CoreFoundation" "-framework Foundation" "-framework Cocoa" objc objc.A objc-trampolines)
 
 target_compile_options(xhnSTL PUBLIC "-fobjc-arc")
+
+add_custom_command(TARGET xhnSTL
+  PRE_BUILD 
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../copy_headers.sh
+  COMMENT "This command will be executed before build target xhnSTL"
+)
 
 set_target_properties(xhnSTL PROPERTIES
   MACOSX_BUNDLE TRUE

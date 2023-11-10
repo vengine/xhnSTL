@@ -108,3 +108,5 @@ Linux/libxhnSTL\.a
 /Linux/xhnSTL/*
 
 /Win/include/*
+
+/Mac/include/*
