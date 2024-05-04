@@ -105,4 +105,6 @@ add_custom_command(TARGET xhnSTL
   COMMENT "This command will be executed before build target xhnSTL"
 )
 
-target_link_libraries(xhnSTL pthreadVC2 uuid)
+target_link_libraries(xhnSTL 
+${CMAKE_CURRENT_SOURCE_DIR}/../pthread/lib/x64/pthreadVC2.lib 
+uuid)
