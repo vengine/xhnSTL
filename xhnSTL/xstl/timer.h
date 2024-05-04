@@ -182,7 +182,7 @@ struct TimeCheckpoint
     static inline double CalcElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
         uint64_t        elapsed;
         uint64_t        elapsedNano;
-        static mach_timebase_info_data_t    sTimebaseInfo;
+        static mach_timebase_info_data_t    sTimebaseInfo = {};
         elapsed = curtCheckpoint.timeStamp - prevCheckpoint.timeStamp;
 
         if ( sTimebaseInfo.denom == 0 ) {
@@ -227,7 +227,7 @@ struct TimeCheckpoint
     static inline double CalcElapsedTimeInNano(const TimeCheckpoint& prevCheckpoint, const TimeCheckpoint& curtCheckpoint) {
         uint64        elapsed;
         uint64        elapsedNano;
-        static mach_timebase_info_data_t    sTimebaseInfo;
+        static mach_timebase_info_data_t    sTimebaseInfo = {};
         elapsed = curtCheckpoint.timeStamp - prevCheckpoint.timeStamp;
 
         if ( sTimebaseInfo.denom == 0 ) {

@@ -93,8 +93,8 @@ FOUNDATION_EXPORT const unsigned char xhnSTLVersionString[];
 #import <xhnSTL/xhn_singly_linked_list.hpp>
 #import <xhnSTL/xhn_memory_pool.hpp>
 #import <xhnSTL/xhn_cache.hpp>
-#import <xhnSTL/xhn_group.hpp>
-#import <xhnSTL/xhn_parallel.hpp>
+//#import <xhnSTL/xhn_group.hpp>
+//#import <xhnSTL/xhn_parallel.hpp>
 #import <xhnSTL/xhn_concurrent.hpp>
 #import <xhnSTL/xhn_triple_buffer.hpp>
 #import <xhnSTL/xhn_math.hpp>

@@ -23,10 +23,6 @@ set(PUB_HEADERS
     ../../xhnSTL/objc/Singleton.h
     ../../xhnSTL/objc/ObjCPropertys.h
     ../../xhnSTL/objc/ObjCString.h
-    ../../xhnSTL/objc/asm_syntax_converter.hpp
-    ../../xhnSTL/objc/llvm_parser.hpp
-    ../../xhnSTL/objc/swift_parser.hpp
-    ../../xhnSTL/objc/symbol_buffer.hpp
 
     ../../xhnSTL/xlibc/array.h
     ../../xhnSTL/xlibc/comparison_algorithm.h
@@ -185,21 +181,14 @@ SET(XHN_STL_SRC
     ../../xhnSTL/objc/ObjCString.mm
     ../../xhnSTL/objc/ObjCPropertys.m
     ../../xhnSTL/objc/apple_file_manager.mm
-    ../../xhnSTL/objc/asm_syntax_converter.mm
-    ../../xhnSTL/objc/llvm_parser.mm
-    ../../xhnSTL/objc/swift_parser.mm
 
     ../xhnSTL/common.h
     ../xhnSTL/etypes.h
 
     ../../xhnSTL/objc/apple_file_manager.h
-    ../../xhnSTL/objc/asm_syntax_converter.hpp
-    ../../xhnSTL/objc/llvm_parser.hpp
-    ../../xhnSTL/objc/swift_parser.hpp
     ../../xhnSTL/objc/Singleton.h
     ../../xhnSTL/objc/ObjCPropertys.h
     ../../xhnSTL/objc/ObjCString.h
-    ../../xhnSTL/objc/symbol_buffer.hpp
 
     ../../xhnSTL/xlibc/array.h
     ../../xhnSTL/xlibc/comparison_algorithm.h
@@ -307,8 +296,8 @@ LIST(APPEND STC_PUB_HEADER ../xhnSTL/xhnSTLStatic.h)
 ADD_LIBRARY(xhnSTL SHARED ${XHN_STL_DLY_SRC})
 ADD_LIBRARY(xhnSTLStatic STATIC ${XHN_STL_STC_SRC})
 
-target_link_libraries(xhnSTL stdc++ "-framework CoreFoundation" "-framework Foundation" "-framework Cocoa" objc objc.A objc-trampolines)
-target_link_libraries(xhnSTLStatic stdc++ "-framework CoreFoundation" "-framework Foundation" "-framework Cocoa" objc objc.A objc-trampolines)
+target_link_libraries(xhnSTL stdc++ "-framework CoreFoundation" "-framework Foundation" "-framework UIKit" objc objc.A objc-trampolines)
+target_link_libraries(xhnSTLStatic stdc++ "-framework CoreFoundation" "-framework Foundation" "-framework UIKit" objc objc.A objc-trampolines)
 
 target_compile_options(xhnSTL PUBLIC "-fobjc-arc")
 target_compile_options(xhnSTLStatic PUBLIC "-fobjc-arc")
