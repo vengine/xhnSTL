@@ -110,3 +110,7 @@ Linux/libxhnSTL\.a
 /Win/include/*
 
 /Mac/include/*
+
+.DS_Store
+Mac/cmake/build/*
+iOS/cmake/build/*
